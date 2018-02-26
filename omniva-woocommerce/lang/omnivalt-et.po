@@ -1,0 +1,179 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: wp\n"
+"Language: et\n"
+
+#: omniva-woocommerce.php:136 omniva-woocommerce.php:260
+msgid "Omniva Shipping"
+msgstr "Omniva Shipping"
+
+#: omniva-woocommerce.php:137
+msgid "Shipping Method for Omniva"
+msgstr "Saatmismeetod Omnivale"
+
+#: omniva-woocommerce.php:150
+msgid "Omnivalt Shipping"
+msgstr "Omnivalt Shipping"
+
+#: omniva-woocommerce.php:184
+msgid "Enable"
+msgstr "Luba"
+
+#: omniva-woocommerce.php:186
+msgid "Enable this shipping."
+msgstr "Luba see saatmine."
+
+#: omniva-woocommerce.php:190
+msgid "Api URL"
+msgstr "Api URL"
+
+#: omniva-woocommerce.php:195
+msgid "Api user"
+msgstr "Api kasutaja"
+
+#: omniva-woocommerce.php:199
+msgid "Api user password"
+msgstr "Api kasutaja parool"
+
+#: omniva-woocommerce.php:203
+msgid "Company name"
+msgstr "Firma nimi"
+
+#: omniva-woocommerce.php:207
+msgid "Bank account"
+msgstr "pangakonto"
+
+#: omniva-woocommerce.php:211
+msgid "Shop name"
+msgstr "Pood nime"
+
+#: omniva-woocommerce.php:215
+msgid "Shop city"
+msgstr "Osta linn"
+
+#: omniva-woocommerce.php:219
+msgid "Shop address"
+msgstr "Poe aadress"
+
+#: omniva-woocommerce.php:223
+msgid "Shop postcode"
+msgstr "Pood postiindeks"
+
+#: omniva-woocommerce.php:227
+msgid "Shop phone number"
+msgstr "Osta telefoninumbrit"
+
+#: omniva-woocommerce.php:231
+msgid "Pick up time start"
+msgstr "Võta aeg alguseni"
+
+#: omniva-woocommerce.php:235
+msgid "Pick up time end"
+msgstr "Võta aeg lõpuni"
+
+#: omniva-woocommerce.php:239
+msgid "Send off type"
+msgstr "Saatke tüübist välja"
+
+#: omniva-woocommerce.php:241
+msgid "Send from store type."
+msgstr "Saatke alates poodi tüübist."
+
+#: omniva-woocommerce.php:243 omniva-woocommerce.php:248
+msgid "Parcel terminal"
+msgstr "Maatüki terminal"
+
+#: omniva-woocommerce.php:244 omniva-woocommerce.php:253
+msgid "Courrier"
+msgstr "Courrier"
+
+#: omniva-woocommerce.php:250
+msgid "Show parcel terminal method in checkout."
+msgstr "Näidake paki terminali meetodit kassas."
+
+#: omniva-woocommerce.php:255
+msgid "Show courrier method in checkout."
+msgstr "Kuva kulleri meetod kassasse."
+
+#: omniva-woocommerce.php:258
+msgid "Allowed countries"
+msgstr "Lubatud riigid"
+
+#: omniva-woocommerce.php:263
+msgid "Courrier price"
+msgstr "Courrieri hind"
+
+#: omniva-woocommerce.php:268
+msgid "Parcel terminal price"
+msgstr "Saadetise terminali hind"
+
+#: omniva-woocommerce.php:273
+msgid "Weight (kg)"
+msgstr "Kaal (kg)"
+
+#: omniva-woocommerce.php:275
+msgid "Maximum allowed weight"
+msgstr "Maksimaalne lubatud mass"
+
+#: omniva-woocommerce.php:303
+msgid "Omniva parcel terminal"
+msgstr "Omniva paki terminal"
+
+#: omniva-woocommerce.php:312
+msgid "Omniva courrier"
+msgstr "Omniva kuller"
+
+#: omniva-woocommerce.php:487 omniva-woocommerce.php:583
+msgid "Response is in the wrong format"
+msgstr "Vastus on vales vormis"
+
+#: omniva-woocommerce.php:519 omniva-woocommerce.php:604
+msgid "No saved barcodes received"
+msgstr "Saadetud salvestatud vöötkoode pole"
+
+#: omniva-woocommerce.php:626 omniva-woocommerce.php:685
+msgid "Shipping method is not Omniva"
+msgstr "Saatmise viis ei ole Omniva"
+
+#: omniva-woocommerce.php:641
+msgid "Omniva lavel generated"
+msgstr "Omniva lavel loodud"
+
+#: omniva-woocommerce.php:804
+msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
+msgstr "Vabandust,% d kg ületab maksimaalse massi% d kg% s kohta"
+
+#: omniva-woocommerce.php:840
+msgid "Select parcel terminal"
+msgstr "Valige paki terminal"
+
+#: omniva-woocommerce.php:851
+msgid "Print Omniva labels"
+msgstr "Prindi Omniva sildid"
+
+#: omniva-woocommerce.php:852
+msgid "Print Omniva manifest"
+msgstr "Trükkige Omniva manifesti"
+
+#: omniva-woocommerce.php:878
+msgid "Generate Omniva label"
+msgstr "Loo Omniva silt"
+
+#: omniva-woocommerce.php:880
+msgid "VIew Omniva label"
+msgstr "VIew Omniva silt"
+
+#. Name of the plugin
+#: 
+msgid "Omniva shipping"
+msgstr "Omniva laevandus"
+
+#. Description of the plugin
+#: 
+msgid "Omniva shipping plugin for WooCommerce"
+msgstr "WooCommerce'i Omniva edastusplugin"
+

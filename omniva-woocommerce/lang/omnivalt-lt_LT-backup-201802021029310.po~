@@ -1,0 +1,184 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Omniva shipping\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-11 13:34+0000\n"
+"PO-Revision-Date: 2017-10-11 13:40+0000\n"
+"Last-Translator: admin <info@iterdve.lt>\n"
+"Language-Team: Lithuanian\n"
+"Language: lt-LT\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10 >= 2 "
+"&&(n%100<10||n%100 >= 20)? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco - https://localise.biz/"
+
+#: omniva-woocommerce.php:136 omniva-woocommerce.php:260
+msgid "Omniva Shipping"
+msgstr "Siuntimas su Omniva"
+
+#: omniva-woocommerce.php:137
+msgid "Shipping Method for Omniva"
+msgstr "Omnivos siuntimo būdas"
+
+#: omniva-woocommerce.php:150
+msgid "Omnivalt Shipping"
+msgstr ""
+
+#: omniva-woocommerce.php:184
+msgid "Enable"
+msgstr "Įjungti"
+
+#: omniva-woocommerce.php:186
+msgid "Enable this shipping."
+msgstr "Įjungti šį siuntimą."
+
+#: omniva-woocommerce.php:190
+msgid "Api URL"
+msgstr ""
+
+#: omniva-woocommerce.php:195
+msgid "Api user"
+msgstr "Api vartotojas"
+
+#: omniva-woocommerce.php:199
+msgid "Api user password"
+msgstr "Api vartotojo slaptažodis"
+
+#: omniva-woocommerce.php:203
+msgid "Company name"
+msgstr "Įmonės pavadinimas"
+
+#: omniva-woocommerce.php:207
+msgid "Bank account"
+msgstr "Banko sąskaitos numeris"
+
+#: omniva-woocommerce.php:211
+msgid "Shop name"
+msgstr "Parduotuvės pavadinimas"
+
+#: omniva-woocommerce.php:215
+msgid "Shop city"
+msgstr "Parduotuvės miestas"
+
+#: omniva-woocommerce.php:219
+msgid "Shop address"
+msgstr "Parduotuvės adresas"
+
+#: omniva-woocommerce.php:223
+msgid "Shop postcode"
+msgstr "Parduotuvės pašto kodas"
+
+#: omniva-woocommerce.php:227
+msgid "Shop phone number"
+msgstr "Parduotuvės telefonas"
+
+#: omniva-woocommerce.php:231
+msgid "Pick up time start"
+msgstr "Paėmimo iš parduotuvės pradžia"
+
+#: omniva-woocommerce.php:235
+msgid "Pick up time end"
+msgstr "Paėmimo iš parduotuvės pabaiga"
+
+#: omniva-woocommerce.php:239
+msgid "Send off type"
+msgstr "Išsiuntimo tipas"
+
+#: omniva-woocommerce.php:241
+msgid "Send from store type."
+msgstr "Išsiuntimo iš parduotuvės tipas."
+
+#: omniva-woocommerce.php:243 omniva-woocommerce.php:248
+msgid "Parcel terminal"
+msgstr "Paštomatas"
+
+#: omniva-woocommerce.php:244 omniva-woocommerce.php:253
+msgid "Courrier"
+msgstr "Kurjeris"
+
+#: omniva-woocommerce.php:250
+msgid "Show parcel terminal method in checkout."
+msgstr "Rodyti paštomatų pasirinkimą."
+
+#: omniva-woocommerce.php:255
+msgid "Show courrier method in checkout."
+msgstr "Rodyti kurjerio pasirinkimą."
+
+#: omniva-woocommerce.php:258
+msgid "Allowed countries"
+msgstr ""
+
+#: omniva-woocommerce.php:263
+msgid "Courrier price"
+msgstr "Kurjerio kaina"
+
+#: omniva-woocommerce.php:268
+msgid "Parcel terminal price"
+msgstr "Paštomato kaina"
+
+#: omniva-woocommerce.php:273
+msgid "Weight (kg)"
+msgstr "Svoris (kg)"
+
+#: omniva-woocommerce.php:275
+msgid "Maximum allowed weight"
+msgstr "Didžiausias leistinas svoris"
+
+#: omniva-woocommerce.php:303
+msgid "Omniva parcel terminal"
+msgstr "Omniva paštomatas"
+
+#: omniva-woocommerce.php:312
+msgid "Omniva courrier"
+msgstr "Omniva kurjeris"
+
+#: omniva-woocommerce.php:487 omniva-woocommerce.php:583
+msgid "Response is in the wrong format"
+msgstr ""
+
+#: omniva-woocommerce.php:519 omniva-woocommerce.php:604
+msgid "No saved barcodes received"
+msgstr ""
+
+#: omniva-woocommerce.php:626 omniva-woocommerce.php:685
+msgid "Shipping method is not Omniva"
+msgstr ""
+
+#: omniva-woocommerce.php:641
+msgid "Omniva lavel generated"
+msgstr ""
+
+#: omniva-woocommerce.php:804
+#, php-format
+msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
+msgstr ""
+
+#: omniva-woocommerce.php:840
+msgid "Select parcel terminal"
+msgstr "Pasirinkti paštomatą"
+
+#: omniva-woocommerce.php:851
+msgid "Print Omniva labels"
+msgstr "Spausdinti Omniva lipdukus"
+
+#: omniva-woocommerce.php:852
+msgid "Print Omniva manifest"
+msgstr "Spausdinti Omniva manifestą"
+
+#: omniva-woocommerce.php:878
+msgid "Generate Omniva label"
+msgstr "Generuoti Omniva lipdukus"
+
+#: omniva-woocommerce.php:880
+msgid "VIew Omniva label"
+msgstr "Peržiūrėti Omniva lipduką"
+
+#. Name of the plugin
+msgid "Omniva shipping"
+msgstr ""
+
+#. Description of the plugin
+msgid "Omniva shipping plugin for WooCommerce"
+msgstr ""
