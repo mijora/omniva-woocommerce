@@ -2,14 +2,21 @@
 /**
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
- * Version: 1.3.1
- * Domain Path: /lang
+ * Version: 1.3.2
+ * Domain Path: /languages
  * Text Domain: omnivalt
  */
 
 if (!defined('WPINC')) {
   die;
 }
+
+add_action( 'init', 'omnivalt_load_textdomain' );
+
+function omnivalt_load_textdomain() {
+  load_plugin_textdomain( 'omnivalt', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
+}
+
 function omnivalt_notices(){
   if ( !session_id() ) {
     session_start();

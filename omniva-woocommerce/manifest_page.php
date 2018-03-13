@@ -1,8 +1,8 @@
-<?phpif ( ! defined( 'ABSPATH' ) ) {
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 ?>
-<?php //var_dump(get_current_screen()); ?> 
 <div class="wrap">
 <h1><?php _e('Omniva manifest','omnivalt'); ?></h1>
 <?php
