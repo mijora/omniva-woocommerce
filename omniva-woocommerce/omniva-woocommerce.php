@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
- * Version: 1.3.0
+ * Version: 1.3.1
  * Domain Path: /lang
  * Text Domain: omnivalt
  */
@@ -722,9 +722,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               } else if ($label_count == 1) {
                 $pdf->useTemplate($tplidx, 110, 15, 94.5, 108, true);
               } else if ($label_count == 2) {
-                $pdf->useTemplate($tplidx, 5, 140, 94.5, 108, true);  
+                $pdf->useTemplate($tplidx, 5, 160, 94.5, 108, true);  
               } else if ($label_count == 3) {
-                $pdf->useTemplate($tplidx, 110, 140, 94.5, 108, true);  
+                $pdf->useTemplate($tplidx, 110, 160, 94.5, 108, true);  
               }
               $label_count++;
               //$tplidx = $pdf->ImportPage($i);
@@ -772,18 +772,24 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                   if ($status['status']){
                     update_post_meta($order->ID,'_omnivalt_barcode',$status['barcodes'][0]);
                     $track_numer = $status['barcodes'][0];
-                    if (file_exists(plugin_dir_path(__FILE__).'pdf/'.$order->id.'.pdf')){
-                      unlink(plugin_dir_path(__FILE__).'pdf/'.$order->id.'.pdf');
+                    if (file_exists(plugin_dir_path(__FILE__).'pdf/'.$order->ID.'.pdf')){
+                      unlink(plugin_dir_path(__FILE__).'pdf/'.$order->ID.'.pdf');
+                    }
+                    $label_status = $this->getShipmentLabels($status['barcodes'],$orderId);
+                    if (!$label_status['status']){
+                      update_post_meta($orderId,'_omnivalt_error',$label_status['msg']);
+                      $this->add_msg($orderId.' - '.$label_status['msg'],'error');
+                      continue;
                     }
                   } else {
                     $this->add_msg($orderId.' - '.$status['msg'],'error');
                     continue;
                   }
                 }
-                if (get_post_meta($orderId,'_manifest_generation_date',true)){
-                  $this->add_msg($orderId.' - '.__('Manifest already generated','omnivalt'),'error');
-                  continue;
-                }
+                //if (get_post_meta($orderId,'_manifest_generation_date',true)){
+                //  $this->add_msg($orderId.' - '.__('Manifest already generated','omnivalt'),'error');
+                //  continue;
+                //}
                 update_post_meta($orderId,'_manifest_generation_date',date('Y-m-d H:i:s'));
                 $pt_address = '';
                 if ($send_method == 'omnivalt_pt'){
