@@ -2,7 +2,8 @@
 /**
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
- * Version: 1.3.2
+ * Author: Omniva
+ * Version: 1.3.3
  * Domain Path: /languages
  * Text Domain: omnivalt
  */
@@ -974,6 +975,22 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $('.omnivalt_terminal').select2();});</script>";
     return '<div class = "terminal-container"><select class = "omnivalt_terminal" name = "omnivalt_terminal">' . $parcel_terminals . '</select></div>' . $script;
   }
+  
+  function omnivaltTerminalName($terminal_code){
+    $terminals_json_file_dir = dirname(__file__) . "\locations.json";
+    $terminals_file = fopen($terminals_json_file_dir, "r");
+    $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
+    fclose($terminals_file);
+    $terminals = json_decode($terminals, true);
+    $parcel_terminals = '';
+    if (is_array($terminals)) {
+      foreach($terminals as $terminal) {
+        if ((string)$terminal['ZIP'] == $terminal_code)
+          return (string)$terminal['NAME'].', '.$terminal['A2_NAME'];
+      }
+    }
+    return false;
+  }
 
   add_action('woocommerce_review_order_before_cart_contents', 'omnivalt_validate_order', 10);
   
@@ -1067,5 +1084,35 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   
   function manifest_page(){
     include_once("manifest_page.php");
+  }
+  
+  /**
+ * Display field value on the order edit page
+ */
+  add_action( 'woocommerce_admin_order_data_after_shipping_address', 'omniva_terminal_field_display_admin_order_meta', 10, 1 );
+
+  function omniva_terminal_field_display_admin_order_meta($order){
+      $wc_order = wc_get_order((int)$order->ID);
+      $send_method = "";
+      foreach( $wc_order->get_items( 'shipping' ) as $item_id => $shipping_item_obj ){
+        $send_method        = $shipping_item_obj->get_method_id(); 
+      }
+      if (!($send_method == 'omnivalt_pt')){
+        return '';
+      }
+      $terminal_id = get_post_meta($order->ID,'_omnivalt_terminal_id', true);
+      $terminal_name = omnivaltTerminalName($terminal_id);
+      if (!$terminal_name)
+        $terminal_name  = __('Parcel terminal not found!!!','omnivalt');
+      echo '<p><strong>'.__('Omniva parcel terminal','omnivalt').':</strong> <br/>' . $terminal_name . '</p>';
+  }
+  
+  add_action('woocommerce_checkout_process', 'omnivalt_terminal_validate');
+
+  function omnivalt_terminal_validate() { 
+      if (in_array('omnivalt_pt',$_POST['shipping_method'])){
+        if (empty($_POST['omnivalt_terminal']))
+          wc_add_notice( __( 'Please select parcel terminal.', 'omnivalt'), 'error' );
+      }
   }
 } 

@@ -7,21 +7,13 @@ msgstr ""
 "Project-Id-Version: wp\n"
 "Language: et\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-16 08:03+0000\n"
-"PO-Revision-Date: 2018-03-16 08:04+0000\n"
+"POT-Creation-Date: 2018-03-13 12:41+0000\n"
+"PO-Revision-Date: 2018-03-13 12:45+0000\n"
 "Last-Translator: omniva <omniva@mijora.lt>\n"
 "Language-Team: Estonian\n"
 "Plural-Forms: nplurals=2; plural=n != 1"
 
-#: omniva-woocommerce.php:1104
-msgid "Parcel terminal not found!!!"
-msgstr "Saadetisi pole leitud !!!"
-
-#: omniva-woocommerce.php:1114
-msgid "Please select parcel terminal."
-msgstr "Palun valige pakiautomaat."
-
-#: manifest_page.php:7 omniva-woocommerce.php:1073 omniva-woocommerce.php:1074
+#: manifest_page.php:7 omniva-woocommerce.php:1050 omniva-woocommerce.php:1051
 msgid "Omniva manifest"
 msgstr "Omniva manifest"
 
@@ -61,164 +53,164 @@ msgstr "Valige tellimusi"
 msgid "No assign shipments found"
 msgstr "Ei leia saadetisi"
 
-#: omniva-woocommerce.php:143
-msgid "Omniva Shipping"
-msgstr "Omniva Shipping"
-
-#: omniva-woocommerce.php:144
-msgid "Shipping Method for Omniva"
-msgstr "Saatmismeetod Omnivale"
-
-#: omniva-woocommerce.php:157
-msgid "Omnivalt Shipping"
-msgstr "Omnivalt Shipping"
-
-#: omniva-woocommerce.php:191
-msgid "Enable"
-msgstr "Luba"
-
-#: omniva-woocommerce.php:193
-msgid "Enable this shipping."
-msgstr "Luba see saatmine."
-
-#: omniva-woocommerce.php:197
-msgid "Api URL"
-msgstr "Api URL"
-
-#: omniva-woocommerce.php:202
-msgid "Api user"
-msgstr "Api kasutaja"
-
-#: omniva-woocommerce.php:206
-msgid "Api user password"
-msgstr "Api kasutaja parool"
-
-#: omniva-woocommerce.php:210
-msgid "Company name"
-msgstr "Firma nimi"
-
-#: omniva-woocommerce.php:214
-msgid "Bank account"
-msgstr "pangakonto"
-
-#: omniva-woocommerce.php:218
-msgid "Shop name"
-msgstr "Pood nime"
-
-#: omniva-woocommerce.php:222
-msgid "Shop city"
-msgstr "Osta linn"
-
-#: omniva-woocommerce.php:226
-msgid "Shop address"
-msgstr "Poe aadress"
-
-#: omniva-woocommerce.php:230
-msgid "Shop postcode"
-msgstr "Pood postiindeks"
-
-#: omniva-woocommerce.php:234
+#: omniva-woocommerce.php:227
 msgid "Shop country code"
 msgstr "Riigi koodi pood"
 
-#: omniva-woocommerce.php:238
-msgid "Shop phone number"
-msgstr "Osta telefoninumbrit"
-
-#: omniva-woocommerce.php:242
-msgid "Pick up time start"
-msgstr "Võta aeg alguseni"
-
-#: omniva-woocommerce.php:246
-msgid "Pick up time end"
-msgstr "Võta aeg lõpuni"
-
-#: omniva-woocommerce.php:250
-msgid "Send off type"
-msgstr "Saatke tüübist välja"
-
-#: omniva-woocommerce.php:252
-msgid "Send from store type."
-msgstr "Saatke alates poodi tüübist."
-
-#: omniva-woocommerce.php:254 omniva-woocommerce.php:259
-msgid "Parcel terminal"
-msgstr "Maatüki terminal"
-
-#: omniva-woocommerce.php:255 omniva-woocommerce.php:264
-msgid "Courrier"
-msgstr "Courrier"
-
-#: omniva-woocommerce.php:261
-msgid "Show parcel terminal method in checkout."
-msgstr "Näidake paki terminali meetodit kassas."
-
-#: omniva-woocommerce.php:266
-msgid "Show courrier method in checkout."
-msgstr "Kuva kulleri meetod kassasse."
-
-#: omniva-woocommerce.php:269
-msgid "Courrier price"
-msgstr "Courrieri hind"
-
-#: omniva-woocommerce.php:274
-msgid "Parcel terminal price"
-msgstr "Saadetise terminali hind"
-
-#: omniva-woocommerce.php:279
-msgid "Weight (kg)"
-msgstr "Kaal (kg)"
-
-#: omniva-woocommerce.php:281
-msgid "Maximum allowed weight"
-msgstr "Maksimaalne lubatud mass"
-
-#: omniva-woocommerce.php:309 omniva-woocommerce.php:1106
-msgid "Omniva parcel terminal"
-msgstr "Omniva paki terminal"
-
-#: omniva-woocommerce.php:318
-msgid "Omniva courrier"
-msgstr "Omniva kuller"
-
-#: omniva-woocommerce.php:544 omniva-woocommerce.php:640
-msgid "Response is in the wrong format"
-msgstr "Vastus on vales vormis"
-
-#: omniva-woocommerce.php:576 omniva-woocommerce.php:661
-msgid "No saved barcodes received"
-msgstr "Saadetud salvestatud vöötkoode pole"
-
-#: omniva-woocommerce.php:689 omniva-woocommerce.php:773
-msgid "Shipping method is not Omniva"
-msgstr "Saatmise viis ei ole Omniva"
-
-#: omniva-woocommerce.php:707
+#: omniva-woocommerce.php:700
 msgid "Omniva label generated"
 msgstr "Omniva silt loodud"
 
-#: omniva-woocommerce.php:936
+#: omniva-woocommerce.php:136
+msgid "Omniva Shipping"
+msgstr "Omniva Shipping"
+
+#: omniva-woocommerce.php:137
+msgid "Shipping Method for Omniva"
+msgstr "Saatmismeetod Omnivale"
+
+#: omniva-woocommerce.php:150
+msgid "Omnivalt Shipping"
+msgstr "Omnivalt Shipping"
+
+#: omniva-woocommerce.php:184
+msgid "Enable"
+msgstr "Luba"
+
+#: omniva-woocommerce.php:186
+msgid "Enable this shipping."
+msgstr "Luba see saatmine."
+
+#: omniva-woocommerce.php:190
+msgid "Api URL"
+msgstr "Api URL"
+
+#: omniva-woocommerce.php:195
+msgid "Api user"
+msgstr "Api kasutaja"
+
+#: omniva-woocommerce.php:199
+msgid "Api user password"
+msgstr "Api kasutaja parool"
+
+#: omniva-woocommerce.php:203
+msgid "Company name"
+msgstr "Firma nimi"
+
+#: omniva-woocommerce.php:207
+msgid "Bank account"
+msgstr "pangakonto"
+
+#: omniva-woocommerce.php:211
+msgid "Shop name"
+msgstr "Pood nime"
+
+#: omniva-woocommerce.php:215
+msgid "Shop city"
+msgstr "Osta linn"
+
+#: omniva-woocommerce.php:219
+msgid "Shop address"
+msgstr "Poe aadress"
+
+#: omniva-woocommerce.php:223
+msgid "Shop postcode"
+msgstr "Pood postiindeks"
+
+#: omniva-woocommerce.php:231
+msgid "Shop phone number"
+msgstr "Osta telefoninumbrit"
+
+#: omniva-woocommerce.php:235
+msgid "Pick up time start"
+msgstr "Võta aeg alguseni"
+
+#: omniva-woocommerce.php:239
+msgid "Pick up time end"
+msgstr "Võta aeg lõpuni"
+
+#: omniva-woocommerce.php:243
+msgid "Send off type"
+msgstr "Saatke tüübist välja"
+
+#: omniva-woocommerce.php:245
+msgid "Send from store type."
+msgstr "Saatke alates poodi tüübist."
+
+#: omniva-woocommerce.php:247 omniva-woocommerce.php:252
+msgid "Parcel terminal"
+msgstr "Maatüki terminal"
+
+#: omniva-woocommerce.php:248 omniva-woocommerce.php:257
+msgid "Courrier"
+msgstr "Courrier"
+
+#: omniva-woocommerce.php:254
+msgid "Show parcel terminal method in checkout."
+msgstr "Näidake paki terminali meetodit kassas."
+
+#: omniva-woocommerce.php:259
+msgid "Show courrier method in checkout."
+msgstr "Kuva kulleri meetod kassasse."
+
+#: omniva-woocommerce.php:262
+msgid "Courrier price"
+msgstr "Courrieri hind"
+
+#: omniva-woocommerce.php:267
+msgid "Parcel terminal price"
+msgstr "Saadetise terminali hind"
+
+#: omniva-woocommerce.php:272
+msgid "Weight (kg)"
+msgstr "Kaal (kg)"
+
+#: omniva-woocommerce.php:274
+msgid "Maximum allowed weight"
+msgstr "Maksimaalne lubatud mass"
+
+#: omniva-woocommerce.php:302
+msgid "Omniva parcel terminal"
+msgstr "Omniva paki terminal"
+
+#: omniva-woocommerce.php:311
+msgid "Omniva courrier"
+msgstr "Omniva kuller"
+
+#: omniva-woocommerce.php:537 omniva-woocommerce.php:633
+msgid "Response is in the wrong format"
+msgstr "Vastus on vales vormis"
+
+#: omniva-woocommerce.php:569 omniva-woocommerce.php:654
+msgid "No saved barcodes received"
+msgstr "Saadetud salvestatud vöötkoode pole"
+
+#: omniva-woocommerce.php:682 omniva-woocommerce.php:766
+msgid "Shipping method is not Omniva"
+msgstr "Saatmise viis ei ole Omniva"
+
+#: omniva-woocommerce.php:929
 #, php-format
 msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
 msgstr "Vabandust,% d kg ületab maksimaalse massi% d kg% s kohta"
 
-#: omniva-woocommerce.php:972
+#: omniva-woocommerce.php:965
 msgid "Select parcel terminal"
 msgstr "Valige paki terminal"
 
-#: omniva-woocommerce.php:999
+#: omniva-woocommerce.php:976
 msgid "Print Omniva labels"
 msgstr "Prindi Omniva sildid"
 
-#: omniva-woocommerce.php:1000
+#: omniva-woocommerce.php:977
 msgid "Print Omniva manifest"
 msgstr "Trükkige Omniva manifesti"
 
-#: omniva-woocommerce.php:1042
+#: omniva-woocommerce.php:1019
 msgid "Generate Omniva label"
 msgstr "Loo Omniva silt"
 
-#: omniva-woocommerce.php:1044
+#: omniva-woocommerce.php:1021
 msgid "VIew Omniva label"
 msgstr "VIew Omniva silt"
 
