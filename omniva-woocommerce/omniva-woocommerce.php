@@ -276,6 +276,26 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'type' => 'number',
               'default' => 2
             ) ,
+            'c_priceLV' => array(
+              'title' => __('LV Courrier price', 'omnivalt') ,
+              'type' => 'number',
+              'default' => 2
+            ) ,
+            'pt_priceLV' => array(
+              'title' => __('LV Parcel terminal price', 'omnivalt') ,
+              'type' => 'number',
+              'default' => 2
+            ) ,
+            'c_priceEE' => array(
+              'title' => __('EE Courrier price', 'omnivalt') ,
+              'type' => 'number',
+              'default' => 2
+            ) ,
+            'pt_priceEE' => array(
+              'title' => __('EE Parcel terminal price', 'omnivalt') ,
+              'type' => 'number',
+              'default' => 2
+            ) ,
             'weight' => array(
               'title' => __('Weight (kg)', 'omnivalt') ,
               'type' => 'number',
@@ -304,23 +324,46 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
           $weight = wc_get_weight($weight, 'kg');
           
-          if ($this->settings['method_pt']) {
+          if ($this->settings['method_pt'] == 'yes') {
+            switch($country) {
+                case 'LV':
+                    $amount = $this->settings['pt_priceLV'];
+                    break;
+                case 'EE':
+                    $amount = $this->settings['pt_priceEE'];
+                    break;
+                default:
+                    $amount = $this->settings['pt_price'];
+                    break;
+              }
             $rate = array(
               'id' => 'omnivalt_pt',
-              'label' => __('Omniva parcel terminal', 'omnivalt') ,
-              'cost' => $this->settings['pt_price']
+              'label' => __('Omniva parcel terminal', 'omnivalt'),
+              'cost' => $amount
             );
             $this->add_rate($rate);
           }
 
-          if ($this->settings['method_c']) {
+          if ($this->settings['method_c'] == 'yes') {
+            switch($country) {
+              case 'LV':
+                  $amountC = $this->settings['c_priceLV'];
+                  break;
+              case 'EE':
+                  $amountC = $this->settings['c_priceEE'];
+                  break;
+              default:
+                  $amountC = $this->settings['c_price'];
+                  break;
+            }
             $rate = array(
               'id' => 'omnivalt_c',
               'label' => __('Omniva courrier', 'omnivalt') ,
-              'cost' => $this->settings['c_price']
+              'cost' => $amountC
             );
             $this->add_rate($rate);
           }
+          
         }
         
         private function cod($order,$cod = 0, $amount = 0) {
