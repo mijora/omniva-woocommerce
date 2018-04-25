@@ -269,51 +269,81 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'c_price' => array(
               'title' => __('Courrier price', 'omnivalt') ,
               'type' => 'number',
-              'default' => 2
+              'default' => 2,
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
             ) ,
             'pt_price' => array(
               'title' => __('Parcel terminal price', 'omnivalt') ,
               'type' => 'number',
-              'default' => 2
+              'custom_attributes' => array(
+								'step'          => 0.01,
+              ),
+              'default' => 2,
             ) ,
             'pt_priceFREE' => array(
               'title' => __('Free shipping then price is higher', 'omnivalt') ,
               'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
               'default' => 100
             ) ,
             'c_priceLV' => array(
               'title' => __('LV Courrier price', 'omnivalt') ,
               'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
               'default' => 2
             ) ,
             'pt_priceLV' => array(
               'title' => __('LV Parcel terminal price', 'omnivalt') ,
               'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
               'default' => 2
             ) ,
             'pt_priceLV_FREE' => array(
               'title' => __('LV Free shipping then price is higher', 'omnivalt') ,
               'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
               'default' => 100
             ) ,
             'c_priceEE' => array(
               'title' => __('EE Courrier price', 'omnivalt') ,
               'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
               'default' => 2
             ) ,
             'pt_priceEE' => array(
               'title' => __('EE Parcel terminal price', 'omnivalt') ,
               'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
               'default' => 2
             ) ,
             'pt_priceEE_FREE' => array(
               'title' => __('EE Free shipping then price is higher', 'omnivalt') ,
               'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
               'default' => 100
             ) ,
             'weight' => array(
               'title' => __('Weight (kg)', 'omnivalt') ,
               'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
               'description' => __('Maximum allowed weight', 'omnivalt') ,
               'default' => 100
             ) ,
