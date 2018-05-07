@@ -504,9 +504,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           if ($additionalService) {
             $additionalService = '<add_service>' . $additionalService . '</add_service>';
           }
+		/* LV/EE fixes
           if ($parcel_terminal)
             $client_address = '<address ' . $parcel_terminal . ' />';
           else
+	*/
             $client_address = '<address postcode="' . get_post_meta($id_order,'_shipping_postcode', true) . '" ' . $parcel_terminal . ' deliverypoint="' . get_post_meta($id_order,'_shipping_city', true) . '" country="' . get_post_meta($id_order,'_shipping_country', true) . '" street="' . get_post_meta($id_order,'_shipping_address_1', true) . '" />';
           $phones = '';
           if ($mobile = get_post_meta($id_order,'_billing_phone', true)) $phones.= '<mobile>' . $mobile . '</mobile>';
