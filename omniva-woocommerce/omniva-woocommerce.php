@@ -364,8 +364,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $country = $package["destination"]["country"];
 
           global $woocommerce;
-          $cart_amount = floatval( preg_replace( '#[^\d.]#', '', $woocommerce->cart->get_cart_total() ) );
-
+	  $cart_amount = $woocommerce->cart->cart_contents_total+$woocommerce->cart->tax_total;
+		
           foreach($package['contents'] as $item_id => $values) {
             $_product = $values['data'];
             $weight = $weight + $_product->get_weight() * $values['quantity'];
@@ -377,17 +377,17 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             switch($country) {
                 case 'LV':
                     $amount = $this->settings['pt_priceLV'];
-                    if($cart_amount > $this->settings['pt_priceLV_FREE'])
+                    if($cart_amount > floatval($this->settings['pt_priceLV_FREE']))
                     $amount = 0.0;
                     break;
                 case 'EE':
                     $amount = $this->settings['pt_priceEE'];
-                    if($cart_amount > $this->settings['pt_priceEE_FREE'])
+                    if($cart_amount > floatval($this->settings['pt_priceEE_FREE']))
                     $amount = 0.0;
                     break;
                 default:
                     $amount = $this->settings['pt_price'];
-                    if($cart_amount > $this->settings['pt_priceFREE'])
+                    if($cart_amount > floatval($this->settings['pt_priceFREE']))
                     $amount = 0.0;
                     break;
               }
@@ -404,17 +404,17 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             switch($country) {
               case 'LV':
                   $amountC = $this->settings['c_priceLV'];
-                  if($cart_amount > $this->settings['pt_priceLV_FREE'])
+                  if($cart_amount > floatval($this->settings['pt_priceLV_FREE']))
                     $amountC = 0.0;
                   break;
               case 'EE':
                   $amountC = $this->settings['c_priceEE'];
-                  if($cart_amount > $this->settings['pt_priceEE_FREE'])
+                  if($cart_amount > floatval($this->settings['pt_priceEE_FREE']))
                   $amountC = 0.0;
                   break;
               default:
                   $amountC = $this->settings['c_price'];
-                  if($cart_amount > $this->settings['pt_priceFREE'])
+                  if($cart_amount > floatval($this->settings['pt_priceFREE']))
                   $amountC = 0.0;
                   break;
             }
