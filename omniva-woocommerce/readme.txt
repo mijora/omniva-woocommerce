@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.4.2 =
+* Bug fix in debug
+
 = 1.4.1 =
 * Added WooCommerce 3.4.1 support
  

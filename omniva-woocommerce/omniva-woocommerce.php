@@ -3,7 +3,7 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.1
+ * Version: 1.4.2
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
@@ -1213,18 +1213,18 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   add_action( 'woocommerce_admin_order_data_after_shipping_address', 'omniva_terminal_field_display_admin_order_meta', 10, 1 );
 
   function omniva_terminal_field_display_admin_order_meta($order){
-      $wc_order = wc_get_order((int)$order->ID);
+      $wc_order = wc_get_order((int)$order->get_id());
       $send_method = "";
       foreach( $wc_order->get_items( 'shipping' ) as $item_id => $shipping_item_obj ){
         $send_method        = $shipping_item_obj->get_method_id(); 
       }
       if ($send_method == 'omnivalt'){
-        $send_method = get_post_meta($order->ID,'_omnivalt_method',true);
+        $send_method = get_post_meta($order->get_id(),'_omnivalt_method',true);
       }
       if (!($send_method == 'omnivalt_pt')){
         return '';
       }
-      $terminal_id = get_post_meta($order->ID,'_omnivalt_terminal_id', true);
+      $terminal_id = get_post_meta($order->get_id(),'_omnivalt_terminal_id', true);
       $terminal_name = omnivaltTerminalName($terminal_id);
       if (!$terminal_name)
         $terminal_name  = __('Parcel terminal not found!!!','omnivalt');
