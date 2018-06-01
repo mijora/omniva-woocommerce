@@ -3,9 +3,11 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.0
+ * Version: 1.4.1
  * Domain Path: /languages
  * Text Domain: omnivalt
+ * WC requires at least: 3.0.0
+ * WC tested up to: 3.4.1
  */
 
 if (!defined('WPINC')) {
@@ -468,6 +470,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           foreach( $wc_order->get_items( 'shipping' ) as $item_id => $shipping_item_obj ){
             $send_method        = $shipping_item_obj->get_method_id(); 
           }
+          if ($send_method == 'omnivalt'){
+            $send_method = get_post_meta($id_order,'_omnivalt_method',true);
+          }
           if ($send_method == 'omnivalt_pt') $send_method = 'pt';
           if ($send_method == 'omnivalt_c') $send_method = 'c';
           $pickup_method = $this->settings['send_off'];
@@ -793,6 +798,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             foreach( $wc_order->get_items( 'shipping' ) as $item_id => $shipping_item_obj ){
               $send_method        = $shipping_item_obj->get_method_id(); 
             }
+            if ($send_method == 'omnivalt'){
+              $send_method = get_post_meta($orderId,'_omnivalt_method',true);
+            }
             if (!($send_method == 'omnivalt_pt' || $send_method == 'omnivalt_c')){
               $this->add_msg($orderId.' - '.__('Shipping method is not Omniva','omnivalt'),'error');
               continue;
@@ -876,6 +884,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $send_method = "";
                 foreach( $wc_order->get_items( 'shipping' ) as $item_id => $shipping_item_obj ){
                     $send_method        = $shipping_item_obj->get_method_id(); 
+                }
+                if ($send_method == 'omnivalt'){
+                  $send_method = get_post_meta($orderId,'_omnivalt_method',true);
                 }
                 if (!($send_method == 'omnivalt_pt' || $send_method == 'omnivalt_c')){
                   $this->add_msg($orderId.' - '.__('Shipping method is not Omniva','omnivalt'),'error');
@@ -1018,6 +1029,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     if (isset($_POST['omnivalt_terminal']) && $order_id) {
       update_post_meta($order_id, '_omnivalt_terminal_id', $_POST['omnivalt_terminal']);
     }
+    if (isset($_POST['shipping_method'][0]) && ($_POST['shipping_method'][0] == "omnivalt_pt" || $_POST['shipping_method'][0] == "omnivalt_c")) {
+      update_post_meta($order_id, '_omnivalt_method', $_POST['shipping_method'][0]);
+    }
   }
   add_action('woocommerce_checkout_update_order_meta', 'add_terminal_id_to_order');
   
@@ -1146,7 +1160,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   
   function omnivalt_order_actions($order){
     $send_method = get_post_meta($order->ID,'_shipping_method',true);
-    if ((isset($send_method[0]) && ($send_method[0] == 'omnivalt_pt' || $send_method[0] == 'omnivalt_c'))){
+    if ((isset($send_method[0]) && ($send_method[0] == 'omnivalt_pt' || $send_method[0] == 'omnivalt_c' || $send_method[0] == 'omnivalt'))){
       echo '<a class="button tips omnivalt_generate_label" href="' . wp_nonce_url( admin_url( 'admin-ajax.php?action=generate_omnivalt_label&order_id=' . $order->ID ), 'woocommerce-mark-order-status' ) . '" data-tip="'.__('Generate Omniva label','omnivalt').'"> </a>';
       if (file_exists(plugin_dir_path(__FILE__) . "pdf/" . $order->ID . '.pdf')){
         echo '<a class="button tips omnivalt_view_label" href="' . plugins_url( 'pdf/'.$order->ID.'.pdf', __FILE__ ) . '" target = "_blank" data-tip="'.__('VIew Omniva label','omnivalt').'"> </a>';
@@ -1203,6 +1217,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       $send_method = "";
       foreach( $wc_order->get_items( 'shipping' ) as $item_id => $shipping_item_obj ){
         $send_method        = $shipping_item_obj->get_method_id(); 
+      }
+      if ($send_method == 'omnivalt'){
+        $send_method = get_post_meta($order->ID,'_omnivalt_method',true);
       }
       if (!($send_method == 'omnivalt_pt')){
         return '';

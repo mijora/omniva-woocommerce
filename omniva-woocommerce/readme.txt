@@ -1,4 +1,7 @@
 == Changelog ==
+
+= 1.4.1 =
+* Added WooCommerce 3.4.1 support
  
 = 1.3.3 =
 * Added selected parcel terminal in admin order view.

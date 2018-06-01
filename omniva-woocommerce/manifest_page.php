@@ -14,7 +14,7 @@ $items = $wpdb->get_results( "
     FROM {$wpdb->prefix}posts as wpp
     LEFT JOIN {$wpdb->prefix}woocommerce_order_items as woi ON woi.order_id = wpp.id
     LEFT JOIN {$wpdb->prefix}woocommerce_order_itemmeta as woim ON woim.order_item_id = woi.order_item_id AND woim.meta_key = 'method_id'
-    WHERE woim.meta_value IN ('omnivalt_pt','omnivalt_c')
+    WHERE woim.meta_value IN ('omnivalt_pt','omnivalt_c','omnivalt')
 " );
 ?>
 <?php if(count($items)): ?>
