@@ -3,7 +3,7 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.2
+ * Version: 1.4.3
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
@@ -644,7 +644,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
           curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
           $xmlResponse = curl_exec($ch);
-          error_log($xmlResponse);
+          
           if ($xmlResponse === false) {
             $errors[] = curl_error($ch);
           }
@@ -1076,6 +1076,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     if (is_array($terminals)) {
       $grouped_options = array();
       foreach($terminals as $terminal) {
+        if (intval($terminal['TYPE']) == 1) {
+           continue;
+        }
         if ($terminal['A0_NAME'] != $country && $country != "ALL") continue;
         if (!isset($grouped_options[$terminal['A1_NAME']])) $grouped_options[(string)$terminal['A1_NAME']] = array();
         $grouped_options[(string)$terminal['A1_NAME']][(string)$terminal['ZIP']] = $terminal['NAME'];

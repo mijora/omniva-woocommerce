@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.4.3 =
+* Bug fix - filtered post offices from list
+
 = 1.4.2 =
 * Bug fix in debug
 
