@@ -3,7 +3,7 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.3
+ * Version: 1.4.4
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
@@ -285,7 +285,15 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'default' => 2,
             ) ,
             'pt_priceFREE' => array(
-              'title' => __('Free shipping then price is higher', 'omnivalt') ,
+              'title' => __('Free shipping then price is higher (Terminals)', 'omnivalt') ,
+              'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
+              'default' => 100
+            ) ,
+            'pt_price_C_FREE' => array(
+              'title' => __('Free shipping then price is higher (Courier)', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -309,7 +317,15 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'default' => 2
             ) ,
             'pt_priceLV_FREE' => array(
-              'title' => __('LV Free shipping then price is higher', 'omnivalt') ,
+              'title' => __('LV Free shipping then price is higher (Terminals)', 'omnivalt') ,
+              'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
+              'default' => 100
+            ) ,
+            'pt_price_C_LV_FREE' => array(
+              'title' => __('LV Free shipping then price is higher (Courier)', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -333,7 +349,15 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'default' => 2
             ) ,
             'pt_priceEE_FREE' => array(
-              'title' => __('EE Free shipping then price is higher', 'omnivalt') ,
+              'title' => __('EE Free shipping then price is higher(Terminals)', 'omnivalt') ,
+              'type' => 'number',
+              'custom_attributes' => array(
+								'step'          => 0.01,
+							),
+              'default' => 100
+            ) ,
+            'pt_price_C_EE_FREE' => array(
+              'title' => __('EE Free shipping then price is higher (Courier)', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -406,17 +430,17 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             switch($country) {
               case 'LV':
                   $amountC = $this->settings['c_priceLV'];
-                  if($cart_amount > floatval($this->settings['pt_priceLV_FREE']))
+                  if($cart_amount > floatval($this->settings['pt_price_C_LV_FREE']))
                     $amountC = 0.0;
                   break;
               case 'EE':
                   $amountC = $this->settings['c_priceEE'];
-                  if($cart_amount > floatval($this->settings['pt_priceEE_FREE']))
+                  if($cart_amount > floatval($this->settings['pt_price_C_EE_FREE']))
                   $amountC = 0.0;
                   break;
               default:
                   $amountC = $this->settings['c_price'];
-                  if($cart_amount > floatval($this->settings['pt_priceFREE']))
+                  if($cart_amount > floatval($this->settings['pt_price_C_FREE']))
                   $amountC = 0.0;
                   break;
             }
