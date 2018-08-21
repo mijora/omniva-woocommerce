@@ -3,7 +3,7 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.4
+ * Version: 1.4.5
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
@@ -63,7 +63,7 @@ add_action('omnivalt_location_update', 'do_daily_update');
 function do_daily_update()
 {
   $url = 'https://www.omniva.ee/locations.json';
-  $fp = fopen(dirname(__file__) . "\locations.json", "w");
+  $fp = fopen(dirname(__file__).'/' . "locations.json", "w");
   $curl = curl_init();
   curl_setopt($curl, CURLOPT_URL, $url);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -181,8 +181,25 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             $this,
             'process_admin_options'
           ));
+          //$this->updateT();
         }
 
+        public function updateT() {//die('functions works');
+          $url = 'https://www.omniva.ee/locations.json';
+
+          $fp = fopen(dirname(__file__).'/' . "locations.json", "w");
+          $curl = curl_init();
+          curl_setopt($curl, CURLOPT_URL, $url);
+          curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+          curl_setopt($curl, CURLOPT_HEADER, false);
+          curl_setopt($curl, CURLOPT_FILE, $fp);
+          curl_setopt($curl, CURLOPT_TIMEOUT, 60);
+          curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+          curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+          $data = curl_exec($curl);
+          curl_close($curl);
+          fclose($fp);
+        }
         /**
          * Define settings field for this shipping
          * @return void
@@ -999,7 +1016,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         
         function get_terminal_address($terminal_id)
         {
-          $terminals_json_file_dir = dirname(__file__) . "\locations.json";
+          $terminals_json_file_dir = dirname(__file__) .'/'. "locations.json";
           $terminals_file = fopen($terminals_json_file_dir, "r");
           $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
           fclose($terminals_file);
@@ -1091,7 +1108,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
   function omnivaltGetTerminalsOptions($selected = '', $country = "ALL")
   {
-    $terminals_json_file_dir = dirname(__file__) . "\locations.json";
+    $terminals_json_file_dir = dirname(__file__) .'/'. "locations.json";
     $terminals_file = fopen($terminals_json_file_dir, "r");
     $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
     fclose($terminals_file);
@@ -1125,7 +1142,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   }
   
   function omnivaltTerminalName($terminal_code){
-    $terminals_json_file_dir = dirname(__file__) . "\locations.json";
+    $terminals_json_file_dir = dirname(__file__) .'/'. "locations.json";
     $terminals_file = fopen($terminals_json_file_dir, "r");
     $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
     fclose($terminals_file);
