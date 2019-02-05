@@ -3,7 +3,7 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.5
+ * Version: 1.4.6
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
@@ -98,19 +98,45 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   function omnivalt_scripts()
   {
     if (is_cart() || is_checkout()) {
+      wp_enqueue_script('omnivalt', plugins_url('/js/omnivaMap.js', __FILE__) , array(
+        'jquery'
+      ));
       wp_enqueue_script('omnivalt', plugins_url('/js/omnivalt.js', __FILE__) , array(
         'jquery'
       ));
+
+      wp_enqueue_style('esri-classes', 'https://js.arcgis.com/4.10/esri/css/main.css');
+
       wp_enqueue_style('omnivalt', plugins_url('/css/omnivalt.css', __FILE__));
       wp_localize_script('omnivalt', 'omnivaltdata', array(
         'ajax_url' => admin_url('admin-ajax.php')
       ));
+
       wp_enqueue_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js', array(
         'jquery'
       ));
+
       wp_enqueue_style('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css');
+      
+
+      wp_enqueue_style('icons-classes', 'https://use.fontawesome.com/releases/v5.3.1/css/all.css');
+      wp_register_script('secondscript-defer', 'https://js.arcgis.com/4.10/', '', 2, false);
+      wp_enqueue_script('secondscript-defer');
+
     }
   }
+  function add_asyncdefer_attribute($tag, $handle) {
+    if (strpos($handle, 'async') !== false) {
+        return str_replace( '<script ', '<script async ', $tag );
+    }
+    else if (strpos($handle, 'defer') !== false) {
+        return str_replace( '<script ', '<script defer ', $tag );
+    }
+    else {
+        return $tag;
+    }
+}
+add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
   
   add_action('admin_head', 'omnivalt_admin_scripts');
   function omnivalt_admin_scripts()
@@ -1137,8 +1163,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
     $parcel_terminals = '<option value = "">' . __('Select parcel terminal', 'omnivalt') . '</option>' . $parcel_terminals;
     $script = "<script>jQuery('document').ready(function($){
-    $('.omnivalt_terminal').select2();});</script>";
-    return '<div class = "terminal-container"><select class = "omnivalt_terminal" name = "omnivalt_terminal">' . $parcel_terminals . '</select></div>' . $script;
+      $('.omnivalt_terminal').select2();});var locations = ".json_encode(getTerminalForMap()).";</script>";
+      return '<div class = "terminal-container"><select class = "omnivalt_terminal" name = "omnivalt_terminal">' . $parcel_terminals . '</select>
+      <button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn"><i id="show-omniva-map" class="fa fa-map-marker-alt fa-lg" aria-hidden="true"></i></button>
+      '.terminalsModal().'
+      </div>' . $script;
   }
   
   function omnivaltTerminalName($terminal_code){
@@ -1282,5 +1311,51 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         if (empty($_POST['omnivalt_terminal']))
           wc_add_notice( __( 'Please select parcel terminal.', 'omnivalt'), 'error' );
       }
+  }
+
+    /**maps */
+    function getTerminalForMap($selected = '',$country = "LT")
+    {
+        $terminals_json_file_dir = dirname(__file__)."/locations.json";
+        $terminals_file = fopen($terminals_json_file_dir, "r");
+        $terminals = fread($terminals_file,filesize($terminals_json_file_dir)+10);
+        fclose($terminals_file);
+        $terminals = json_decode($terminals,true);
+    $parcel_terminals = '';
+  
+    if (is_array($terminals)){
+        $terminalsList = array();
+        foreach ($terminals as $terminal){
+        if ($terminal['A0_NAME'] != $country && in_array($country,array("LT","EE","LV")) || intval($terminal['TYPE']) == 1)
+            continue;
+  
+        if (!isset($grouped_options[$terminal['A1_NAME']]))
+            $grouped_options[(string)$terminal['A1_NAME']] = array();
+        $grouped_options[(string)$terminal['A1_NAME']][(string)$terminal['ZIP']] = $terminal['NAME'];
+        
+        $terminalsList[] = [$terminal['NAME'], $terminal['Y_COORDINATE'], $terminal['X_COORDINATE'], $terminal['ZIP'], $terminal['A1_NAME'], $terminal['A2_NAME'], $terminal['comment_lit']];
+        }
+    }
+    return $terminalsList;
+    }
+   function terminalsModal() {
+    return '
+    <div id="omnivaLtModal" class="modal">
+        <div class="omniva-modal-content">
+            <div class="omniva-modal-header">
+            <span class="close" id="terminalsModal">&times;</span>
+            <h5 style="display: inline">Omniva paštomatai</h5>
+            </div>
+            <div class="omniva-modal-body" style="/*overflow: hidden;*/">
+                <div id="map-omniva-terminals">
+                </div>
+                <div class="omniva-search-bar" >
+                    <h3 style="margin-top: 0px;">Paštomatų adresai</h3>
+                    <div id="omniva-search"></div>
+                    <div class="found_terminals scrollbar" id="style-8"></div>
+                </div>
+            </div>
+        </div>
+    </div>';
   }
 } 

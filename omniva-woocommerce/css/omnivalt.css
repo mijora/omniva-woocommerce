@@ -5,3 +5,343 @@
 .terminal-container {
     width: 210px;
 }
+
+/**Map */
+
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    -webkit-animation-name: fadeIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: fadeIn;
+    animation-duration: 0.4s;
+    z-index:9999;
+}
+.omniva-modal-content {
+    z-index:20;
+    position:fixed;
+    top: 10%;
+    left: 15%;
+    background-color: #fefefe;
+    border-radius: 5px;
+    width: 75%;
+    height:80%;
+    -webkit-animation-name: slideIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: slideIn;
+    animation-duration: 0.4s;
+}
+
+.close {
+    color: black;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    margin-right: -5px;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.omniva-modal-header {
+    padding-top: 4px;
+    padding-left: 26px;
+    padding-right: 4px;
+    color: black;
+    height: 7%;
+}
+.omniva-modal-header h5{
+padding:0px; margin:0px;
+}
+.omniva-modal-body {
+    padding: 10px;
+    height:92%;
+}
+
+.omniva-modal-footer {
+    height: 6%;
+    align-items: center;
+}
+@-webkit-keyframes slideIn {
+    from {bottom: -300px; opacity: 0} 
+    to {bottom: 0; opacity: 1}
+}
+
+@keyframes slideIn {
+    from {bottom: -300px; opacity: 0}
+    to {bottom: 0; opacity: 1}
+}
+
+@-webkit-keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+
+.btn-address {
+    background-color: #E47A2E;
+    color: white;
+    font-size: 15px;
+    font-weight:500;
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 3px 7px;
+    margin: 2px;
+}
+.btn-address:hover {
+    background-color: #555555;
+    color: white;
+}
+.btn-address-gps {
+    background-color: #E94B3C;
+    color: white;
+    text-align: center;
+    padding: 3px 7px;
+    margin: 2px;
+    border: 1px solid black;
+    border-radius: 3px;
+    color: white;
+    font-size: 15px;
+    font-weight:500;
+}
+.btn-address-gps:hover {
+    background-color: #555555;
+    color: white;
+}
+.pac-container {
+    z-index: 10511 !important;
+}
+
+.omniva-li, .omniva-li a {
+    font-size: 15px;
+    color:black !important;
+}
+
+.omniva-li:hover{
+ cursor: pointer;
+ color: #555 !important;
+}
+
+.omniva-terminals-list {margin: 0px; padding: 0px; color: black;}
+.omniva-terminals-list li {padding: 5px; border-radius: 4px; list-style-type: none;width: 100% !important;}
+.omniva-terminals-list li:nth-child(even) {background: #f2f2f2;}
+
+.omniva-search {
+    width: 98%;
+    padding: 2px 10px;
+    border: 1px solid #555;
+    border-radius: 3px;
+    line-height: 28px;
+
+}
+
+.btn-marker {
+    background-color: white;
+    color: black;
+    padding: 4px;
+    border: 1px solid black;
+    border-radius: 2px;
+}
+.btn-marker:hover {
+    background-color: #555555;
+    color: white;
+}
+
+.omniva-btn {
+    border: 1px solid black;
+    font: 12px arial, sans-serif;
+    padding: 3px;
+    background: lightgray;
+}
+
+.omniva-btn:hover {
+    color: #fff;
+    background: #555555;
+}
+
+#map-omniva-terminals {
+ width: 59%; height: 100%; border: 1px solid black; background-color: lightgray !important; float:left;
+}
+
+.esri-feature__main-container {
+    /*padding:20px;*/
+}
+
+.omniva-search-bar {
+    width: 40%;
+    min-height: 400px;
+    padding: 0px 10px; 
+    float:left;
+    overflow:hidden;
+    /*padding-top: 4px;
+    padding-right: 4px;*/
+    padding-left: 26px;
+    
+}
+.esri-popup__header-title {
+    font: 15px arial, sans-serif !important;
+    margin: 0px !important;
+    padding: 0px !important;
+
+}
+.esri-popup__main-container {
+    padding: 30px !important;
+}
+
+/** Tooltips*/
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    opacity: 0.9;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 110%;
+    left: 50%;
+    margin-left: -100px;
+}
+
+.tooltip .tooltiptext::afterr {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+/*
+ * Custom scrollbar 
+ **/
+.scrollbar{
+    overflow: auto;
+    display: inline-block;
+    vertical-align: top;
+    height: inherit;
+    width: 100%;
+    max-height:50vh;
+    position:relative;
+    margin-top:5px;
+}
+
+#style-8::-webkit-scrollbar-track
+{
+    border: 1px solid rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.4);
+    border-radius: 5px;
+}
+
+#style-8::-webkit-scrollbar
+{
+    width: 5px;
+    background-color: rgba(0,0,0,0,0.4);
+    border: 1px solid rgba(0,0,0,0.4);
+    border-radius: 5px;
+}
+
+#style-8::-webkit-scrollbar-thumb
+{
+    border: 1px solid #000000;
+    border-radius: 5px;
+    background-color: #000000;  
+}
+
+/**
+ * Media queries
+ **/
+
+@media only screen and (max-width: 808px) {
+    #map-omniva-terminals {
+    width: 99%; height: 30%; border: 1px solid black; background-color: lightgray !important;
+    }
+
+    .omniva-search-bar {
+        width: 99%; margin-top: 5px;padding: 0px 10px;overflow:hidden;
+    }
+
+    select[name="omnivalt_parcel_terminal"] {
+        width: 70%;
+    }
+
+    .scrollbar{
+        overflow: auto;
+        display: inline-block;
+        vertical-align: top;
+        height: inherit;
+        max-height:15vh;
+        position:relative;
+        width: 100%;
+        margin-top:5px;
+    }
+    
+   .esri-search__suggestions-menu {
+        height: 150px;
+    }
+}
+
+ ol li { 
+    list-style-type: decimal;
+    list-style-type: upper-roman;
+}
+
+@media screen and (min-width: 1500px) {
+
+    .omniva-modal-content {
+        z-index:20;
+        position:fixed;
+        top: 10%;
+        left: 15%;
+        background-color: #fefefe;
+        border-radius: 5px;
+        width: 65%;
+        height:60%;
+        -webkit-animation-name: slideIn;
+        -webkit-animation-duration: 0.4s;
+        animation-name: slideIn;
+        animation-duration: 0.4s;
+    }
+
+    .scrollbar{
+        max-height:40vh;
+    }
+}
+
+.esri-search__input {
+    padding: 2px 10px;
+    border: 1px solid #555;
+    border-radius: 3px;
+    line-height: 30px;
+}
+
+.esri-icon-zoom-in-magnifying-glass { display:none; }
