@@ -1,4 +1,4 @@
-const DEBUG = true;
+//const DEBUG = true;
 var modal = document.getElementById('omnivaLtModal');
 var btn = document.getElementById("show-omniva-map");
 window.document.onclick = function(event) {
@@ -123,7 +123,7 @@ window.document.onclick = function(event) {
     
       var markerSymbol = {
         type: "picture-marker",
-        url: "/wordpress49/wp-content/plugins/omniva-woocommerce/sasi.png",
+        url: "/wp-content/plugins/omniva-woocommerce/sasi.png",
         width: "24px",
        height: "30px"
       };
