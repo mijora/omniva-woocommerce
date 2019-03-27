@@ -3,7 +3,7 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.6
+ * Version: 1.4.7
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
@@ -312,7 +312,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'description' => __('Show courrier method in checkout.', 'omnivalt')
             ) ,
             'c_price' => array(
-              'title' => __('Courrier price', 'omnivalt') ,
+              'title' => 'LT '.__('Courrier price', 'omnivalt') ,
               'type' => 'number',
               'default' => 2,
               'custom_attributes' => array(
@@ -320,7 +320,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
 							),
             ) ,
             'pt_price' => array(
-              'title' => __('Parcel terminal price', 'omnivalt') ,
+              'title' => 'LT '.__('Parcel terminal price', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -328,7 +328,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'default' => 2,
             ) ,
             'pt_priceFREE' => array(
-              'title' => __('Free shipping then price is higher (Terminals)', 'omnivalt') ,
+              'title' => 'LT '.__('Free shipping then price is higher (Terminals)', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -336,7 +336,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'default' => 100
             ) ,
             'pt_price_C_FREE' => array(
-              'title' => __('Free shipping then price is higher (Courier)', 'omnivalt') ,
+              'title' => 'LT '.__('Free shipping then price is higher (Courier)', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -344,7 +344,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'default' => 100
             ) ,
             'c_priceLV' => array(
-              'title' => __('LV Courrier price', 'omnivalt') ,
+              'title' => 'LV '.__('Courrier price', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -352,7 +352,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'default' => 2
             ) ,
             'pt_priceLV' => array(
-              'title' => __('LV Parcel terminal price', 'omnivalt') ,
+              'title' => 'LV '.__('Parcel terminal price', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -360,7 +360,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'default' => 2
             ) ,
             'pt_priceLV_FREE' => array(
-              'title' => __('LV Free shipping then price is higher (Terminals)', 'omnivalt') ,
+              'title' => 'LV '.__('Free shipping then price is higher (Terminals)', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -368,7 +368,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'default' => 100
             ) ,
             'pt_price_C_LV_FREE' => array(
-              'title' => __('LV Free shipping then price is higher (Courier)', 'omnivalt') ,
+              'title' => 'LV '.__('Free shipping then price is higher (Courier)', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -376,7 +376,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'default' => 100
             ) ,
             'c_priceEE' => array(
-              'title' => __('EE Courrier price', 'omnivalt') ,
+              'title' => 'EE '.__('Courrier price', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -384,7 +384,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'default' => 2
             ) ,
             'pt_priceEE' => array(
-              'title' => __('EE Parcel terminal price', 'omnivalt') ,
+              'title' => 'EE '.__('Parcel terminal price', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -392,7 +392,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'default' => 2
             ) ,
             'pt_priceEE_FREE' => array(
-              'title' => __('EE Free shipping then price is higher(Terminals)', 'omnivalt') ,
+              'title' => 'EE '.__('Free shipping then price is higher (Terminals)', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,
@@ -400,7 +400,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
               'default' => 100
             ) ,
             'pt_price_C_EE_FREE' => array(
-              'title' => __('EE Free shipping then price is higher (Courier)', 'omnivalt') ,
+              'title' => 'EE '.__('Free shipping then price is higher (Courier)', 'omnivalt') ,
               'type' => 'number',
               'custom_attributes' => array(
 								'step'          => 0.01,

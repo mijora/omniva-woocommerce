@@ -141,7 +141,7 @@ msgstr "Pakomāts"
 
 #: omniva-woocommerce.php:301 omniva-woocommerce.php:310
 msgid "Courrier"
-msgstr "Kurjerpakalpojums"
+msgstr "Courrier"
 
 #: omniva-woocommerce.php:307
 msgid "Show parcel terminal method in checkout."
@@ -149,7 +149,7 @@ msgstr "Parādiet piegādes termināla metodi izrakstā."
 
 #: omniva-woocommerce.php:312
 msgid "Show courrier method in checkout."
-msgstr "Parādiet kurjerpakalpojums metodi izrakstīšanās laikā."
+msgstr "Parādiet kurjeres metodi izrakstīšanās laikā."
 
 #: omniva-woocommerce.php:315 omniva-woocommerce.php:347
 #: omniva-woocommerce.php:379
