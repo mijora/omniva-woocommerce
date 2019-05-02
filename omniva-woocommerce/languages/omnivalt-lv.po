@@ -3,16 +3,16 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/\n"
+"X-Generator: Loco - https://localise.biz/\n"
 "Project-Id-Version: wp\n"
 "Language: lv\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-27 14:48+0000\n"
-"PO-Revision-Date: 2019-03-27 14:53+0000\n"
-"Last-Translator: admin <info@iterdve.lt>\n"
-"Language-Team: Latviešu valoda\n"
+"PO-Revision-Date: 2019-05-02 12:34+0000\n"
+"Last-Translator: omniva <info@mijora.lt>\n"
+"Language-Team: Latvian\n"
 "Plural-Forms: nplurals=3; plural=n % 10 == 1 && n % 100 != 11 ? 0 : n != 0 ? "
-"1 : 2;\n"
+"1 : 2\n"
 "X-Loco-Version: 2.2.1; wp-5.1.1"
 
 #: manifest_page.php:7 omniva-woocommerce.php:1268 omniva-woocommerce.php:1269
@@ -57,11 +57,11 @@ msgstr "Nav piešķirtu sūtījumus"
 
 #: omniva-woocommerce.php:172
 msgid "Omniva Shipping"
-msgstr "Omniva kuģniecība"
+msgstr "Omniva piegāde"
 
 #: omniva-woocommerce.php:173
 msgid "Shipping Method for Omniva"
-msgstr "Piegādes metode Omnivai"
+msgstr "Omniva piegādes metodes"
 
 #: omniva-woocommerce.php:186
 msgid "Omnivalt Shipping"
@@ -97,27 +97,27 @@ msgstr "Bankas konts"
 
 #: omniva-woocommerce.php:264
 msgid "Shop name"
-msgstr "Veikalu nosaukums"
+msgstr "Veikala nosaukums"
 
 #: omniva-woocommerce.php:268
 msgid "Shop city"
-msgstr "Veikala pilsēta"
+msgstr "Pilsēta"
 
 #: omniva-woocommerce.php:272
 msgid "Shop address"
-msgstr "Veikala adrese"
+msgstr "Adrese"
 
 #: omniva-woocommerce.php:276
 msgid "Shop postcode"
-msgstr "Veikala indekss"
+msgstr "Pasta indekss"
 
 #: omniva-woocommerce.php:280
 msgid "Shop country code"
-msgstr "Veikala valsts kods"
+msgstr "Valsts kods"
 
 #: omniva-woocommerce.php:284
 msgid "Shop phone number"
-msgstr "Veikala tālruņa numurs"
+msgstr "Kontakttālrunis"
 
 #: omniva-woocommerce.php:288
 msgid "Pick up time start"
