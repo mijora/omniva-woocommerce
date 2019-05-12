@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-11 13:00+0000\n"
-"PO-Revision-Date: 2019-04-11 13:01+0000\n"
+"PO-Revision-Date: 2019-04-11 13:00+0000\n"
 "Last-Translator: admin <info@iterdve.lt>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -61,7 +61,7 @@ msgstr "Įveskite pašto kodą"
 
 #: omniva-woocommerce.php:137
 msgid "Place not found"
-msgstr "Vieta nerasta"
+msgstr ""
 
 #: omniva-woocommerce.php:192
 msgid "Omniva Shipping"

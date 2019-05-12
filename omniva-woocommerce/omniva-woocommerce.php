@@ -3,7 +3,7 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.7
+ * Version: 1.4.9
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
@@ -94,21 +94,24 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
   // add select2 js script
 
-  add_action('wp_enqueue_scripts', 'omnivalt_scripts');
+  add_action('wp_enqueue_scripts', 'omnivalt_scripts',99);
   function omnivalt_scripts()
   {
     if (is_cart() || is_checkout()) {
-      wp_enqueue_script('omnivalt', plugins_url('/js/omnivaMap.js', __FILE__) , array(
-        'jquery'
-      ));
-      wp_enqueue_script('omnivalt', plugins_url('/js/omnivalt.js', __FILE__) , array(
+      
+      //problem with map
+     // wp_dequeue_script('wc-password-strength-meter');
+      
+      //wp_enqueue_style('esri-classes', 'https://js.arcgis.com/4.10/esri/css/main.css');
+      
+      
+      
+      wp_enqueue_script('omniva', plugins_url('/js/omnivalt.js', __FILE__) , array(
         'jquery'
       ));
 
-      wp_enqueue_style('esri-classes', 'https://js.arcgis.com/4.10/esri/css/main.css');
-
-      wp_enqueue_style('omnivalt', plugins_url('/css/omnivalt.css', __FILE__));
-      wp_localize_script('omnivalt', 'omnivaltdata', array(
+      wp_enqueue_style('omniva', plugins_url('/css/omnivalt.css', __FILE__));
+      wp_localize_script('omniva', 'omnivaltdata', array(
         'ajax_url' => admin_url('admin-ajax.php')
       ));
 
@@ -118,25 +121,42 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
       wp_enqueue_style('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css');
       
+      wp_enqueue_script('leaflet', plugins_url('/js/leaflet.js', __FILE__) , array('jquery'),null,true);  
+      wp_enqueue_style('leaflet', plugins_url('/css/leaflet.css', __FILE__));  
+      
+      //wp_enqueue_style('icons-classes', 'https://use.fontawesome.com/releases/v5.3.1/css/all.css');
+      //wp_register_script('secondscript', 'https://js.arcgis.com/4.11/', array('jquery'), null, true);
+      //wp_enqueue_script('secondscript');
+      
+      wp_enqueue_script('omniva-map', plugins_url('/js/omnivaMap.js', __FILE__) , array('jquery'),null,true);      
+      
+      wp_localize_script('omniva-map', 'omnivadata', array(
+        'omniva_plugin_url' => plugin_dir_url( __FILE__ ),
+        'select_terminal' => __('Select terminal','omnivalt'),
+        'text_search_placeholder' => __('Enter postcode','omnivalt'),
+        'not_found' => __('Place not found','omnivalt'),
+      ));
 
-      wp_enqueue_style('icons-classes', 'https://use.fontawesome.com/releases/v5.3.1/css/all.css');
-      wp_register_script('secondscript-defer', 'https://js.arcgis.com/4.10/', '', 2, false);
-      wp_enqueue_script('secondscript-defer');
-
+    }
+  }
+  
+  add_action('wp_footer', 'footer_modal');
+  function footer_modal(){
+    if (is_cart() || is_checkout()) {
+      echo terminalsModal();
     }
   }
   function add_asyncdefer_attribute($tag, $handle) {
     if (strpos($handle, 'async') !== false) {
-        return str_replace( '<script ', '<script async ', $tag );
+        $tag = str_replace( '<script ', '<script async ', $tag );
     }
-    else if (strpos($handle, 'defer') !== false) {
-        return str_replace( '<script ', '<script defer ', $tag );
+    if (strpos($handle, 'defer') !== false) {
+        $tag =  str_replace( '<script ', '<script defer ', $tag );
     }
-    else {
-        return $tag;
-    }
-}
-add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
+    return $tag;
+    
+  }
+  add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
   
   add_action('admin_head', 'omnivalt_admin_scripts');
   function omnivalt_admin_scripts()
@@ -1150,23 +1170,52 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
         if (!isset($grouped_options[$terminal['A1_NAME']])) $grouped_options[(string)$terminal['A1_NAME']] = array();
         $grouped_options[(string)$terminal['A1_NAME']][(string)$terminal['ZIP']] = $terminal['NAME'];
       }
-
+        $counter=0;
       foreach($grouped_options as $city => $locs) {
-        $parcel_terminals.= '<optgroup label = "' . $city . '">';
+        $parcel_terminals.= '<optgroup data-id = "'.$counter.'" label = "' . $city . '">';
         foreach($locs as $key => $loc) {
           $parcel_terminals.= '<option value = "' . $key . '" ' . ($key == $selected ? 'selected' : '') . '>' . $loc . '</option>';
         }
 
         $parcel_terminals.= '</optgroup>';
+        $counter++;
       }
     }
-
+    
+    $nonce = wp_create_nonce("omniva_terminals_json_nonce");
     $parcel_terminals = '<option value = "">' . __('Select parcel terminal', 'omnivalt') . '</option>' . $parcel_terminals;
-    $script = "<script>jQuery('document').ready(function($){
-      $('.omnivalt_terminal').select2();});var locations = ".json_encode(getTerminalForMap()).";</script>";
+    $script = "<script>var omniva_current_country = '".$country."';
+      var select2defaultMatcher = false;
+      var omnivaTerminals = '".json_encode(getTerminalForMap('',$country))."';
+      jQuery('document').ready(function($){        
+        select2defaultMatcher = jQuery.fn.select2.defaults.defaults.matcher; 
+        if(omnivaMap !== undefined){
+          omnivaMap.init();
+          //$('.omnivalt_terminal').select2({matcher: omnivaMap.filterSelectTerminals});
+        } 
+        $('.omnivalt_terminal').select2({ ajax: {
+            url: '".admin_url('admin-ajax.php?action=omniva_terminals_json&nonce='.$nonce)."&country='+omniva_current_country,            
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                
+              return {
+                results: data
+              };
+            }
+          },
+          templateResult : function (item) {
+            if (item.distance !== undefined && item.distance != 0 && item.children === undefined){
+                return $('<span>'+item.text+' <strong>'+item.distance+' km </strong></span>');
+            }
+            return item.text;
+            
+            }
+        });
+              });</script>";
       return '<div class = "terminal-container"><select class = "omnivalt_terminal" name = "omnivalt_terminal">' . $parcel_terminals . '</select>
-      <button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn"><i id="show-omniva-map" class="fa fa-map-marker-alt fa-lg" aria-hidden="true"></i></button>
-      '.terminalsModal().'
+      <button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn" style = "display: none;">'.__('Show in map','omnivalt').'<img src = "'.plugin_dir_url( __FILE__ ).'/sasi.png" title = "'.__("Show parcel terminals map","omnivalt").'"/></button>
+      
       </div>' . $script;
   }
   
@@ -1322,9 +1371,8 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
         fclose($terminals_file);
         $terminals = json_decode($terminals,true);
     $parcel_terminals = '';
-  
+    $terminalsList = array();
     if (is_array($terminals)){
-        $terminalsList = array();
         foreach ($terminals as $terminal){
         if ($terminal['A0_NAME'] != $country && in_array($country,array("LT","EE","LV")) || intval($terminal['TYPE']) == 1)
             continue;
@@ -1333,29 +1381,144 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
             $grouped_options[(string)$terminal['A1_NAME']] = array();
         $grouped_options[(string)$terminal['A1_NAME']][(string)$terminal['ZIP']] = $terminal['NAME'];
         
-        $terminalsList[] = [$terminal['NAME'], $terminal['Y_COORDINATE'], $terminal['X_COORDINATE'], $terminal['ZIP'], $terminal['A1_NAME'], $terminal['A2_NAME'], $terminal['comment_lit']];
-        }
+        $terminalsList[] = [$terminal['NAME'], $terminal['Y_COORDINATE'], $terminal['X_COORDINATE'], $terminal['ZIP'], $terminal['A1_NAME'], $terminal['A2_NAME'], str_ireplace('"','\"',$terminal['comment_lit'])];
+      
+     }
     }
     return $terminalsList;
     }
+    
    function terminalsModal() {
     return '
     <div id="omnivaLtModal" class="modal">
         <div class="omniva-modal-content">
             <div class="omniva-modal-header">
             <span class="close" id="terminalsModal">&times;</span>
-            <h5 style="display: inline">Omniva paštomatai</h5>
+            <h5 style="display: inline">'.__('Omniva parcel terminals','omnivalt').'</h5>
             </div>
             <div class="omniva-modal-body" style="/*overflow: hidden;*/">
-                <div id="map-omniva-terminals">
-                </div>
+                <div id = "omnivaMapContainer"></div>
                 <div class="omniva-search-bar" >
-                    <h3 style="margin-top: 0px;">Paštomatų adresai</h3>
-                    <div id="omniva-search"></div>
-                    <div class="found_terminals scrollbar" id="style-8"></div>
+                    <h4 style="margin-top: 0px;">'.__('Parcel terminals addresses','omnivalt').'</h4>
+                    <div id="omniva-search">
+                    <form>
+                    <input type = "text" placeholder = "'.__('Enter postcode','omnivalt').'"/>
+                    <button type = "submit" id="map-search-button"></button>
+                    </form></div>
+                    <div class="found_terminals scrollbar" id="style-8">
+                      <ul>
+                      
+                      </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>';
   }
+    
+    function generate_json_terminals($term = "",$country = "ALL"){
+        $c_p = false;        
+        if (strlen($term) >= 4 && strlen($term)){
+            $c_p = search_postcode($term,$country);
+        }
+        $terminals_json_file_dir = dirname(__file__) .'/'. "locations.json";
+        $terminals_file = fopen($terminals_json_file_dir, "r");
+        $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
+        fclose($terminals_file);
+        $terminals = json_decode($terminals, true);
+        $parcel_terminals = array();
+        if (is_array($terminals)) {
+          $grouped_options = array();
+          foreach($terminals as $terminal) {
+            if (intval($terminal['TYPE']) == 1) {
+               continue;
+            }
+            if ($terminal['A0_NAME'] != $country && $country != "ALL") continue;
+            if (!isset($grouped_options[$terminal['A1_NAME']])) $grouped_options[(string)$terminal['A1_NAME']] = array();
+            $grouped_options[(string)$terminal['A1_NAME']][(string)$terminal['ZIP']] = $terminal;
+          }
+            $counter=0;
+          foreach($grouped_options as $city => $locs) {
+            $group = array("text"=>  $city, "distance"=>0,"children"=>array());
+            $group_distance = false;
+            foreach($locs as $key => $loc) {
+                if ($term != "" && $c_p == false && stripos($loc['NAME'],$term) !== false){
+                    $group['children'][] = array("id"=> $key ,"text"=> $loc['NAME'], "distance"=>0);
+                } elseif (is_array($c_p)) {
+                    $distance = calc_distance($c_p[0],$c_p[1],$loc['Y_COORDINATE'], $loc['X_COORDINATE']);
+                    $group['children'][] = array("id"=> $key ,"text"=> $loc['NAME'], "distance"=>$distance);
+                    if ($group_distance == false || $group_distance > $distance){
+                        $group_distance = $distance;
+                    }
+                } elseif ($term == "") {
+                    $group['children'][] = array("id"=> $key ,"text"=> $loc['NAME'], "distance"=>0);
+                }
+            }
+            $group['distance'] = $group_distance;
+            if (count($group['children']) && $c_p == false){
+                $parcel_terminals[] = $group;
+            }elseif (count($group['children'])){
+                $parcel_terminals = array_merge($parcel_terminals,$group['children']);
+            }
+            $counter++;
+          }
+        }
+        if ($c_p != false){
+            usort($parcel_terminals, function($a, $b) {
+                return $b['distance'] > $a['distance'] ? -1 : 1;
+            });
+            return array_slice($parcel_terminals, 0, 8);
+        }
+        return $parcel_terminals;
+    }
+    
+    function calc_distance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000)
+    {
+      // convert from degrees to radians
+      $latFrom = deg2rad($latitudeFrom);
+      $lonFrom = deg2rad($longitudeFrom);
+      $latTo = deg2rad($latitudeTo);
+      $lonTo = deg2rad($longitudeTo);
+
+      $latDelta = $latTo - $latFrom;
+      $lonDelta = $lonTo - $lonFrom;
+
+      $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+        cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+      return round($angle * $earthRadius/1000,2);
+    }    
+    
+    function search_postcode($postcode,$country){
+        if ($postcode == "") return false;
+        $postcode = urlencode($postcode);
+        $data = file_get_contents( "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine=".$postcode.",".$country."&category=&outFields=Postal&maxLocations=1&forStorage=false&f=pjson");
+        if ($data){
+            $data = json_decode($data);
+        } else {
+            return false;
+        }
+        if (isset($data->candidates) && count($data->candidates)){
+            if ($data->candidates[0]->score > 90){
+              return array($data->candidates[0]->location->y,$data->candidates[0]->location->x);
+            } 
+          }
+        return false;
+    }
+  
+    add_action("wp_ajax_omniva_terminals_json", "omniva_terminals_json");
+    add_action("wp_ajax_nopriv_omniva_terminals_json", "omniva_terminals_json");
+
+    function omniva_terminals_json() {
+
+       if ( !wp_verify_nonce( $_REQUEST['nonce'], "omniva_terminals_json_nonce")) {
+          exit("Not allowed");
+       }   
+        echo json_encode(generate_json_terminals($_REQUEST['q'],$_REQUEST['country']));
+       
+
+       die();
+
+    }
+  
+
 } 

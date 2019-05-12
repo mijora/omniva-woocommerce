@@ -44,7 +44,9 @@
     float: right;
     font-size: 28px;
     font-weight: bold;
-    margin-right: -5px;
+    position: absolute;
+    top: 0px;
+    right: 20px;
 }
 
 .close:hover,
@@ -123,6 +125,17 @@ padding:0px; margin:0px;
     background-color: #555555;
     color: white;
 }
+#map-search-button {
+  background-image:url("../search.png");
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position: center center;  
+  border-radius: 3px;
+  height: 36px;
+  width: 30px;
+  
+  border: 1px solid #555;
+}
 .pac-container {
     z-index: 10511 !important;
 }
@@ -163,19 +176,32 @@ padding:0px; margin:0px;
 }
 
 .omniva-btn {
-    border: 1px solid black;
-    font: 12px arial, sans-serif;
-    padding: 3px;
-    background: lightgray;
+  max-height: 30px;
+  line-height: 100%;
+  position: relative;
+  padding: 5px;
+  padding-right: 30px;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+.omniva-btn img{
+  max-height: 20px;
+  display: inline-block;
+  right: 10px;
+  position: absolute;
+  top: 5px;
 }
 
-.omniva-btn:hover {
-    color: #fff;
-    background: #555555;
-}
 
-#map-omniva-terminals {
+
+
+#omnivaMapContainer {
  width: 59%; height: 100%; border: 1px solid black; background-color: lightgray !important; float:left;
+}
+#omnivaMap {
+  width: 100%;
+  height: 100%;
 }
 
 .esri-feature__main-container {
@@ -282,7 +308,7 @@ padding:0px; margin:0px;
  **/
 
 @media only screen and (max-width: 808px) {
-    #map-omniva-terminals {
+    #omnivaMapContainer {
     width: 99%; height: 30%; border: 1px solid black; background-color: lightgray !important;
     }
 
@@ -337,7 +363,7 @@ padding:0px; margin:0px;
     }
 }
 
-.esri-search__input {
+#omniva-search form input {
     padding: 2px 10px;
     border: 1px solid #555;
     border-radius: 3px;
