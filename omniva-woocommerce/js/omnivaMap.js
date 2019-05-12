@@ -3,18 +3,20 @@ var omnivaFilterCount = false;
 var omnivaMap = {
 
   init : function(){
+    
+  var postcode = "";  
+  
     var self = this;
       var omnivaCachedSearch = [];
 //jQuery('document').ready(function(jQuery){
   var currentLocationIcon = false;
-  var postcode = "";
   var autoSelectTerminal = false;
   jQuery('#omnivaMapContainer').html('<div id="omnivaMap"></div>');
   if (omniva_current_country == "LT"){
     var map = L.map('omnivaMap').setView([54.999921, 23.96472], 8);
   }
   if (omniva_current_country == "LV"){
-    var map = L.map('omnivaMap').setView([55.5805933, 22.1592742], 8);
+    var map = L.map('omnivaMap').setView([56.8796, 24.6032], 8);
   }
   if (omniva_current_country == "EE"){
     var map = L.map('omnivaMap').setView([58.7952, 25.5923], 7);
@@ -78,8 +80,26 @@ var omnivaMap = {
       }
     });
     
+    
+      
+    
+    
      omvivaBinded = true;
   }
+  jQuery('.omnivalt_terminal').on('select2:open', function (e) {
+        jQuery(".omnivalt_terminal").data("select2").dropdown.$search.val(postcode).trigger('keyup');
+        //console.log(postcode);
+    });
+  if (postcode == ""){
+        if (jQuery('#ship-to-different-address-checkbox').length > 0 && jQuery('#ship-to-different-address-checkbox').is(':checked')){
+            postcode = jQuery('#shipping_postcode').val();
+        }  
+        if (jQuery('#ship-to-different-address-checkbox').length > 0 && !jQuery('#ship-to-different-address-checkbox').is(':checked')){
+            postcode = jQuery('#billing_postcode').val();
+        }
+        searchPostcode(postcode);
+        autoSelectTerminal = true;
+      }
   function showModal(){
     jQuery('#omnivaLtModal').show();
     getLocation();
@@ -264,64 +284,6 @@ var omnivaMap = {
         listTerminals(locations,8);
         }
   }
-        
-//});
-  },    
-  filterSelectTerminals : function(params, data) {
-    if (jQuery.isNumeric(params.term) && params.term.length >= 4 && data.children !== undefined){        
-      //var counter = jQuery(data.element).data('id');
-      var terminals = getTerminalsId(params.term);
-      if (terminals === undefined) return false;
-      /*
-      if (counter === undefined){
-        return false;  
-      }
-      if (terminals !== undefined && terminals.length > counter){     
-        var option = data.children[0];
-        option.text = ""+terminals[counter][1]+" km" + " "+terminals[counter][2];
-        option.id = terminals[counter][0];
-        console.log(option);
-        return option;
-      } else {
-          return null;
-      }*/
-      console.log(terminals);
-      var match = jQuery.extend(true, {}, data);
-      //var match = [];
-      for (var c =  0; c < terminals.length; c++) {
-        //var child = data.children[c];
-        // If there wasn't a match, remove the object in the array
-        for (var d = 0; d < data.children.length; d++) {
-            if (data.children[d].id == terminals[c][0]){
-                
-                console.log(terminals[c]);
-                console.log(data.children[d]);
-            }
-        }
-        /*
-        if(idx === undefined || idx.length == 0){
-        //if (jQuery.inArray(child.id,terminals) === -1) {
-          return null;
-          //console.log(child);
-          //console.log(terminals);
-        } else {
-            idx.text = ""+idx[1]+"km"+ " "+idx.text;
-            //match.push()
-            //match.children[c]
-            //console.log(idx);
-            return idx;
-        }
-        */
-      }
-      return false;
-      // If any children matched, return the new object
-      if (match.children.length > 0) {
-          //console.log(match);
-        return match;
-      }
-      
-    }
-    return select2defaultMatcher(params, data);
-  
-  }
+       
+  }    
 }
