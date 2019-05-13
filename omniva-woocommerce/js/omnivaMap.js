@@ -103,7 +103,14 @@ var omnivaMap = {
   function showModal(){
     jQuery('#omnivaLtModal').show();
     getLocation();
-    window.dispatchEvent(new Event('resize'));
+    var event;
+    if(typeof(Event) === 'function') {
+        event = new Event('resize');
+    }else{
+        event = document.createEvent('Event');
+        event.initEvent('resize', true, true);
+    }
+    window.dispatchEvent(event);
     //console.log('1');
   }
   
@@ -172,7 +179,13 @@ var omnivaMap = {
     findClosest(pos);
   }
   
-  function listTerminals(locations,limit=0,id=0){
+  function listTerminals(locations,limit,id){
+      if (limit === undefined){
+          limit=0;
+      }
+      if (id === undefined){
+          id=0;
+      }
      var html = '', counter=1;
     jQuery('.found_terminals').html('');
     jQuery.each( locations, function( key, location ) {
@@ -208,7 +221,10 @@ var omnivaMap = {
     map.setView(pos,14);
   }
   
-  terminalSelected = function(terminal,close=true) {
+  terminalSelected = function(terminal,close) {
+      if (close === undefined){
+          close = true;
+      }
           var matches = document.querySelectorAll(".omnivaOption");
           for (var i = 0; i < matches.length; i++) {
             node = matches[i]
@@ -258,8 +274,10 @@ var omnivaMap = {
           return d;
         }
         
-  function findClosest(pos,filter=false) {
-                
+  function findClosest(pos,filter) {
+    if (filter === undefined){
+        filter = false;
+    }
       jQuery.each( locations, function( key, location ) {
         distance = calcCrow(pos[0], pos[1], location[1], location[2]);
         location['distance'] = distance.toFixed(2);

@@ -133,7 +133,8 @@ padding:0px; margin:0px;
   border-radius: 3px;
   height: 36px;
   width: 30px;
-  
+  display: block;
+  float: left;  
   border: 1px solid #555;
 }
 .pac-container {
@@ -362,12 +363,19 @@ padding:0px; margin:0px;
         max-height:40vh;
     }
 }
-
+#omniva-search form:after {
+  content: "";
+  clear: both;
+  display: block;
+}
 #omniva-search form input {
     padding: 2px 10px;
     border: 1px solid #555;
     border-radius: 3px;
     line-height: 30px;
+    height: 36px;
+    display: block;
+    float: left;  
 }
 
 .esri-icon-zoom-in-magnifying-glass { display:none; }
