@@ -242,7 +242,7 @@ add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
             'api_url' => array(
               'title' => __('Api URL', 'omnivalt') ,
               'type' => 'text',
-              'default' => 'https://217.159.234.93'
+              'default' => ' https://edixml.post.ee'
             ) ,
             'api_user' => array(
               'title' => __('Api user', 'omnivalt') ,
