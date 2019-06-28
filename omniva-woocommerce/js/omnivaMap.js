@@ -1,3 +1,4 @@
+
 var omvivaBinded = false;
 var omnivaFilterCount = false;
 var omnivaMap = {
@@ -21,7 +22,7 @@ var omnivaMap = {
   if (omniva_current_country == "EE"){
     var map = L.map('omnivaMap').setView([58.7952, 25.5923], 7);
   }
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="https://www.omniva.lt">Omniva</a>'
 	}).addTo(map);
 
@@ -44,7 +45,7 @@ var omnivaMap = {
 	});
 	var terminalIcon = new Icon({iconUrl: omnivadata.omniva_plugin_url+'sasi.png'});
   var homeIcon = new Icon2({iconUrl: omnivadata.omniva_plugin_url+'locator_img.png'});
-  var select_terminal = omnivadata.select_terminal;
+  var select_terminal = omnivadata.text_select_terminal;
   var not_found = omnivadata.not_found;
   
   var locations = JSON.parse(omnivaTerminals);
@@ -61,10 +62,31 @@ var omnivaMap = {
       var postcode = jQuery('#omniva-search form input').val();
       searchPostcode(postcode);
     });
+    
+    var timeoutID = null;
+    
+    jQuery('#omniva-search form input').on('keyup focus',function(){
+        clearTimeout(timeoutID);      
+        timeoutID = setTimeout(function(){ autoComplete(jQuery('#omniva-search form input').val())}, 500);    
+              
+    });
+    
+    jQuery('.omniva-autocomplete ul').on('click','li',function(){
+        if (jQuery(this).attr('data-location-y') !== undefined){
+            setCurrentLocation([jQuery(this).attr('data-location-y'),jQuery(this).attr('data-location-x')]);
+        }
+        jQuery('.omniva-autocomplete').hide();
+    });
+    jQuery(document).click(function(e){
+        var container = jQuery(".omniva-autocomplete");
+        if (!container.is(e.target) && container.has(e.target).length === 0) 
+            container.hide();
+    });
   
     jQuery('#terminalsModal').on('click',function(){jQuery('#omnivaLtModal').hide();});
-    jQuery('body').on('click','#show-omniva-map',showModal);
+    //jQuery('body').on('click','#show-omniva-map',showModal);
     
+    /*
     jQuery('#shipping_postcode').on('change',function(){
       if (jQuery('#ship-to-different-address-checkbox').length > 0 && jQuery('#ship-to-different-address-checkbox').is(':checked')){
         postcode = jQuery(this).val();
@@ -79,13 +101,14 @@ var omnivaMap = {
         autoSelectTerminal = true;
       }
     });
-    
+    */
     
       
     
     
      omvivaBinded = true;
   }
+  /*
   jQuery('.omnivalt_terminal').on('select2:open', function (e) {
         jQuery(".omnivalt_terminal").data("select2").dropdown.$search.val(postcode).trigger('keyup');
         //console.log(postcode);
@@ -100,7 +123,13 @@ var omnivaMap = {
         searchPostcode(postcode);
         autoSelectTerminal = true;
       }
+      */
+      /*
   function showModal(){
+      if (jQuery('.omniva-terminals-list input.search-input').val() != ''){
+          jQuery('#omniva-search input').val(jQuery('.omniva-terminals-list input.search-input').val());
+          jQuery('#omniva-search button').trigger('click')
+      }
     jQuery('#omnivaLtModal').show();
     getLocation();
     var event;
@@ -113,7 +142,7 @@ var omnivaMap = {
     window.dispatchEvent(event);
     //console.log('1');
   }
-  
+  */
    
     jQuery('#shipping_postcode, #billing_postcode').trigger('change');
  
@@ -130,23 +159,46 @@ var omnivaMap = {
   function searchPostcode(postcode){
     if (postcode == "") return false;
     jQuery('#omniva-search form input').val(postcode);
-    jQuery.getJSON( "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine="+postcode+","+omniva_current_country+"&category=&outFields=Postal&maxLocations=1&forStorage=false&f=pjson", function( data ) {
+    jQuery.getJSON( "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine="+postcode+"&sourceCountry="+omniva_current_country+"&category=&outFields=Postal&maxLocations=1&forStorage=false&f=pjson", function( data ) {
       if (data.candidates != undefined && data.candidates.length > 0){
         if (data.candidates[0].score > 90){
           setCurrentLocation([data.candidates[0].location.y,data.candidates[0].location.x]);
         } else {
           jQuery('.found_terminals').html(not_found);
         }
+      } else {
+        jQuery('.found_terminals').html(not_found);
       }
     });
   }
   
+  function autoComplete(address){
+    jQuery('.omniva-autocomplete ul').html('');
+    jQuery('.omniva-autocomplete').hide();
+    if (address == "" || address.length < 3) return false;
+    jQuery('#omniva-search form input').val(address);
+    jQuery.getJSON( "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine="+address+"&sourceCountry="+omniva_current_country+"&category=&outFields=Postal&maxLocations=5&forStorage=false&f=pjson", function( data ) {
+      if (data.candidates != undefined && data.candidates.length > 0){
+          jQuery.each(data.candidates ,function(i,item){
+            //console.log(item);
+            const li = jQuery("<li data-location-y = '"+item.location.y+"' data-location-x = '"+item.location.x+"'>"+item.address+"</li>");
+            jQuery(".omniva-autocomplete ul").append(li);
+          });
+      }
+          if (jQuery(".omniva-autocomplete ul li").length == 0){
+              jQuery(".omniva-autocomplete ul").append('<li>'+not_found+'</li>');
+          }
+      jQuery('.omniva-autocomplete').show();
+    });
+  }
+  
+  /*
   getTerminalsId = function(postcode){
     if (postcode == "") return false;
     if (omnivaCachedSearch[postcode] !== undefined) return omnivaCachedSearch[postcode];
     //jQuery('#omniva-search form input').val(postcode);
 
-    jQuery.ajax({ dataType: "json", async:false, url:"http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine="+postcode+","+omniva_current_country+"&category=&outFields=Postal&maxLocations=1&forStorage=false&f=pjson", success : function( data ) {
+    jQuery.ajax({ dataType: "json", async:false, url:"http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine="+postcode+"&sourceCountry="+omniva_current_country+"&category=&outFields=Postal&maxLocations=1&forStorage=false&f=pjson", success : function( data ) {
       if (data.candidates != undefined && data.candidates.length > 0){
         if (data.candidates[0].score > 90){
           var terminals = findClosest([data.candidates[0].location.y,data.candidates[0].location.x],true);
@@ -168,7 +220,7 @@ var omnivaMap = {
     }}
     });
   }
-  
+  */
   setCurrentLocation = function(pos){
     if (currentLocationIcon){
       map.removeLayer(currentLocationIcon);
@@ -213,12 +265,32 @@ var omnivaMap = {
                       counter++;           
                        
     });
-    document.querySelector('.found_terminals').innerHTML = '<ul class="omniva-terminals-list" start="1">'+html+'</ul>';
+    document.querySelector('.found_terminals').innerHTML = '<ul class="omniva-terminals-listing" start="1">'+html+'</ul>';
+    if (id != 0){
+        map.eachLayer(function (layer) { 
+            if (layer.options.terminalId !== undefined && L.DomUtil.hasClass(layer._icon, "active")){
+                L.DomUtil.removeClass(layer._icon, "active");
+            }
+            if (layer.options.terminalId == id) {
+                //layer.setLatLng([newLat,newLon])
+                L.DomUtil.addClass(layer._icon, "active");
+            } 
+        });
+    }
   }
   
   zoomTo = function(pos, id){
     terminalDetails(id);
     map.setView(pos,14);
+    map.eachLayer(function (layer) { 
+        if (layer.options.terminalId !== undefined && L.DomUtil.hasClass(layer._icon, "active")){
+            L.DomUtil.removeClass(layer._icon, "active");
+        }
+        if (layer.options.terminalId == id) {
+            //layer.setLatLng([newLat,newLon])
+            L.DomUtil.addClass(layer._icon, "active");
+        } 
+    });
   }
   
   terminalSelected = function(terminal,close) {

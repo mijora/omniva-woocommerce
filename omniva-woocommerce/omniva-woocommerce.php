@@ -3,7 +3,7 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.10
+ * Version: 1.4.11
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
@@ -105,22 +105,28 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       //wp_enqueue_style('esri-classes', 'https://js.arcgis.com/4.10/esri/css/main.css');
       
       
-      
+      /*
       wp_enqueue_script('omniva', plugins_url('/js/omnivalt.js', __FILE__) , array(
         'jquery'
       ));
-
-      wp_enqueue_style('omniva', plugins_url('/css/omnivalt.css', __FILE__));
-      wp_localize_script('omniva', 'omnivaltdata', array(
-        'ajax_url' => admin_url('admin-ajax.php')
-      ));
-
-      wp_enqueue_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js', array(
+      */
+      
+      wp_enqueue_script('omniva', plugins_url('/js/omniva.js?20190625', __FILE__) , array(
         'jquery'
       ));
 
+      wp_enqueue_style('omniva', plugins_url('/css/omniva.css?20190530', __FILE__));
+      /*
+      wp_localize_script('omniva', 'omnivadata', array(
+        'ajax_url' => admin_url('admin-ajax.php')
+      ));
+      */
+/*
+      wp_enqueue_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js', array(
+        'jquery'
+      ));
       wp_enqueue_style('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css');
-      
+      */
       wp_enqueue_script('leaflet', plugins_url('/js/leaflet.js', __FILE__) , array('jquery'),null,true);  
       wp_enqueue_style('leaflet', plugins_url('/css/leaflet.css', __FILE__));  
       
@@ -128,14 +134,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       //wp_register_script('secondscript', 'https://js.arcgis.com/4.11/', array('jquery'), null, true);
       //wp_enqueue_script('secondscript');
       
-      wp_enqueue_script('omniva-map', plugins_url('/js/omnivaMap.js', __FILE__) , array('jquery'),null,true);      
+      //wp_enqueue_script('omniva-map', plugins_url('/js/omnivaMap.js?20190530', __FILE__) , array('jquery'),null,true);      
       
-      wp_localize_script('omniva-map', 'omnivadata', array(
+      wp_localize_script('omniva', 'omnivadata', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
         'omniva_plugin_url' => plugin_dir_url( __FILE__ ),
-        'select_terminal' => __('Select terminal','omnivalt'),
+        'text_select_terminal' => __('Select terminal','omnivalt'),
         'text_search_placeholder' => __('Enter postcode','omnivalt'),
         'not_found' => __('Place not found','omnivalt'),
+        'text_enter_address' => __('Enter postcode/address','omnivalt'),
+        'text_show_in_map' => __('Show in map','omnivalt'),
+        'text_show_more' => __('Show more','omnivalt'),
       ));
+      
 
     }
   }
@@ -262,7 +273,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'api_url' => array(
               'title' => __('Api URL', 'omnivalt') ,
               'type' => 'text',
-              'default' => 'https://217.159.234.93'
+              'default' => 'https://edixml.post.ee'
             ) ,
             'api_user' => array(
               'title' => __('Api user', 'omnivalt') ,
@@ -1189,29 +1200,43 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       var omnivaTerminals = '".json_encode(getTerminalForMap('',$country))."';
       jQuery('document').ready(function($){        
         select2defaultMatcher = jQuery.fn.select2.defaults.defaults.matcher; 
-        if(omnivaMap !== undefined){
-          omnivaMap.init();
+        //if(omnivaMap !== undefined){
+          //omnivaMap.init();
           //$('.omnivalt_terminal').select2({matcher: omnivaMap.filterSelectTerminals});
-        } 
-        $('.omnivalt_terminal').select2({ ajax: {
-            url: '".admin_url('admin-ajax.php?action=omniva_terminals_json&nonce='.$nonce)."&country='+omniva_current_country,            
-            dataType: 'json',
-            delay: 250,
-            processResults: function (data) {
-                
-              return {
-                results: data
-              };
-            }
-          },
+        //} 
+        $('.omnivalt_terminal').omniva();
+        /*
+        $('.omnivalt_terminal').select2({ 
+            ajax: {
+                url: '".admin_url('admin-ajax.php?action=omniva_terminals_json&nonce='.$nonce)."&country='+omniva_current_country,            
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                    
+                  return {
+                    results: data
+                  };
+                },
+                cache: true
+              },
           templateResult : function (item) {
             if (item.distance !== undefined && item.distance != 0 && item.children === undefined){
                 return $('<span>'+item.text+' <strong>'+item.distance+' km </strong></span>');
             }
             return item.text;
             
-            }
+            },
+             minimumInputLength: 3
         });
+        var currentQuery='';
+        $('.omnivalt_terminal').on('select2:open', function() {
+            $('.select2-search__field').attr('placeholder', 'Enter postcode / address').val(currentQuery).trigger('input');
+        });
+        $('.omnivalt_terminal').on('select2:closing', function() {
+            $('.select2-search__field').attr('placeholder', null);
+            currentQuery = $('.select2-search__field').val();
+        });
+        */
               });</script>";
       return '<div class = "terminal-container"><select class = "omnivalt_terminal" name = "omnivalt_terminal">' . $parcel_terminals . '</select>
       <button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn" style = "display: none;">'.__('Show in map','omnivalt').'<img src = "'.plugin_dir_url( __FILE__ ).'/sasi.png" title = "'.__("Show parcel terminals map","omnivalt").'"/></button>
@@ -1404,7 +1429,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                     <form>
                     <input type = "text" placeholder = "'.__('Enter postcode','omnivalt').'"/>
                     <button type = "submit" id="map-search-button"></button>
-                    </form></div>
+                    </form>                    
+                    <div class="omniva-autocomplete scrollbar" style = "display:none;"><ul></ul></div>
+                    </div>
                     <div class="found_terminals scrollbar" id="style-8">
                       <ul>
                       
@@ -1512,8 +1539,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
        if ( !wp_verify_nonce( $_REQUEST['nonce'], "omniva_terminals_json_nonce")) {
           exit("Not allowed");
-       }   
-        echo json_encode(generate_json_terminals($_REQUEST['q'],$_REQUEST['country']));
+       } 
+        $json_terminals = generate_json_terminals($_REQUEST['q'],$_REQUEST['country']);
+        echo json_encode($json_terminals);
        
 
        die();
