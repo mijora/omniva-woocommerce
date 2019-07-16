@@ -45,6 +45,7 @@ var omniva_addrese_change = false;
         //var terminals = [];
         var terminals = JSON.parse(omnivaTerminals);
         var selected = false;
+        var previous_list = [];
         select.hide();
         if (select.val()){
             selected = {'id':select.val(),'text':select.find('option:selected').text(),'distance':false};
@@ -126,6 +127,11 @@ var omniva_addrese_change = false;
             if (!container.is(e.target) && container.has(e.target).length === 0 && container.hasClass('open')) 
                 toggleDropdown();
         });   
+        
+        $('.omniva-back-to-list').off('click').on('click',function(){
+            listTerminals(terminals,0,previous_list);
+            $(this).hide();
+        });
        
         searchByAddress();
         
@@ -196,7 +202,8 @@ var omniva_addrese_change = false;
             showMore.hide();
         }
         
-        function refreshList(autoselect){
+        function refreshList(autoselect){            
+            $('.omniva-back-to-list').hide();
             var counter = 0;
             var city = false;
             var html = '';
@@ -383,7 +390,7 @@ var omniva_addrese_change = false;
                 refreshList(autoselect);
                 return false;
             }
-            $.getJSON( "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine="+address+"&sourceCountry="+omniva_current_country+"&category=&outFields=Postal&maxLocations=1&forStorage=false&f=pjson", function( data ) {
+            $.getJSON( "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine="+address+"&sourceCountry="+omniva_current_country+"&category=&outFields=Postal&maxLocations=1&forStorage=false&f=pjson", function( data ) {
               if (data.candidates != undefined && data.candidates.length > 0){
                 calculateDistance(data.candidates[0].location.y,data.candidates[0].location.x);
                 refreshList(autoselect);
@@ -398,7 +405,7 @@ var omniva_addrese_change = false;
         }
         
         function suggest(address){
-            $.getJSON( "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text="+address+"&f=pjson&sourceCountry=LT&maxSuggestions=1", function( data ) {
+            $.getJSON( "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text="+address+"&f=pjson&sourceCountry=LT&maxSuggestions=1", function( data ) {
               if (data.suggestions != undefined && data.suggestions.length > 0){
                 findPosition(data.suggestions[0].text,false);
               }
@@ -497,8 +504,8 @@ var omniva_addrese_change = false;
             $('.omniva-autocomplete').hide();
             if (address == "" || address.length < 3) return false;
             $('#omniva-search form input').val(address);
-            //$.getJSON( "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine="+address+"&sourceCountry="+omniva_current_country+"&category=&outFields=Postal,StAddr&maxLocations=5&forStorage=false&f=pjson", function( data ) {
-            $.getJSON( "http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text="+address+"&sourceCountry="+omniva_current_country+"&f=pjson&maxSuggestions=4", function( data ) {
+            //$.getJSON( "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine="+address+"&sourceCountry="+omniva_current_country+"&category=&outFields=Postal,StAddr&maxLocations=5&forStorage=false&f=pjson", function( data ) {
+            $.getJSON( "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text="+address+"&sourceCountry="+omniva_current_country+"&f=pjson&maxSuggestions=4", function( data ) {
               if (data.suggestions != undefined && data.suggestions.length > 0){
                   $.each(data.suggestions ,function(i,item){
                     //console.log(item);
@@ -562,12 +569,28 @@ var omniva_addrese_change = false;
                   id=0;
               }
              var html = '', counter=1;
+             if (id != 0 && !$.isArray(id)){
+                previous_list = [];
+                $('.found_terminals li').each(function(){
+                    previous_list.push($(this).attr('data-id'));
+                });
+                $('.omniva-back-to-list').show();
+             }
+             if ($.isArray(id)){
+                previous_list = []; 
+             }
             $('.found_terminals').html('');
+            //console.log(id);
             $.each( locations, function( key, location ) {
               if (limit != 0 && limit < counter){
                 return false;
               }
-              if (id !=0 && id != location[3]){
+              if ($.isArray(id)){
+                if ( $.inArray( location[3], id) == -1){
+                    return true;
+                }
+              }
+              else if (id !=0 && id != location[3]){
                 return true;
               }
               if (autoSelectTerminal && counter == 1){
@@ -580,7 +603,7 @@ var omniva_addrese_change = false;
               }
               html += '<li data-pos="['+destination+']" data-id="'+location[3]+'" ><div><a class="omniva-li">'+counter+'. <b>'+location[0]+'</b></a>';
               if (distance != 0) {
-              html += '<b>'+distance+' km.</b>';
+              html += ' <b>'+distance+' km.</b>';
               }
                html += '<div align="left" id="omn-'+location[3]+'" class="omniva-details" style="display:none;"><small>\
                                           '+location[5]+' <br/>'+location[6]+'</small><br/>\

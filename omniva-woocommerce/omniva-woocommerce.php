@@ -3,7 +3,7 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.11
+ * Version: 1.4.12
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
@@ -447,6 +447,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'description' => __('Maximum allowed weight', 'omnivalt') ,
               'default' => 100
             ) ,
+            'show_map' => array(
+              'title' => __('Map', 'omnivalt') ,
+              'type' => 'checkbox',
+              'description' => __('Show map of terminals.', 'omnivalt'),
+              'default' => 'yes'
+            ) ,
           );
         }
 
@@ -468,7 +474,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 		
           foreach($package['contents'] as $item_id => $values) {
             $_product = $values['data'];
-            $weight = $weight + $_product->get_weight() * $values['quantity'];
+            if ($_product->get_weight()){
+                $weight = $weight + $_product->get_weight() * $values['quantity'];
+            }
           }
 
           $weight = wc_get_weight($weight, 'kg');
@@ -564,6 +572,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           // return $sql;
           // return $params['cart']->id_address_delivery;
           $wc_order = wc_get_order((int)$id_order);
+          $weight_unit = get_option('woocommerce_weight_unit');
+          $weight = get_post_meta($id_order,'_cart_weight', true);
+          if ($weight_unit != 'kg'){
+              $weight = wc_get_weight( $weight, 'kg', $weight_unit );
+          }
           $send_method = "";
           foreach( $wc_order->get_items( 'shipping' ) as $item_id => $shipping_item_obj ){
             $send_method        = $shipping_item_obj->get_method_id(); 
@@ -635,7 +648,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               $xmlRequest.= '
                          <item service="' . $service . '" >
                             ' . $additionalService . '
-                            <measures weight="' . get_post_meta($id_order,'_cart_weight', true) . '" />
+                            <measures weight="' . $weight . '" />
                             ' . self::cod($order, $is_cod, get_post_meta($id_order,'_order_total', true)) . '
                             <receiverAddressee >
                                <person_name>' . get_post_meta($id_order,'_shipping_first_name', true) . ' ' . get_post_meta($id_order,'_shipping_last_name', true) . '</person_name>
@@ -1023,7 +1036,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 if ($pt_address != '')
                   $client_address = '';
                 $count++;
-                $order_table .= '<tr><td width = "40" align="right">'.$count.'.</td><td>'.$track_numer.'</td><td width = "60">'.date('Y-m-d').'</td><td width = "40">1</td><td width = "60">'.get_post_meta($orderId,'_cart_weight', true).'</td><td width = "210">'.$client_address.$pt_address.'</td></tr>';
+                $cart_weight = get_post_meta($orderId,'_cart_weight', true);
+                $weight_unit = get_option('woocommerce_weight_unit');
+                if ($weight_unit != 'kg'){
+                    $cart_weight = wc_get_weight( $cart_weight, 'kg', $weight_unit );
+                }
+                $order_table .= '<tr><td width = "40" align="right">'.$count.'.</td><td>'.$track_numer.'</td><td width = "60">'.date('Y-m-d').'</td><td width = "40">1</td><td width = "60">'.$cart_weight.'</td><td width = "210">'.$client_address.$pt_address.'</td></tr>';
                 
                 //make order shipped after creating manifest
                 /*
@@ -1238,10 +1256,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         });
         */
               });</script>";
+        $button = '';
+        $omniva_settings = get_option('woocommerce_omnivalt_settings');
+        if (!isset($omniva_settings['show_map']) || isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == "yes"){
+            $button = '<button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn" style = "display: none;">'.__('Show in map','omnivalt').'<img src = "'.plugin_dir_url( __FILE__ ).'/sasi.png" title = "'.__("Show parcel terminals map","omnivalt").'"/></button>';
+        }
       return '<div class = "terminal-container"><select class = "omnivalt_terminal" name = "omnivalt_terminal">' . $parcel_terminals . '</select>
-      <button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn" style = "display: none;">'.__('Show in map','omnivalt').'<img src = "'.plugin_dir_url( __FILE__ ).'/sasi.png" title = "'.__("Show parcel terminals map","omnivalt").'"/></button>
-      
-      </div>' . $script;
+      '. $button. ' </div>' . $script;
   }
   
   function omnivaltTerminalName($terminal_code){
@@ -1432,6 +1453,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                     </form>                    
                     <div class="omniva-autocomplete scrollbar" style = "display:none;"><ul></ul></div>
                     </div>
+                    <div class = "omniva-back-to-list" style = "display:none;">'.__('Back','omnivalt').'</div>
                     <div class="found_terminals scrollbar" id="style-8">
                       <ul>
                       
