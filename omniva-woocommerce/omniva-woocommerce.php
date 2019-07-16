@@ -274,6 +274,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'title' => __('Api URL', 'omnivalt') ,
               'type' => 'text',
               'default' => 'https://edixml.post.ee'
+
             ) ,
             'api_user' => array(
               'title' => __('Api user', 'omnivalt') ,
@@ -1570,5 +1571,4 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
     }
   
-
 } 
