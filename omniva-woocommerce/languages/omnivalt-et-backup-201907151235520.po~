@@ -3,18 +3,25 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/\n"
+"X-Generator: Loco - https://localise.biz/\n"
 "Project-Id-Version: wp\n"
 "Language: et\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-12 08:33+0000\n"
-"PO-Revision-Date: 2019-07-15 12:35+0000\n"
-"Last-Translator: admin <info@iterdve.lt>\n"
+"POT-Creation-Date: 2018-03-16 08:03+0000\n"
+"PO-Revision-Date: 2018-03-16 08:04+0000\n"
+"Last-Translator: omniva <omniva@mijora.lt>\n"
 "Language-Team: Estonian\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Loco-Version: 2.2.1; wp-5.1.1"
+"Plural-Forms: nplurals=2; plural=n != 1"
 
-#: manifest_page.php:7 omniva-woocommerce.php:1363 omniva-woocommerce.php:1364
+#: omniva-woocommerce.php:1104
+msgid "Parcel terminal not found!!!"
+msgstr "Saadetisi pole leitud !!!"
+
+#: omniva-woocommerce.php:1114
+msgid "Please select parcel terminal."
+msgstr "Palun valige pakiautomaat."
+
+#: manifest_page.php:7 omniva-woocommerce.php:1073 omniva-woocommerce.php:1074
 msgid "Omniva manifest"
 msgstr "Omniva manifest"
 
@@ -54,234 +61,166 @@ msgstr "Valige tellimusi"
 msgid "No assign shipments found"
 msgstr "Ei leia saadetisi"
 
-#: omniva-woocommerce.php:142
-msgid "Select terminal"
-msgstr ""
-
-#: omniva-woocommerce.php:143 omniva-woocommerce.php:1451
-msgid "Enter postcode"
-msgstr ""
-
-#: omniva-woocommerce.php:144
-msgid "Place not found"
-msgstr ""
-
-#: omniva-woocommerce.php:145
-msgid "Enter postcode/address"
-msgstr ""
-
-#: omniva-woocommerce.php:146 omniva-woocommerce.php:1262
-msgid "Show in map"
-msgstr ""
-
-#: omniva-woocommerce.php:147
-msgid "Show more"
-msgstr ""
-
-#: omniva-woocommerce.php:203
+#: omniva-woocommerce.php:143
 msgid "Omniva Shipping"
 msgstr "Omniva Shipping"
 
-#: omniva-woocommerce.php:204
+#: omniva-woocommerce.php:144
 msgid "Shipping Method for Omniva"
 msgstr "Saatmismeetod Omnivale"
 
-#: omniva-woocommerce.php:217
+#: omniva-woocommerce.php:157
 msgid "Omnivalt Shipping"
 msgstr "Omnivalt Shipping"
 
-#: omniva-woocommerce.php:268
+#: omniva-woocommerce.php:191
 msgid "Enable"
 msgstr "Luba"
 
-#: omniva-woocommerce.php:270
+#: omniva-woocommerce.php:193
 msgid "Enable this shipping."
 msgstr "Luba see saatmine."
 
-#: omniva-woocommerce.php:274
+#: omniva-woocommerce.php:197
 msgid "Api URL"
 msgstr "Api URL"
 
-#: omniva-woocommerce.php:279
+#: omniva-woocommerce.php:202
 msgid "Api user"
 msgstr "Api kasutaja"
 
-#: omniva-woocommerce.php:283
+#: omniva-woocommerce.php:206
 msgid "Api user password"
 msgstr "Api kasutaja parool"
 
-#: omniva-woocommerce.php:287
+#: omniva-woocommerce.php:210
 msgid "Company name"
 msgstr "Firma nimi"
 
-#: omniva-woocommerce.php:291
+#: omniva-woocommerce.php:214
 msgid "Bank account"
 msgstr "pangakonto"
 
-#: omniva-woocommerce.php:295
+#: omniva-woocommerce.php:218
 msgid "Shop name"
 msgstr "Pood nime"
 
-#: omniva-woocommerce.php:299
+#: omniva-woocommerce.php:222
 msgid "Shop city"
 msgstr "Osta linn"
 
-#: omniva-woocommerce.php:303
+#: omniva-woocommerce.php:226
 msgid "Shop address"
 msgstr "Poe aadress"
 
-#: omniva-woocommerce.php:307
+#: omniva-woocommerce.php:230
 msgid "Shop postcode"
 msgstr "Pood postiindeks"
 
-#: omniva-woocommerce.php:311
+#: omniva-woocommerce.php:234
 msgid "Shop country code"
 msgstr "Riigi koodi pood"
 
-#: omniva-woocommerce.php:315
+#: omniva-woocommerce.php:238
 msgid "Shop phone number"
 msgstr "Osta telefoninumbrit"
 
-#: omniva-woocommerce.php:319
+#: omniva-woocommerce.php:242
 msgid "Pick up time start"
 msgstr "Võta aeg alguseni"
 
-#: omniva-woocommerce.php:323
+#: omniva-woocommerce.php:246
 msgid "Pick up time end"
 msgstr "Võta aeg lõpuni"
 
-#: omniva-woocommerce.php:327
+#: omniva-woocommerce.php:250
 msgid "Send off type"
 msgstr "Saatke tüübist välja"
 
-#: omniva-woocommerce.php:329
+#: omniva-woocommerce.php:252
 msgid "Send from store type."
 msgstr "Saatke alates poodi tüübist."
 
-#: omniva-woocommerce.php:331 omniva-woocommerce.php:336
+#: omniva-woocommerce.php:254 omniva-woocommerce.php:259
 msgid "Parcel terminal"
 msgstr "Maatüki terminal"
 
-#: omniva-woocommerce.php:332 omniva-woocommerce.php:341
+#: omniva-woocommerce.php:255 omniva-woocommerce.php:264
 msgid "Courrier"
 msgstr "Courrier"
 
-#: omniva-woocommerce.php:338
+#: omniva-woocommerce.php:261
 msgid "Show parcel terminal method in checkout."
 msgstr "Näidake paki terminali meetodit kassas."
 
-#: omniva-woocommerce.php:343
+#: omniva-woocommerce.php:266
 msgid "Show courrier method in checkout."
 msgstr "Kuva kulleri meetod kassasse."
 
-#: omniva-woocommerce.php:346 omniva-woocommerce.php:378
-#: omniva-woocommerce.php:410
+#: omniva-woocommerce.php:269
 msgid "Courrier price"
 msgstr "Courrieri hind"
 
-#: omniva-woocommerce.php:354 omniva-woocommerce.php:386
-#: omniva-woocommerce.php:418
+#: omniva-woocommerce.php:274
 msgid "Parcel terminal price"
 msgstr "Saadetise terminali hind"
 
-#: omniva-woocommerce.php:362 omniva-woocommerce.php:394
-#: omniva-woocommerce.php:426
-msgid "Free shipping then price is higher (Terminals)"
-msgstr ""
-
-#: omniva-woocommerce.php:370 omniva-woocommerce.php:402
-#: omniva-woocommerce.php:434
-msgid "Free shipping then price is higher (Courier)"
-msgstr ""
-
-#: omniva-woocommerce.php:442
+#: omniva-woocommerce.php:279
 msgid "Weight (kg)"
 msgstr "Kaal (kg)"
 
-#: omniva-woocommerce.php:447
+#: omniva-woocommerce.php:281
 msgid "Maximum allowed weight"
 msgstr "Maksimaalne lubatud mass"
 
-#: omniva-woocommerce.php:451
-msgid "Map"
-msgstr ""
-
-#: omniva-woocommerce.php:453
-msgid "Show map of terminals."
-msgstr ""
-
-#: omniva-woocommerce.php:505 omniva-woocommerce.php:1399
+#: omniva-woocommerce.php:309 omniva-woocommerce.php:1106
 msgid "Omniva parcel terminal"
 msgstr "Omniva paki terminal"
 
-#: omniva-woocommerce.php:531
+#: omniva-woocommerce.php:318
 msgid "Omniva courrier"
 msgstr "Omniva kuller"
 
-#: omniva-woocommerce.php:768 omniva-woocommerce.php:864
+#: omniva-woocommerce.php:544 omniva-woocommerce.php:640
 msgid "Response is in the wrong format"
 msgstr "Vastus on vales vormis"
 
-#: omniva-woocommerce.php:800 omniva-woocommerce.php:885
+#: omniva-woocommerce.php:576 omniva-woocommerce.php:661
 msgid "No saved barcodes received"
 msgstr "Saadetud salvestatud vöötkoode pole"
 
-#: omniva-woocommerce.php:916 omniva-woocommerce.php:1003
+#: omniva-woocommerce.php:689 omniva-woocommerce.php:773
 msgid "Shipping method is not Omniva"
 msgstr "Saatmise viis ei ole Omniva"
 
-#: omniva-woocommerce.php:934
+#: omniva-woocommerce.php:707
 msgid "Omniva label generated"
 msgstr "Omniva silt loodud"
 
-#: omniva-woocommerce.php:1174
+#: omniva-woocommerce.php:936
 #, php-format
 msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
 msgstr "Vabandust,% d kg ületab maksimaalse massi% d kg% s kohta"
 
-#: omniva-woocommerce.php:1215
+#: omniva-woocommerce.php:972
 msgid "Select parcel terminal"
 msgstr "Valige paki terminal"
 
-#: omniva-woocommerce.php:1262
-msgid "Show parcel terminals map"
-msgstr ""
-
-#: omniva-woocommerce.php:1289
+#: omniva-woocommerce.php:999
 msgid "Print Omniva labels"
 msgstr "Prindi Omniva sildid"
 
-#: omniva-woocommerce.php:1290
+#: omniva-woocommerce.php:1000
 msgid "Print Omniva manifest"
 msgstr "Trükkige Omniva manifesti"
 
-#: omniva-woocommerce.php:1332
+#: omniva-woocommerce.php:1042
 msgid "Generate Omniva label"
 msgstr "Loo Omniva silt"
 
-#: omniva-woocommerce.php:1334
+#: omniva-woocommerce.php:1044
 msgid "VIew Omniva label"
 msgstr "VIew Omniva silt"
-
-#: omniva-woocommerce.php:1398
-msgid "Parcel terminal not found!!!"
-msgstr "Saadetisi pole leitud !!!"
-
-#: omniva-woocommerce.php:1407
-msgid "Please select parcel terminal."
-msgstr "Palun valige pakiautomaat."
-
-#: omniva-woocommerce.php:1443
-msgid "Omniva parcel terminals"
-msgstr ""
-
-#: omniva-woocommerce.php:1448
-msgid "Parcel terminals addresses"
-msgstr ""
-
-#: omniva-woocommerce.php:1456
-msgid "Back"
-msgstr ""
 
 #. Name of the plugin
 msgid "Omniva shipping"
@@ -290,7 +229,3 @@ msgstr "Omniva laevandus"
 #. Description of the plugin
 msgid "Omniva shipping plugin for WooCommerce"
 msgstr "WooCommerce'i Omniva edastusplugin"
-
-#. Author of the plugin
-msgid "Omniva"
-msgstr ""
