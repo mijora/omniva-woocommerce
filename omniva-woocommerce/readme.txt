@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.4.12 =
+* Map functionality, bug fixes
+
 = 1.4.3 =
 * Bug fix - filtered post offices from list
 
