@@ -412,6 +412,7 @@ padding:0px; margin:0px;
     display: block;
     float: left; 
     background-color: #ffffff;
+    width: 300px;
 }
 
 .esri-icon-zoom-in-magnifying-glass { display:none; }
@@ -424,6 +425,12 @@ padding:0px; margin:0px;
     border: 1px solid #ccc;
     top: 30px;
     max-width: 100%;
+}
+
+@media screen and (max-width: 500px) {
+  #omniva-search form input, .omniva-autocomplete {
+    width: 280px;
+  }
 }
 .omniva-autocomplete ul {
     list-style: none;
