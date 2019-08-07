@@ -1215,47 +1215,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $nonce = wp_create_nonce("omniva_terminals_json_nonce");
     $parcel_terminals = '<option value = "">' . __('Select parcel terminal', 'omnivalt') . '</option>' . $parcel_terminals;
     $script = "<script>var omniva_current_country = '".$country."';
-      var select2defaultMatcher = false;
       var omnivaTerminals = '".json_encode(getTerminalForMap('',$country))."';
       jQuery('document').ready(function($){        
-        select2defaultMatcher = jQuery.fn.select2.defaults.defaults.matcher; 
-        //if(omnivaMap !== undefined){
-          //omnivaMap.init();
-          //$('.omnivalt_terminal').select2({matcher: omnivaMap.filterSelectTerminals});
-        //} 
+        
         $('.omnivalt_terminal').omniva();
-        /*
-        $('.omnivalt_terminal').select2({ 
-            ajax: {
-                url: '".admin_url('admin-ajax.php?action=omniva_terminals_json&nonce='.$nonce)."&country='+omniva_current_country,            
-                dataType: 'json',
-                delay: 250,
-                processResults: function (data) {
-                    
-                  return {
-                    results: data
-                  };
-                },
-                cache: true
-              },
-          templateResult : function (item) {
-            if (item.distance !== undefined && item.distance != 0 && item.children === undefined){
-                return $('<span>'+item.text+' <strong>'+item.distance+' km </strong></span>');
-            }
-            return item.text;
-            
-            },
-             minimumInputLength: 3
-        });
-        var currentQuery='';
-        $('.omnivalt_terminal').on('select2:open', function() {
-            $('.select2-search__field').attr('placeholder', 'Enter postcode / address').val(currentQuery).trigger('input');
-        });
-        $('.omnivalt_terminal').on('select2:closing', function() {
-            $('.select2-search__field').attr('placeholder', null);
-            currentQuery = $('.select2-search__field').val();
-        });
-        */
+      
               });</script>";
         $button = '';
         $omniva_settings = get_option('woocommerce_omnivalt_settings');
