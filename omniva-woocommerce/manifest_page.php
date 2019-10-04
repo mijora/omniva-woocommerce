@@ -86,10 +86,20 @@ if ( $page_links ) {
         <?php foreach ($orders as $order): ?>
         <tr class = "data-row">
             <?php 
-            $order_items = array();   
+            $order_items = array();
+            $orderObj = wc_get_order( $order->ID );
             ?>
             <th class = "check-column"><input type = "checkbox" name = "items[]" class = "manifest-item" value = "<?php echo $order->ID; ?>"/></th>
-            <td><div class = "data-grid-cell-content"><?php echo $order->ID; ?></div></td>
+            <td>
+              <div class = "data-grid-cell-content">
+              <?php
+                $link = '<a href="'. $orderObj->get_edit_order_url() .'" >';
+                $link .= '#' . $order->ID. ' ' . $orderObj->get_billing_first_name() . ' ' . $orderObj->get_billing_last_name();
+                $link .= '</a>';
+                echo $link;
+              ?>
+              </div>
+            </td>
             <td><div class = "data-grid-cell-content"><?php echo get_post_meta($order->ID,'_manifest_generation_date',true); ?></div></td>
             <td>
             <form action = "admin-post.php" method = "GET">
