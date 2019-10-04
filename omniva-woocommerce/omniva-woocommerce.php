@@ -1079,7 +1079,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               wp_safe_redirect( wp_get_referer() );
               exit;
             } else {
-              $this->call_omniva();
+              // $this->call_omniva();
             }
             $pdf->SetFont('freeserif', '', 9);
             $pdf->writeHTML($tbl, true, false, false, false, '');
@@ -1383,7 +1383,37 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   function manifest_page(){
     include_once("manifest_page.php");
   }
-  
+
+  // Custom action to be used in manifest.php
+  add_action('get_omniva_info_for_courier', 'custom_function');
+  function custom_function()
+  {
+    $wc_shipping = new WC_Shipping();
+    $omnivalt = new Omnivalt_Shipping_Method();
+    $sender = $omnivalt->settings['shop_name'];
+    $phone = $omnivalt->settings['shop_phone'];
+    $postcode = $omnivalt->settings['shop_postcode'];
+    $address = $omnivalt->settings['shop_address'] . ', ' . $omnivalt->settings['shop_city'];
+    echo "<div><span>" . __("Shop name", 'omnivalt') . ":</span> $sender</div>" .
+      "<div><span>" . __("Shop phone number", 'omnivalt') . ":</span> $phone</div>" .
+      "<div><span>" . __("Shop postcode", 'omnivalt') . ":</span> $postcode</div>" .
+      "<div><span>" . __("Shop address", 'omnivalt') . ":</span> $address</div>";
+  }
+
+  add_filter('admin_post_omnivalt_call_courier', 'omnivalt_post_call_courier_actions');
+  function omnivalt_post_call_courier_actions()
+  {
+      $wc_shipping = new WC_Shipping();
+      $omnivalt = new Omnivalt_Shipping_Method();
+      //$callCarrierReturn = $omnivalt->call_omniva();
+      $callCarrierReturn['status'] = true;
+      if($callCarrierReturn['status'] == true)
+        $omnivalt->add_msg(__("Omniva courier called", 'omnivalt'),'notice');
+      else
+        $omnivalt->add_msg(__("There was an error calling Omniva courier. Error: " . $callCarrierReturn['msg'], 'omnivalt'),'error');
+      wp_safe_redirect( wp_get_referer() );
+  }
+   
   /**
  * Display field value on the order edit page
  */
@@ -1566,5 +1596,5 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
        die();
 
     }
-  
+    
 } 

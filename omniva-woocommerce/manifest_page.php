@@ -17,6 +17,11 @@ $items = $wpdb->get_results( "
     WHERE woim.meta_value IN ('omnivalt_pt','omnivalt_c','omnivalt')
 " );
 ?>
+
+<div>
+  <button id="omniva-call-btn" class="button action"><?php _e('Call Omniva courier','omnivalt') ?></button>
+</div>
+
 <?php if(count($items)): ?>
 <?php
 //group items by shipping date DESC
@@ -122,8 +127,47 @@ if ( $page_links ) {
   </div>
   <div class="f-clear"></div>
 </div>
+
+<!-- Modal Carier call-->
+<div id="omniva-courier-modal" class="modal fade" role="dialog">
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="alert-info">
+      <p><span><?php _e('Important!', 'omnivalt') ?></span> <?php _e('Latest call for same day pickup is until 3 pm.', 'omnivalt') ?></p>
+      <p><?php _e('Address and contact information can be changed in Omniva settings.', 'omnivalt') ?></p>
+    </div>
+    <form id="omniva-call" action = "admin-post.php" method = "GET">
+      <input type = "hidden" name = "action" value = "omnivalt_call_courier"/>
+      <?php wp_nonce_field( 'omnivalt_call_courier', 'omnivalt_call_courier_nonce' ); ?>
+      <?php do_action('get_omniva_info_for_courier'); ?>
+      <div class="modal-footer">
+        <button type="submit" id="omniva-call-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>
+        <button type="button" id="omniva-call-cancel-btn" class="button action"><?php _e('Cancel') ?></button>
+      </div>
+    </form>
+  </div>
+</div>
+<!--/ Modal Carier call-->
+
 <script>
 jQuery('document').ready(function($){
+
+  $('#omniva-courier-modal').on('click', function(e){
+    if (e.target === this) {
+      $('#omniva-courier-modal').removeClass('open');
+    }
+  });
+
+  $('#omniva-call-btn').on('click', function(e){
+    e.preventDefault();
+    $('#omniva-courier-modal').addClass('open');
+  });
+
+  $('#omniva-call-cancel-btn').on('click', function(e){
+    e.preventDefault();
+    $('#omniva-courier-modal').removeClass('open');
+  });
+
   $('#submit_manifest_items').on('click',function(){
     var ids = "";
     $('#manifest-print-form .post_id').remove();
