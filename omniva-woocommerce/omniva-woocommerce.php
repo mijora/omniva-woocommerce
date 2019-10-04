@@ -1405,8 +1405,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   {
       $wc_shipping = new WC_Shipping();
       $omnivalt = new Omnivalt_Shipping_Method();
-      //$callCarrierReturn = $omnivalt->call_omniva();
-      $callCarrierReturn['status'] = true;
+      $callCarrierReturn = $omnivalt->call_omniva();
       if($callCarrierReturn['status'] == true)
         $omnivalt->add_msg(__("Omniva courier called", 'omnivalt'),'notice');
       else
@@ -1596,5 +1595,5 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
        die();
 
     }
-    
+
 } 
