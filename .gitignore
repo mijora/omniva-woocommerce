@@ -1,0 +1,4 @@
+.DS_Store
+
+# Ignore pdf files for stickers
+*/pdf/*.pdf

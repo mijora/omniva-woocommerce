@@ -1,9 +1,10 @@
+# Loco Gettext template
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-12 08:33+0000\n"
+"Project-Id-Version: Omniva Shipping\n"
+"Report-Msgid-Bugs-To: omniva\n"
+"POT-Creation-Date: 2019-08-28 15:08+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -12,281 +13,309 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/"
+"X-Generator: Loco https://localise.biz\n"
+"X-Loco-Source-Locale: en\n"
+"X-Loco-Project-Id: 74461\n"
+"X-Loco-Api-Version: 1.0.23 20190813-1"
 
 #: manifest_page.php:7 omniva-woocommerce.php:1363 omniva-woocommerce.php:1364
+#: loco:5d666814c38e0f32ef1fdad1
 msgid "Omniva manifest"
 msgstr ""
 
-#: manifest_page.php:68
+#: manifest_page.php:25 loco:5d666814c38e0f32ef1fdad2
+msgid "Call Omniva courier"
+msgstr ""
+
+#: manifest_page.php:68 loco:5d666814c38e0f32ef1fdad3
 msgid "New orders"
 msgstr ""
 
-#: manifest_page.php:74
+#: manifest_page.php:74 loco:5d666814c38e0f32ef1fdad4
 msgid "Order #"
 msgstr ""
 
-#: manifest_page.php:75
+#: manifest_page.php:75 loco:5d666814c38e0f32ef1fdad5
 msgid "Manifest generation date"
 msgstr ""
 
-#: manifest_page.php:94
+#: manifest_page.php:94 loco:5d666814c38e0f32ef1fdad6
 msgid "Print label"
 msgstr ""
 
 #: manifest_page.php:95 manifest_page.php:119 manifest_page.php:120
+#: loco:5d666814c38e0f32ef1fdad7
 msgid "Print labels"
 msgstr ""
 
-#: manifest_page.php:116 manifest_page.php:117
+#: manifest_page.php:116 manifest_page.php:117 loco:5d666814c38e0f32ef1fdad8
 msgid "Generate manifest"
 msgstr ""
 
-#: manifest_page.php:137 manifest_page.php:154
+#: manifest_page.php:137 manifest_page.php:154 loco:5d666814c38e0f32ef1fdad9
 msgid "Select orders"
 msgstr ""
 
-#: manifest_page.php:170
+#: manifest_page.php:170 loco:5d666814c38e0f32ef1fdada
 msgid "No assign shipments found"
 msgstr ""
 
-#: omniva-woocommerce.php:142
+#: omniva-woocommerce.php:142 loco:5d666814c38e0f32ef1fdadb
 msgid "Select terminal"
 msgstr ""
 
 #: omniva-woocommerce.php:143 omniva-woocommerce.php:1451
+#: loco:5d666814c38e0f32ef1fdadc
 msgid "Enter postcode"
 msgstr ""
 
-#: omniva-woocommerce.php:144
+#: omniva-woocommerce.php:144 loco:5d666814c38e0f32ef1fdadd
 msgid "Place not found"
 msgstr ""
 
-#: omniva-woocommerce.php:145
+#: omniva-woocommerce.php:145 loco:5d666814c38e0f32ef1fdade
 msgid "Enter postcode/address"
 msgstr ""
 
 #: omniva-woocommerce.php:146 omniva-woocommerce.php:1262
+#: loco:5d666814c38e0f32ef1fdadf
 msgid "Show in map"
 msgstr ""
 
-#: omniva-woocommerce.php:147
+#: omniva-woocommerce.php:147 loco:5d666814c38e0f32ef1fdae0
 msgid "Show more"
 msgstr ""
 
-#: omniva-woocommerce.php:203
+#: omniva-woocommerce.php:203 loco:5d666814c38e0f32ef1fdae1
 msgid "Omniva Shipping"
 msgstr ""
 
-#: omniva-woocommerce.php:204
+#: omniva-woocommerce.php:204 loco:5d666814c38e0f32ef1fdae2
 msgid "Shipping Method for Omniva"
 msgstr ""
 
-#: omniva-woocommerce.php:217
+#: omniva-woocommerce.php:217 loco:5d666814c38e0f32ef1fdae3
 msgid "Omnivalt Shipping"
 msgstr ""
 
-#: omniva-woocommerce.php:268
+#: omniva-woocommerce.php:268 loco:5d666814c38e0f32ef1fdae4
 msgid "Enable"
 msgstr ""
 
-#: omniva-woocommerce.php:270
+#: omniva-woocommerce.php:270 loco:5d666814c38e0f32ef1fdae5
 msgid "Enable this shipping."
 msgstr ""
 
-#: omniva-woocommerce.php:274
+#: omniva-woocommerce.php:274 loco:5d666814c38e0f32ef1fdae6
 msgid "Api URL"
 msgstr ""
 
-#: omniva-woocommerce.php:279
+#: omniva-woocommerce.php:279 loco:5d666814c38e0f32ef1fdae7
 msgid "Api user"
 msgstr ""
 
-#: omniva-woocommerce.php:283
+#: omniva-woocommerce.php:283 loco:5d666814c38e0f32ef1fdae8
 msgid "Api user password"
 msgstr ""
 
-#: omniva-woocommerce.php:287
+#: omniva-woocommerce.php:287 loco:5d666814c38e0f32ef1fdae9
 msgid "Company name"
 msgstr ""
 
-#: omniva-woocommerce.php:291
+#: omniva-woocommerce.php:291 loco:5d666814c38e0f32ef1fdaea
 msgid "Bank account"
 msgstr ""
 
-#: omniva-woocommerce.php:295
+#: omniva-woocommerce.php:295 loco:5d666814c38e0f32ef1fdaeb
 msgid "Shop name"
 msgstr ""
 
-#: omniva-woocommerce.php:299
+#: omniva-woocommerce.php:299 loco:5d666814c38e0f32ef1fdaec
 msgid "Shop city"
 msgstr ""
 
-#: omniva-woocommerce.php:303
+#: omniva-woocommerce.php:303 loco:5d666814c38e0f32ef1fdaed
 msgid "Shop address"
 msgstr ""
 
-#: omniva-woocommerce.php:307
+#: omniva-woocommerce.php:307 loco:5d666814c38e0f32ef1fdaee
 msgid "Shop postcode"
 msgstr ""
 
-#: omniva-woocommerce.php:311
+#: omniva-woocommerce.php:311 loco:5d666814c38e0f32ef1fdaef
 msgid "Shop country code"
 msgstr ""
 
-#: omniva-woocommerce.php:315
+#: omniva-woocommerce.php:315 loco:5d666814c38e0f32ef1fdaf0
 msgid "Shop phone number"
 msgstr ""
 
-#: omniva-woocommerce.php:319
+#: omniva-woocommerce.php:319 loco:5d666814c38e0f32ef1fdaf1
 msgid "Pick up time start"
 msgstr ""
 
-#: omniva-woocommerce.php:323
+#: omniva-woocommerce.php:323 loco:5d666814c38e0f32ef1fdaf2
 msgid "Pick up time end"
 msgstr ""
 
-#: omniva-woocommerce.php:327
+#: omniva-woocommerce.php:327 loco:5d666814c38e0f32ef1fdaf3
 msgid "Send off type"
 msgstr ""
 
-#: omniva-woocommerce.php:329
+#: omniva-woocommerce.php:329 loco:5d666814c38e0f32ef1fdaf4
 msgid "Send from store type."
 msgstr ""
 
 #: omniva-woocommerce.php:331 omniva-woocommerce.php:336
+#: loco:5d666814c38e0f32ef1fdaf5
 msgid "Parcel terminal"
 msgstr ""
 
 #: omniva-woocommerce.php:332 omniva-woocommerce.php:341
+#: loco:5d666814c38e0f32ef1fdaf6
 msgid "Courrier"
 msgstr ""
 
-#: omniva-woocommerce.php:338
+#: omniva-woocommerce.php:338 loco:5d666814c38e0f32ef1fdaf7
 msgid "Show parcel terminal method in checkout."
 msgstr ""
 
-#: omniva-woocommerce.php:343
+#: omniva-woocommerce.php:343 loco:5d666814c38e0f32ef1fdaf8
 msgid "Show courrier method in checkout."
 msgstr ""
 
 #: omniva-woocommerce.php:346 omniva-woocommerce.php:378
-#: omniva-woocommerce.php:410
+#: omniva-woocommerce.php:410 loco:5d666814c38e0f32ef1fdaf9
 msgid "Courrier price"
 msgstr ""
 
 #: omniva-woocommerce.php:354 omniva-woocommerce.php:386
-#: omniva-woocommerce.php:418
+#: omniva-woocommerce.php:418 loco:5d666814c38e0f32ef1fdafa
 msgid "Parcel terminal price"
 msgstr ""
 
 #: omniva-woocommerce.php:362 omniva-woocommerce.php:394
-#: omniva-woocommerce.php:426
+#: omniva-woocommerce.php:426 loco:5d666814c38e0f32ef1fdafb
 msgid "Free shipping then price is higher (Terminals)"
 msgstr ""
 
 #: omniva-woocommerce.php:370 omniva-woocommerce.php:402
-#: omniva-woocommerce.php:434
+#: omniva-woocommerce.php:434 loco:5d666814c38e0f32ef1fdafc
 msgid "Free shipping then price is higher (Courier)"
 msgstr ""
 
-#: omniva-woocommerce.php:442
+#: omniva-woocommerce.php:442 loco:5d666814c38e0f32ef1fdafd
 msgid "Weight (kg)"
 msgstr ""
 
-#: omniva-woocommerce.php:447
+#: omniva-woocommerce.php:447 loco:5d666814c38e0f32ef1fdafe
 msgid "Maximum allowed weight"
 msgstr ""
 
-#: omniva-woocommerce.php:451
+#: omniva-woocommerce.php:451 loco:5d666814c38e0f32ef1fdaff
 msgid "Map"
 msgstr ""
 
-#: omniva-woocommerce.php:453
+#: omniva-woocommerce.php:453 loco:5d666814c38e0f32ef1fdb00
 msgid "Show map of terminals."
 msgstr ""
 
 #: omniva-woocommerce.php:505 omniva-woocommerce.php:1399
+#: loco:5d666814c38e0f32ef1fdb01
 msgid "Omniva parcel terminal"
 msgstr ""
 
-#: omniva-woocommerce.php:531
+#: omniva-woocommerce.php:531 loco:5d666814c38e0f32ef1fdb02
 msgid "Omniva courrier"
 msgstr ""
 
 #: omniva-woocommerce.php:768 omniva-woocommerce.php:864
+#: loco:5d666814c38e0f32ef1fdb03
 msgid "Response is in the wrong format"
 msgstr ""
 
 #: omniva-woocommerce.php:800 omniva-woocommerce.php:885
+#: loco:5d666814c38e0f32ef1fdb04
 msgid "No saved barcodes received"
 msgstr ""
 
 #: omniva-woocommerce.php:916 omniva-woocommerce.php:1003
+#: loco:5d666814c38e0f32ef1fdb05
 msgid "Shipping method is not Omniva"
 msgstr ""
 
-#: omniva-woocommerce.php:934
+#: omniva-woocommerce.php:934 loco:5d666814c38e0f32ef1fdb06
 msgid "Omniva label generated"
 msgstr ""
 
-#: omniva-woocommerce.php:1174
+#: omniva-woocommerce.php:1174 loco:5d666814c38e0f32ef1fdb07
 #, php-format
 msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
 msgstr ""
 
-#: omniva-woocommerce.php:1215
+#: omniva-woocommerce.php:1215 loco:5d666814c38e0f32ef1fdb08
 msgid "Select parcel terminal"
 msgstr ""
 
-#: omniva-woocommerce.php:1262
+#: omniva-woocommerce.php:1262 loco:5d666814c38e0f32ef1fdb09
 msgid "Show parcel terminals map"
 msgstr ""
 
-#: omniva-woocommerce.php:1289
+#: omniva-woocommerce.php:1289 loco:5d666814c38e0f32ef1fdb0a
 msgid "Print Omniva labels"
 msgstr ""
 
-#: omniva-woocommerce.php:1290
+#: omniva-woocommerce.php:1290 loco:5d666814c38e0f32ef1fdb0b
 msgid "Print Omniva manifest"
 msgstr ""
 
-#: omniva-woocommerce.php:1332
+#: omniva-woocommerce.php:1332 loco:5d666814c38e0f32ef1fdb0c
 msgid "Generate Omniva label"
 msgstr ""
 
-#: omniva-woocommerce.php:1334
+#: omniva-woocommerce.php:1334 loco:5d666814c38e0f32ef1fdb0d
 msgid "VIew Omniva label"
 msgstr ""
 
-#: omniva-woocommerce.php:1398
+#: omniva-woocommerce.php:1398 loco:5d666814c38e0f32ef1fdb0e
 msgid "Parcel terminal not found!!!"
 msgstr ""
 
-#: omniva-woocommerce.php:1407
+#: omniva-woocommerce.php:1407 loco:5d666814c38e0f32ef1fdb0f
 msgid "Please select parcel terminal."
 msgstr ""
 
-#: omniva-woocommerce.php:1443
+#: omniva-woocommerce.php:1443 loco:5d666814c38e0f32ef1fdb10
 msgid "Omniva parcel terminals"
 msgstr ""
 
-#: omniva-woocommerce.php:1448
+#: omniva-woocommerce.php:1448 loco:5d666814c38e0f32ef1fdb11
 msgid "Parcel terminals addresses"
 msgstr ""
 
-#: omniva-woocommerce.php:1456
+#: omniva-woocommerce.php:1456 loco:5d666814c38e0f32ef1fdb12
 msgid "Back"
 msgstr ""
 
 #. Name of the plugin
+#: loco:5d666814c38e0f32ef1fdb13
 msgid "Omniva shipping"
 msgstr ""
 
 #. Description of the plugin
+#: loco:5d666814c38e0f32ef1fdb14
 msgid "Omniva shipping plugin for WooCommerce"
 msgstr ""
 
 #. Author of the plugin
+#: loco:5d666814c38e0f32ef1fdb15
 msgid "Omniva"
+msgstr ""
+
+#: loco:5d666d1ced0cfa08da0bb764
+msgid "Omniva courier called"
+msgstr ""
+
+#: loco:5d666d92ed0cfa08d6661a58
+msgid "There was an error calling Omniva courier"
 msgstr ""

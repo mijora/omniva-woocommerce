@@ -1,5 +1,11 @@
 == Changelog ==
 
+= 1.4.13 =
+* Parcel terminal address in email and order details view.
+* Call courier functionality (in Omniva Manifest), no more automatically called courier.
+* Localization update.
+* Omniva manifest page improvements.
+
 = 1.4.12 =
 * Map functionality, bug fixes
 
