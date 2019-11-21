@@ -366,7 +366,8 @@ $omnivalt = new Omnivalt_Shipping_Method();
         jQuery('document').ready(function($) {
           // "From" date picker
           $('#datetimepicker1').datetimepicker({
-            pickTime: false
+            pickTime: false,
+            useCurrent: false
           });
           // "To" date picker
           $('#datetimepicker2').datetimepicker({
