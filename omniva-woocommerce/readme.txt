@@ -1,5 +1,11 @@
 == Changelog ==
 
+= 1.5.0 =
+* Fully reworked Omniva Manifest page.
+* Improved detection of changed postcode in checkout.
+* Updated TCPDF and FPDI libraries.
+* Localization update.
+
 = 1.4.13 =
 * Parcel terminal address in email and order details view.
 * Call courier functionality (in Omniva Manifest), no more automatically called courier.
