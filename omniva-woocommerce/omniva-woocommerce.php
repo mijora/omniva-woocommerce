@@ -894,8 +894,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $count = 0;
           $label_count = 0;
           require_once(plugin_dir_path(__FILE__) . 'tcpdf/tcpdf.php');
-          require_once(plugin_dir_path(__FILE__) . 'fpdi/fpdi.php');
-          $pdf = new FPDI();
+          require_once(plugin_dir_path(__FILE__) . 'fpdi/autoload.php');
+          $pdf = new \setasign\Fpdi\TcpdfFpdi('P');
           $pdf->setPrintHeader(false);
           $pdf->setPrintFooter(false);
           if (!is_array($orderIds))
@@ -950,13 +950,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               if ($label_count == 0 || $label_count == 4) {
                 $pdf->AddPage('P');
                 $label_count = 0;
-                $pdf->useTemplate($tplidx, 5, 15, 94.5, 108, true);
+                $pdf->useTemplate($tplidx, 5, 15, 94.5, 108, false);
               } else if ($label_count == 1) {
-                $pdf->useTemplate($tplidx, 110, 15, 94.5, 108, true);
+                $pdf->useTemplate($tplidx, 110, 15, 94.5, 108, false);
               } else if ($label_count == 2) {
-                $pdf->useTemplate($tplidx, 5, 160, 94.5, 108, true);
+                $pdf->useTemplate($tplidx, 5, 160, 94.5, 108, false);
               } else if ($label_count == 3) {
-                $pdf->useTemplate($tplidx, 110, 160, 94.5, 108, true);
+                $pdf->useTemplate($tplidx, 110, 160, 94.5, 108, false);
               }
               $label_count++;
               //$tplidx = $pdf->ImportPage($i);
