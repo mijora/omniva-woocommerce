@@ -1391,20 +1391,20 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     include_once("manifest_page.php");
   }
 
-  // Custom action to be used in manifest.php
-  add_action('get_omniva_info_for_courier', 'call_omniva_courier_data');
-  function call_omniva_courier_data()
+  add_action('print_omniva_tracking_url', 'print_omniva_tracking_url_action', 10, 2);
+  function print_omniva_tracking_url_action($country_code = 'LT', $barcode)
   {
-    $wc_shipping = new WC_Shipping();
-    $omnivalt = new Omnivalt_Shipping_Method();
-    $sender = $omnivalt->settings['shop_name'];
-    $phone = $omnivalt->settings['shop_phone'];
-    $postcode = $omnivalt->settings['shop_postcode'];
-    $address = $omnivalt->settings['shop_address'] . ', ' . $omnivalt->settings['shop_city'];
-    echo "<div><span>" . __("Shop name", 'omnivalt') . ":</span> $sender</div>" .
-      "<div><span>" . __("Shop phone number", 'omnivalt') . ":</span> $phone</div>" .
-      "<div><span>" . __("Shop postcode", 'omnivalt') . ":</span> $postcode</div>" .
-      "<div><span>" . __("Shop address", 'omnivalt') . ":</span> $address</div>";
+    $omniva_tracking_url = array(
+      'LT' => 'https://www.omniva.lt/verslo/siuntos_sekimas?barcode=',
+      'LV' => 'https://www.omniva.lv/privats/sutijuma_atrasanas_vieta?barcode=',
+      'EE' => 'https://www.omniva.ee/era/jalgimine?barcode='
+    );
+    $country_code = strtoupper($country_code);
+    if (isset($omniva_tracking_url[$country_code])) {
+      echo $omniva_tracking_url[$country_code] . $barcode;
+    } else {
+      echo '';
+    }
   }
 
   add_filter('admin_post_omnivalt_call_courier', 'omnivalt_post_call_courier_actions');

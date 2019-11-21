@@ -6,8 +6,6 @@ if (!defined('ABSPATH')) {
 /**
  * Manifest page defaults
  */
-$omniva_tracking_url = "https://www.omniva.lt/verslo/siuntos_sekimas?barcode=";
-
 $tab_strings = array(
   'all_orders' => __('All orders', 'omnivalt'),
   'new_orders' => __('New orders', 'omnivalt'),
@@ -38,6 +36,10 @@ function make_link($args)
 
 // append custom css and js
 do_action('omniva_admin_head');
+
+// prep access to Omnivalt shipping class
+$wc_shipping = new WC_Shipping();
+$omnivalt = new Omnivalt_Shipping_Method();
 ?>
 
 <div class="wrap">
@@ -301,7 +303,7 @@ do_action('omniva_admin_head');
                     <div class="data-grid-cell-content">
                       <?php $barcode = $order->get_meta('_omnivalt_barcode'); ?>
                       <?php if ($barcode) : ?>
-                        <a href="<?php echo $omniva_tracking_url . $barcode; ?>" target="_blank"><?php echo $barcode ?></a>
+                        <a href="<?php do_action('print_omniva_tracking_url', $omnivalt->settings['shop_countrycode'], $barcode); ?>" target="_blank"><?php echo $barcode; ?></a>
                         <?php $error = $order->get_meta('_omnivalt_error'); ?>
                         <?php if ($error) : ?>
                           <br />Error: <?php echo $error; ?>
@@ -345,7 +347,12 @@ do_action('omniva_admin_head');
           <form id="omniva-call" action="admin-post.php" method="GET">
             <input type="hidden" name="action" value="omnivalt_call_courier" />
             <?php wp_nonce_field('omnivalt_call_courier', 'omnivalt_call_courier_nonce'); ?>
-            <?php do_action('get_omniva_info_for_courier'); ?>
+            <div><span><?php echo __("Shop name", 'omnivalt'); ?>:</span> <?php echo $omnivalt->settings['shop_name']; ?></div>
+            <div><span><?php echo __("Shop phone number", 'omnivalt'); ?>:</span> <?php echo $omnivalt->settings['shop_phone']; ?></div>
+            <div><span><?php echo __("Shop postcode", 'omnivalt'); ?>:</span> <?php echo $omnivalt->settings['shop_postcode']; ?></div>
+            <div>
+              <span><?php echo __("Shop address", 'omnivalt'); ?>:</span> <?php echo $omnivalt->settings['shop_address'] . ', ' . $omnivalt->settings['shop_city']; ?>
+            </div>
             <div class="modal-footer">
               <button type="submit" id="omniva-call-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>
               <button type="button" id="omniva-call-cancel-btn" class="button action"><?php _e('Cancel') ?></button>
