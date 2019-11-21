@@ -1,4 +1,5 @@
 jQuery('document').ready(function($){
+    var current_postcode = '';
     $('input.shipping_method').on('click',function(){
         var current_method = $(this);
         if (current_method.val() == "omnivalt_pt"){
@@ -22,7 +23,23 @@ jQuery('document').ready(function($){
                
             }
         });
-    })
+    });
+
+    $( document ).on( 'omnivalt.checkpostcode', function() {
+        if ($('#ship-to-different-address-checkbox').length > 0 && $('#ship-to-different-address-checkbox').is(':checked')){
+            if (current_postcode != $('#shipping_postcode').val()) {
+                //console.log('postcode changed (shipping):', current_postcode, $('#shipping_postcode').val());
+                current_postcode = $('#shipping_postcode').val();
+                $('.terminal-container .search-input').val(current_postcode).trigger('selectpostcode');
+            }
+        } else {
+            if (current_postcode != $('#billing_postcode').val()) {
+                //console.log('postcode changed (billing):', current_postcode, $('#billing_postcode').val());
+                current_postcode = $('#billing_postcode').val();
+                $('.terminal-container .search-input').val(current_postcode).trigger('selectpostcode');
+            }
+        }
+    });    
 });
 var omniva_addrese_change = false;
 (function ( $ ) {

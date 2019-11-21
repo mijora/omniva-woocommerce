@@ -1,3 +1,26 @@
+.call-courier-container, .mass-print-container {
+  text-align: end;
+  margin: 1em 0;
+}
+
+.notice {
+  color: green;
+  border: 1px green solid;
+  border-left: 4px green solid;
+  border-radius: 3px;
+}
+
+.omniva-action-buttons-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.manifest-date-title {
+  font-size: 1.5em;
+  font-weight: 900;
+  text-align: center;
+}
+
 .order_actions .omnivalt_view_label, .order_actions .omnivalt_generate_label {
     display: block;
     text-indent: -9999px;
@@ -125,4 +148,157 @@
 @keyframes fadeIn {
     from {opacity: 0} 
     to {opacity: 1}
+}
+
+
+.nav {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.nav-link {
+  display: block;
+  padding: 0.5rem 1rem;
+}
+
+.nav-link:hover, .nav-link:focus {
+  text-decoration: none;
+}
+
+.nav-link.disabled {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: default;
+}
+
+.nav-tabs {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.nav-tabs .nav-item {
+  margin-bottom: -1px;
+  font-size: 1em;
+}
+
+.nav-tabs .nav-link {
+  border: 1px solid transparent;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  text-decoration: none;
+}
+
+.nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
+  border-color: #dee2e6 #dee2e6 #dee2e6;
+}
+
+.nav-tabs .nav-link.disabled {
+  color: #6c757d;
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  color: #495057;
+  background: linear-gradient(#fff, #f1f1f1);
+  border-color: #dee2e6 #dee2e6 #f1f1f1;
+}
+
+.nav-tabs .dropdown-menu {
+  margin-top: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.tablenav {
+  display: flex;
+  justify-content: center;
+  margin: 0.5em 0;
+}
+
+.tablenav .tablenav-pages {
+  margin: 0;
+}
+
+.tablenav-pages .page-numbers {
+  display: inline-block;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #000000;
+}
+
+.tablenav-pages .page-numbers:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.tablenav-pages .page-numbers.current {
+  background-color: #fff;
+  font-weight: 700;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.table-container * {
+  box-sizing: border-box;
+}
+
+.omniva-table {
+  border-collapse: separate;
+  border-spacing: 0 2px 0 0;
+  margin-bottom: 5px;
+  width: 100%;
+  background-color: #fff;
+}
+
+.wp-list-table .fixed-width {
+  width: 48px !important;
+}
+
+.omniva-filter input:not([type="checkbox"]) {
+  height: 28px;
+  border-radius: 3px;
+  width: 100%;
+  margin: 0;
+  padding: 3px 6px;
+}
+
+.omniva-filter {
+  background-color: rgba(0, 115, 170, 0.5);
+}
+
+.omniva-filter .datetimepicker {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.omniva-filter .datetimepicker div {
+  line-height: initial;
+  position: relative;
+  width: 100%;
+}
+
+.omniva-filter .datetimepicker input {
+  min-width: 90px;
+  width: 100%;
+  background-color: #fff;
+  border: none;
+  border-radius: 0;
+}
+
+.bootstrap-datetimepicker-widget {
+  display: none;
+  background-color: #fff;
+  border: 1px solid grey;
 }
