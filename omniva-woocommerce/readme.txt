@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 1.5.1 =
+* Updated TCPDF to 6.3.2.
+* Fixed persisting pagination between Omniva Manifest page tabs.
+* Improved order number display in Omniva Manifest page.
+
 = 1.5.0 =
 * Fully reworked Omniva Manifest page.
 * Improved detection of changed postcode in checkout.
