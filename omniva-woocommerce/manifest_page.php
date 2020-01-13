@@ -177,7 +177,7 @@ $omnivalt = new Omnivalt_Shipping_Method();
       <ul class="nav nav-tabs">
         <?php foreach ($tab_strings as $tab => $tab_title) : ?>
           <li class="nav-item">
-            <a class="nav-link <?php echo $action == $tab ? 'active' : ''; ?>" href="<?php echo make_link(array('paged' => $paged, 'action' => $tab)); ?>"><?php echo $tab_title; ?></a>
+            <a class="nav-link <?php echo $action == $tab ? 'active' : ''; ?>" href="<?php echo make_link(array('paged' => ($action == $tab ? $paged : 1), 'action' => $tab)); ?>"><?php echo $tab_title; ?></a>
           </li>
         <?php endforeach; ?>
       </ul>
@@ -282,7 +282,7 @@ $omnivalt = new Omnivalt_Shipping_Method();
                 <tr class="data-row">
                   <th scope="row" class="check-column"><input type="checkbox" name="items[]" class="manifest-item" value="<?php echo $order->get_id(); ?>" /></th>
                   <td class="manage-column">
-                    <a href="<?php echo $order->get_edit_order_url(); ?>">#<?php echo $order->get_id(); ?></a>
+                    <a href="<?php echo $order->get_edit_order_url(); ?>">#<?php echo $order->get_order_number(); ?></a>
                   </td>
                   <td class="column-order_number">
                     <div class="data-grid-cell-content">
