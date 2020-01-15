@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 14:15+0300\n"
-"PO-Revision-Date: 2019-10-04 17:14+0300\n"
+"PO-Revision-Date: 2019-11-21 11:42+0200\n"
 "Last-Translator: omniva\n"
 "Language-Team: Lithuanian (Lithuania)\n"
 "Language: lt-LT\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 74461\n"
-"X-Loco-Api-Version: 1.0.23 20191001-1"
+"X-Loco-Api-Version: 1.0.24 20191119-1"
 
 #: manifest_page.php:7 omniva-woocommerce.php:1363 omniva-woocommerce.php:1364
 #: loco:5d666814c38e0f32ef1fdad1
@@ -25,10 +25,6 @@ msgstr "Omniva manifestas"
 #: manifest_page.php:25 loco:5d666814c38e0f32ef1fdad2
 msgid "Call Omniva courier"
 msgstr "Kurjerio iškvietimas"
-
-#: manifest_page.php:68 loco:5d666814c38e0f32ef1fdad3
-msgid "New orders"
-msgstr "Nauji užsakymai"
 
 #: manifest_page.php:74 loco:5d666814c38e0f32ef1fdad4
 msgid "Order #"
@@ -334,3 +330,55 @@ msgid "Latest call for same day pickup is until 3 pm."
 msgstr ""
 "Vėliausias galimas kurjerio iškvietimas yra iki 15val. Vėliau iškvietus "
 "kurjerį negarantuojame, jog siunta bus paimta."
+
+#: loco:5dd508664d3dd70af955e9e2
+msgid "All orders"
+msgstr "Visi užsakymai"
+
+#: loco:5dd508804d3dd70a2a2f3394
+msgid "New orders"
+msgstr "Nauji užsakymai"
+
+#: loco:5dd5088d4d3dd709fb388272
+msgid "Completed orders"
+msgstr "Išsiųsti užsakymai"
+
+#: loco:5dd508974d3dd70a8369b4b2
+msgid "ID"
+msgstr "ID"
+
+#: loco:5dd5089f4d3dd70a626d4462
+msgid "Customer"
+msgstr "Pirkėjas"
+
+#: loco:5dd508aa4d3dd70a3c66d982
+msgid "Order status"
+msgstr "Būsena"
+
+#: loco:5dd508b44d3dd70a555094d5
+msgid "Service"
+msgstr "Servisas"
+
+#: loco:5dd508bc4d3dd70af955e9e4
+msgid "Barcode"
+msgstr "Barkodas"
+
+#: loco:5dd509124d3dd70a3b705674
+msgid "Manifest date"
+msgstr "Manifesto data"
+
+#: loco:5dd509244d3dd70a8369b4b4
+msgid "Filter"
+msgstr "Ieškoti"
+
+#: loco:5dd5092c4d3dd70a5620dab5
+msgid "Reset"
+msgstr "Valyti"
+
+#: loco:5dd65b0ec38e0f2ace485f85
+msgid "From"
+msgstr "Nuo"
+
+#: loco:5dd65b1bc38e0f2ad14e6d83
+msgid "To"
+msgstr "Iki"

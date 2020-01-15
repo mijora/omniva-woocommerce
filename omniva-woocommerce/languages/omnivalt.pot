@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: omniva\n"
-"POT-Creation-Date: 2019-08-28 15:08+0300\n"
+"POT-Creation-Date: 2019-11-21 11:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 74461\n"
-"X-Loco-Api-Version: 1.0.23 20190813-1"
+"X-Loco-Api-Version: 1.0.24 20191119-1"
 
 #: manifest_page.php:7 omniva-woocommerce.php:1363 omniva-woocommerce.php:1364
 #: loco:5d666814c38e0f32ef1fdad1
@@ -25,10 +25,6 @@ msgstr ""
 
 #: manifest_page.php:25 loco:5d666814c38e0f32ef1fdad2
 msgid "Call Omniva courier"
-msgstr ""
-
-#: manifest_page.php:68 loco:5d666814c38e0f32ef1fdad3
-msgid "New orders"
 msgstr ""
 
 #: manifest_page.php:74 loco:5d666814c38e0f32ef1fdad4
@@ -318,4 +314,68 @@ msgstr ""
 
 #: loco:5d666d92ed0cfa08d6661a58
 msgid "There was an error calling Omniva courier"
+msgstr ""
+
+#: loco:5d97523ced0cfa0a7515e022
+msgid "Important!"
+msgstr ""
+
+#: loco:5d97527bed0cfa0a650252c3
+msgid "Address and contact information can be changed in Omniva settings."
+msgstr ""
+
+#: loco:5d975312ed0cfa0a8565a0d4
+msgid "Latest call for same day pickup is until 3 pm."
+msgstr ""
+
+#: loco:5dd508664d3dd70af955e9e2
+msgid "All orders"
+msgstr ""
+
+#: loco:5dd508804d3dd70a2a2f3394
+msgid "New orders"
+msgstr ""
+
+#: loco:5dd5088d4d3dd709fb388272
+msgid "Completed orders"
+msgstr ""
+
+#: loco:5dd508974d3dd70a8369b4b2
+msgid "ID"
+msgstr ""
+
+#: loco:5dd5089f4d3dd70a626d4462
+msgid "Customer"
+msgstr ""
+
+#: loco:5dd508aa4d3dd70a3c66d982
+msgid "Order status"
+msgstr ""
+
+#: loco:5dd508b44d3dd70a555094d5
+msgid "Service"
+msgstr ""
+
+#: loco:5dd508bc4d3dd70af955e9e4
+msgid "Barcode"
+msgstr ""
+
+#: loco:5dd509124d3dd70a3b705674
+msgid "Manifest date"
+msgstr ""
+
+#: loco:5dd509244d3dd70a8369b4b4
+msgid "Filter"
+msgstr ""
+
+#: loco:5dd5092c4d3dd70a5620dab5
+msgid "Reset"
+msgstr ""
+
+#: loco:5dd65b0ec38e0f2ace485f85
+msgid "From"
+msgstr ""
+
+#: loco:5dd65b1bc38e0f2ad14e6d83
+msgid "To"
 msgstr ""

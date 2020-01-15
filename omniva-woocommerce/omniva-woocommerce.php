@@ -3,11 +3,11 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.4.13
+ * Version: 1.5.1
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
- * WC tested up to: 3.7.0
+ * WC tested up to: 3.8.0
  */
 
 if (!defined('WPINC')) {
@@ -168,10 +168,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   }
   add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
 
-  add_action('admin_head', 'omnivalt_admin_scripts');
+  add_action('omniva_admin_head', 'omnivalt_admin_scripts');
   function omnivalt_admin_scripts()
   {
     wp_enqueue_style('omnivalt_admin', plugins_url('/css/admin_omnivalt.css', __FILE__));
+    wp_enqueue_style('bootstrap-datetimepicker', plugins_url('/js/datetimepicker/bootstrap-datetimepicker.min.css', __FILE__));
+    wp_enqueue_script('bootstrap-datetimepicker', plugins_url('/js/datetimepicker/bootstrap-datetimepicker.min.js', __FILE__), array('jquery', 'moment'), null, true);
   }
 
   add_action('wp_ajax_nopriv_add_terminal_to_session', 'add_terminal_to_session');
@@ -892,8 +894,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $count = 0;
           $label_count = 0;
           require_once(plugin_dir_path(__FILE__) . 'tcpdf/tcpdf.php');
-          require_once(plugin_dir_path(__FILE__) . 'fpdi/fpdi.php');
-          $pdf = new FPDI();
+          require_once(plugin_dir_path(__FILE__) . 'fpdi/autoload.php');
+          $pdf = new \setasign\Fpdi\TcpdfFpdi('P');
           $pdf->setPrintHeader(false);
           $pdf->setPrintFooter(false);
           if (!is_array($orderIds))
@@ -948,13 +950,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               if ($label_count == 0 || $label_count == 4) {
                 $pdf->AddPage('P');
                 $label_count = 0;
-                $pdf->useTemplate($tplidx, 5, 15, 94.5, 108, true);
+                $pdf->useTemplate($tplidx, 5, 15, 94.5, 108, false);
               } else if ($label_count == 1) {
-                $pdf->useTemplate($tplidx, 110, 15, 94.5, 108, true);
+                $pdf->useTemplate($tplidx, 110, 15, 94.5, 108, false);
               } else if ($label_count == 2) {
-                $pdf->useTemplate($tplidx, 5, 160, 94.5, 108, true);
+                $pdf->useTemplate($tplidx, 5, 160, 94.5, 108, false);
               } else if ($label_count == 3) {
-                $pdf->useTemplate($tplidx, 110, 160, 94.5, 108, true);
+                $pdf->useTemplate($tplidx, 110, 160, 94.5, 108, false);
               }
               $label_count++;
               //$tplidx = $pdf->ImportPage($i);
@@ -1216,7 +1218,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       jQuery('document').ready(function($){        
         
         $('.omnivalt_terminal').omniva();
-      
+        $(document).trigger('omnivalt.checkpostcode');
               });</script>";
     $button = '';
     $omniva_settings = get_option('woocommerce_omnivalt_settings');
@@ -1389,20 +1391,20 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     include_once("manifest_page.php");
   }
 
-  // Custom action to be used in manifest.php
-  add_action('get_omniva_info_for_courier', 'custom_function');
-  function custom_function()
+  add_action('print_omniva_tracking_url', 'print_omniva_tracking_url_action', 10, 2);
+  function print_omniva_tracking_url_action($country_code = 'LT', $barcode)
   {
-    $wc_shipping = new WC_Shipping();
-    $omnivalt = new Omnivalt_Shipping_Method();
-    $sender = $omnivalt->settings['shop_name'];
-    $phone = $omnivalt->settings['shop_phone'];
-    $postcode = $omnivalt->settings['shop_postcode'];
-    $address = $omnivalt->settings['shop_address'] . ', ' . $omnivalt->settings['shop_city'];
-    echo "<div><span>" . __("Shop name", 'omnivalt') . ":</span> $sender</div>" .
-      "<div><span>" . __("Shop phone number", 'omnivalt') . ":</span> $phone</div>" .
-      "<div><span>" . __("Shop postcode", 'omnivalt') . ":</span> $postcode</div>" .
-      "<div><span>" . __("Shop address", 'omnivalt') . ":</span> $address</div>";
+    $omniva_tracking_url = array(
+      'LT' => 'https://www.omniva.lt/verslo/siuntos_sekimas?barcode=',
+      'LV' => 'https://www.omniva.lv/privats/sutijuma_atrasanas_vieta?barcode=',
+      'EE' => 'https://www.omniva.ee/era/jalgimine?barcode='
+    );
+    $country_code = strtoupper($country_code);
+    if (isset($omniva_tracking_url[$country_code])) {
+      echo $omniva_tracking_url[$country_code] . $barcode;
+    } else {
+      echo '';
+    }
   }
 
   add_filter('admin_post_omnivalt_call_courier', 'omnivalt_post_call_courier_actions');
@@ -1427,6 +1429,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $send_method = getOmnivaMethod($order);
     if ($send_method == 'omnivalt_pt') {
       echo '<p><strong>' . __('Omniva parcel terminal', 'omnivalt') . ':</strong> <br/>' . getOmnivaTerminalAddress($order) . '</p>';
+    } else {
+      echo '<p><strong>' . __('Omniva courrier', 'omnivalt') . ':</strong> <br/>' . $order->get_formatted_shipping_address() . '</p>';
     }
   }
 
@@ -1438,6 +1442,90 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         wc_add_notice(__('Please select parcel terminal.', 'omnivalt'), 'error');
     }
   }
+
+  /**
+   * CUSTOM ACTIONS FOR MANIFEST PAGE
+   */
+
+  /**
+ * Handle a custom query variable to get orders.
+ * @param array $query - Args for WP_Query.
+ * @param array $query_vars - Query vars from WC_Order_Query.
+ * @return array modified $query
+ */
+  function handle_custom_omniva_query_var( $query, $query_vars ) {
+    if ( ! empty( $query_vars['omnivalt_method'] ) ) {
+      $query['meta_query'][] = array(
+        'key' => '_omnivalt_method',
+        'value' => $query_vars['omnivalt_method']//esc_attr( $query_vars['omnivalt_method'] ),
+      );
+    }
+
+    if ( isset( $query_vars['omnivalt_barcode'] ) ) {
+      $query['meta_query'][] = array(
+          'key' => '_omnivalt_barcode',
+          'value' => $query_vars['omnivalt_barcode'],
+          'compare' => 'LIKE'
+      );
+    }
+
+    if ( isset( $query_vars['omnivalt_customer'] ) ) {
+      $query['meta_query'][] = array(
+          'relation' => 'OR',
+          array(
+            'key' => '_billing_first_name',
+            'value' => $query_vars['omnivalt_customer'],
+            'compare' => 'LIKE'
+          ),
+          array(
+            'key' => '_billing_last_name',
+            'value' => $query_vars['omnivalt_customer'],
+            'compare' => 'LIKE'
+          )
+      );
+    }
+
+    if ( isset( $query_vars['omnivalt_manifest'] ) ) {
+      $query['meta_query'][] = array(
+        'key' => '_manifest_generation_date',
+        'compare' => ($query_vars['omnivalt_manifest'] ? 'EXISTS' : 'NOT EXISTS'),
+      );
+    }
+
+    if ( isset( $query_vars['omnivalt_manifest_date'] ) ) {
+      $filter_by_date = false;
+      if ($query_vars['omnivalt_manifest_date'][0] && $query_vars['omnivalt_manifest_date'][1]) {
+        $filter_by_date = array(
+          'key' => '_manifest_generation_date',
+          'value' => $query_vars['omnivalt_manifest_date'],
+          'compare' => 'BETWEEN'
+        );
+      } elseif ($query_vars['omnivalt_manifest_date'][0] && !$query_vars['omnivalt_manifest_date'][1]) {
+        $filter_by_date = array(
+          'key' => '_manifest_generation_date',
+          'value' => $query_vars['omnivalt_manifest_date'][0],
+          'compare' => '>='
+        );
+      } elseif (!$query_vars['omnivalt_manifest_date'][0] && $query_vars['omnivalt_manifest_date'][1]) {
+        $filter_by_date = array(
+          'key' => '_manifest_generation_date',
+          'value' => $query_vars['omnivalt_manifest_date'][1],
+          'compare' => '<='
+        );
+      }
+
+      if ($filter_by_date) {
+        $query['meta_query'][] = $filter_by_date;
+      }
+    }
+
+    return $query;
+  }
+  add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_omniva_query_var', 10, 2 );
+
+  /**
+   * END OF CUSTOM ACTIONS FOR MANIFEST PAGE
+   */
 
   /**maps */
   function getTerminalForMap($selected = '', $country = "LT")
