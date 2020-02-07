@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-28 14:15+0300\n"
-"PO-Revision-Date: 2019-11-21 11:42+0200\n"
+"PO-Revision-Date: 2020-02-07 13:02+0200\n"
 "Last-Translator: omniva\n"
 "Language-Team: Latvian (Latvia)\n"
 "Language: lv-LV\n"
@@ -383,3 +383,11 @@ msgstr "No"
 #: loco:5dd65b1bc38e0f2ad14e6d83
 msgid "To"
 msgstr "Līdz"
+
+#: loco:5e3d42dc4d3dd7212a2a67d4
+msgid "Omniva tracking number"
+msgstr "Omniva izsekošanas numurs"
+
+#: loco:5e3d436b4d3dd721a4708b43
+msgid "You can track your parcel with this number"
+msgstr "Ar šo numuru varat izsekot sūtījumam"

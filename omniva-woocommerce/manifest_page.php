@@ -296,14 +296,14 @@ $omnivalt = new Omnivalt_Shipping_Method();
                   </td>
                   <td class="manage-column">
                     <div class="data-grid-cell-content">
-                      <?php do_action('woocommerce_admin_order_data_after_shipping_address', $order); ?>
+                      <?php do_action('woocommerce_admin_order_data_after_shipping_address', $order, false); ?>
                     </div>
                   </td>
                   <td class="manage-column">
                     <div class="data-grid-cell-content">
                       <?php $barcode = $order->get_meta('_omnivalt_barcode'); ?>
                       <?php if ($barcode) : ?>
-                        <a href="<?php do_action('print_omniva_tracking_url', $omnivalt->settings['shop_countrycode'], $barcode); ?>" target="_blank"><?php echo $barcode; ?></a>
+                        <?php do_action('print_omniva_tracking_url', $omnivalt->settings['shop_countrycode'], $barcode); ?>
                         <?php $error = $order->get_meta('_omnivalt_error'); ?>
                         <?php if ($error) : ?>
                           <br />Error: <?php echo $error; ?>

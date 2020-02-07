@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 1.5.2 =
+* Tracking number display in emails, order details (both admin and user)
+* Locations update checks that its valid JSON and only then approves old file replace
+
 = 1.5.1 =
 * Updated TCPDF to 6.3.2.
 * Fixed persisting pagination between Omniva Manifest page tabs.
