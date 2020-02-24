@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.5.3 =
+* Updated map tile server url
+
 = 1.5.2 =
 * Tracking number display in emails, order details (both admin and user)
 * Locations update checks that its valid JSON and only then approves old file replace
