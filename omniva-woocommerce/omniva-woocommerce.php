@@ -3,11 +3,11 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.5.3
+ * Version: 1.5.4
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
- * WC tested up to: 3.8.0
+ * WC tested up to: 3.9.2
  */
 
 if (!defined('WPINC')) {
@@ -488,8 +488,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           }
 
           $weight = wc_get_weight($weight, 'kg');
+          $weight_pass = (floatval($this->settings['weight']) >= $weight || floatval($this->settings['weight']) == 0);
 
-          if ($this->settings['method_pt'] == 'yes') {
+          if ($this->settings['method_pt'] == 'yes' && $weight_pass) {
             switch ($country) {
               case 'LV':
                 $amount = $this->settings['pt_priceLV'];
@@ -1311,11 +1312,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
   add_action( 'woocommerce_admin_order_preview_end', 'custom_display_order_data_in_admin' );
   function custom_display_order_data_in_admin(){
-    // Call the stored value and display it
-    echo '<div class="wc-order-preview-addresses">' .
+    // Call the stored value and display it    
+    echo '<# if ( data.omnivalt_barcode ) { #>' .
+      '<p><div class="wc-order-preview-addresses">' .
       '<div class="wc-order-preview-address">' .
       '<strong>' . __('Omniva tracking number', 'omnivalt') .':</strong><a href="{{data.omnivalt_tracking_link}}" target="_blank">{{data.omnivalt_barcode}}</a>' .
-      '</div></div></p>';
+      '</div></div></p>' .
+      '<# } #>';
   }
 
   add_action('woocommerce_review_order_before_cart_contents', 'omnivalt_validate_order', 10);
@@ -1445,8 +1448,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       $country_code = $order->get_shipping_country();
       $text = __('You can track your parcel with this number', 'omnivalt');
     }
-    
-    $html = '<p><strong>' . $text . ':</strong> <br/>' . getTrackingLink($country_code, $barcode) . '</p>';
+
+    $html = '';
+    if (!empty($barcode)) {
+      $html = '<p><strong>' . $text . ':</strong> <br/>' . getTrackingLink($country_code, $barcode) . '</p>';
+    }
     if (!$print) {
       return $html;
     }
@@ -1481,7 +1487,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $send_method = getOmnivaMethod($order);
     if ($send_method == 'omnivalt_pt') {
       echo '<p><strong>' . __('Omniva parcel terminal', 'omnivalt') . ':</strong> <br/>' . getOmnivaTerminalAddress($order) . '</p>';
-    } else {
+    } else if ($send_method == 'omnivalt_c') {
       echo '<p><strong>' . __('Omniva courrier', 'omnivalt') . ':</strong> <br/>' . $order->get_formatted_shipping_address() . '</p>';
     }
 

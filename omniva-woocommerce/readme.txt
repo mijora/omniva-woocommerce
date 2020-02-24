@@ -1,5 +1,9 @@
 == Changelog ==
 
+= 1.5.4 =
+* Fixed tracking number display in various places (no longer printed if there is no number)
+* Weight limit settings works again, to disable leave empty or 0.
+
 = 1.5.3 =
 * Updated map tile server url
 
