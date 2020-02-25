@@ -3,7 +3,7 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.5.4
+ * Version: 1.5.5
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
@@ -178,6 +178,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   {
     wp_enqueue_style('omnivalt_admin', plugins_url('/css/admin_omnivalt.css', __FILE__));
     wp_enqueue_style('bootstrap-datetimepicker', plugins_url('/js/datetimepicker/bootstrap-datetimepicker.min.css', __FILE__));
+    wp_enqueue_script('moment', plugins_url('/js/moment.min.js', __FILE__), array(), null, true);
     wp_enqueue_script('bootstrap-datetimepicker', plugins_url('/js/datetimepicker/bootstrap-datetimepicker.min.js', __FILE__), array('jquery', 'moment'), null, true);
   }
 
