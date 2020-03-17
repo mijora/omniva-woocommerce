@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 1.5.6 =
+* Fixes to support Woocommerce 4.0.0
+* Workaround to how terminals stringification is done - as in rare cases PHP stringified json becomes invalid after reaching client.
+
+= 1.5.5 =
+* Adds moment.min.js as not all woocommerce installations has it.
+
 = 1.5.4 =
 * Fixed tracking number display in various places (no longer printed if there is no number)
 * Weight limit settings works again, to disable leave empty or 0.
