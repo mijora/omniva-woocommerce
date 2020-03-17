@@ -3,11 +3,11 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.5.5
+ * Version: 1.5.6
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
- * WC tested up to: 3.9.2
+ * WC tested up to: 4.0.0
  */
 
 if (!defined('WPINC')) {
@@ -1221,7 +1221,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $nonce = wp_create_nonce("omniva_terminals_json_nonce");
     $parcel_terminals = '<option value = "">' . __('Select parcel terminal', 'omnivalt') . '</option>' . $parcel_terminals;
     $script = "<script>var omniva_current_country = '" . $country . "';
-      var omnivaTerminals = '" . json_encode(getTerminalForMap('', $country)) . "';
+      var omnivaTerminals = JSON.stringify(" . json_encode(getTerminalForMap('', $country)) . ");
       jQuery('document').ready(function($){        
         
         $('.omnivalt_terminal').omniva();
@@ -1301,6 +1301,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     }
 
     if ($send_method) {
+      $wc_shipping = new WC_Shipping();
       $barcode = $order->get_meta('_omnivalt_barcode');
       $omnivalt = new Omnivalt_Shipping_Method();
       $country_code = $omnivalt->settings['shop_countrycode'];
@@ -1440,6 +1441,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
   function printTrackingLink($order, $admin_panel = true, $print = true)
   {
+    $wc_shipping = new WC_Shipping();
     $omnivalt = new Omnivalt_Shipping_Method();
     $barcode = $order->get_meta('_omnivalt_barcode');
     if ($admin_panel) {
