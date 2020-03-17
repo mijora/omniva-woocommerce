@@ -1412,7 +1412,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       'manage_options',
       'omniva-manifest',
       'manifest_page',
-      plugins_url('omniva-woocommerce/images/icon.png'),
+      //plugins_url('omniva-woocommerce/images/icon.png'),
       1
     );
   }

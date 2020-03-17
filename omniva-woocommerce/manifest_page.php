@@ -266,7 +266,7 @@ $omnivalt = new Omnivalt_Shipping_Method();
 
             </thead>
             <tbody>
-              <?php $$date_tracker = false; ?>
+              <?php $date_tracker = false; ?>
               <?php foreach ($orders as $order) : ?>
                 <?php
                   $manifest_date = $order->get_meta('_manifest_generation_date');
