@@ -62,23 +62,26 @@ add_action('omnivalt_location_update', 'do_daily_update');
 
 function do_daily_update()
 {
-  $url = 'https://www.omniva.ee/locations.json';
-  $fp = fopen(dirname(__file__) . '/' . "locations_new.json", "w");
-  $curl = curl_init();
-  curl_setopt($curl, CURLOPT_URL, $url);
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl, CURLOPT_HEADER, false);
-  curl_setopt($curl, CURLOPT_FILE, $fp);
-  curl_setopt($curl, CURLOPT_TIMEOUT, 60);
-  curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
-  curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-  $data = curl_exec($curl);
-  curl_close($curl);
-  fclose($fp);
+  $response = wp_remote_get(
+    'https://www.omniva.ee/locations.json',
+    array(
+      'timeout'   => 60,
+      'sslverify' => false,
+    )
+  );
 
-  $new_data = file_get_contents(dirname(__file__) . '/' . "locations_new.json");
-  if (json_decode($new_data)) {
-    rename(dirname(__file__) . '/' . "locations_new.json", dirname(__file__) . '/' . "locations.json");
+  if ( is_array( $response ) && ! is_wp_error( $response ) ) {
+    $body = wp_remote_retrieve_body( $response );
+    if ( ! empty( $body ) ) {
+      // Get upload dir paths.
+      $upload_dir = wp_upload_dir();
+
+      // Save locations.json as omniva-locations.json to prevent
+      // any possible conflicts with other plugins.
+      $fp = fopen( $upload_dir['basedir'] . '/omniva-locations.json', 'w' );
+      fwrite( $fp, $body );
+      fclose( $fp );
+    }
   }
 }
 
@@ -245,26 +248,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             $this,
             'process_admin_options'
           ));
-          //$this->updateT();
         }
 
-        public function updateT()
-        { //die('functions works');
-          $url = 'https://www.omniva.ee/locations.json';
-
-          $fp = fopen(dirname(__file__) . '/' . "locations.json", "w");
-          $curl = curl_init();
-          curl_setopt($curl, CURLOPT_URL, $url);
-          curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-          curl_setopt($curl, CURLOPT_HEADER, false);
-          curl_setopt($curl, CURLOPT_FILE, $fp);
-          curl_setopt($curl, CURLOPT_TIMEOUT, 60);
-          curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
-          curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-          $data = curl_exec($curl);
-          curl_close($curl);
-          fclose($fp);
-        }
         /**
          * Define settings field for this shipping
          * @return void
@@ -1096,11 +1081,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
         function get_terminal_address($terminal_id)
         {
-          $terminals_json_file_dir = dirname(__file__) . '/' . "locations.json";
-          $terminals_file = fopen($terminals_json_file_dir, "r");
-          $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
-          fclose($terminals_file);
-          $terminals = json_decode($terminals, true);
+          $json             = omniva_get_locations_json();
+          $terminals        = json_decode( $json, true );
           $parcel_terminals = '';
           if (is_array($terminals) && $terminal_id) {
             foreach ($terminals as $terminal) {
@@ -1190,11 +1172,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
   function omnivaltGetTerminalsOptions($selected = '', $country = "ALL")
   {
-    $terminals_json_file_dir = dirname(__file__) . '/' . "locations.json";
-    $terminals_file = fopen($terminals_json_file_dir, "r");
-    $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
-    fclose($terminals_file);
-    $terminals = json_decode($terminals, true);
+    $json             = omniva_get_locations_json();
+    $terminals        = json_decode( $json, true );
     $parcel_terminals = '';
     if (is_array($terminals)) {
       $grouped_options = array();
@@ -1238,11 +1217,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
   function omnivaltTerminalName($terminal_code)
   {
-    $terminals_json_file_dir = dirname(__file__) . '/' . "locations.json";
-    $terminals_file = fopen($terminals_json_file_dir, "r");
-    $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
-    fclose($terminals_file);
-    $terminals = json_decode($terminals, true);
+    $json             = omniva_get_locations_json();
+    $terminals        = json_decode( $json, true );
     $parcel_terminals = '';
     if (is_array($terminals)) {
       foreach ($terminals as $terminal) {
@@ -1595,13 +1571,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   /**maps */
   function getTerminalForMap($selected = '', $country = "LT")
   {
-    $terminals_json_file_dir = dirname(__file__) . "/locations.json";
-    $terminals_file = fopen($terminals_json_file_dir, "r");
-    $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
-    fclose($terminals_file);
-    $terminals = json_decode($terminals, true);
+    $json             = omniva_get_locations_json();
+    $terminals        = json_decode( $json, true );
     $parcel_terminals = '';
-    $terminalsList = array();
+    $terminalsList    = array();
     if (is_array($terminals)) {
       foreach ($terminals as $terminal) {
         if ($terminal['A0_NAME'] != $country && in_array($country, array("LT", "EE", "LV")) || intval($terminal['TYPE']) == 1)
@@ -1655,11 +1628,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     if (strlen($term) >= 4 && strlen($term)) {
       $c_p = search_postcode($term, $country);
     }
-    $terminals_json_file_dir = dirname(__file__) . '/' . "locations.json";
-    $terminals_file = fopen($terminals_json_file_dir, "r");
-    $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
-    fclose($terminals_file);
-    $terminals = json_decode($terminals, true);
+
+    $json             = omniva_get_locations_json();
+    $terminals        = json_decode( $terminals, true );
     $parcel_terminals = array();
     if (is_array($terminals)) {
       $grouped_options = array();
@@ -1753,4 +1724,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     die();
   }
 
-} 
+  /**
+   * Return locations.json content.
+   */
+  function omniva_get_locations_json() {
+    // locations.json path.
+    $upload_dir = wp_upload_dir();
+    $json_file  = $upload_dir['basedir'] . '/omniva-locations.json';
+    if ( ! file_exists( $json_file ) ) {
+      return '';
+    }
+
+    // file_get_contents() is the preferred way to read the contents of a
+    // file into a string.
+    return file_get_contents( $json_file );
+  }
+}
