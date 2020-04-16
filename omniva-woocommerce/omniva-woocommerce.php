@@ -17,7 +17,7 @@ if (!defined('WPINC')) {
 add_action( 'init', 'omnivalt_load_textdomain' );
 
 function omnivalt_load_textdomain() {
-  load_plugin_textdomain( 'omnivalt', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
+  load_plugin_textdomain( 'omnivalt', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 }
 
 function omnivalt_notices(){
@@ -73,14 +73,17 @@ function do_daily_update()
   if ( is_array( $response ) && ! is_wp_error( $response ) ) {
     $body = wp_remote_retrieve_body( $response );
     if ( ! empty( $body ) ) {
-      // Get upload dir paths.
-      $upload_dir = wp_upload_dir();
+      $data = json_decode( $body );
+      if ( ! is_null( $data ) ) {
+        // Get upload dir paths.
+        $upload_dir = wp_upload_dir();
 
-      // Save locations.json as omniva-locations.json to prevent
-      // any possible conflicts with other plugins.
-      $fp = fopen( $upload_dir['basedir'] . '/omniva-locations.json', 'w' );
-      fwrite( $fp, $body );
-      fclose( $fp );
+        // Save locations.json as omniva-locations.json to prevent
+        // any possible conflicts with other plugins.
+        $fp = fopen( $upload_dir['basedir'] . '/omniva-locations.json', 'w' );
+        fwrite( $fp, $body );
+        fclose( $fp );
+      }
     }
   }
 }
@@ -142,7 +145,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       //wp_register_script('secondscript', 'https://js.arcgis.com/4.11/', array('jquery'), null, true);
       //wp_enqueue_script('secondscript');
 
-      //wp_enqueue_script('omniva-map', plugins_url('/js/omnivaMap.js?20190530', __FILE__) , array('jquery'),null,true);      
+      //wp_enqueue_script('omniva-map', plugins_url('/js/omnivaMap.js?20190530', __FILE__) , array('jquery'),null,true);
 
       wp_localize_script('omniva', 'omnivadata', array(
         'ajax_url' => admin_url('admin-ajax.php'),
@@ -635,7 +638,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 <xsd:businessToClientMsgRequest>
                    <partner>' . $this->settings['api_user'] . '</partner>
                    <interchange msg_type="info11">
-                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->settings['api_user'] . '" >                
+                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->settings['api_user'] . '" >
                       </header>
                       <item_list>
                         ';
@@ -656,7 +659,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                               <!--Optional:-->
                               <phone>' . $this->settings['shop_phone'] . '</phone>
                               <address postcode="' . $this->settings['shop_postcode'] . '" deliverypoint="' . $this->settings['shop_city'] . '" country="' . $shop_country_iso . '" street="' . $this->settings['shop_address'] . '" />
-                            
+
                             </returnAddressee>
                          </item>';
           //endfor;
@@ -687,7 +690,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 <xsd:businessToClientMsgRequest>
                    <partner>' . $this->settings['api_user'] . '</partner>
                    <interchange msg_type="info11">
-                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->settings['api_user'] . '" >                
+                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->settings['api_user'] . '" >
                       </header>
                       <item_list>
                         ';
@@ -1201,8 +1204,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $parcel_terminals = '<option value = "">' . __('Select parcel terminal', 'omnivalt') . '</option>' . $parcel_terminals;
     $script = "<script>var omniva_current_country = '" . $country . "';
       var omnivaTerminals = JSON.stringify(" . json_encode(getTerminalForMap('', $country)) . ");
-      jQuery('document').ready(function($){        
-        
+      jQuery('document').ready(function($){
+
         $('.omnivalt_terminal').omniva();
         $(document).trigger('omnivalt.checkpostcode');
               });</script>";
@@ -1290,7 +1293,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
   add_action( 'woocommerce_admin_order_preview_end', 'custom_display_order_data_in_admin' );
   function custom_display_order_data_in_admin(){
-    // Call the stored value and display it    
+    // Call the stored value and display it
     echo '<# if ( data.omnivalt_barcode ) { #>' .
       '<p><div class="wc-order-preview-addresses">' .
       '<div class="wc-order-preview-address">' .
@@ -1456,7 +1459,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       $omnivalt->add_msg(__("There was an error calling Omniva courier. Error: " . $callCarrierReturn['msg'], 'omnivalt'), 'error');
     wp_safe_redirect(wp_get_referer());
   }
-   
+
   /**
    * Display field value on the order edit page
    */
@@ -1607,13 +1610,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                     <form>
                     <input type = "text" placeholder = "' . __('Enter postcode', 'omnivalt') . '"/>
                     <button type = "submit" id="map-search-button"></button>
-                    </form>                    
+                    </form>
                     <div class="omniva-autocomplete scrollbar" style = "display:none;"><ul></ul></div>
                     </div>
                     <div class = "omniva-back-to-list" style = "display:none;">' . __('Back', 'omnivalt') . '</div>
                     <div class="found_terminals scrollbar" id="style-8">
                       <ul>
-                      
+
                       </ul>
                     </div>
                 </div>
