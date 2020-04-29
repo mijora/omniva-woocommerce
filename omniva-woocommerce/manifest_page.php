@@ -304,10 +304,10 @@ $omnivalt = new Omnivalt_Shipping_Method();
                       <?php $barcode = $order->get_meta('_omnivalt_barcode'); ?>
                       <?php if ($barcode) : ?>
                         <?php do_action('print_omniva_tracking_url', $omnivalt->settings['shop_countrycode'], $barcode); ?>
-                        <?php $error = $order->get_meta('_omnivalt_error'); ?>
-                        <?php if ($error) : ?>
-                          <br />Error: <?php echo $error; ?>
-                        <?php endif; ?>
+                      <?php endif; ?>
+                      <?php $error = $order->get_meta('_omnivalt_error'); ?>
+                      <?php if ($error) : ?>
+                        <br />Error: <?php echo $error; ?>
                       <?php endif; ?>
                     </div>
                   </td>
