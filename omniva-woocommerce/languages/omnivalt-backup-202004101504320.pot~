@@ -1,0 +1,389 @@
+# Loco Gettext template
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Omniva Shipping\n"
+"Report-Msgid-Bugs-To: omniva\n"
+"POT-Creation-Date: 2020-02-07 13:04+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz\n"
+"X-Loco-Source-Locale: en\n"
+"X-Loco-Project-Id: 74461\n"
+"X-Loco-Api-Version: 1.0.24 20191119-1"
+
+#: manifest_page.php:7 omniva-woocommerce.php:1363 omniva-woocommerce.php:1364
+#: loco:5d666814c38e0f32ef1fdad1
+msgid "Omniva manifest"
+msgstr ""
+
+#: manifest_page.php:25 loco:5d666814c38e0f32ef1fdad2
+msgid "Call Omniva courier"
+msgstr ""
+
+#: manifest_page.php:74 loco:5d666814c38e0f32ef1fdad4
+msgid "Order #"
+msgstr ""
+
+#: manifest_page.php:75 loco:5d666814c38e0f32ef1fdad5
+msgid "Manifest generation date"
+msgstr ""
+
+#: manifest_page.php:94 loco:5d666814c38e0f32ef1fdad6
+msgid "Print label"
+msgstr ""
+
+#: manifest_page.php:95 manifest_page.php:119 manifest_page.php:120
+#: loco:5d666814c38e0f32ef1fdad7
+msgid "Print labels"
+msgstr ""
+
+#: manifest_page.php:116 manifest_page.php:117 loco:5d666814c38e0f32ef1fdad8
+msgid "Generate manifest"
+msgstr ""
+
+#: manifest_page.php:137 manifest_page.php:154 loco:5d666814c38e0f32ef1fdad9
+msgid "Select orders"
+msgstr ""
+
+#: manifest_page.php:170 loco:5d666814c38e0f32ef1fdada
+msgid "No assign shipments found"
+msgstr ""
+
+#: omniva-woocommerce.php:142 loco:5d666814c38e0f32ef1fdadb
+msgid "Select terminal"
+msgstr ""
+
+#: omniva-woocommerce.php:143 omniva-woocommerce.php:1451
+#: loco:5d666814c38e0f32ef1fdadc
+msgid "Enter postcode"
+msgstr ""
+
+#: omniva-woocommerce.php:144 loco:5d666814c38e0f32ef1fdadd
+msgid "Place not found"
+msgstr ""
+
+#: omniva-woocommerce.php:145 loco:5d666814c38e0f32ef1fdade
+msgid "Enter postcode/address"
+msgstr ""
+
+#: omniva-woocommerce.php:146 omniva-woocommerce.php:1262
+#: loco:5d666814c38e0f32ef1fdadf
+msgid "Show in map"
+msgstr ""
+
+#: omniva-woocommerce.php:147 loco:5d666814c38e0f32ef1fdae0
+msgid "Show more"
+msgstr ""
+
+#: omniva-woocommerce.php:203 loco:5d666814c38e0f32ef1fdae1
+msgid "Omniva Shipping"
+msgstr ""
+
+#: omniva-woocommerce.php:204 loco:5d666814c38e0f32ef1fdae2
+msgid "Shipping Method for Omniva"
+msgstr ""
+
+#: omniva-woocommerce.php:217 loco:5d666814c38e0f32ef1fdae3
+msgid "Omnivalt Shipping"
+msgstr ""
+
+#: omniva-woocommerce.php:268 loco:5d666814c38e0f32ef1fdae4
+msgid "Enable"
+msgstr ""
+
+#: omniva-woocommerce.php:270 loco:5d666814c38e0f32ef1fdae5
+msgid "Enable this shipping."
+msgstr ""
+
+#: omniva-woocommerce.php:274 loco:5d666814c38e0f32ef1fdae6
+msgid "Api URL"
+msgstr ""
+
+#: omniva-woocommerce.php:279 loco:5d666814c38e0f32ef1fdae7
+msgid "Api user"
+msgstr ""
+
+#: omniva-woocommerce.php:283 loco:5d666814c38e0f32ef1fdae8
+msgid "Api user password"
+msgstr ""
+
+#: omniva-woocommerce.php:287 loco:5d666814c38e0f32ef1fdae9
+msgid "Company name"
+msgstr ""
+
+#: omniva-woocommerce.php:291 loco:5d666814c38e0f32ef1fdaea
+msgid "Bank account"
+msgstr ""
+
+#: omniva-woocommerce.php:295 loco:5d666814c38e0f32ef1fdaeb
+msgid "Shop name"
+msgstr ""
+
+#: omniva-woocommerce.php:299 loco:5d666814c38e0f32ef1fdaec
+msgid "Shop city"
+msgstr ""
+
+#: omniva-woocommerce.php:303 loco:5d666814c38e0f32ef1fdaed
+msgid "Shop address"
+msgstr ""
+
+#: omniva-woocommerce.php:307 loco:5d666814c38e0f32ef1fdaee
+msgid "Shop postcode"
+msgstr ""
+
+#: omniva-woocommerce.php:311 loco:5d666814c38e0f32ef1fdaef
+msgid "Shop country code"
+msgstr ""
+
+#: omniva-woocommerce.php:315 loco:5d666814c38e0f32ef1fdaf0
+msgid "Shop phone number"
+msgstr ""
+
+#: omniva-woocommerce.php:319 loco:5d666814c38e0f32ef1fdaf1
+msgid "Pick up time start"
+msgstr ""
+
+#: omniva-woocommerce.php:323 loco:5d666814c38e0f32ef1fdaf2
+msgid "Pick up time end"
+msgstr ""
+
+#: omniva-woocommerce.php:327 loco:5d666814c38e0f32ef1fdaf3
+msgid "Send off type"
+msgstr ""
+
+#: omniva-woocommerce.php:329 loco:5d666814c38e0f32ef1fdaf4
+msgid "Send from store type."
+msgstr ""
+
+#: omniva-woocommerce.php:331 omniva-woocommerce.php:336
+#: loco:5d666814c38e0f32ef1fdaf5
+msgid "Parcel terminal"
+msgstr ""
+
+#: omniva-woocommerce.php:332 omniva-woocommerce.php:341
+#: loco:5d666814c38e0f32ef1fdaf6
+msgid "Courrier"
+msgstr ""
+
+#: omniva-woocommerce.php:338 loco:5d666814c38e0f32ef1fdaf7
+msgid "Show parcel terminal method in checkout."
+msgstr ""
+
+#: omniva-woocommerce.php:343 loco:5d666814c38e0f32ef1fdaf8
+msgid "Show courrier method in checkout."
+msgstr ""
+
+#: omniva-woocommerce.php:346 omniva-woocommerce.php:378
+#: omniva-woocommerce.php:410 loco:5d666814c38e0f32ef1fdaf9
+msgid "Courrier price"
+msgstr ""
+
+#: omniva-woocommerce.php:354 omniva-woocommerce.php:386
+#: omniva-woocommerce.php:418 loco:5d666814c38e0f32ef1fdafa
+msgid "Parcel terminal price"
+msgstr ""
+
+#: omniva-woocommerce.php:362 omniva-woocommerce.php:394
+#: omniva-woocommerce.php:426 loco:5d666814c38e0f32ef1fdafb
+msgid "Free shipping then price is higher (Terminals)"
+msgstr ""
+
+#: omniva-woocommerce.php:370 omniva-woocommerce.php:402
+#: omniva-woocommerce.php:434 loco:5d666814c38e0f32ef1fdafc
+msgid "Free shipping then price is higher (Courier)"
+msgstr ""
+
+#: omniva-woocommerce.php:442 loco:5d666814c38e0f32ef1fdafd
+msgid "Weight (kg)"
+msgstr ""
+
+#: omniva-woocommerce.php:447 loco:5d666814c38e0f32ef1fdafe
+msgid "Maximum allowed weight"
+msgstr ""
+
+#: omniva-woocommerce.php:451 loco:5d666814c38e0f32ef1fdaff
+msgid "Map"
+msgstr ""
+
+#: omniva-woocommerce.php:453 loco:5d666814c38e0f32ef1fdb00
+msgid "Show map of terminals."
+msgstr ""
+
+#: omniva-woocommerce.php:505 omniva-woocommerce.php:1399
+#: loco:5d666814c38e0f32ef1fdb01
+msgid "Omniva parcel terminal"
+msgstr ""
+
+#: omniva-woocommerce.php:531 loco:5d666814c38e0f32ef1fdb02
+msgid "Omniva courrier"
+msgstr ""
+
+#: omniva-woocommerce.php:768 omniva-woocommerce.php:864
+#: loco:5d666814c38e0f32ef1fdb03
+msgid "Response is in the wrong format"
+msgstr ""
+
+#: omniva-woocommerce.php:800 omniva-woocommerce.php:885
+#: loco:5d666814c38e0f32ef1fdb04
+msgid "No saved barcodes received"
+msgstr ""
+
+#: omniva-woocommerce.php:916 omniva-woocommerce.php:1003
+#: loco:5d666814c38e0f32ef1fdb05
+msgid "Shipping method is not Omniva"
+msgstr ""
+
+#: omniva-woocommerce.php:934 loco:5d666814c38e0f32ef1fdb06
+msgid "Omniva label generated"
+msgstr ""
+
+#: omniva-woocommerce.php:1174 loco:5d666814c38e0f32ef1fdb07
+#, php-format
+msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
+msgstr ""
+
+#: omniva-woocommerce.php:1215 loco:5d666814c38e0f32ef1fdb08
+msgid "Select parcel terminal"
+msgstr ""
+
+#: omniva-woocommerce.php:1262 loco:5d666814c38e0f32ef1fdb09
+msgid "Show parcel terminals map"
+msgstr ""
+
+#: omniva-woocommerce.php:1289 loco:5d666814c38e0f32ef1fdb0a
+msgid "Print Omniva labels"
+msgstr ""
+
+#: omniva-woocommerce.php:1290 loco:5d666814c38e0f32ef1fdb0b
+msgid "Print Omniva manifest"
+msgstr ""
+
+#: omniva-woocommerce.php:1332 loco:5d666814c38e0f32ef1fdb0c
+msgid "Generate Omniva label"
+msgstr ""
+
+#: omniva-woocommerce.php:1334 loco:5d666814c38e0f32ef1fdb0d
+msgid "VIew Omniva label"
+msgstr ""
+
+#: omniva-woocommerce.php:1398 loco:5d666814c38e0f32ef1fdb0e
+msgid "Parcel terminal not found!!!"
+msgstr ""
+
+#: omniva-woocommerce.php:1407 loco:5d666814c38e0f32ef1fdb0f
+msgid "Please select parcel terminal."
+msgstr ""
+
+#: omniva-woocommerce.php:1443 loco:5d666814c38e0f32ef1fdb10
+msgid "Omniva parcel terminals"
+msgstr ""
+
+#: omniva-woocommerce.php:1448 loco:5d666814c38e0f32ef1fdb11
+msgid "Parcel terminals addresses"
+msgstr ""
+
+#: omniva-woocommerce.php:1456 loco:5d666814c38e0f32ef1fdb12
+msgid "Back"
+msgstr ""
+
+#. Name of the plugin
+#: loco:5d666814c38e0f32ef1fdb13
+msgid "Omniva shipping"
+msgstr ""
+
+#. Description of the plugin
+#: loco:5d666814c38e0f32ef1fdb14
+msgid "Omniva shipping plugin for WooCommerce"
+msgstr ""
+
+#. Author of the plugin
+#: loco:5d666814c38e0f32ef1fdb15
+msgid "Omniva"
+msgstr ""
+
+#: loco:5d666d1ced0cfa08da0bb764
+msgid "Omniva courier called"
+msgstr ""
+
+#: loco:5d666d92ed0cfa08d6661a58
+msgid "There was an error calling Omniva courier"
+msgstr ""
+
+#: loco:5d97523ced0cfa0a7515e022
+msgid "Important!"
+msgstr ""
+
+#: loco:5d97527bed0cfa0a650252c3
+msgid "Address and contact information can be changed in Omniva settings."
+msgstr ""
+
+#: loco:5d975312ed0cfa0a8565a0d4
+msgid "Latest call for same day pickup is until 3 pm."
+msgstr ""
+
+#: loco:5dd508664d3dd70af955e9e2
+msgid "All orders"
+msgstr ""
+
+#: loco:5dd508804d3dd70a2a2f3394
+msgid "New orders"
+msgstr ""
+
+#: loco:5dd5088d4d3dd709fb388272
+msgid "Completed orders"
+msgstr ""
+
+#: loco:5dd508974d3dd70a8369b4b2
+msgid "ID"
+msgstr ""
+
+#: loco:5dd5089f4d3dd70a626d4462
+msgid "Customer"
+msgstr ""
+
+#: loco:5dd508aa4d3dd70a3c66d982
+msgid "Order status"
+msgstr ""
+
+#: loco:5dd508b44d3dd70a555094d5
+msgid "Service"
+msgstr ""
+
+#: loco:5dd508bc4d3dd70af955e9e4
+msgid "Barcode"
+msgstr ""
+
+#: loco:5dd509124d3dd70a3b705674
+msgid "Manifest date"
+msgstr ""
+
+#: loco:5dd509244d3dd70a8369b4b4
+msgid "Filter"
+msgstr ""
+
+#: loco:5dd5092c4d3dd70a5620dab5
+msgid "Reset"
+msgstr ""
+
+#: loco:5dd65b0ec38e0f2ace485f85
+msgid "From"
+msgstr ""
+
+#: loco:5dd65b1bc38e0f2ad14e6d83
+msgid "To"
+msgstr ""
+
+#: loco:5e3d42dc4d3dd7212a2a67d4
+msgid "Omniva tracking number"
+msgstr ""
+
+#: loco:5e3d436b4d3dd721a4708b43
+msgid "You can track your parcel with this number"
+msgstr ""

@@ -901,8 +901,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $count = 0;
           $label_count = 0;
           require_once(plugin_dir_path(__FILE__) . 'tcpdf/tcpdf.php');
-          require_once(plugin_dir_path(__FILE__) . 'fpdi/autoload.php');
-          $pdf = new \setasign\Fpdi\TcpdfFpdi('P');
+          require_once(plugin_dir_path(__FILE__) . 'fpdi/src/autoload.php');
+          $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('P');
           $pdf->setPrintHeader(false);
           $pdf->setPrintFooter(false);
           if (!is_array($orderIds))
@@ -968,7 +968,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               $label_count++;
               //$tplidx = $pdf->ImportPage($i);
               //$s = $pdf->getTemplatesize($tplidx);
-              //$pdf->AddPage('P', array($s['w'], $s['h']));
+              //$pdf->AddPage('P', array($s['width'], $s['height']));
               //$pdf->useTemplate($tplidx);
             }
             $count++;
@@ -1409,7 +1409,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       'woocommerce',
       __('Omniva manifest', 'omnivalt'),
       __('Omniva manifest', 'omnivalt'),
-      'manage_options',
+      'manage_woocommerce',
       'omniva-manifest',
       'manifest_page',
       //plugins_url('omniva-woocommerce/images/icon.png'),

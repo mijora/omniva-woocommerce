@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 1.5.8 =
+* Updated PDF libraries
+* Omniva manifest page now requires manage_woocommerce permission to be shown
+
+= 1.5.7 =
+* Fixes label error display bug in manifest page
+
 = 1.5.6 =
 * Fixes to support Woocommerce 4.0.0
 * Workaround to how terminals stringification is done - as in rare cases PHP stringified json becomes invalid after reaching client.
