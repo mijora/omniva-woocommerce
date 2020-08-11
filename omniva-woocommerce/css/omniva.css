@@ -127,7 +127,7 @@ padding:0px; margin:0px;
     color: white;
 }
 #map-search-button {
-  background-image:url("../search-w.png");
+  background-image:url("../images/search-w.png");
   background-repeat: no-repeat;
   background-size: 20px 20px;
   background-position: center center;  
@@ -606,7 +606,7 @@ padding:0px; margin:0px;
     height: 14px;
     top: 6px;
     left: 0px;
-    background-image:url("../back.png");
+    background-image:url("../images/back.png");
     background-size: contain;
     position: absolute;
 }
