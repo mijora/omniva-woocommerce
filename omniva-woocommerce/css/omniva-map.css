@@ -1,0 +1,686 @@
+/**
+* Map
+**/
+.omniva-terminal-container *, .omniva-modal * {
+  box-sizing: border-box;
+}
+
+.omniva-modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  -webkit-animation-name: fadeIn;
+  -webkit-animation-duration: 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s;
+  z-index: 9999;
+}
+
+.omniva-modal-content {
+  z-index: 20;
+  position: fixed;
+  top: 10%;
+  left: 5%;
+  background-color: #fefefe;
+  border-radius: 5px;
+  width: 90%;
+  height: 80%;
+  -webkit-animation-name: slideIn;
+  -webkit-animation-duration: 0.4s;
+  animation-name: slideIn;
+  animation-duration: 0.4s;
+}
+
+.omniva-modal-close {
+  color: #969696;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 0px;
+  right: 20px;
+}
+
+.omniva-modal-close:hover, .omniva-modal-close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.omniva-modal-header {
+  padding-top: 4px;
+  padding-left: 26px;
+  padding-right: 4px;
+  color: black;
+  height: 7%;
+  /* prefixed to work with IE10 and Android <4.4 */
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  align-items: center;
+}
+
+.omniva-modal-header h5 {
+  display: inline;
+  padding: 0px;
+  margin: 0px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.omniva-modal-body {
+  padding: 10px;
+  height: 92%;
+}
+
+.omniva-modal-footer {
+  height: 6%;
+  align-items: center;
+}
+
+@-webkit-keyframes slideIn {
+  from {
+    bottom: -300px;
+    opacity: 0
+  }
+  to {
+    bottom: 0;
+    opacity: 1
+  }
+}
+
+@keyframes slideIn {
+  from {
+    bottom: -300px;
+    opacity: 0
+  }
+  to {
+    bottom: 0;
+    opacity: 1
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0
+  }
+  to {
+    opacity: 1
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0
+  }
+  to {
+    opacity: 1
+  }
+}
+
+.omniva-modal-search-btn {
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position: center center;
+  outline: none;
+  border: 0;
+  border-radius: 0 3px 3px 0;
+  height: 36px;
+  width: 30px;
+  margin-left: -30px;
+  display: block;
+  float: left;
+  background-color: #ff6319;
+}
+
+.omniva-li, .omniva-li a {
+  font-size: 15px;
+  color: black;
+}
+
+.omniva-li:hover {
+  cursor: pointer;
+  color: #555;
+}
+
+.omniva-li .omniva-details {
+  text-align: left;
+}
+
+.omniva-modal-content .omniva-terminals-listing {
+  margin: 0px;
+  padding: 0px;
+  color: black;
+}
+
+.omniva-modal-content .omniva-terminals-listing li {
+  padding: 5px;
+  border-radius: 4px;
+  list-style-type: none;
+  width: 100%;
+}
+
+.omniva-modal-content .omniva-terminals-listing li:nth-child(even) {
+  background: #f2f2f2;
+}
+
+.omniva-select-terminal-btn {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  border-radius: 2px;
+  font-size:14px;
+  padding:0px 5px;
+  margin-bottom:10px;
+  margin-top:5px;
+  height:25px;
+}
+
+.omniva-select-terminal-btn:hover {
+  background-color: #555555;
+  color: white;
+}
+
+.omniva-map-container {
+  width: 59%;
+  height: 100%;
+  border: 1px solid black;
+  background-color: lightgray;
+  float: left;
+}
+
+.omniva-map {
+  width: 100%;
+  height: 100%;
+}
+
+.omniva-search-bar {
+  width: 40%;
+  min-height: 400px;
+  padding: 0px 10px;
+  float: left;
+  overflow: hidden;
+  padding-left: 26px;
+}
+
+.omniva-search-bar h4 {
+  margin-top: 0px;
+}
+
+/** Tooltips*/
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: black;
+  opacity: 0.9;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 110%;
+  left: 50%;
+  margin-left: -100px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+/*
+ * Custom scrollbar 
+ **/
+
+.omniva-scrollbar {
+  overflow: auto;
+  display: inline-block;
+  vertical-align: top;
+  height: inherit;
+  width: 100%;
+  max-height: 50vh;
+  position: relative;
+  margin-top: 5px;
+}
+
+.omniva-scrollbar-style-8::-webkit-scrollbar-track {
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+}
+
+.omniva-scrollbar-style-8::-webkit-scrollbar {
+  width: 5px;
+  background-color: rgba(0, 0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+}
+
+.omniva-scrollbar-style-8::-webkit-scrollbar-thumb {
+  border: 1px solid #000000;
+  border-radius: 5px;
+  background-color: #000000;
+}
+
+ol li {
+  list-style-type: decimal;
+  list-style-type: upper-roman;
+}
+
+.omniva-modal-content form {
+  margin-bottom: 10px;
+}
+
+.omniva-search {
+  position: relative;
+}
+
+.omniva-search form:after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
+.omniva-search form input {
+  width: 100%;
+  padding: 2px 10px;
+  padding-right: 40px;
+  border: 1px solid #555;
+  border-radius: 3px;
+  line-height: 30px;
+  height: 36px;
+  display: block;
+  float: left;
+  background-color: #ffffff;
+}
+
+.omniva-autocomplete {
+  position: absolute;
+  background: #fff;
+  z-index: 9;
+  border: 1px solid #ccc;
+  top: 30px;
+  max-width: 100%;
+}
+
+.omniva-autocomplete ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.omniva-autocomplete ul li {
+  cursor: pointer;
+  padding: 5px;
+  border-bottom: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.omniva-autocomplete ul li:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.omniva-autocomplete ul li:hover {
+  background-color: #efefef;
+  ;
+}
+
+@keyframes bounce {
+  from {
+    top: 0px;
+  }
+  to {
+    top: -8px;
+  }
+}
+
+@-webkit-keyframes bounce {
+  from {
+    top: 0px;
+  }
+  to {
+    top: -8px;
+  }
+}
+
+.omniva-map img.active {
+  animation: bounce 0.7s infinite alternate;
+  -webkit-animation: bounce 0.7s infinite alternate;
+}
+
+.omniva-back-to-list {
+  cursor: pointer;
+  padding: 2px 10px;
+  width: auto;
+  display: inline-block;
+  font-size: 14px;
+  position: relative;
+  padding-left: 18px;
+}
+
+.omniva-back-to-list:before {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 14px;
+  top: 6px;
+  left: 0px;
+  /* background-image: url("../../../image/omniva/back.png"); */
+  background-size: contain;
+  position: absolute;
+}
+
+/**
+* Terminal container
+**/
+
+.omniva-btn {
+  max-height: 30px;
+  line-height: 100%;
+  position: relative;
+  padding: 5px;
+  padding-right: 30px;
+  margin-top: 5px;
+  width: 100%;
+  max-width: 500px;
+  font-size: 12px;
+  font-weight: 900;
+  color: #333333;
+  background-color: #EEEEEE;
+}
+
+.omniva-btn:hover {
+  background-color: #d5d5d5;
+}
+
+.omniva-btn img {
+  max-height: 20px;
+  display: inline-block;
+  right: 10px;
+  position: absolute;
+  /* top: 5px; */
+  bottom: 0;
+}
+
+.omniva-terminal-container {
+  position: relative;
+  max-width: 500px;
+}
+
+.omniva-loading-overlay {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  border: none;
+  margin: 0px;
+  padding: 0px;
+  background: rgb(255, 255, 255);
+  opacity: 0.6;
+  cursor: default;
+}
+
+.omniva-loading-overlay:before {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\f110";
+  -webkit-animation: fa-spin .75s linear infinite;
+  animation: fa-spin .75s linear infinite;
+  height: 30px;
+  width: 30px;
+  line-height: 30px;
+  font-size: 30px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -15px;
+  margin-top: -15px;
+  color: #EE3840;
+}
+
+/* omniva terminal selection */
+
+.omniva-terminals-list {
+  background-color: #fff;
+  position: relative;
+  max-width: 500px;
+}
+
+.omniva-terminals-list .omniva-inner-container {
+  position: absolute;
+  background: #fff;
+  z-index: 100;
+  border: 1px solid #aaa;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  width: 100%;
+}
+
+.omniva-terminals-list .omniva-dropdown {
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  word-wrap: normal;
+  overflow: hidden;
+  height: 24px;
+  line-height: 20px;
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  padding: 2px 20px 2px 5px;
+}
+
+.omniva-terminals-list.open .omniva-dropdown {
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+
+.omniva-terminals-list .dropdown:before {
+  position: absolute;
+  content: "";
+  right: 0px;
+  width: 20px;
+  height: 100%;
+  top: 0;
+  background-color: #fff;
+}
+
+.omniva-terminals-list .omniva-dropdown:after {
+  position: absolute;
+  content: "";
+  border-color: #888 transparent transparent transparent;
+  border-style: solid;
+  border-width: 5px 4px 0 4px;
+  height: 0;
+  right: 7px;
+  margin-left: -4px;
+  margin-top: -2px;
+  position: absolute;
+  top: 50%;
+  width: 0;
+}
+
+.omniva-terminals-list.open .omniva-dropdown:after {
+  border-color: transparent transparent #888 transparent;
+  border-width: 0px 4px 5px 4px;
+}
+
+.omniva-terminals-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 200px;
+  overflow-y: auto;
+}
+
+.omniva-terminals-list ul li {
+  background: none;
+  border-radius: 0;
+  border: none;
+  padding: 3px 5px;
+  margin: 0;
+  cursor: pointer;
+  line-height: 17px;
+  font-size: 15px;
+  padding-left: 10px;
+}
+
+.omniva-terminals-list ul li.omniva-city {
+  font-weight: 600;
+  padding-left: 5px;
+}
+
+.omniva-terminals-list ul li.selected {
+  background-color: #ddd;
+}
+
+.omniva-terminals-list ul li a {
+  text-decoration: underline;
+}
+
+.omniva-terminals-list ul li:hover a, .omniva-terminals-list ul li:hover {
+  background-color: #0073aa;
+  color: #ffffff;
+}
+
+.omniva-terminals-list .omniva-search-input[type='text']:focus,
+.omniva-terminals-list .omniva-search-input[type='text']:hover,
+.omniva-terminals-list .omniva-search-input[type='text']:active,
+.omniva-terminals-list .omniva-search-input[type='text'] {
+  display: inline-block;
+  padding: 2px 5px;
+  width: 100%;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 4px;
+  background-color: #ff6319;
+  color: #ffffff;
+}
+
+.omniva-terminals-list .omniva-search-input::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: inherit;
+  opacity: 1;
+  /* Firefox */
+}
+
+.omniva-terminals-list .omniva-search-input:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: inherit;
+}
+
+.omniva-terminals-list .omniva-search-input::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: inherit;
+}
+
+.omniva-terminals-list .omniva-show-more {
+  padding: 5px;
+  text-align: center;
+}
+
+/**
+ * Media queries
+ **/
+ @media only screen and (max-width: 768px) {
+  .omniva-modal-content {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .omniva-map-container {
+    width: 100%;
+    height: 50%;
+  }
+  .omniva-modal-body {
+    padding: 0;
+  }
+  .omniva-found-terminals.omniva-scrollbar {
+    max-height: 30vh;
+  }
+  .omniva-terminal-container {
+    min-width: 170px;
+  }
+  .omniva-search input {
+    width: calc(100% - 50px);
+  }
+}
+
+ @media only screen and (max-width: 808px) {
+  .omniva-map-container {
+    width: 99%;
+    height: 30%;
+    border: 1px solid black;
+    background-color: lightgray;
+  }
+  .omniva-search-bar {
+    width: 99%;
+    margin-top: 5px;
+    padding: 10px 10px 0px;
+    overflow: hidden;
+  }
+
+  .omniva-scrollbar {
+    overflow: auto;
+    display: inline-block;
+    vertical-align: top;
+    height: inherit;
+    max-height: 30vh;
+    /* position: relative; */
+    width: 100%;
+    margin-top: 5px;
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .omniva-modal-content {
+    z-index: 20;
+    position: fixed;
+    top: 10%;
+    left: 15%;
+    background-color: #fefefe;
+    border-radius: 5px;
+    width: 65%;
+    height: 60%;
+    -webkit-animation-name: slideIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: slideIn;
+    animation-duration: 0.4s;
+  }
+  .omniva-scrollbar {
+    max-height: 40vh;
+  }
+}

@@ -17,7 +17,7 @@ if (!defined('WPINC')) {
 add_action( 'init', 'omnivalt_load_textdomain' );
 
 function omnivalt_load_textdomain() {
-  load_plugin_textdomain( 'omnivalt', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
+  load_plugin_textdomain( 'omnivalt', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 }
 
 function omnivalt_notices(){
@@ -109,58 +109,38 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
       //wp_enqueue_style('esri-classes', 'https://js.arcgis.com/4.10/esri/css/main.css');
 
+        wp_enqueue_script('omniva-map', plugins_url('/js/omniva-map.js?20190625', __FILE__), array('jquery'));
+        wp_enqueue_script('omniva', plugins_url('/js/omniva.js?20190625', __FILE__), array('jquery'));
 
-      /*
-      wp_enqueue_script('omniva', plugins_url('/js/omnivalt.js', __FILE__) , array(
-        'jquery'
-      ));
-      */
+        wp_enqueue_style('omniva-map', plugins_url('/css/omniva-map.css?20190530', __FILE__));
+//        wp_enqueue_style('omniva', plugins_url('/css/omniva.css?20190530', __FILE__));
 
-      wp_enqueue_script('omniva', plugins_url('/js/omniva.js?20190625', __FILE__), array(
-        'jquery'
-      ));
+        wp_enqueue_script('leaflet', plugins_url('/js/leaflet.js', __FILE__), array('jquery'), null, true);
+        wp_enqueue_style('leaflet', plugins_url('/css/leaflet.css', __FILE__));
 
-      wp_enqueue_style('omniva', plugins_url('/css/omniva.css?20190530', __FILE__));
-      /*
-      wp_localize_script('omniva', 'omnivadata', array(
-        'ajax_url' => admin_url('admin-ajax.php')
-      ));
-      */
-      /*
-      wp_enqueue_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js', array(
-        'jquery'
-      ));
-      wp_enqueue_style('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css');
-      */
-      wp_enqueue_script('leaflet', plugins_url('/js/leaflet.js', __FILE__), array('jquery'), null, true);
-      wp_enqueue_style('leaflet', plugins_url('/css/leaflet.css', __FILE__));
-
-      //wp_enqueue_style('icons-classes', 'https://use.fontawesome.com/releases/v5.3.1/css/all.css');
-      //wp_register_script('secondscript', 'https://js.arcgis.com/4.11/', array('jquery'), null, true);
-      //wp_enqueue_script('secondscript');
-
-      //wp_enqueue_script('omniva-map', plugins_url('/js/omnivaMap.js?20190530', __FILE__) , array('jquery'),null,true);      
-
-      wp_localize_script('omniva', 'omnivadata', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'omniva_plugin_url' => plugin_dir_url(__FILE__),
-        'text_select_terminal' => __('Select terminal', 'omnivalt'),
-        'text_search_placeholder' => __('Enter postcode', 'omnivalt'),
-        'not_found' => __('Place not found', 'omnivalt'),
-        'text_enter_address' => __('Enter postcode/address', 'omnivalt'),
-        'text_show_in_map' => __('Show in map', 'omnivalt'),
-        'text_show_more' => __('Show more', 'omnivalt'),
-      ));
+        wp_localize_script('omniva', 'omnivadata', array(
+            'add_terminal_to_session' => admin_url( 'admin-ajax.php?action=add_terminal_to_session' ),
+            'path_to_img' => plugin_dir_url(__FILE__) . 'images/omniva/',
+            'is_in_cart' => is_cart(),
+            'modal_header' => __('Omniva terminals', 'omnivalt'),
+            'search_bar_title' => __('Omniva addresses', 'omnivalt'),
+            'select_terminal' => __('Select terminal', 'omnivalt'),
+            'place_not_found' => __('Place not found', 'omnivalt'),
+            'search_bar_placeholder' => __('Enter postcode/address', 'omnivalt'),
+            'show_on_map' => __('Show on map', 'omnivalt'),
+            'show_more' => __('Show more', 'omnivalt')
+        ));
     }
   }
 
-  add_action('wp_footer', 'footer_modal');
-  function footer_modal()
-  {
-    if (is_cart() || is_checkout()) {
-      echo terminalsModal();
-    }
-  }
+//  add_action('wp_footer', 'footer_modal');
+//  function footer_modal()
+//  {
+//    if (is_cart() || is_checkout()) {
+//      echo terminalsModal();
+//    }
+//  }
+
   function add_asyncdefer_attribute($tag, $handle)
   {
     if (strpos($handle, 'async') !== false) {
@@ -186,8 +166,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   add_action('wp_ajax_add_terminal_to_session', 'add_terminal_to_session');
   function add_terminal_to_session()
   {
-    if (isset($_POST['terminal_id']) && is_numeric($_POST['terminal_id'])) WC()->session->set('omnivalt_terminal_id', $_POST['terminal_id']);
-    wp_die();
+    if (isset($_POST['terminal_id']) && is_numeric($_POST['terminal_id'])) {
+        WC()->session->set('omnivalt_terminal_id', $_POST['terminal_id']);
+        wp_send_json_success();
+    } else {
+        wp_send_json_error();
+    }
+      wp_die();
   }
 
   function omnivalt_shipping_method()
@@ -1134,20 +1119,21 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     return $methods;
   }
 
-  add_action('woocommerce_after_shipping_rate', 'omnivalt_show_terminals');
-  function omnivalt_show_terminals($method)
+    add_action('woocommerce_after_shipping_rate', 'omnivalt_show_terminals');
+    function omnivalt_show_terminals($method)
   {
-    $customer = WC()->session->get('customer');
-    $country = "ALL";
-    if (isset($customer['country']))
-      $country = $customer['country'];
-    $termnal_id = WC()->session->get('omnivalt_terminal_id');
-    if (($method->id == "omnivalt_pt" && !isset($_POST['shipping_method'][0])) || ($method->id == "omnivalt_pt" && isset($_POST['shipping_method'][0]) && $_POST['shipping_method'][0] == "omnivalt_pt")) {
-      echo omnivaltGetTerminalsOptions($termnal_id, $country);
-    }
+      if (($method->id == "omnivalt_pt" && !isset($_POST['shipping_method'][0])) || ($method->id == "omnivalt_pt" && isset($_POST['shipping_method'][0]) && $_POST['shipping_method'][0] == "omnivalt_pt")) {
+          $session = WC()->session;
+          $customer = $session->customer;
+          $country = "ALL";
+          if (isset($customer['country']))
+              $country = $customer['country'];
+          $termnal_id = $session->omnivalt_terminal_id;
+          echo omnivaltGetTerminalsOptions($termnal_id, $country);
+      }
   }
 
-  add_action('woocommerce_checkout_update_order_meta', 'add_terminal_id_to_order');
+    add_action('woocommerce_checkout_update_order_meta', 'add_terminal_id_to_order');
   function add_terminal_id_to_order($order_id)
   {
     if (isset($_POST['omnivalt_terminal']) && $order_id) {
@@ -1190,50 +1176,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
   function omnivaltGetTerminalsOptions($selected = '', $country = "ALL")
   {
-    $terminals_json_file_dir = dirname(__file__) . '/' . "locations.json";
-    $terminals_file = fopen($terminals_json_file_dir, "r");
-    $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
-    fclose($terminals_file);
-    $terminals = json_decode($terminals, true);
-    $parcel_terminals = '';
-    if (is_array($terminals)) {
-      $grouped_options = array();
-      foreach ($terminals as $terminal) {
-        if (intval($terminal['TYPE']) == 1) {
-          continue;
-        }
-        if ($terminal['A0_NAME'] != $country && $country != "ALL") continue;
-        if (!isset($grouped_options[$terminal['A1_NAME']])) $grouped_options[(string) $terminal['A1_NAME']] = array();
-        $grouped_options[(string) $terminal['A1_NAME']][(string) $terminal['ZIP']] = $terminal['NAME'];
-      }
-      $counter = 0;
-      foreach ($grouped_options as $city => $locs) {
-        $parcel_terminals .= '<optgroup data-id = "' . $counter . '" label = "' . $city . '">';
-        foreach ($locs as $key => $loc) {
-          $parcel_terminals .= '<option value = "' . $key . '" ' . ($key == $selected ? 'selected' : '') . '>' . $loc . '</option>';
-        }
-
-        $parcel_terminals .= '</optgroup>';
-        $counter++;
-      }
-    }
-
-    $nonce = wp_create_nonce("omniva_terminals_json_nonce");
-    $parcel_terminals = '<option value = "">' . __('Select parcel terminal', 'omnivalt') . '</option>' . $parcel_terminals;
-    $script = "<script>var omniva_current_country = '" . $country . "';
-      var omnivaTerminals = JSON.stringify(" . json_encode(getTerminalForMap('', $country)) . ");
-      jQuery('document').ready(function($){        
-        
-        $('.omnivalt_terminal').omniva();
-        $(document).trigger('omnivalt.checkpostcode');
-              });</script>";
-    $button = '';
-    $omniva_settings = get_option('woocommerce_omnivalt_settings');
-    if (!isset($omniva_settings['show_map']) || isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == "yes") {
-      $button = '<button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn" style = "display: none;">' . __('Show in map', 'omnivalt') . '<img src = "' . plugin_dir_url(__FILE__) . '/sasi.png" title = "' . __("Show parcel terminals map", "omnivalt") . '"/></button>';
-    }
-    return '<div class = "terminal-container"><select class = "omnivalt_terminal" name = "omnivalt_terminal">' . $parcel_terminals . '</select>
-      ' . $button . ' </div>' . $script;
+    return "
+    <script>
+        var omniva_selected_terminal = '$selected';
+        var omniva_country = '$country';
+        var omniva_terminals = JSON.parse('".json_encode(getTerminalForMap('', $country))."');
+    </script>";
   }
 
   function omnivaltTerminalName($terminal_code)
@@ -1753,4 +1701,4 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     die();
   }
 
-} 
+}
