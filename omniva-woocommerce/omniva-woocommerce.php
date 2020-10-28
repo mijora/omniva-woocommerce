@@ -635,9 +635,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             $client_address = '<address ' . $parcel_terminal . ' />';
           else
 	*/
-          $client_address = '<address postcode="' . get_post_meta($id_order, '_shipping_postcode', true) . '" ' . $parcel_terminal . ' deliverypoint="' . get_post_meta($id_order, '_shipping_city', true) . '" country="' . get_post_meta($id_order, '_shipping_country', true) . '" street="' . get_post_meta($id_order, '_shipping_address_1', true) . '" />';
+          $client_address = '<address postcode="' . $this->clean(get_post_meta($id_order, '_shipping_postcode', true)) . '" ' . $parcel_terminal . ' deliverypoint="' . $this->clean(get_post_meta($id_order, '_shipping_city', true)) . '" country="' . $this->clean(get_post_meta($id_order, '_shipping_country', true)) . '" street="' . $this->clean(get_post_meta($id_order, '_shipping_address_1', true)) . '" />';
           $phones = '';
-          if ($mobile = get_post_meta($id_order, '_billing_phone', true)) $phones .= '<mobile>' . $mobile . '</mobile>';
+          if ($mobile = $this->clean(get_post_meta($id_order, '_billing_phone', true))) $phones .= '<mobile>' . $mobile . '</mobile>';
           $pickStart = $this->settings['pick_up_start'] ? $this->settings['pick_up_start'] : '8:00';
           $pickFinish = $this->settings['pick_up_end'] ? $this->settings['pick_up_end'] : '17:00';
           $pickDay = date('Y-m-d');
@@ -661,7 +661,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                             <measures weight="' . $weight . '" />
                             ' . self::cod($order, $is_cod, get_post_meta($id_order, '_order_total', true)) . '
                             <receiverAddressee >
-                               <person_name>' . get_post_meta($id_order, '_shipping_first_name', true) . ' ' . get_post_meta($id_order, '_shipping_last_name', true) . '</person_name>
+                               <person_name>' . $this->clean(get_post_meta($id_order, '_shipping_first_name', true)) . ' ' . $this->clean(get_post_meta($id_order, '_shipping_last_name', true)) . '</person_name>
                               ' . $phones . '
                               ' . $client_address . '
                             </receiverAddressee>
@@ -1120,6 +1120,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           if (!isset($_SESSION['omnivalt_notices']))
             $_SESSION['omnivalt_notices'] = array();
           $_SESSION['omnivalt_notices'][] = array('msg' => $msg, 'type' => $type);
+        }
+
+        private function clean($string) {
+          return str_replace('"',"'",$string);
         }
       }
     }
