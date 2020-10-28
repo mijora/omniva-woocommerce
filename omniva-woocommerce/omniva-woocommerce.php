@@ -1105,7 +1105,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           if (is_array($terminals) && $terminal_id) {
             foreach ($terminals as $terminal) {
               if ($terminal['ZIP'] == $terminal_id) {
-                return $terminal['NAME'] . ', ' . $terminal['A2_NAME'] . ', ' . $terminal['A0_NAME'];
+                return $terminal['NAME'] . ', ' . $terminal['A1_NAME'] . ', ' . $terminal['A0_NAME'];
               }
             }
           }
@@ -1247,7 +1247,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     if (is_array($terminals)) {
       foreach ($terminals as $terminal) {
         if ((string) $terminal['ZIP'] == $terminal_code)
-          return (string) $terminal['NAME'] . ', ' . $terminal['A2_NAME'];
+          return (string) $terminal['NAME'] . ', ' . $terminal['A1_NAME'];
       }
     }
     return false;
@@ -1602,6 +1602,18 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $terminals = json_decode($terminals, true);
     $parcel_terminals = '';
     $terminalsList = array();
+    switch (strtoupper($country)) {
+      case 'LV':
+        $comment_lang = 'lav';
+        break;
+      case 'EE':
+        $comment_lang = 'est';
+        break;
+      
+      default:
+        $comment_lang = 'lit';
+        break;
+    }
     if (is_array($terminals)) {
       foreach ($terminals as $terminal) {
         if ($terminal['A0_NAME'] != $country && in_array($country, array("LT", "EE", "LV")) || intval($terminal['TYPE']) == 1)
@@ -1611,7 +1623,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $grouped_options[(string) $terminal['A1_NAME']] = array();
         $grouped_options[(string) $terminal['A1_NAME']][(string) $terminal['ZIP']] = $terminal['NAME'];
 
-        $terminalsList[] = [$terminal['NAME'], $terminal['Y_COORDINATE'], $terminal['X_COORDINATE'], $terminal['ZIP'], $terminal['A1_NAME'], $terminal['A2_NAME'], str_ireplace('"', '\"', $terminal['comment_lit'])];
+        $terminalsList[] = [$terminal['NAME'], $terminal['Y_COORDINATE'], $terminal['X_COORDINATE'], $terminal['ZIP'], $terminal['A1_NAME'], $terminal['A2_NAME'] !== 'NULL' ? $terminal['A2_NAME'] : '', str_ireplace('"', '\"', $terminal['comment_' . $comment_lang])];
       }
     }
     return $terminalsList;
