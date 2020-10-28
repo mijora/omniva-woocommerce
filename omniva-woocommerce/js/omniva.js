@@ -26,6 +26,14 @@ jQuery('document').ready(function($){
     });
 
     $( document ).on( 'omnivalt.checkpostcode', function() {
+        select_terminal();
+    });
+    $( document.body ).on( 'updated_wc_div', function(){
+        //$('.omnivalt_terminal').omniva();
+        $("select.shipping_method, :input[name^=shipping_method]:checked").trigger('change'); //TODO: Need better solution for dropdown update when in cart change country
+    });
+
+    function select_terminal() {
         if ($('#ship-to-different-address-checkbox').length > 0 && $('#ship-to-different-address-checkbox').is(':checked')){
             if (current_postcode != $('#shipping_postcode').val()) {
                 //console.log('postcode changed (shipping):', current_postcode, $('#shipping_postcode').val());
@@ -33,14 +41,15 @@ jQuery('document').ready(function($){
                 $('.terminal-container .search-input').val(current_postcode).trigger('selectpostcode');
             }
         } else {
-            if (current_postcode != $('#billing_postcode').val()) {
+            if (current_postcode && current_postcode != $('#billing_postcode').val()) {
                 //console.log('postcode changed (billing):', current_postcode, $('#billing_postcode').val());
                 current_postcode = $('#billing_postcode').val();
                 $('.terminal-container .search-input').val(current_postcode).trigger('selectpostcode');
             }
         }
-    });    
+    }
 });
+
 var omniva_addrese_change = false;
 (function ( $ ) {
     $.fn.omniva = function(options) {
