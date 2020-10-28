@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.5.9 =
+* Fixed terminal select field working in Cart page
+
 = 1.5.8 =
 * Updated PDF libraries
 * Omniva manifest page now requires manage_woocommerce permission to be shown
