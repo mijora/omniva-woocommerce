@@ -3,18 +3,18 @@
  * Plugin Name: Omniva shipping
  * Description: Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.5.9
+ * Version: 1.5.10
  * Domain Path: /languages
  * Text Domain: omnivalt
  * WC requires at least: 3.0.0
- * WC tested up to: 4.0.0
+ * WC tested up to: 4.6.1
  */
 
 if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.5.9');
+define('OMNIVA_VERSION', '1.5.10');
 
 add_action( 'init', 'omnivalt_load_textdomain' );
 
