@@ -26,14 +26,16 @@ jQuery('document').ready(function($){
     });
 
     $( document ).on( 'omnivalt.checkpostcode', function() {
-        select_terminal();
+        if (omnivaSettings.auto_select == "yes") {
+            current_postcode = select_terminal(current_postcode);
+        }
     });
     $( document.body ).on( 'updated_wc_div', function(){
         //$('.omnivalt_terminal').omniva();
         $("select.shipping_method, :input[name^=shipping_method]:checked").trigger('change'); //TODO: Need better solution for dropdown update when in cart change country
     });
 
-    function select_terminal() {
+    function select_terminal(current_postcode = '') {
         if ($('#ship-to-different-address-checkbox').length > 0 && $('#ship-to-different-address-checkbox').is(':checked')){
             if (current_postcode != $('#shipping_postcode').val()) {
                 //console.log('postcode changed (shipping):', current_postcode, $('#shipping_postcode').val());
@@ -41,12 +43,21 @@ jQuery('document').ready(function($){
                 $('.terminal-container .search-input').val(current_postcode).trigger('selectpostcode');
             }
         } else {
-            if (current_postcode && current_postcode != $('#billing_postcode').val()) {
+            var postcode_value = '';
+            if ($('#billing_postcode').length) { //For Checkout billing field
+                postcode_value = $('#billing_postcode').val();
+            } else if ($('#calc_shipping_postcode').length) { //For Cart page
+                postcode_value = $('#calc_shipping_postcode').val();
+            }
+            if (current_postcode != postcode_value) {
                 //console.log('postcode changed (billing):', current_postcode, $('#billing_postcode').val());
-                current_postcode = $('#billing_postcode').val();
+                current_postcode = postcode_value;
+            }
+            if (current_postcode) {
                 $('.terminal-container .search-input').val(current_postcode).trigger('selectpostcode');
             }
         }
+        return current_postcode;
     }
 });
 
@@ -138,7 +149,12 @@ var omniva_addrese_change = false;
                   
         });
         search.on('selectpostcode',function(){
-            findPosition(search.val(),true);    
+            if (omnivaSettings.auto_select != "yes") {
+                var autoselect = false;
+            } else {
+                var autoselect = true;
+            }
+            findPosition(search.val(),autoselect);    
                   
         });
         

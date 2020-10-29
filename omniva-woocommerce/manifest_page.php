@@ -296,7 +296,7 @@ $omnivalt = new Omnivalt_Shipping_Method();
                   </td>
                   <td class="manage-column">
                     <div class="data-grid-cell-content">
-                      <?php do_action('woocommerce_admin_order_data_after_shipping_address', $order, false); ?>
+                      <?php omniva_terminal_field_display_admin_order_meta($order, false); ?>
                     </div>
                   </td>
                   <td class="manage-column">
