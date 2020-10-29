@@ -14,6 +14,8 @@ if (!defined('WPINC')) {
   die;
 }
 
+define('OMNIVA_VERSION', '1.5.9');
+
 add_action( 'init', 'omnivalt_load_textdomain' );
 
 function omnivalt_load_textdomain() {
@@ -116,11 +118,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       ));
       */
 
-      wp_enqueue_script('omniva', plugins_url('/js/omniva.js?20190625', __FILE__), array(
-        'jquery'
-      ));
+      wp_enqueue_script('omniva', plugins_url('/js/omniva.js', __FILE__), array('jquery'), OMNIVA_VERSION);
 
-      wp_enqueue_style('omniva', plugins_url('/css/omniva.css?20190530', __FILE__));
+      wp_enqueue_style('omniva', plugins_url('/css/omniva.css', __FILE__), array(), OMNIVA_VERSION);
       /*
       wp_localize_script('omniva', 'omnivadata', array(
         'ajax_url' => admin_url('admin-ajax.php')
@@ -462,6 +462,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'description' => __('Show map of terminals.', 'omnivalt'),
               'default' => 'yes'
             ),
+            'auto_select' => array(
+              'title' => __('Automatic terminal selection', 'omnivalt'),
+              'type' => 'checkbox',
+              'description' => __('Automatically select terminal by postcode.', 'omnivalt'),
+              'default' => 'yes'
+            ),
           );
         }
 
@@ -635,9 +641,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             $client_address = '<address ' . $parcel_terminal . ' />';
           else
 	*/
-          $client_address = '<address postcode="' . get_post_meta($id_order, '_shipping_postcode', true) . '" ' . $parcel_terminal . ' deliverypoint="' . get_post_meta($id_order, '_shipping_city', true) . '" country="' . get_post_meta($id_order, '_shipping_country', true) . '" street="' . get_post_meta($id_order, '_shipping_address_1', true) . '" />';
+          $client_address = '<address postcode="' . $this->clean(get_post_meta($id_order, '_shipping_postcode', true)) . '" ' . $parcel_terminal . ' deliverypoint="' . $this->clean(get_post_meta($id_order, '_shipping_city', true)) . '" country="' . $this->clean(get_post_meta($id_order, '_shipping_country', true)) . '" street="' . $this->clean(get_post_meta($id_order, '_shipping_address_1', true)) . '" />';
           $phones = '';
-          if ($mobile = get_post_meta($id_order, '_billing_phone', true)) $phones .= '<mobile>' . $mobile . '</mobile>';
+          if ($mobile = $this->clean(get_post_meta($id_order, '_billing_phone', true))) $phones .= '<mobile>' . $mobile . '</mobile>';
           $pickStart = $this->settings['pick_up_start'] ? $this->settings['pick_up_start'] : '8:00';
           $pickFinish = $this->settings['pick_up_end'] ? $this->settings['pick_up_end'] : '17:00';
           $pickDay = date('Y-m-d');
@@ -661,7 +667,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                             <measures weight="' . $weight . '" />
                             ' . self::cod($order, $is_cod, get_post_meta($id_order, '_order_total', true)) . '
                             <receiverAddressee >
-                               <person_name>' . get_post_meta($id_order, '_shipping_first_name', true) . ' ' . get_post_meta($id_order, '_shipping_last_name', true) . '</person_name>
+                               <person_name>' . $this->clean(get_post_meta($id_order, '_shipping_first_name', true)) . ' ' . $this->clean(get_post_meta($id_order, '_shipping_last_name', true)) . '</person_name>
                               ' . $phones . '
                               ' . $client_address . '
                             </receiverAddressee>
@@ -1121,6 +1127,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             $_SESSION['omnivalt_notices'] = array();
           $_SESSION['omnivalt_notices'][] = array('msg' => $msg, 'type' => $type);
         }
+
+        private function clean($string) {
+          return str_replace('"',"'",$string);
+        }
       }
     }
   }
@@ -1219,8 +1229,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     }
 
     $nonce = wp_create_nonce("omniva_terminals_json_nonce");
+    $omniva_settings = get_option('woocommerce_omnivalt_settings');
     $parcel_terminals = '<option value = "">' . __('Select parcel terminal', 'omnivalt') . '</option>' . $parcel_terminals;
+    $set_autoselect = (isset($omniva_settings['auto_select'])) ? $omniva_settings['auto_select'] : 'yes';
     $script = "<script>var omniva_current_country = '" . $country . "';
+      var omnivaSettings = {
+        auto_select:'" . $set_autoselect . "'
+      };
       var omnivaTerminals = JSON.stringify(" . json_encode(getTerminalForMap('', $country)) . ");
       jQuery('document').ready(function($){        
         
@@ -1228,7 +1243,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         $(document).trigger('omnivalt.checkpostcode');
               });</script>";
     $button = '';
-    $omniva_settings = get_option('woocommerce_omnivalt_settings');
     if (!isset($omniva_settings['show_map']) || isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == "yes") {
       $button = '<button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn" style = "display: none;">' . __('Show in map', 'omnivalt') . '<img src = "' . plugin_dir_url(__FILE__) . '/sasi.png" title = "' . __("Show parcel terminals map", "omnivalt") . '"/></button>';
     }
