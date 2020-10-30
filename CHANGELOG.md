@@ -1,5 +1,9 @@
 # Changelog
 
+## [unreleased]
+### added
+- added language files by Wordpress 5.5 locales
+
 ## [1.5.10]
 ### Fixed
 - fixed text display in the table column "Service" on the Omniva manifest page
