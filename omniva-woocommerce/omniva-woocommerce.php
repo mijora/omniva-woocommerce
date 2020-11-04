@@ -398,7 +398,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'type' => 'number',
               'custom_attributes' => array(
                 'step' => 0.01,
-                'min' => 0,
+                'min' => 0.01,
               ),
               'default' => 100,
               'class' => 'omniva_courier'
@@ -419,7 +419,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'type' => 'number',
               'custom_attributes' => array(
                 'step' => 0.01,
-                'min' => 0,
+                'min' => 0.01,
               ),
               'default' => 100,
               'class' => 'omniva_terminal'
@@ -457,17 +457,15 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             $show = true;
             if ( in_array($country, $this->countries) ) {
               $amount = $this->settings['pt_price_' . $country];
-              if ($amount === '') 
-                $show = false;
-              if ($cart_amount > floatval($this->settings['pt_price_' . $country . '_FREE']))
-                $amount = 0.0;
+              $amount_free = floatval($this->settings['pt_price_' . $country . '_FREE']);
             } else {
               $amount = $this->settings['pt_price_LT'];
-              if ($amount === '') 
-                $show = false;
-              if ($cart_amount > floatval($this->settings['pt_price_LT_FREE']))
-                $amount = 0.0;
+              $amount_free = floatval($this->settings['pt_price_LT_FREE']);
             }
+            if ($amount === '') 
+              $show = false;
+            if ($cart_amount >= $amount_free && $amount_free > 0)
+              $amount = 0.0;
 
             $rate = array(
               'id' => 'omnivalt_pt',
@@ -482,17 +480,16 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             $show = true;
             if ( in_array($country, $this->countries) ) {
               $amountC = $this->settings['c_price_' . $country];
-              if ($amountC === '') 
-                $show = false;
-              if ($cart_amount > floatval($this->settings['c_price_' . $country . '_FREE']))
-                $amountC = 0.0;
+              $amountC_free = floatval($this->settings['c_price_' . $country . '_FREE']);
             } else {
               $amountC = $this->settings['c_price_LT'];
-              if ($amountC === '') 
-                $show = false;
-              if ($cart_amount > floatval($this->settings['c_price_LT_FREE']))
-                $amountC = 0.0;
+              $amountC_free = floatval($this->settings['c_price_LT_FREE']);
             }
+            if ($amountC === '') 
+              $show = false;
+            if ($cart_amount >= $amountC_free && $amountC_free > 0)
+              $amountC = 0.0;
+
             $rate = array(
               'id' => 'omnivalt_c',
               'label' => __('Omniva courrier', 'omnivalt'),
