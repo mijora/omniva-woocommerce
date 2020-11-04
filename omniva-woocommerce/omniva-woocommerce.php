@@ -154,6 +154,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     }
   }
 
+  add_action('admin_enqueue_scripts', 'omnivalt_scripts_admin', 99);
+  function omnivalt_scripts_admin()
+  {
+    wp_enqueue_script( 'omniva_admin', plugins_url( '/js/omniva_admin.js', __FILE__ ), array('jquery'), OMNIVA_VERSION );
+  }
+
   add_action('wp_footer', 'footer_modal');
   function footer_modal()
   {
@@ -341,112 +347,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 'c' => __('Courrier', 'omnivalt')
               )
             ),
-            'method_pt' => array(
-              'title' => __('Parcel terminal', 'omnivalt'),
-              'type' => 'checkbox',
-              'description' => __('Show parcel terminal method in checkout.', 'omnivalt')
-            ),
-            'method_c' => array(
-              'title' => __('Courrier', 'omnivalt'),
-              'type' => 'checkbox',
-              'description' => __('Show courrier method in checkout.', 'omnivalt')
-            ),
-            'c_price' => array(
-              'title' => 'LT ' . __('Courrier price', 'omnivalt'),
-              'type' => 'number',
-              'default' => 2,
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-            ),
-            'pt_price' => array(
-              'title' => 'LT ' . __('Parcel terminal price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 2,
-            ),
-            'pt_priceFREE' => array(
-              'title' => 'LT ' . __('Free shipping then price is higher (Terminals)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
-            'pt_price_C_FREE' => array(
-              'title' => 'LT ' . __('Free shipping then price is higher (Courier)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
-            'c_priceLV' => array(
-              'title' => 'LV ' . __('Courrier price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 2
-            ),
-            'pt_priceLV' => array(
-              'title' => 'LV ' . __('Parcel terminal price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 2
-            ),
-            'pt_priceLV_FREE' => array(
-              'title' => 'LV ' . __('Free shipping then price is higher (Terminals)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
-            'pt_price_C_LV_FREE' => array(
-              'title' => 'LV ' . __('Free shipping then price is higher (Courier)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
-            'c_priceEE' => array(
-              'title' => 'EE ' . __('Courrier price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 2
-            ),
-            'pt_priceEE' => array(
-              'title' => 'EE ' . __('Parcel terminal price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 2
-            ),
-            'pt_priceEE_FREE' => array(
-              'title' => 'EE ' . __('Free shipping then price is higher (Terminals)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
-            'pt_price_C_EE_FREE' => array(
-              'title' => 'EE ' . __('Free shipping then price is higher (Courier)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
             'weight' => array(
               'title' => __('Weight (kg)', 'omnivalt'),
               'type' => 'number',
@@ -456,19 +356,75 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'description' => __('Maximum allowed weight', 'omnivalt'),
               'default' => 100
             ),
+            'method_c' => array(
+              'title' => __('Courrier', 'omnivalt'),
+              'type' => 'checkbox',
+              'description' => __('Show courrier method in checkout.', 'omnivalt')
+            ),
+            'method_pt' => array(
+              'title' => __('Parcel terminal', 'omnivalt'),
+              'type' => 'checkbox',
+              'description' => __('Show parcel terminal method in checkout.', 'omnivalt')
+            ),
             'show_map' => array(
               'title' => __('Map', 'omnivalt'),
               'type' => 'checkbox',
               'description' => __('Show map of terminals.', 'omnivalt'),
-              'default' => 'yes'
+              'default' => 'yes',
+              'class' => 'omniva_terminal'
             ),
             'auto_select' => array(
               'title' => __('Automatic terminal selection', 'omnivalt'),
               'type' => 'checkbox',
               'description' => __('Automatically select terminal by postcode.', 'omnivalt'),
-              'default' => 'yes'
+              'default' => 'yes',
+              'class' => 'omniva_terminal'
             ),
           );
+          foreach ($this->countries as $country) {
+            $this->form_fields['c_price_' . $country] = array(
+              'title' => $country . ' ' . __('Courrier price', 'omnivalt'),
+              'type' => 'number',
+              'custom_attributes' => array(
+                'step' => 0.01,
+                'min' => 0,
+              ),
+              'default' => 2,
+              'description' => __('Leave empty to disable this method.', 'omnivalt'),
+              'class' => 'omniva_courier'
+            );
+            $this->form_fields['c_price_' . $country . '_FREE'] = array(
+              'title' => $country . ' ' . __('Courier fee free from', 'omnivalt'),
+              'type' => 'number',
+              'custom_attributes' => array(
+                'step' => 0.01,
+                'min' => 0,
+              ),
+              'default' => 100,
+              'class' => 'omniva_courier'
+            );
+            $this->form_fields['pt_price_' . $country] = array(
+              'title' => $country . ' ' . __('Parcel terminal price', 'omnivalt'),
+              'type' => 'number',
+              'custom_attributes' => array(
+                'step' => 0.01,
+                'min' => 0,
+              ),
+              'default' => 2,
+              'description' => __('Leave empty to disable this method.', 'omnivalt'),
+              'class' => 'omniva_terminal'
+            );
+            $this->form_fields['pt_price_' . $country . '_FREE'] = array(
+              'title' => $country . ' ' . __('Parcel terminal fee free from', 'omnivalt'),
+              'type' => 'number',
+              'custom_attributes' => array(
+                'step' => 0.01,
+                'min' => 0,
+              ),
+              'default' => 100,
+              'class' => 'omniva_terminal'
+            );
+          }
         }
 
         /**
@@ -498,22 +454,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $weight_pass = (floatval($this->settings['weight']) >= $weight || floatval($this->settings['weight']) == 0);
 
           if ($this->settings['method_pt'] == 'yes' && $weight_pass) {
-            switch ($country) {
-              case 'LV':
-                $amount = $this->settings['pt_priceLV'];
-                if ($cart_amount > floatval($this->settings['pt_priceLV_FREE']))
-                  $amount = 0.0;
-                break;
-              case 'EE':
-                $amount = $this->settings['pt_priceEE'];
-                if ($cart_amount > floatval($this->settings['pt_priceEE_FREE']))
-                  $amount = 0.0;
-                break;
-              default:
-                $amount = $this->settings['pt_price'];
-                if ($cart_amount > floatval($this->settings['pt_priceFREE']))
-                  $amount = 0.0;
-                break;
+            $show = true;
+            if ( in_array($country, $this->countries) ) {
+              $amount = $this->settings['pt_price_' . $country];
+              if ($amount === '') 
+                $show = false;
+              if ($cart_amount > floatval($this->settings['pt_price_' . $country . '_FREE']))
+                $amount = 0.0;
+            } else {
+              $amount = $this->settings['pt_price_LT'];
+              if ($amount === '') 
+                $show = false;
+              if ($cart_amount > floatval($this->settings['pt_price_LT_FREE']))
+                $amount = 0.0;
             }
 
             $rate = array(
@@ -521,33 +474,32 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'label' => __('Omniva parcel terminal', 'omnivalt'),
               'cost' => $amount
             );
-            $this->add_rate($rate);
+            if ($show == true)
+              $this->add_rate($rate);
           }
 
           if ($this->settings['method_c'] == 'yes') {
-            switch ($country) {
-              case 'LV':
-                $amountC = $this->settings['c_priceLV'];
-                if ($cart_amount > floatval($this->settings['pt_price_C_LV_FREE']))
-                  $amountC = 0.0;
-                break;
-              case 'EE':
-                $amountC = $this->settings['c_priceEE'];
-                if ($cart_amount > floatval($this->settings['pt_price_C_EE_FREE']))
-                  $amountC = 0.0;
-                break;
-              default:
-                $amountC = $this->settings['c_price'];
-                if ($cart_amount > floatval($this->settings['pt_price_C_FREE']))
-                  $amountC = 0.0;
-                break;
+            $show = true;
+            if ( in_array($country, $this->countries) ) {
+              $amountC = $this->settings['c_price_' . $country];
+              if ($amountC === '') 
+                $show = false;
+              if ($cart_amount > floatval($this->settings['c_price_' . $country . '_FREE']))
+                $amountC = 0.0;
+            } else {
+              $amountC = $this->settings['c_price_LT'];
+              if ($amountC === '') 
+                $show = false;
+              if ($cart_amount > floatval($this->settings['c_price_LT_FREE']))
+                $amountC = 0.0;
             }
             $rate = array(
               'id' => 'omnivalt_c',
               'label' => __('Omniva courrier', 'omnivalt'),
               'cost' => $amountC
             );
-            $this->add_rate($rate);
+            if ($show == true)
+              $this->add_rate($rate);
           }
         }
 
