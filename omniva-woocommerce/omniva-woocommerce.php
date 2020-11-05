@@ -593,19 +593,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $client_address = '<address postcode="' . $this->clean(get_post_meta($id_order, '_shipping_postcode', true)) . '" ' . $parcel_terminal . ' deliverypoint="' . $this->clean(get_post_meta($id_order, '_shipping_city', true)) . '" country="' . $this->clean(get_post_meta($id_order, '_shipping_country', true)) . '" street="' . $this->clean(get_post_meta($id_order, '_shipping_address_1', true)) . '" />';
           $phones = '';
           if ($mobile = $this->clean(get_post_meta($id_order, '_billing_phone', true))) $phones .= '<mobile>' . $mobile . '</mobile>';
-          $pickStart = $this->settings['pick_up_start'] ? $this->settings['pick_up_start'] : '8:00';
-          $pickFinish = $this->settings['pick_up_end'] ? $this->settings['pick_up_end'] : '17:00';
+          $pickStart = $this->settings['pick_up_start'] ? $this->clean($this->settings['pick_up_start']) : '8:00';
+          $pickFinish = $this->settings['pick_up_end'] ? $this->clean($this->settings['pick_up_end']) : '17:00';
           $pickDay = date('Y-m-d');
           if (time() > strtotime($pickDay . ' ' . $pickFinish)) $pickDay = date('Y-m-d', strtotime($pickDay . "+1 days"));
-          $shop_country_iso = $this->settings['shop_countrycode'];
+          $shop_country_iso = $this->clean($this->settings['shop_countrycode']);
           $xmlRequest = '
           <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://service.core.epmx.application.eestipost.ee/xsd">
              <soapenv:Header/>
              <soapenv:Body>
                 <xsd:businessToClientMsgRequest>
-                   <partner>' . $this->settings['api_user'] . '</partner>
+                   <partner>' . $this->clean($this->settings['api_user']) . '</partner>
                    <interchange msg_type="info11">
-                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->settings['api_user'] . '" >                
+                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->clean($this->settings['api_user']) . '" >                
                       </header>
                       <item_list>
                         ';
@@ -622,10 +622,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                             </receiverAddressee>
                             <!--Optional:-->
                             <returnAddressee>
-                              <person_name>' . $this->settings['shop_name'] . '</person_name>
+                              <person_name>' . $this->clean($this->settings['shop_name']) . '</person_name>
                               <!--Optional:-->
-                              <phone>' . $this->settings['shop_phone'] . '</phone>
-                              <address postcode="' . $this->settings['shop_postcode'] . '" deliverypoint="' . $this->settings['shop_city'] . '" country="' . $shop_country_iso . '" street="' . $this->settings['shop_address'] . '" />
+                              <phone>' . $this->clean($this->settings['shop_phone']) . '</phone>
+                              <address postcode="' . $this->clean($this->settings['shop_postcode']) . '" deliverypoint="' . $this->clean($this->settings['shop_city']) . '" country="' . $shop_country_iso . '" street="' . $this->clean($this->settings['shop_address']) . '" />
                             
                             </returnAddressee>
                          </item>';
@@ -645,19 +645,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $service = "QH";
           $is_cod = false;
           $parcel_terminal = "";
-          $pickStart = $this->settings['pick_up_start'] ? $this->settings['pick_up_start'] : '8:00';
-          $pickFinish = $this->settings['pick_up_end'] ? $this->settings['pick_up_end'] : '17:00';
+          $pickStart = $this->settings['pick_up_start'] ? $this->clean($this->settings['pick_up_start']) : '8:00';
+          $pickFinish = $this->settings['pick_up_end'] ? $this->clean($this->settings['pick_up_end']) : '17:00';
           $pickDay = date('Y-m-d');
           if (time() > strtotime($pickDay . ' ' . $pickFinish)) $pickDay = date('Y-m-d', strtotime($pickDay . "+1 days"));
-          $shop_country_iso = $this->settings['shop_countrycode'];
+          $shop_country_iso = $this->clean($this->settings['shop_countrycode']);
           $xmlRequest = '
           <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://service.core.epmx.application.eestipost.ee/xsd">
              <soapenv:Header/>
              <soapenv:Body>
                 <xsd:businessToClientMsgRequest>
-                   <partner>' . $this->settings['api_user'] . '</partner>
+                   <partner>' . $this->clean($this->settings['api_user']) . '</partner>
                    <interchange msg_type="info11">
-                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->settings['api_user'] . '" >                
+                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->clean($this->settings['api_user']) . '" >                
                       </header>
                       <item_list>
                         ';
@@ -666,23 +666,23 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                          <item service="' . $service . '" >
                             <measures weight="1" />
                             <receiverAddressee >
-                               <person_name>' . $this->settings['shop_name'] . '</person_name>
+                               <person_name>' . $this->clean($this->settings['shop_name']) . '</person_name>
                               <!--Optional:-->
-                              <phone>' . $this->settings['shop_phone'] . '</phone>
-                              <address postcode="' . $this->settings['shop_postcode'] . '" deliverypoint="' . $this->settings['shop_city'] . '" country="' . $shop_country_iso . '" street="' . $this->settings['shop_address'] . '" />
+                              <phone>' . $this->clean($this->settings['shop_phone']) . '</phone>
+                              <address postcode="' . $this->clean($this->settings['shop_postcode']) . '" deliverypoint="' . $this->clean($this->settings['shop_city']) . '" country="' . $shop_country_iso . '" street="' . $this->clean($this->settings['shop_address']) . '" />
                             </receiverAddressee>
                             <!--Optional:-->
                             <returnAddressee>
-                              <person_name>' . $this->settings['shop_name'] . '</person_name>
+                              <person_name>' . $this->clean($this->settings['shop_name']) . '</person_name>
                               <!--Optional:-->
-                              <phone>' . $this->settings['shop_phone'] . '</phone>
-                              <address postcode="' . $this->settings['shop_postcode'] . '" deliverypoint="' . $this->settings['shop_city'] . '" country="' . $shop_country_iso . '" street="' . $this->settings['shop_address'] . '" />
+                              <phone>' . $this->clean($this->settings['shop_phone']) . '</phone>
+                              <address postcode="' . $this->clean($this->settings['shop_postcode']) . '" deliverypoint="' . $this->clean($this->settings['shop_city']) . '" country="' . $shop_country_iso . '" street="' . $this->clean($this->settings['shop_address']) . '" />
                             </returnAddressee>
                             <onloadAddressee>
-                              <person_name>' . $this->settings['shop_name'] . '</person_name>
+                              <person_name>' . $this->clean($this->settings['shop_name']) . '</person_name>
                               <!--Optional:-->
-                              <phone>' . $this->settings['shop_phone'] . '</phone>
-                              <address postcode="' . $this->settings['shop_postcode'] . '" deliverypoint="' . $this->settings['shop_city'] . '" country="' . $shop_country_iso . '" street="' . $this->settings['shop_address'] . '" />
+                              <phone>' . $this->clean($this->settings['shop_phone']) . '</phone>
+                              <address postcode="' . $this->clean($this->settings['shop_postcode']) . '" deliverypoint="' . $this->clean($this->settings['shop_city']) . '" country="' . $shop_country_iso . '" street="' . $this->clean($this->settings['shop_address']) . '" />
                               <pick_up_time start="' . date("c", strtotime($pickDay . ' ' . $pickStart)) . '" finish="' . date("c", strtotime($pickDay . ' ' . $pickFinish)) . '"/>
                             </onloadAddressee>
                          </item>';
