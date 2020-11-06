@@ -1,7 +1,18 @@
 # Changelog
 
 ## [unreleased]
-### added
+### Fixed
+- fixed that shipping prices lower than 0 could not be entered
+- fixed that shipping does not become free when the value "free from" is not entered
+- added cleanup of strings to all xml request strings
+
+### Improved
+- created the ability to turn off the specific shipping method when the price is not specified
+- created settings display by checked checkboxes
+- improved settings page programmic code
+
+## [1.5.11]
+### Added
 - added language files by Wordpress 5.5 locales
 
 ## [1.5.10]

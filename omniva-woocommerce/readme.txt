@@ -1,9 +1,12 @@
 == Changelog ==
 
+= 1.5.11 =
+* added language files by Wordpress 5.5 locales
+
 = 1.5.10 =
-- fixed text display in the table column "Service" on the Omniva manifest page
-- added cleanup of strings received from order
-- added option to turn off automatic terminal selection
+* fixed text display in the table column "Service" on the Omniva manifest page
+* added cleanup of strings received from order
+* added option to turn off automatic terminal selection
 
 = 1.5.9 =
 * Fixed terminal select field working in Cart page

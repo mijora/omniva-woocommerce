@@ -154,6 +154,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     }
   }
 
+  add_action('admin_enqueue_scripts', 'omnivalt_scripts_admin', 99);
+  function omnivalt_scripts_admin()
+  {
+    wp_enqueue_script( 'omniva_admin', plugins_url( '/js/omniva_admin.js', __FILE__ ), array('jquery'), OMNIVA_VERSION );
+  }
+
   add_action('wp_footer', 'footer_modal');
   function footer_modal()
   {
@@ -341,112 +347,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 'c' => __('Courrier', 'omnivalt')
               )
             ),
-            'method_pt' => array(
-              'title' => __('Parcel terminal', 'omnivalt'),
-              'type' => 'checkbox',
-              'description' => __('Show parcel terminal method in checkout.', 'omnivalt')
-            ),
-            'method_c' => array(
-              'title' => __('Courrier', 'omnivalt'),
-              'type' => 'checkbox',
-              'description' => __('Show courrier method in checkout.', 'omnivalt')
-            ),
-            'c_price' => array(
-              'title' => 'LT ' . __('Courrier price', 'omnivalt'),
-              'type' => 'number',
-              'default' => 2,
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-            ),
-            'pt_price' => array(
-              'title' => 'LT ' . __('Parcel terminal price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 2,
-            ),
-            'pt_priceFREE' => array(
-              'title' => 'LT ' . __('Free shipping then price is higher (Terminals)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
-            'pt_price_C_FREE' => array(
-              'title' => 'LT ' . __('Free shipping then price is higher (Courier)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
-            'c_priceLV' => array(
-              'title' => 'LV ' . __('Courrier price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 2
-            ),
-            'pt_priceLV' => array(
-              'title' => 'LV ' . __('Parcel terminal price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 2
-            ),
-            'pt_priceLV_FREE' => array(
-              'title' => 'LV ' . __('Free shipping then price is higher (Terminals)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
-            'pt_price_C_LV_FREE' => array(
-              'title' => 'LV ' . __('Free shipping then price is higher (Courier)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
-            'c_priceEE' => array(
-              'title' => 'EE ' . __('Courrier price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 2
-            ),
-            'pt_priceEE' => array(
-              'title' => 'EE ' . __('Parcel terminal price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 2
-            ),
-            'pt_priceEE_FREE' => array(
-              'title' => 'EE ' . __('Free shipping then price is higher (Terminals)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
-            'pt_price_C_EE_FREE' => array(
-              'title' => 'EE ' . __('Free shipping then price is higher (Courier)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'default' => 100
-            ),
             'weight' => array(
               'title' => __('Weight (kg)', 'omnivalt'),
               'type' => 'number',
@@ -456,19 +356,75 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'description' => __('Maximum allowed weight', 'omnivalt'),
               'default' => 100
             ),
+            'method_c' => array(
+              'title' => __('Courrier', 'omnivalt'),
+              'type' => 'checkbox',
+              'description' => __('Show courrier method in checkout.', 'omnivalt')
+            ),
+            'method_pt' => array(
+              'title' => __('Parcel terminal', 'omnivalt'),
+              'type' => 'checkbox',
+              'description' => __('Show parcel terminal method in checkout.', 'omnivalt')
+            ),
             'show_map' => array(
               'title' => __('Map', 'omnivalt'),
               'type' => 'checkbox',
               'description' => __('Show map of terminals.', 'omnivalt'),
-              'default' => 'yes'
+              'default' => 'yes',
+              'class' => 'omniva_terminal'
             ),
             'auto_select' => array(
               'title' => __('Automatic terminal selection', 'omnivalt'),
               'type' => 'checkbox',
               'description' => __('Automatically select terminal by postcode.', 'omnivalt'),
-              'default' => 'yes'
+              'default' => 'yes',
+              'class' => 'omniva_terminal'
             ),
           );
+          foreach ($this->countries as $country) {
+            $this->form_fields['c_price_' . $country] = array(
+              'title' => $country . ' ' . __('Courrier price', 'omnivalt'),
+              'type' => 'number',
+              'custom_attributes' => array(
+                'step' => 0.01,
+                'min' => 0,
+              ),
+              'default' => 2,
+              'description' => __('Leave empty to disable this method.', 'omnivalt'),
+              'class' => 'omniva_courier'
+            );
+            $this->form_fields['c_price_' . $country . '_FREE'] = array(
+              'title' => $country . ' ' . __('Courier fee free from', 'omnivalt'),
+              'type' => 'number',
+              'custom_attributes' => array(
+                'step' => 0.01,
+                'min' => 0.01,
+              ),
+              'default' => 100,
+              'class' => 'omniva_courier'
+            );
+            $this->form_fields['pt_price_' . $country] = array(
+              'title' => $country . ' ' . __('Parcel terminal price', 'omnivalt'),
+              'type' => 'number',
+              'custom_attributes' => array(
+                'step' => 0.01,
+                'min' => 0,
+              ),
+              'default' => 2,
+              'description' => __('Leave empty to disable this method.', 'omnivalt'),
+              'class' => 'omniva_terminal'
+            );
+            $this->form_fields['pt_price_' . $country . '_FREE'] = array(
+              'title' => $country . ' ' . __('Parcel terminal fee free from', 'omnivalt'),
+              'type' => 'number',
+              'custom_attributes' => array(
+                'step' => 0.01,
+                'min' => 0.01,
+              ),
+              'default' => 100,
+              'class' => 'omniva_terminal'
+            );
+          }
         }
 
         /**
@@ -498,56 +454,49 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $weight_pass = (floatval($this->settings['weight']) >= $weight || floatval($this->settings['weight']) == 0);
 
           if ($this->settings['method_pt'] == 'yes' && $weight_pass) {
-            switch ($country) {
-              case 'LV':
-                $amount = $this->settings['pt_priceLV'];
-                if ($cart_amount > floatval($this->settings['pt_priceLV_FREE']))
-                  $amount = 0.0;
-                break;
-              case 'EE':
-                $amount = $this->settings['pt_priceEE'];
-                if ($cart_amount > floatval($this->settings['pt_priceEE_FREE']))
-                  $amount = 0.0;
-                break;
-              default:
-                $amount = $this->settings['pt_price'];
-                if ($cart_amount > floatval($this->settings['pt_priceFREE']))
-                  $amount = 0.0;
-                break;
+            $show = true;
+            if ( in_array($country, $this->countries) ) {
+              $amount = $this->settings['pt_price_' . $country];
+              $amount_free = floatval($this->settings['pt_price_' . $country . '_FREE']);
+            } else {
+              $amount = $this->settings['pt_price_LT'];
+              $amount_free = floatval($this->settings['pt_price_LT_FREE']);
             }
+            if ($amount === '') 
+              $show = false;
+            if ($cart_amount >= $amount_free && $amount_free > 0)
+              $amount = 0.0;
 
             $rate = array(
               'id' => 'omnivalt_pt',
               'label' => __('Omniva parcel terminal', 'omnivalt'),
               'cost' => $amount
             );
-            $this->add_rate($rate);
+            if ($show == true)
+              $this->add_rate($rate);
           }
 
           if ($this->settings['method_c'] == 'yes') {
-            switch ($country) {
-              case 'LV':
-                $amountC = $this->settings['c_priceLV'];
-                if ($cart_amount > floatval($this->settings['pt_price_C_LV_FREE']))
-                  $amountC = 0.0;
-                break;
-              case 'EE':
-                $amountC = $this->settings['c_priceEE'];
-                if ($cart_amount > floatval($this->settings['pt_price_C_EE_FREE']))
-                  $amountC = 0.0;
-                break;
-              default:
-                $amountC = $this->settings['c_price'];
-                if ($cart_amount > floatval($this->settings['pt_price_C_FREE']))
-                  $amountC = 0.0;
-                break;
+            $show = true;
+            if ( in_array($country, $this->countries) ) {
+              $amountC = $this->settings['c_price_' . $country];
+              $amountC_free = floatval($this->settings['c_price_' . $country . '_FREE']);
+            } else {
+              $amountC = $this->settings['c_price_LT'];
+              $amountC_free = floatval($this->settings['c_price_LT_FREE']);
             }
+            if ($amountC === '') 
+              $show = false;
+            if ($cart_amount >= $amountC_free && $amountC_free > 0)
+              $amountC = 0.0;
+
             $rate = array(
               'id' => 'omnivalt_c',
               'label' => __('Omniva courrier', 'omnivalt'),
               'cost' => $amountC
             );
-            $this->add_rate($rate);
+            if ($show == true)
+              $this->add_rate($rate);
           }
         }
 
@@ -644,19 +593,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $client_address = '<address postcode="' . $this->clean(get_post_meta($id_order, '_shipping_postcode', true)) . '" ' . $parcel_terminal . ' deliverypoint="' . $this->clean(get_post_meta($id_order, '_shipping_city', true)) . '" country="' . $this->clean(get_post_meta($id_order, '_shipping_country', true)) . '" street="' . $this->clean(get_post_meta($id_order, '_shipping_address_1', true)) . '" />';
           $phones = '';
           if ($mobile = $this->clean(get_post_meta($id_order, '_billing_phone', true))) $phones .= '<mobile>' . $mobile . '</mobile>';
-          $pickStart = $this->settings['pick_up_start'] ? $this->settings['pick_up_start'] : '8:00';
-          $pickFinish = $this->settings['pick_up_end'] ? $this->settings['pick_up_end'] : '17:00';
+          $pickStart = $this->settings['pick_up_start'] ? $this->clean($this->settings['pick_up_start']) : '8:00';
+          $pickFinish = $this->settings['pick_up_end'] ? $this->clean($this->settings['pick_up_end']) : '17:00';
           $pickDay = date('Y-m-d');
           if (time() > strtotime($pickDay . ' ' . $pickFinish)) $pickDay = date('Y-m-d', strtotime($pickDay . "+1 days"));
-          $shop_country_iso = $this->settings['shop_countrycode'];
+          $shop_country_iso = $this->clean($this->settings['shop_countrycode']);
           $xmlRequest = '
           <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://service.core.epmx.application.eestipost.ee/xsd">
              <soapenv:Header/>
              <soapenv:Body>
                 <xsd:businessToClientMsgRequest>
-                   <partner>' . $this->settings['api_user'] . '</partner>
+                   <partner>' . $this->clean($this->settings['api_user']) . '</partner>
                    <interchange msg_type="info11">
-                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->settings['api_user'] . '" >                
+                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->clean($this->settings['api_user']) . '" >                
                       </header>
                       <item_list>
                         ';
@@ -673,10 +622,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                             </receiverAddressee>
                             <!--Optional:-->
                             <returnAddressee>
-                              <person_name>' . $this->settings['shop_name'] . '</person_name>
+                              <person_name>' . $this->clean($this->settings['shop_name']) . '</person_name>
                               <!--Optional:-->
-                              <phone>' . $this->settings['shop_phone'] . '</phone>
-                              <address postcode="' . $this->settings['shop_postcode'] . '" deliverypoint="' . $this->settings['shop_city'] . '" country="' . $shop_country_iso . '" street="' . $this->settings['shop_address'] . '" />
+                              <phone>' . $this->clean($this->settings['shop_phone']) . '</phone>
+                              <address postcode="' . $this->clean($this->settings['shop_postcode']) . '" deliverypoint="' . $this->clean($this->settings['shop_city']) . '" country="' . $shop_country_iso . '" street="' . $this->clean($this->settings['shop_address']) . '" />
                             
                             </returnAddressee>
                          </item>';
@@ -696,19 +645,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $service = "QH";
           $is_cod = false;
           $parcel_terminal = "";
-          $pickStart = $this->settings['pick_up_start'] ? $this->settings['pick_up_start'] : '8:00';
-          $pickFinish = $this->settings['pick_up_end'] ? $this->settings['pick_up_end'] : '17:00';
+          $pickStart = $this->settings['pick_up_start'] ? $this->clean($this->settings['pick_up_start']) : '8:00';
+          $pickFinish = $this->settings['pick_up_end'] ? $this->clean($this->settings['pick_up_end']) : '17:00';
           $pickDay = date('Y-m-d');
           if (time() > strtotime($pickDay . ' ' . $pickFinish)) $pickDay = date('Y-m-d', strtotime($pickDay . "+1 days"));
-          $shop_country_iso = $this->settings['shop_countrycode'];
+          $shop_country_iso = $this->clean($this->settings['shop_countrycode']);
           $xmlRequest = '
           <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://service.core.epmx.application.eestipost.ee/xsd">
              <soapenv:Header/>
              <soapenv:Body>
                 <xsd:businessToClientMsgRequest>
-                   <partner>' . $this->settings['api_user'] . '</partner>
+                   <partner>' . $this->clean($this->settings['api_user']) . '</partner>
                    <interchange msg_type="info11">
-                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->settings['api_user'] . '" >                
+                      <header file_id="' . Date('YmdHms') . '" sender_cd="' . $this->clean($this->settings['api_user']) . '" >                
                       </header>
                       <item_list>
                         ';
@@ -717,23 +666,23 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                          <item service="' . $service . '" >
                             <measures weight="1" />
                             <receiverAddressee >
-                               <person_name>' . $this->settings['shop_name'] . '</person_name>
+                               <person_name>' . $this->clean($this->settings['shop_name']) . '</person_name>
                               <!--Optional:-->
-                              <phone>' . $this->settings['shop_phone'] . '</phone>
-                              <address postcode="' . $this->settings['shop_postcode'] . '" deliverypoint="' . $this->settings['shop_city'] . '" country="' . $shop_country_iso . '" street="' . $this->settings['shop_address'] . '" />
+                              <phone>' . $this->clean($this->settings['shop_phone']) . '</phone>
+                              <address postcode="' . $this->clean($this->settings['shop_postcode']) . '" deliverypoint="' . $this->clean($this->settings['shop_city']) . '" country="' . $shop_country_iso . '" street="' . $this->clean($this->settings['shop_address']) . '" />
                             </receiverAddressee>
                             <!--Optional:-->
                             <returnAddressee>
-                              <person_name>' . $this->settings['shop_name'] . '</person_name>
+                              <person_name>' . $this->clean($this->settings['shop_name']) . '</person_name>
                               <!--Optional:-->
-                              <phone>' . $this->settings['shop_phone'] . '</phone>
-                              <address postcode="' . $this->settings['shop_postcode'] . '" deliverypoint="' . $this->settings['shop_city'] . '" country="' . $shop_country_iso . '" street="' . $this->settings['shop_address'] . '" />
+                              <phone>' . $this->clean($this->settings['shop_phone']) . '</phone>
+                              <address postcode="' . $this->clean($this->settings['shop_postcode']) . '" deliverypoint="' . $this->clean($this->settings['shop_city']) . '" country="' . $shop_country_iso . '" street="' . $this->clean($this->settings['shop_address']) . '" />
                             </returnAddressee>
                             <onloadAddressee>
-                              <person_name>' . $this->settings['shop_name'] . '</person_name>
+                              <person_name>' . $this->clean($this->settings['shop_name']) . '</person_name>
                               <!--Optional:-->
-                              <phone>' . $this->settings['shop_phone'] . '</phone>
-                              <address postcode="' . $this->settings['shop_postcode'] . '" deliverypoint="' . $this->settings['shop_city'] . '" country="' . $shop_country_iso . '" street="' . $this->settings['shop_address'] . '" />
+                              <phone>' . $this->clean($this->settings['shop_phone']) . '</phone>
+                              <address postcode="' . $this->clean($this->settings['shop_postcode']) . '" deliverypoint="' . $this->clean($this->settings['shop_city']) . '" country="' . $shop_country_iso . '" street="' . $this->clean($this->settings['shop_address']) . '" />
                               <pick_up_time start="' . date("c", strtotime($pickDay . ' ' . $pickStart)) . '" finish="' . date("c", strtotime($pickDay . ' ' . $pickFinish)) . '"/>
                             </onloadAddressee>
                          </item>';
