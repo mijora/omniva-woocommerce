@@ -1,6 +1,6 @@
 # Changelog
 
-## [unreleased]
+## [1.6.0]
 ### Fixed
 - fixed that shipping prices lower than 0 could not be entered
 - fixed that shipping does not become free when the value "free from" is not entered
@@ -19,6 +19,9 @@
 - updated settings display
 - created ability, to take client name from billing section, when client name in shipping section is not specified
 - added option to send email to customer, when the shipment arrive to terminal
+
+### Changed
+- settings variable names. Required to update price settings
 
 ## [1.5.11]
 ### Added
