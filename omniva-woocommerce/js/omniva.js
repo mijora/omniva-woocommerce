@@ -26,12 +26,12 @@ jQuery('document').ready(function($){
     });
 
     $( document ).on( 'omnivalt.checkpostcode, updated_checkout', function() {
-        if (omnivaSettings.auto_select == "yes") {
+        if (omnivaSettings.auto_select == "yes" && omniva_current_terminal === '') {
             current_postcode = select_terminal(current_postcode);
         }
     });
     $( document ).on('change', '#shipping_postcode, #billing_postcode',function(){
-        if (omnivaSettings.auto_select == "yes") {
+        if (omnivaSettings.auto_select == "yes" && omniva_current_terminal === '') {
             current_postcode = select_terminal(current_postcode);
         }
     });  

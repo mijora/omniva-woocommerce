@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.6-dev
+ * Version: 1.6.0
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.6-dev');
+define('OMNIVA_VERSION', '1.6.0');
 
 add_action( 'init', 'omnivalt_load_textdomain' );
 
@@ -597,11 +597,23 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           if ($this->settings['method_pt'] == 'yes' && $weight_pass && $dimension_pass_pt) {
             $show = true;
             if ( in_array($country, $this->countries) ) {
-              $amount = $this->settings['pt_price_' . $country];
-              $amount_free = floatval($this->settings['pt_price_' . $country . '_FREE']);
+              /* -For compatibility with old version settings- */
+              $pt_price_name = (isset($this->settings['pt_price_' . $country])) ? 'pt_price_' . $country : 'pt_price' . $country;
+              $pt_free_name = (isset($this->settings['pt_price_' . $country . '_FREE'])) ? 'pt_price_' . $country . '_FREE' : 'pt_price' . $country . '_FREE';
+              if ($country == 'LT') {
+                $pt_price_name = (isset($this->settings['pt_price_LT'])) ? 'pt_price_LT' : 'pt_price';
+                $pt_free_name = (isset($this->settings['pt_price_LT_FREE'])) ? 'pt_price_LT_FREE' : 'pt_priceFREE';
+              }
+              /* -End of compatibility- */
+              $amount = $this->settings[$pt_price_name];
+              $amount_free = floatval($this->settings[$pt_free_name]);
             } else {
-              $amount = $this->settings['pt_price_LT'];
-              $amount_free = floatval($this->settings['pt_price_LT_FREE']);
+              /* -For compatibility with old version settings- */
+              $pt_price_name = (isset($this->settings['pt_price_LT'])) ? 'pt_price_LT' : 'pt_price';
+              $pt_free_name = (isset($this->settings['pt_price_LT_FREE'])) ? 'pt_price_LT_FREE' : 'pt_priceFREE';
+              /* -End of compatibility- */
+              $amount = $this->settings[$pt_price_name];
+              $amount_free = floatval($this->settings[$pt_free_name]);
             }
             if ($amount === '') 
               $show = false;
@@ -621,11 +633,23 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           if ($this->settings['method_c'] == 'yes' /*&& $dimension_pass_c*/) {
             $show = true;
             if ( in_array($country, $this->countries) ) {
-              $amountC = $this->settings['c_price_' . $country];
-              $amountC_free = floatval($this->settings['c_price_' . $country . '_FREE']);
+              /* -For compatibility with old version settings- */
+              $c_price_name = (isset($this->settings['c_price_' . $country])) ? 'c_price_' . $country : 'c_price' . $country;
+              $c_free_name = (isset($this->settings['c_price_' . $country . '_FREE'])) ? 'c_price_' . $country . '_FREE' : 'pt_price_C_' . $country . '_FREE';
+              if ($country == 'LT') {
+                $c_price_name = (isset($this->settings['c_price_LT'])) ? 'c_price_LT' : 'c_price';
+                $c_free_name = (isset($this->settings['c_price_LT_FREE'])) ? 'c_price_LT_FREE' : 'pt_price_C_FREE';
+              }
+              /* -End of compatibility- */
+              $amountC = $this->settings[$c_price_name];
+              $amountC_free = floatval($this->settings[$c_free_name]);
             } else {
-              $amountC = $this->settings['c_price_LT'];
-              $amountC_free = floatval($this->settings['c_price_LT_FREE']);
+              /* -For compatibility with old version settings- */
+              $c_price_name = (isset($this->settings['c_price_LT'])) ? 'c_price_LT' : 'c_price';
+              $c_free_name = (isset($this->settings['c_price_LT_FREE'])) ? 'c_price_LT_FREE' : 'pt_price_C_FREE';
+              /* -End of compatibility- */
+              $amountC = $this->settings[$c_price_name];
+              $amountC_free = floatval($this->settings[$c_free_name]);
             }
             if ($amountC === '') 
               $show = false;
@@ -1417,6 +1441,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       var omnivaSettings = {
         auto_select:'" . $set_autoselect . "'
       };
+      var omniva_current_terminal = '" . $selected . "';
       var omnivaTerminals = JSON.stringify(" . json_encode(getTerminalForMap('', $country)) . ");
       jQuery('document').ready(function($){        
         
