@@ -1,0 +1,319 @@
+.call-courier-container, .mass-print-container {
+  text-align: end;
+  margin: 1em 0;
+}
+
+.notice {
+  color: green;
+  border: 1px green solid;
+  border-left: 4px green solid;
+  border-radius: 3px;
+}
+
+.omniva-action-buttons-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.manifest-date-title {
+  font-size: 1.5em;
+  font-weight: 900;
+  text-align: center;
+}
+
+.order_actions .omnivalt_view_label, .order_actions .omnivalt_generate_label {
+    display: block;
+    text-indent: -9999px;
+    position: relative;
+    height: 1em;
+    width: 1em;
+    padding: 0!important;
+    height: 2em!important;
+    width: 2em;
+}
+.order_actions .omnivalt_view_label::after {
+    font-family: Dashicons;
+    speak: none;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    text-indent: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    content: "\f128";
+    line-height: 1.85;
+}
+.order_actions .omnivalt_generate_label::after {
+    font-family: Dashicons;
+    speak: none;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    text-indent: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    content: "\f111";
+    line-height: 1.85;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    z-index: 9999;
+    -webkit-animation-name: fadeIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: fadeIn;
+    animation-duration: 0.4s;
+  }
+
+  .modal.open {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Modal Content/Box */
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: fit-content;
+    max-width: 90%;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  .modal-content .alert-info {
+      border-left: 2px solid #46b450;
+      background: #fff;
+      box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+      margin-bottom: 20px;
+      padding: 1px 12px;
+  }
+
+  .modal-content .alert-info p span,
+  .modal-content div span {
+      font-weight: 900;
+  }
+
+  .modal-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+  }
+  
+  /* The Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+@-webkit-keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+
+
+.nav {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.nav-link {
+  display: block;
+  padding: 0.5rem 1rem;
+}
+
+.nav-link:hover, .nav-link:focus {
+  text-decoration: none;
+}
+
+.nav-link.disabled {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: default;
+}
+
+.nav-tabs {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.nav-tabs .nav-item {
+  margin-bottom: -1px;
+  font-size: 1em;
+}
+
+.nav-tabs .nav-link {
+  border: 1px solid transparent;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  text-decoration: none;
+}
+
+.nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
+  border-color: #dee2e6 #dee2e6 #dee2e6;
+}
+
+.nav-tabs .nav-link.disabled {
+  color: #6c757d;
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  color: #495057;
+  background: linear-gradient(#fff, #f1f1f1);
+  border-color: #dee2e6 #dee2e6 #f1f1f1;
+}
+
+.nav-tabs .dropdown-menu {
+  margin-top: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.tablenav {
+  display: flex;
+  justify-content: center;
+  margin: 0.5em 0;
+}
+
+.tablenav .tablenav-pages {
+  margin: 0;
+}
+
+.tablenav-pages .page-numbers {
+  display: inline-block;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #000000;
+}
+
+.tablenav-pages .page-numbers:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.tablenav-pages .page-numbers.current {
+  background-color: #fff;
+  font-weight: 700;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.table-container * {
+  box-sizing: border-box;
+}
+
+.omniva-table {
+  border-collapse: separate;
+  border-spacing: 0 2px 0 0;
+  margin-bottom: 5px;
+  width: 100%;
+  background-color: #fff;
+}
+
+.wp-list-table .fixed-width {
+  width: 48px !important;
+}
+
+.omniva-filter input:not([type="checkbox"]) {
+  height: 28px;
+  border-radius: 3px;
+  width: 100%;
+  margin: 0;
+  padding: 3px 6px;
+}
+
+.omniva-filter {
+  background-color: rgba(0, 115, 170, 0.5);
+}
+
+.omniva-filter .datetimepicker {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.omniva-filter .datetimepicker div {
+  line-height: initial;
+  position: relative;
+  width: 100%;
+}
+
+.omniva-filter .datetimepicker input {
+  min-width: 90px;
+  width: 100%;
+  background-color: #fff;
+  border: none;
+  border-radius: 0;
+}
+
+.bootstrap-datetimepicker-widget {
+  display: none;
+  background-color: #fff;
+  border: 1px solid grey;
+}
+
+@media only screen and (min-width: 1600px) {
+  .page-omniva_manifest .column-order_id {
+    width: 120px;
+  }
+  .page-omniva_manifest .column-order_date {
+    width: 120px;
+  }
+  .page-omniva_manifest .column-order_status {
+    width: 160px;
+  }
+  .page-omniva_manifest .column-manifest_date {
+    width: 150px;
+  }
+}

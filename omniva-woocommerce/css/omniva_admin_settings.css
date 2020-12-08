@@ -1,0 +1,7 @@
+.woocommerce table.form-table .field-dimensions input[type="number"] {
+	width: 90px;
+	vertical-align: middle;
+}
+.woocommerce table.form-table .field-dimensions span {
+	vertical-align: middle;
+}

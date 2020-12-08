@@ -1,25 +1,38 @@
 <?php
 /**
  * Plugin Name: Omniva shipping
- * Description: Omniva shipping plugin for WooCommerce
+ * Description: Official Omniva shipping plugin for WooCommerce
  * Author: Omniva
- * Version: 1.5.10
+ * Author URI: https://www.omniva.lt/
+ * Plugin URI: https://iskiepiai.omnivasiunta.lt/
+ * Version: 1.6-dev
  * Domain Path: /languages
  * Text Domain: omnivalt
+ * Requires at least: 5.1
+ * Tested up to: 5.5.3
  * WC requires at least: 3.0.0
- * WC tested up to: 4.6.1
+ * WC tested up to: 4.7.1
+ * Requires PHP: 7.2
  */
 
 if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.5.10');
+define('OMNIVA_VERSION', '1.6-dev');
 
 add_action( 'init', 'omnivalt_load_textdomain' );
 
 function omnivalt_load_textdomain() {
   load_plugin_textdomain( 'omnivalt', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
+}
+
+add_filter('plugin_action_links_'.plugin_basename(__FILE__), 'omnivalt_settings_link');
+function omnivalt_settings_link( $links ) {
+  array_unshift($links, '<a href="' .
+    admin_url( 'admin.php?page=wc-settings&tab=shipping&section=omnivalt' ) .
+    '">' . __('Settings', 'omnivalt') . '</a>');
+  return $links;
 }
 
 function omnivalt_notices(){
@@ -99,6 +112,7 @@ function omnivalt_deactivation()
 
 if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
 
+  require_once plugin_dir_path(__FILE__) . 'includes/class-emails.php';
   // add select2 js script
 
   add_action('wp_enqueue_scripts', 'omnivalt_scripts', 99);
@@ -154,12 +168,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     }
   }
 
-  add_action('admin_enqueue_scripts', 'omnivalt_scripts_admin', 99);
-  function omnivalt_scripts_admin()
-  {
-    wp_enqueue_script( 'omniva_admin', plugins_url( '/js/omniva_admin.js', __FILE__ ), array('jquery'), OMNIVA_VERSION );
-  }
-
   add_action('wp_footer', 'footer_modal');
   function footer_modal()
   {
@@ -179,13 +187,22 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   }
   add_filter('script_loader_tag', 'add_asyncdefer_attribute', 10, 2);
 
-  add_action('omniva_admin_head', 'omnivalt_admin_scripts');
-  function omnivalt_admin_scripts()
+  add_action('omniva_admin_manifest_head', 'omnivalt_admin_manifest_scripts');
+  function omnivalt_admin_manifest_scripts()
   {
-    wp_enqueue_style('omnivalt_admin', plugins_url('/css/admin_omnivalt.css', __FILE__));
+    wp_enqueue_style('omnivalt_admin_manifest', plugins_url('/css/omniva_admin_manifest.css', __FILE__));
     wp_enqueue_style('bootstrap-datetimepicker', plugins_url('/js/datetimepicker/bootstrap-datetimepicker.min.css', __FILE__));
     wp_enqueue_script('moment', plugins_url('/js/moment.min.js', __FILE__), array(), null, true);
     wp_enqueue_script('bootstrap-datetimepicker', plugins_url('/js/datetimepicker/bootstrap-datetimepicker.min.js', __FILE__), array('jquery', 'moment'), null, true);
+  }
+
+  add_action('admin_enqueue_scripts', 'omnivalt_admin_settings_scripts');
+  function omnivalt_admin_settings_scripts($hook)
+  {
+  	if ($hook == 'woocommerce_page_wc-settings' && isset($_GET['section']) && $_GET['section'] == 'omnivalt') {
+  		wp_enqueue_style('omnivalt_admin_settings', plugins_url('/css/omniva_admin_settings.css', __FILE__), array(), OMNIVA_VERSION);
+      wp_enqueue_script('omniva_admin_settings', plugins_url( '/js/omniva_admin.js', __FILE__ ), array('jquery'), OMNIVA_VERSION );
+  	}
   }
 
   add_action('wp_ajax_nopriv_add_terminal_to_session', 'add_terminal_to_session');
@@ -277,18 +294,20 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
          */
         function init_form_fields()
         {
-          $this->form_fields = array(
+          $fields = array(
             'enabled' => array(
               'title' => __('Enable', 'omnivalt'),
               'type' => 'checkbox',
               'description' => __('Enable this shipping.', 'omnivalt'),
               'default' => 'yes'
             ),
+            'hr_api' => array(
+              'type' => 'hr'
+            ),
             'api_url' => array(
               'title' => __('Api URL', 'omnivalt'),
               'type' => 'text',
               'default' => 'https://edixml.post.ee'
-
             ),
             'api_user' => array(
               'title' => __('Api user', 'omnivalt'),
@@ -297,6 +316,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'api_pass' => array(
               'title' => __('Api user password', 'omnivalt'),
               'type' => 'password',
+            ),
+            'hr_shop' => array(
+              'type' => 'hr'
             ),
             'company' => array(
               'title' => __('Company name', 'omnivalt'),
@@ -347,85 +369,197 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 'c' => __('Courrier', 'omnivalt')
               )
             ),
-            'weight' => array(
-              'title' => __('Weight (kg)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step'          => 0.01,
-              ),
-              'description' => __('Maximum allowed weight', 'omnivalt'),
-              'default' => 100
-            ),
-            'method_c' => array(
-              'title' => __('Courrier', 'omnivalt'),
-              'type' => 'checkbox',
-              'description' => __('Show courrier method in checkout.', 'omnivalt')
-            ),
-            'method_pt' => array(
-              'title' => __('Parcel terminal', 'omnivalt'),
-              'type' => 'checkbox',
-              'description' => __('Show parcel terminal method in checkout.', 'omnivalt')
-            ),
-            'show_map' => array(
-              'title' => __('Map', 'omnivalt'),
-              'type' => 'checkbox',
-              'description' => __('Show map of terminals.', 'omnivalt'),
-              'default' => 'yes',
-              'class' => 'omniva_terminal'
-            ),
-            'auto_select' => array(
-              'title' => __('Automatic terminal selection', 'omnivalt'),
-              'type' => 'checkbox',
-              'description' => __('Automatically select terminal by postcode.', 'omnivalt'),
-              'default' => 'yes',
-              'class' => 'omniva_terminal'
-            ),
+          );
+          $fields['hr_methods'] = array(
+            'type' => 'hr'
+          );
+          $fields['method_pt'] = array(
+            'title' => __('Parcel terminal', 'omnivalt'),
+            'type' => 'checkbox',
+            'description' => __('Show parcel terminal method in checkout.', 'omnivalt')
+          );
+          $fields['method_c'] = array(
+            'title' => __('Courrier', 'omnivalt'),
+            'type' => 'checkbox',
+            'description' => __('Show courrier method in checkout.', 'omnivalt')
           );
           foreach ($this->countries as $country) {
-            $this->form_fields['c_price_' . $country] = array(
+          	$country = strtoupper($country); //Make sure it is really uppercase
+          	$fields['hr_'.$country] = array(
+            	'type' => 'empty',
+              'class' => 'omniva_both'
+          	);
+
+          	$fields['c_price_'.$country] = array(
               'title' => $country . ' ' . __('Courrier price', 'omnivalt'),
               'type' => 'number',
               'custom_attributes' => array(
                 'step' => 0.01,
-                'min' => 0,
+                'min' => 0
               ),
               'default' => 2,
               'description' => __('Leave empty to disable this method.', 'omnivalt'),
               'class' => 'omniva_courier'
             );
-            $this->form_fields['c_price_' . $country . '_FREE'] = array(
-              'title' => $country . ' ' . __('Courier fee free from', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step' => 0.01,
-                'min' => 0.01,
-              ),
-              'default' => 100,
-              'class' => 'omniva_courier'
-            );
-            $this->form_fields['pt_price_' . $country] = array(
+
+            $fields['pt_price_'.$country] = array(
               'title' => $country . ' ' . __('Parcel terminal price', 'omnivalt'),
               'type' => 'number',
               'custom_attributes' => array(
                 'step' => 0.01,
-                'min' => 0,
+                'min' => 0
               ),
               'default' => 2,
               'description' => __('Leave empty to disable this method.', 'omnivalt'),
               'class' => 'omniva_terminal'
             );
-            $this->form_fields['pt_price_' . $country . '_FREE'] = array(
-              'title' => $country . ' ' . __('Parcel terminal fee free from', 'omnivalt'),
+
+            $fields['c_price_'.$country.'_FREE'] = array(
+              'title' => $country . ' ' . __('Free shipping then price is higher (Courier)', 'omnivalt'),
               'type' => 'number',
               'custom_attributes' => array(
                 'step' => 0.01,
-                'min' => 0.01,
+                'min' => 0.01
               ),
               'default' => 100,
+              'description' => __('Leave empty to not use.', 'omnivalt'),
+              'class' => 'omniva_courier'
+            );
+            
+            $fields['pt_price_'.$country.'_FREE'] = array(
+              'title' => $country . ' ' . __('Free shipping then price is higher (Terminals)', 'omnivalt'),
+              'type' => 'number',
+              'custom_attributes' => array(
+                'step' => 0.01,
+                'min' => 0.01
+              ),
+              'default' => 100,
+              'description' => __('Leave empty to not use.', 'omnivalt'),
               'class' => 'omniva_terminal'
             );
           }
+          $fields['hr_settings'] = array(
+            'type' => 'hr'
+          );
+          $fields['weight'] = array(
+            'title' => sprintf(__('Max cart weight (%s)', 'omnivalt'),'kg'),
+            'type' => 'number',
+            'custom_attributes' => array(
+              'step' => 0.01,
+              'min' => 0
+            ),
+            'description' => __('Maximum allowed all cart products weight for parcel terminals.', 'omnivalt'),
+            'default' => 100,
+            'class' => 'omniva_terminal'
+          );
+          $fields['size_pt'] = array(
+            'title' => sprintf(__('Max cart size (%s)', 'omnivalt'),get_option('woocommerce_dimension_unit')),
+            'type' => 'dimensions',
+            'description' => __('Maximum cart size for parcel terminals. Leave all empty to disable.', 'omnivalt') . '<br/>' . __('Preliminary cart size is calculated by trying to fit all products by taking their dimensions (boxes) indicated in their settings.', 'omnivalt'),
+            'class' => 'omniva_terminal'
+          );
+          /*$fields['size_c'] = array(
+            'title' => sprintf(__('Max size (%s) for courier', 'omnivalt'),get_option('woocommerce_dimension_unit')),
+            'type' => 'dimensions',
+            'description' => __('Maximum product size for courier. Leave all empty to disable.', 'omnivalt') . '<br/>' . __('If the length, width or height of at least one product exceeds the specified values, then it will not be possible to select the courier delivery method for the whole cart.', 'omnivalt')
+          );*/
+          $fields['show_map'] = array(
+            'title' => __('Map', 'omnivalt'),
+            'type' => 'checkbox',
+            'description' => __('Show map of terminals.', 'omnivalt'),
+            'default' => 'yes',
+            'class' => 'omniva_terminal'
+          );
+          $fields['auto_select'] = array(
+            'title' => __('Automatic terminal selection', 'omnivalt'),
+            'type' => 'checkbox',
+            'description' => __('Automatically select terminal by postcode.', 'omnivalt'),
+            'default' => 'yes',
+            'class' => 'omniva_terminal'
+          );
+          $fields['email_created_label'] = array(
+            'title' => __('Send email when a label is created', 'omnivalt'),
+            'type' => 'checkbox',
+            'description' => __('Send an email to customer with tracking code, when the label is generated.', 'omnivalt') . '<br/>' . sprintf(__('To override email template, copy template file from %1$s to your theme %2$s directory.', 'omnivalt'), '<code>wp-content/plugins/omniva-woocommerce/templates/emails</code>', '<code>wp-content/themes/theme-name/omniva/emails</code>'),
+            'default' => 'yes'
+          );
+          $fields['email_created_label_subject'] = array(
+            'title' => __('', 'omnivalt'),
+            'type' => 'text',
+            'description' => __('Custom email subject (this field value not translating into other languages).', 'omnivalt'),
+            'placeholder' => __('Your order shipment has been registered', 'omnivalt')
+          );
+          $fields['send_email_on_arrive'] = array(
+            'title' => __('Send email on shipment arrive', 'omnivalt'),
+            'type' => 'checkbox',
+            'description' => __('Send email to customer from Omniva, when the shipment arrives at the terminal.', 'omnivalt'),
+            'default' => '',
+            'class' => 'omniva_terminal'
+          );
+					$this->form_fields = $fields;
         }
+
+        public function generate_hr_html( $key, $value ) {
+          $class = (isset($value['class'])) ? $value['class'] : '';
+        	$html = '<tr valign="top"><td colspan="2"><hr class="' . $class . '"></td></tr>';
+    			return $html;
+        }
+        public function generate_empty_html( $key, $value ) {
+          $class = (isset($value['class'])) ? $value['class'] : '';
+        	$html = '<tr valign="top"><td colspan="2" class="' . $class . '"></td></tr>';
+    			return $html;
+        }
+        public function generate_dimensions_html( $key, $value ) {
+        	$field_key = $this->get_field_key($key);
+          $field_class = (isset($value['class'])) ? $value['class'] : '';
+
+        	if ( $this->get_option($key) !== '' ) {
+      			$dim_values = $this->get_option($key);
+      			if ( is_string($dim_values) ) {
+        			$dim_values = json_decode($this->get_option($key), true);
+      			}
+    			} else {
+      			$dim_values = array();
+    			}
+
+        	ob_start();
+        	?>
+        	<tr valign="top">
+        		<th scope="row" class="titledesc">
+        			<label><?php echo esc_html($value['title']); ?></label>
+        		</th>
+        		<td class="forminp">
+        			<fieldset class="field-dimensions <?php echo $field_class; ?>">
+        				<input type="number" value="<?php echo $dim_values[0]; ?>"
+                  id="<?php echo esc_html($field_key); ?>"
+                  name="<?php echo esc_html($field_key); ?>[0]"
+                  min="0.001" step="0.001" placeholder="<?php echo __('Length','omnivalt'); ?>">
+                <span>x</span>
+                <input type="number" value="<?php echo $dim_values[1]; ?>"
+                  id="<?php echo esc_html($field_key); ?>"
+                  name="<?php echo esc_html($field_key); ?>[1]"
+                  min="0.001" step="0.001" placeholder="<?php echo __('Width','omnivalt'); ?>">
+                <span>x</span>
+                <input type="number" value="<?php echo $dim_values[2]; ?>"
+                  id="<?php echo esc_html($field_key); ?>"
+                  name="<?php echo esc_html($field_key); ?>[2]"
+                  min="0.001" step="0.001" placeholder="<?php echo __('Height','omnivalt'); ?>">
+                 <span><?php echo get_option('woocommerce_dimension_unit'); ?></span>
+                <?php if (!empty($value['description'])) : ?>
+            			<p class="description"><?php echo __($value['description']); ?></p>
+          			<?php endif; ?>
+        			</fieldset>
+        		</td>
+        	</tr>
+        	<?php
+        	$html = ob_get_contents();
+    			ob_end_clean();
+    			return $html;
+        }
+        public function validate_dimensions_field( $key, $value ) {
+    			$values = wp_json_encode($value);
+    			return $values;
+ 				}
 
         /**
          * This function is used to calculate the shipping cost. Within this function we can check for weights, dimensions and other parameters.
@@ -443,17 +577,24 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           global $woocommerce;
           $cart_amount = $woocommerce->cart->cart_contents_total + $woocommerce->cart->tax_total;
 
+          $dimension_pass_pt = true;
+          $max_dimension_pt = (isset($this->settings['size_pt'])) ? json_decode($this->settings['size_pt']) : array(999999,999999,999999);
+          $products_for_dim = array();
           foreach ($package['contents'] as $item_id => $values) {
             $_product = $values['data'];
             if ($_product->get_weight()) {
               $weight = $weight + $_product->get_weight() * $values['quantity'];
             }
+            for ($i=0;$i<$values['quantity'];$i++) {
+            	array_push($products_for_dim, $_product);
+            }
           }
+          $dimension_pass_pt = $this->cart_size_prediction($products_for_dim, $max_dimension_pt);
 
           $weight = wc_get_weight($weight, 'kg');
           $weight_pass = (floatval($this->settings['weight']) >= $weight || floatval($this->settings['weight']) == 0);
 
-          if ($this->settings['method_pt'] == 'yes' && $weight_pass) {
+          if ($this->settings['method_pt'] == 'yes' && $weight_pass && $dimension_pass_pt) {
             $show = true;
             if ( in_array($country, $this->countries) ) {
               $amount = $this->settings['pt_price_' . $country];
@@ -472,11 +613,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'label' => __('Omniva parcel terminal', 'omnivalt'),
               'cost' => $amount
             );
-            if ($show == true)
-              $this->add_rate($rate);
+            if ($show) {
+            	$this->add_rate($rate);
+            }
           }
 
-          if ($this->settings['method_c'] == 'yes') {
+          if ($this->settings['method_c'] == 'yes' /*&& $dimension_pass_c*/) {
             $show = true;
             if ( in_array($country, $this->countries) ) {
               $amountC = $this->settings['c_price_' . $country];
@@ -495,9 +637,55 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'label' => __('Omniva courrier', 'omnivalt'),
               'cost' => $amountC
             );
-            if ($show == true)
-              $this->add_rate($rate);
+            if ($show) {
+            	$this->add_rate($rate);
+            }
           }
+        }
+
+        private function cart_size_prediction($products, $max_dimension) {
+        	$all_cart_dim_length = 0;
+          $all_cart_dim_width = 0;
+          $all_cart_dim_height = 0;
+          $max_dim_length = (!empty($max_dimension[0])) ? $max_dimension[0] : 999999;
+          $max_dim_width = (!empty($max_dimension[1])) ? $max_dimension[1] : 999999;
+          $max_dim_height = (!empty($max_dimension[2])) ? $max_dimension[2] : 999999;
+
+          foreach ($products as $product) {
+          	$prod_dim_length = $product->get_length();
+          	$prod_dim_width = $product->get_width();
+          	$prod_dim_height = $product->get_height();
+
+          	//Add to length
+          	if ( ($prod_dim_length + $all_cart_dim_length) <= $max_dim_length 
+          		&& $prod_dim_width <= $max_dim_width && $prod_dim_height <= $max_dim_height
+          	) {
+          		$all_cart_dim_length = $all_cart_dim_length + $prod_dim_length;
+          		$all_cart_dim_width = ($prod_dim_width > $all_cart_dim_width) ? $prod_dim_width : $all_cart_dim_width;
+          		$all_cart_dim_height = ($prod_dim_height > $all_cart_dim_height) ? $prod_dim_height : $all_cart_dim_height;
+          	}
+          	//Add to width
+          	else if ( ($prod_dim_width + $all_cart_dim_width) <= $max_dim_width 
+          		&& $prod_dim_length <= $max_dim_length && $prod_dim_height <= $max_dim_height
+          	) {
+          		$all_cart_dim_length = ($prod_dim_length > $all_cart_dim_length) ? $prod_dim_length : $all_cart_dim_length;
+          		$all_cart_dim_width = $all_cart_dim_width + $prod_dim_width;
+          		$all_cart_dim_height = ($prod_dim_height > $all_cart_dim_height) ? $prod_dim_height : $all_cart_dim_height;
+          	}
+          	//Add to height
+          	else if ( ($prod_dim_height + $all_cart_dim_height) <= $max_dim_height 
+          		&& $prod_dim_length <= $max_dim_length && $prod_dim_width <= $max_dim_width
+          	) {
+          		$all_cart_dim_length = ($prod_dim_length > $all_cart_dim_length) ? $prod_dim_length : $all_cart_dim_length;
+          		$all_cart_dim_width = ($prod_dim_width > $all_cart_dim_width) ? $prod_dim_width : $all_cart_dim_width;
+          		$all_cart_dim_height = $all_cart_dim_height + $prod_dim_height;
+          	}
+          	//If all fails
+          	else {
+          		return false;
+          	}
+          }
+          return true;
         }
 
         private function cod($order, $cod = 0, $amount = 0)
@@ -574,30 +762,60 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               $service = "";
               break;
           }
+
+          $additionalService = '';
           $is_cod = false;
           if (get_post_meta($id_order, '_payment_method', true) == "cod")
             $is_cod = true;
-          $parcel_terminal = "";
-          if ($send_method == "pt") $parcel_terminal = 'offloadPostcode="' . $terminal_id . '" ';
-          $additionalService = '';
+          $client_email = $this->clean($wc_order->get_billing_email());
+          $send_email_on_arrive = false;
+          if (isset($this->settings['send_email_on_arrive'])) {
+          	$send_email_on_arrive = ($this->settings['send_email_on_arrive'] == 'yes') ? true : false;
+          }
+          $emails = '';
+          if (!empty($client_email) && $send_email_on_arrive && ($service == "PA" || $service == "PU")) {
+          	$emails = '<email>' . $client_email . '</email>';
+          	$additionalService .= '<option code="SF" />';
+          }
           if ($service == "PA" || $service == "PU") $additionalService .= '<option code="ST" />';
           if ($is_cod) $additionalService .= '<option code="BP" />';
           if ($additionalService) {
             $additionalService = '<add_service>' . $additionalService . '</add_service>';
           }
+
+          $parcel_terminal = "";
+          if ($send_method == "pt") $parcel_terminal = 'offloadPostcode="' . $terminal_id . '" ';
           /* LV/EE fixes
           if ($parcel_terminal)
             $client_address = '<address ' . $parcel_terminal . ' />';
           else
 	*/
-          $client_address = '<address postcode="' . $this->clean(get_post_meta($id_order, '_shipping_postcode', true)) . '" ' . $parcel_terminal . ' deliverypoint="' . $this->clean(get_post_meta($id_order, '_shipping_city', true)) . '" country="' . $this->clean(get_post_meta($id_order, '_shipping_country', true)) . '" street="' . $this->clean(get_post_meta($id_order, '_shipping_address_1', true)) . '" />';
+          $client_post = $this->clean($wc_order->get_shipping_postcode());
+          $client_city = $this->clean($wc_order->get_shipping_city());
+          $client_address_1 = $this->clean($wc_order->get_shipping_address_1());
+          $client_country = $this->clean($wc_order->get_shipping_country());
+          if (empty($client_post) && empty($client_city) && empty($client_address_1) && empty($client_country)) {
+          	$client_post = $this->clean($wc_order->get_billing_postcode());
+          	$client_city = $this->clean($wc_order->get_billing_city());
+          	$client_address_1 = $this->clean($wc_order->get_billing_address_1());
+          	$client_country = $this->clean($wc_order->get_billing_country());
+          }
+          if (empty($client_country)) $client_country = 'LT';
+          $client_phone = $this->clean($wc_order->get_billing_phone());
+          $client_name = $this->clean($wc_order->get_shipping_first_name());
+          if (empty($client_name)) $client_name = $this->clean($wc_order->get_billing_first_name());
+          $client_surname = $this->clean($wc_order->get_shipping_last_name());
+          if (empty($client_surname)) $client_surname = $this->clean($wc_order->get_billing_last_name());
+
+          $client_address = '<address postcode="' . $client_post . '" ' . $parcel_terminal . ' deliverypoint="' . $client_city . '" country="' . $client_country . '" street="' . $client_address_1 . '" />';
           $phones = '';
-          if ($mobile = $this->clean(get_post_meta($id_order, '_billing_phone', true))) $phones .= '<mobile>' . $mobile . '</mobile>';
+          if (!empty($client_phone)) $phones .= '<mobile>' . $client_phone . '</mobile>';
           $pickStart = $this->settings['pick_up_start'] ? $this->clean($this->settings['pick_up_start']) : '8:00';
           $pickFinish = $this->settings['pick_up_end'] ? $this->clean($this->settings['pick_up_end']) : '17:00';
           $pickDay = date('Y-m-d');
           if (time() > strtotime($pickDay . ' ' . $pickFinish)) $pickDay = date('Y-m-d', strtotime($pickDay . "+1 days"));
           $shop_country_iso = $this->clean($this->settings['shop_countrycode']);
+
           $xmlRequest = '
           <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://service.core.epmx.application.eestipost.ee/xsd">
              <soapenv:Header/>
@@ -616,8 +834,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                             <measures weight="' . $weight . '" />
                             ' . self::cod($order, $is_cod, get_post_meta($id_order, '_order_total', true)) . '
                             <receiverAddressee >
-                               <person_name>' . $this->clean(get_post_meta($id_order, '_shipping_first_name', true)) . ' ' . $this->clean(get_post_meta($id_order, '_shipping_last_name', true)) . '</person_name>
+                               <person_name>' . $client_name . ' ' . $client_surname . '</person_name>
                               ' . $phones . '
+                              ' . $emails . '
                               ' . $client_address . '
                             </receiverAddressee>
                             <!--Optional:-->
@@ -781,7 +1000,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
            <soapenv:Header/>
            <soapenv:Body>
               <xsd:addrcardMsgRequest>
-                 <partner>' . $this->settings['api_user'] . '</partner>
+                 <partner>' . $this->clean($this->settings['api_user']) . '</partner>
                  <sendAddressCardTo>response</sendAddressCardTo>
                  <barcodes>
                     ' . $barcodeXML . '
@@ -793,7 +1012,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           // echo $xmlRequest;
 
           try {
-            $url = $this->settings['api_url'] . '/epmx/services/messagesService.wsdl';
+            $url = $this->clean($this->settings['api_url']) . '/epmx/services/messagesService.wsdl';
             $headers = array(
               "Content-type: text/xml;charset=\"utf-8\"",
               "Accept: text/xml",
@@ -806,7 +1025,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_USERPWD, $this->settings['api_user'] . ":" . $this->settings['api_pass']);
+            curl_setopt($ch, CURLOPT_USERPWD, $this->clean($this->settings['api_user']) . ":" . $this->clean($this->settings['api_pass']));
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -892,12 +1111,25 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 }
                 if (!$download)
                   $this->add_msg($orderId . ' - ' . __('Omniva label generated', 'omnivalt'), 'updated');
+                $omniva_settings = get_option('woocommerce_omnivalt_settings');
+                $send_email = (isset($omniva_settings['email_created_label'])) ? $omniva_settings['email_created_label'] : 'yes';
+                if ($send_email === 'yes') {
+                  $emails = new Omniva_Emails( plugin_dir_path(__FILE__) . '/templates/');
+                  $email_subject = (isset($omniva_settings['email_created_label_subject'])) ? $omniva_settings['email_created_label_subject'] : '';
+                  $email_params = array(
+                    'tracking_code' => $status['barcodes'][0],
+                    'tracking_link' => getTrackingLink($wc_order->get_shipping_country(), $status['barcodes'][0], true),
+                    'subject' => $email_subject
+                  );
+                  $emails->send_label($wc_order, $wc_order->get_billing_email(), $email_params);
+                }
               } else {
                 update_post_meta($orderId, '_omnivalt_error', $status['msg']);
                 $this->add_msg($orderId . ' - ' . $status['msg'], 'error');
                 continue;
               }
             }
+
             $label_url = '';
             if (file_exists(plugin_dir_path(__FILE__) . 'pdf/' . $order->ID . '.pdf')) {
               $label_url = plugin_dir_path(__FILE__) . 'pdf/' . $order->ID . '.pdf';
@@ -1013,19 +1245,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $history->addWithEmail(true);*/
             }
           $pdf->SetFont('freeserif', '', 14);
-          $shop_addr = '<table cellspacing="0" cellpadding="1" border="0"><tr><td>' . date('Y-m-d H:i:s') . '</td><td>Siuntėjo adresas:<br/>' . $this->settings['shop_name'] . '<br/>' . $this->settings['shop_address'] . ', ' . $this->settings['shop_postcode'] . '<br/>' . $this->settings['shop_city'] . ', ' . $this->settings['shop_countrycode'] . '<br/></td></tr></table>';
+          $shop_addr = '<table cellspacing="0" cellpadding="1" border="0"><tr><td>' . date('Y-m-d H:i:s') . '</td><td>' . _x('Sender address', 'Manifest', 'omnivalt') . ':<br/>' . $this->settings['shop_name'] . '<br/>' . $this->settings['shop_address'] . ', ' . $this->settings['shop_postcode'] . '<br/>' . $this->settings['shop_city'] . ', ' . $this->settings['shop_countrycode'] . '<br/></td></tr></table>';
 
           $pdf->writeHTML($shop_addr, true, false, false, false, '');
           $tbl = '
             <table cellspacing="0" cellpadding="4" border="1">
               <thead>
                 <tr>
-                  <th width = "40" align="right">Nr.</th>
-                  <th>Siuntos numeris</th>
-                  <th width = "60">Data</th>
-                  <th width = "40" >Kiekis</th>
-                  <th width = "60">Svoris (kg)</th>
-                  <th width = "210">Gavėjo adresas</th>
+                  <th width = "40" align="right">' . _x('No.', 'Manifest', 'omnivalt') . '</th>
+                  <th>' . _x('Shipment number', 'Manifest', 'omnivalt') . '</th>
+                  <th width = "60">' . _x('Date', 'Manifest', 'omnivalt') . '</th>
+                  <th width = "40">' . _x('Quantity', 'Manifest', 'omnivalt') . '</th>
+                  <th width = "60">' . _x('Weight (kg)', 'Manifest', 'omnivalt') . '</th>
+                  <th width = "210">' . _x("Recipient's address", 'Manifest', 'omnivalt') . '</th>
                 </tr>
               </thead>
               <tbody>
@@ -1034,7 +1266,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             </table><br/><br/>
             ';
           if ($count == 0) {
-            $this->add_msg("No compatible orders for manifest", 'error');
+            $this->add_msg(__('No compatible orders for manifest', 'omnivalt'), 'error');
             wp_safe_redirect(wp_get_referer());
             exit;
           } else {
@@ -1043,8 +1275,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $pdf->SetFont('freeserif', '', 9);
           $pdf->writeHTML($tbl, true, false, false, false, '');
           $pdf->SetFont('freeserif', '', 14);
-          $sign = 'Kurjerio vardas, pavardė, parašas ________________________________________________<br/><br/>';
-          $sign .= 'Siuntėjo vardas, pavardė, parašas ________________________________________________';
+          $sign = _x("Courier name, surname, signature", 'Manifest', 'omnivalt') . ' ________________________________________________<br/><br/>';
+          $sign .= _x("Sender name, surname, signature", 'Manifest', 'omnivalt') . ' ________________________________________________';
           $pdf->writeHTML($sign, true, false, false, false, '');
           $pdf->Output('Omnivalt_manifest.pdf', 'D');
         }

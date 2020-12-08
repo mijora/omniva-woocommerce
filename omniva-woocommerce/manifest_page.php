@@ -35,14 +35,14 @@ function make_link($args)
 }
 
 // append custom css and js
-do_action('omniva_admin_head');
+do_action('omniva_admin_manifest_head');
 
 // prep access to Omnivalt shipping class
 $wc_shipping = new WC_Shipping();
 $omnivalt = new Omnivalt_Shipping_Method();
 ?>
 
-<div class="wrap">
+<div class="wrap page-omniva_manifest">
   <h1><?php _e('Omniva manifest', 'omnivalt'); ?></h1>
 
   <?php
@@ -216,26 +216,28 @@ $omnivalt = new Omnivalt_Shipping_Method();
 
               <tr class="omniva-filter">
                 <td class="manage-column column-cb check-column"><input type="checkbox" class="check-all" /></td>
-                <th class="manage-column">
+                <th class="manage-column column-order_id">
                   <input type="text" class="d-inline" name="filter_id" id="filter_id" value="<?php echo $filters['id']; ?>" placeholder="<?php echo __('ID', 'omnivalt'); ?>" aria-label="Order ID filter">
                 </th>
                 <th class="manage-column">
                   <input type="text" class="d-inline" name="filter_customer" id="filter_customer" value="<?php echo $filters['customer']; ?>" placeholder="<?php echo __('Customer', 'omnivalt'); ?>" aria-label="Order ID filter">
                 </th>
-                <th class="manage-column">
+                <th class="column-order_status">
                   <select class="d-inline" name="filter_status" id="filter_status" aria-label="Order status filter">
-                    <option value="-1" selected>All</option>
+                    <option value="-1" selected><?php echo _x('All', 'All status', 'omnivalt'); ?></option>
                     <?php foreach ($order_statuses as $status_key => $status) : ?>
                       <option value="<?php echo $status_key; ?>" <?php echo ($status_key == $filters['status'] ? 'selected' : ''); ?>><?php echo $status; ?></option>
                     <?php endforeach; ?>
                   </select>
+                </th>
+                <th class="column-order_date">
                 </th>
                 <th class="manage-column">
                 </th>
                 <th class="manage-column">
                   <input type="text" class="d-inline" name="filter_barcode" id="filter_barcode" value="<?php echo $filters['barcode']; ?>" placeholder="<?php echo __('Barcode', 'omnivalt'); ?>" aria-label="Order barcode filter">
                 </th>
-                <th class="manage-column">
+                <th class="column-manifest_date">
                   <div class='datetimepicker'>
                     <div>
                       <input name="filter_start_date" type='text' class="" id='datetimepicker1' data-date-format="YYYY-MM-DD" value="<?php echo $filters['start_date']; ?>" placeholder="<?php echo __('From', 'omnivalt'); ?>" autocomplete="off" />
@@ -255,13 +257,14 @@ $omnivalt = new Omnivalt_Shipping_Method();
 
               <tr class="table-header">
                 <td class="manage-column column-cb check-column"></td>
-                <th scope="col" class="manage-column"><?php echo __('ID', 'omnivalt'); ?></th>
+                <th scope="col" class="column-order_id"><?php echo __('ID', 'omnivalt'); ?></th>
                 <th scope="col" class="manage-column"><?php echo __('Customer', 'omnivalt'); ?></th>
-                <th scope="col" class="manage-column"><?php echo __('Order Status', 'omnivalt'); ?></th>
+                <th scope="col" class="column-order_status"><?php echo __('Order Status', 'omnivalt'); ?></th>
+                <th scope="col" class="column-order_date"><?php echo __('Order Date', 'omnivalt'); ?></th>
                 <th scope="col" class="manage-column"><?php echo __('Service', 'omnivalt'); ?></th>
                 <th scope="col" class="manage-column"><?php echo __('Barcode', 'omnivalt'); ?></th>
-                <th scope="col" class="manage-column"><?php echo __('Manifest date', 'omnivalt'); ?></th>
-                <th scope="col"></th>
+                <th scope="col" class="column-manifest_date"><?php echo __('Manifest date', 'omnivalt'); ?></th>
+                <th scope="col" class="manage-column"><?php echo __('Actions', 'omnivalt'); ?></th>
               </tr>
 
             </thead>
@@ -274,24 +277,29 @@ $omnivalt = new Omnivalt_Shipping_Method();
                   ?>
                 <?php if ($action == 'completed_orders' && $date_tracker !== $date) : ?>
                   <tr>
-                    <td colspan="8" class="manifest-date-title">
+                    <td colspan="9" class="manifest-date-title">
                       <?php echo $date_tracker = $date; ?>
                     </td>
                   </tr>
                 <?php endif; ?>
                 <tr class="data-row">
                   <th scope="row" class="check-column"><input type="checkbox" name="items[]" class="manifest-item" value="<?php echo $order->get_id(); ?>" /></th>
-                  <td class="manage-column">
+                  <td class="manage-column column-order_id">
                     <a href="<?php echo $order->get_edit_order_url(); ?>">#<?php echo $order->get_order_number(); ?></a>
                   </td>
                   <td class="column-order_number">
                     <div class="data-grid-cell-content">
-                      <?php echo $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(); ?>
+                    	<?php echo $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(); ?>
                     </div>
                   </td>
                   <td class="column-order_status">
                     <div class="data-grid-cell-content">
                       <?php echo wc_get_order_status_name($order->get_status()); ?>
+                    </div>
+                  </td>
+                  <td class="column-order_date">
+                    <div class="data-grid-cell-content">
+                      <?php echo $order->get_date_created()->format ('Y-m-d H:i:s'); ?>
                     </div>
                   </td>
                   <td class="manage-column">
@@ -311,14 +319,14 @@ $omnivalt = new Omnivalt_Shipping_Method();
                       <?php endif; ?>
                     </div>
                   </td>
-                  <td class="manage-column">
+                  <td class="column-manifest_date">
                     <div class="data-grid-cell-content">
                       <?php echo $manifest_date; ?>
                     </div>
                   </td>
                   <td class="manage-column">
                     <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order->get_id(); ?>" class="button action">
-                      <?php echo __('Print labels', 'omnivalt'); ?>
+                      <?php echo __('Print label', 'omnivalt'); ?>
                     </a>
                   </td>
                 </tr>
@@ -326,7 +334,7 @@ $omnivalt = new Omnivalt_Shipping_Method();
 
               <?php if (!$orders) : ?>
                 <tr>
-                  <td colspan="8">
+                  <td colspan="9">
                     <?php echo __('No orders found', 'woocommerce'); ?>
                   </td>
                 </tr>
