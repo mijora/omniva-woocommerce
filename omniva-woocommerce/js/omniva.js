@@ -25,11 +25,16 @@ jQuery('document').ready(function($){
         });
     });
 
-    $( document ).on( 'omnivalt.checkpostcode', function() {
+    $( document ).on( 'omnivalt.checkpostcode, updated_checkout', function() {
         if (omnivaSettings.auto_select == "yes") {
             current_postcode = select_terminal(current_postcode);
         }
     });
+    $( document ).on('change', '#shipping_postcode, #billing_postcode',function(){
+        if (omnivaSettings.auto_select == "yes") {
+            current_postcode = select_terminal(current_postcode);
+        }
+    });  
     $( document.body ).on( 'updated_wc_div', function(){
         //$('.omnivalt_terminal').omniva();
         $("select.shipping_method, :input[name^=shipping_method]:checked").trigger('change'); //TODO: Need better solution for dropdown update when in cart change country
