@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 1.6.1 =
+- added the ability to debug request and response to/from Omniva server
+- fixed size values get from products
+- fixed API url using, when slash exists at the end of string
+
 = 1.6.0 =
 - fixed that shipping prices lower than 0 could not be entered
 - fixed that shipping does not become free when the value "free from" is not entered

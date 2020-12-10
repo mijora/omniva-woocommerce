@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.1]
+### Fixed
+- fixed size values get from products
+- fixed API url using, when slash exists at the end of string
+
+### Improved
+- added the ability to debug request and response to/from Omniva server
+
 ## [1.6.0]
 ### Fixed
 - fixed that shipping prices lower than 0 could not be entered
