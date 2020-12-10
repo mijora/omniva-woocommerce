@@ -3,9 +3,9 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-04 08:59+0000\n"
-"PO-Revision-Date: 2020-11-04 09:08+0000\n"
+"PO-Revision-Date: 2020-12-10 12:19+0000\n"
 "Last-Translator: \n"
-"Language-Team: Latviešu valoda\n"
+"Language-Team: Latvian\n"
 "Language: lv\n"
 "Plural-Forms: nplurals=3; plural=n % 10 == 1 && n % 100 != 11 ? 0 : n != 0 ? "
 "1 : 2;\n"
@@ -18,349 +18,531 @@ msgstr ""
 "X-Loco-Api-Version: 1.0.24 20191119-1\n"
 "X-Loco-Version: 2.4.4; wp-5.5.3"
 
+#: manifest_page.php:267
+msgid "Actions"
+msgstr ""
+
+#: manifest_page.php:353
+msgid "Address and contact information can be changed in Omniva settings."
+msgstr "Adreses un kontaktinformāciju var mainīt Omniva iestatījumos."
+
 #: manifest_page.php:10
 msgid "All orders"
 msgstr "Visi pasūtījumi"
 
-#: manifest_page.php:11
-msgid "New orders"
-msgstr "Jauni pasūtījumi"
+#: manifest_page.php:227
+msgctxt "All status"
+msgid "All"
+msgstr ""
+
+#: omniva-woocommerce.php:309
+msgid "Api URL"
+msgstr "Api URL"
+
+#: omniva-woocommerce.php:314
+msgid "Api user"
+msgstr "Api lietotājs"
+
+#: omniva-woocommerce.php:318
+msgid "Api user password"
+msgstr "Api lietotāja parole"
+
+#: omniva-woocommerce.php:475
+msgid "Automatic terminal selection"
+msgstr "Automātiska termināļu izvēle"
+
+#: omniva-woocommerce.php:477
+msgid "Automatically select terminal by postcode."
+msgstr "Automātiski izvēlēties termināli pēc pasta indeksa."
+
+#: omniva-woocommerce.php:1952
+msgid "Back"
+msgstr "Atpakaļ"
+
+#: omniva-woocommerce.php:329
+msgid "Bank account"
+msgstr "Bankas konts"
+
+#: manifest_page.php:238 manifest_page.php:265
+msgid "Barcode"
+msgstr "Svītrkods"
+
+#: manifest_page.php:174 manifest_page.php:365
+msgid "Call Omniva courier"
+msgstr "Izsaucot kurjerpakalpojums"
+
+#: omniva-woocommerce.php:325
+msgid "Company name"
+msgstr "Uzņēmuma nosaukums"
 
 #: manifest_page.php:12
 msgid "Completed orders"
 msgstr "Pabeigti pasūtījumi"
 
-#: manifest_page.php:46 omniva-woocommerce.php:1376 omniva-woocommerce.php:1377
-msgid "Omniva manifest"
-msgstr "Omniva sūtījumu saraksts"
+#: omniva-woocommerce.php:370 omniva-woocommerce.php:383
+msgid "Courrier"
+msgstr "Kurjerpakalpojums"
 
-#: manifest_page.php:174 manifest_page.php:357
-msgid "Call Omniva courier"
-msgstr "Izsaucot kurjerpakalpojums"
+#: omniva-woocommerce.php:395
+msgid "Courrier price"
+msgstr "Kurjerpakalpojuma piegādes cena"
+
+#: omniva-woocommerce.php:490
+msgid ""
+"Custom email subject (this field value not translating into other languages)."
+msgstr ""
+
+#: manifest_page.php:223 manifest_page.php:261
+msgid "Customer"
+msgstr "Klients"
+
+#: omniva-woocommerce.php:598
+msgid "Debug file still not created"
+msgstr ""
+
+#: omniva-woocommerce.php:300
+msgid "Enable"
+msgstr "Iespējot"
+
+#: omniva-woocommerce.php:504
+msgid "Enable request debug"
+msgstr ""
+
+#: omniva-woocommerce.php:515
+msgid "Enable response debug"
+msgstr ""
+
+#: omniva-woocommerce.php:302
+msgid "Enable this shipping."
+msgstr "Iespējot šo piegādi."
+
+#: omniva-woocommerce.php:163 omniva-woocommerce.php:1947
+msgid "Enter postcode"
+msgstr "Ievadiet pasta indeksu"
+
+#: omniva-woocommerce.php:165
+msgid "Enter postcode/address"
+msgstr "Ievadiet pasta indeksu/adresi"
+
+#: manifest_page.php:252
+msgid "Filter"
+msgstr "Filtrēt"
+
+#: omniva-woocommerce.php:419
+msgid "Free shipping then price is higher (Courier)"
+msgstr ""
+
+#: omniva-woocommerce.php:431
+msgid "Free shipping then price is higher (Terminals)"
+msgstr ""
+
+#: manifest_page.php:243
+msgid "From"
+msgstr "No"
 
 #: manifest_page.php:202 manifest_page.php:203
 msgid "Generate manifest"
 msgstr "Ģenerēt sūtījumu saraksts"
 
-#: manifest_page.php:205 manifest_page.php:206 manifest_page.php:321
-msgid "Print labels"
-msgstr "Drukāt adrešu kartes"
-
-#: manifest_page.php:220 manifest_page.php:258
-msgid "ID"
-msgstr "ID"
-
-#: manifest_page.php:223 manifest_page.php:259
-msgid "Customer"
-msgstr "Klients"
-
-#: manifest_page.php:236 manifest_page.php:262
-msgid "Barcode"
-msgstr "Svītrkods"
-
-#: manifest_page.php:241
-msgid "From"
-msgstr "No"
-
-#: manifest_page.php:244
-msgid "To"
-msgstr "Līdz"
-
-#: manifest_page.php:250
-msgid "Filter"
-msgstr "Filtrēt"
-
-#: manifest_page.php:251
-msgid "Reset"
-msgstr "Atiestatīt"
-
-#: manifest_page.php:260
-msgid "Order Status"
-msgstr "Statuss"
-
-#: manifest_page.php:261
-msgid "Service"
-msgstr "Apkalpošana"
-
-#: manifest_page.php:263
-msgid "Manifest date"
-msgstr "Acīmredzams datums"
-
-#: manifest_page.php:344
-msgid "Important!"
-msgstr "Svarīgs!"
-
-#: manifest_page.php:344
-msgid "Latest call for same day pickup is until 3 pm."
-msgstr "Pēdējais izsaukums tajā pašā dienā ir līdz plkst. 15:00."
-
-#: manifest_page.php:345
-msgid "Address and contact information can be changed in Omniva settings."
-msgstr "Adreses un kontaktinformāciju var mainīt Omniva iestatījumos."
-
-#: manifest_page.php:350 omniva-woocommerce.php:310
-msgid "Shop name"
-msgstr "Veikalu nosaukums"
-
-#: manifest_page.php:351 omniva-woocommerce.php:330
-msgid "Shop phone number"
-msgstr "Veikala tālruņa numurs"
-
-#: manifest_page.php:352 omniva-woocommerce.php:322
-msgid "Shop postcode"
-msgstr "Veikala indekss"
-
-#: manifest_page.php:354 omniva-woocommerce.php:318
-msgid "Shop address"
-msgstr "Veikala adrese"
-
-#: manifest_page.php:428 manifest_page.php:444
-msgid "Select orders"
-msgstr "Atlasiet pasūtījumus"
-
-#: omniva-woocommerce.php:147
-msgid "Select terminal"
-msgstr "Izvēlaties pakomātu"
-
-#: omniva-woocommerce.php:148 omniva-woocommerce.php:1613
-msgid "Enter postcode"
-msgstr "Ievadiet pasta indeksu"
-
-#: omniva-woocommerce.php:149
-msgid "Place not found"
-msgstr "Vieta nav atrasta"
-
-#: omniva-woocommerce.php:150
-msgid "Enter postcode/address"
-msgstr "Ievadiet pasta indeksu/adresi"
-
-#: omniva-woocommerce.php:151 omniva-woocommerce.php:1199
-msgid "Show in map"
-msgstr "Apskatīt novietojumu"
-
-#: omniva-woocommerce.php:152
-msgid "Show more"
-msgstr "Parādīt vairāk"
-
-#: omniva-woocommerce.php:216
-msgid "Omniva Shipping"
-msgstr "Omniva kuģniecība"
-
-#: omniva-woocommerce.php:217
-msgid "Shipping Method for Omniva"
-msgstr "Piegādes metode Omnivai"
-
-#: omniva-woocommerce.php:230
-msgid "Omnivalt Shipping"
-msgstr "Omnivas piegādes veida"
-
-#: omniva-woocommerce.php:282
-msgid "Enable"
-msgstr "Iespējot"
-
-#: omniva-woocommerce.php:284
-msgid "Enable this shipping."
-msgstr "Iespējot šo piegādi."
-
-#: omniva-woocommerce.php:288
-msgid "Api URL"
-msgstr "Api URL"
-
-#: omniva-woocommerce.php:294
-msgid "Api user"
-msgstr "Api lietotājs"
-
-#: omniva-woocommerce.php:298
-msgid "Api user password"
-msgstr "Api lietotāja parole"
-
-#: omniva-woocommerce.php:302
-msgid "Company name"
-msgstr "Uzņēmuma nosaukums"
-
-#: omniva-woocommerce.php:306
-msgid "Bank account"
-msgstr "Bankas konts"
-
-#: omniva-woocommerce.php:314
-msgid "Shop city"
-msgstr "Veikala pilsēta"
-
-#: omniva-woocommerce.php:326
-msgid "Shop country code"
-msgstr "Veikala valsts kods"
-
-#: omniva-woocommerce.php:334
-msgid "Pick up time start"
-msgstr "Kurjera izsaukuma sākuma laiks"
-
-#: omniva-woocommerce.php:338
-msgid "Pick up time end"
-msgstr "Kurjera izsaukuma beigu laiks"
-
-#: omniva-woocommerce.php:342
-msgid "Send off type"
-msgstr "Kurjera izsaukuma veids"
-
-#: omniva-woocommerce.php:344
-msgid "Send from store type."
-msgstr "Kurjera izsaukuma veids"
-
-#: omniva-woocommerce.php:346 omniva-woocommerce.php:365
-msgid "Parcel terminal"
-msgstr "Pakomāts"
-
-#: omniva-woocommerce.php:347 omniva-woocommerce.php:360
-msgid "Courrier"
-msgstr "Kurjerpakalpojums"
-
-#: omniva-woocommerce.php:351
-msgid "Weight (kg)"
-msgstr "Svars (kg)"
-
-#: omniva-woocommerce.php:356
-msgid "Maximum allowed weight"
-msgstr "Maksimāli pieļaujamais svars"
-
-#: omniva-woocommerce.php:362
-msgid "Show courrier method in checkout."
-msgstr "Parādiet kurjerpakalpojums metodi izrakstīšanās laikā."
-
-#: omniva-woocommerce.php:367
-msgid "Show parcel terminal method in checkout."
-msgstr "Parādiet piegādes termināla metodi izrakstā."
-
-#: omniva-woocommerce.php:370
-msgid "Map"
-msgstr "Karti"
-
-#: omniva-woocommerce.php:372
-msgid "Show map of terminals."
-msgstr "Parādīt pakomātus kartē"
-
-#: omniva-woocommerce.php:377
-msgid "Automatic terminal selection"
-msgstr "Automātiska termināļu izvēle"
-
-#: omniva-woocommerce.php:379
-msgid "Automatically select terminal by postcode."
-msgstr "Automātiski izvēlēties termināli pēc pasta indeksa."
-
-#: omniva-woocommerce.php:386
-msgid "Courrier price"
-msgstr "Kurjerpakalpojuma piegādes cena"
-
-#: omniva-woocommerce.php:393 omniva-woocommerce.php:414
-msgid "Leave empty to disable this method."
-msgstr "Atstājiet tukšu, lai atspējotu šo metodi."
-
-#: omniva-woocommerce.php:397
-msgid "Courier fee free from"
-msgstr "Kurjera maksa bez maksas no"
-
-#: omniva-woocommerce.php:407
-msgid "Parcel terminal price"
-msgstr "Pakomāta pakalpojuma piegādes cena"
-
-#: omniva-woocommerce.php:418
-msgid "Parcel terminal fee free from"
-msgstr "Pakomāta bez maksas no"
-
-#: omniva-woocommerce.php:474 omniva-woocommerce.php:1252
-#: omniva-woocommerce.php:1266 omniva-woocommerce.php:1458
-msgid "Omniva parcel terminal"
-msgstr "Omniva pakomāts"
-
-#: omniva-woocommerce.php:498 omniva-woocommerce.php:1460
-msgid "Omniva courrier"
-msgstr "Omniva kurjerpakalpojums"
-
-#: omniva-woocommerce.php:735 omniva-woocommerce.php:828
-msgid "Response is in the wrong format"
-msgstr "Atbilde ir nepareizā formātā"
-
-#: omniva-woocommerce.php:766 omniva-woocommerce.php:847
-msgid "No saved barcodes received"
-msgstr "Nav saņemtu saglabātu svītrkodu"
-
-#: omniva-woocommerce.php:879 omniva-woocommerce.php:967
-msgid "Shipping method is not Omniva"
-msgstr "Piegādes veids nav Omniva"
-
-#: omniva-woocommerce.php:897
-msgid "Omniva label generated"
-msgstr "Omniva adrešu karte izveidota"
-
-#: omniva-woocommerce.php:1143
-#, php-format
-msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
-msgstr "Atvainojiet,% d kg pārsniedz maksimālo svaru% d kg% s"
-
-#: omniva-woocommerce.php:1185
-msgid "Select parcel terminal"
-msgstr "Izvēlieties pakomāts"
-
-#: omniva-woocommerce.php:1199
-msgid "Show parcel terminals map"
-msgstr "Parādīt pakomātus kartē"
-
-#: omniva-woocommerce.php:1242
-msgid "Parcel terminal not found!!!"
-msgstr "Pakomāts nav atrasts !!!"
-
-#: omniva-woocommerce.php:1287 omniva-woocommerce.php:1415
-msgid "Omniva tracking number"
-msgstr "Omniva izsekošanas numurs"
-
-#: omniva-woocommerce.php:1298
-msgid "Print Omniva labels"
-msgstr "Drukāt Omniva adrešu kartes"
-
-#: omniva-woocommerce.php:1299
-msgid "Print Omniva manifest"
-msgstr "Drukāt Omniva sūtījumu sarakstu"
-
-#: omniva-woocommerce.php:1342
+#: omniva-woocommerce.php:1676
 msgid "Generate Omniva label"
 msgstr "Ģenerēt Omnivalv adrešu kartes"
 
-#: omniva-woocommerce.php:1344
-msgid "VIew Omniva label"
-msgstr "Apskatīt Omniva adrešu karti"
+#: omniva-woocommerce.php:572
+msgid "Height"
+msgstr ""
 
-#: omniva-woocommerce.php:1418
-msgid "You can track your parcel with this number"
-msgstr "Ar šo numuru varat izsekot sūtījumam"
+#. URI of the plugin
+msgid "https://iskiepiai.omnivasiunta.lt/"
+msgstr ""
 
-#: omniva-woocommerce.php:1444
-msgid "Omniva courier called"
-msgstr "Zvanīja Omniva kurjers"
+#. Author URI of the plugin
+msgid "https://www.omniva.lt/"
+msgstr ""
 
-#: omniva-woocommerce.php:1473
-msgid "Please select parcel terminal."
-msgstr "Lūdzu, izvēlieties pakomāts."
+#: manifest_page.php:220 manifest_page.php:260
+msgid "ID"
+msgstr "ID"
 
-#: omniva-woocommerce.php:1605
-msgid "Omniva parcel terminals"
-msgstr "Omniva pakomāti"
+#: manifest_page.php:352
+msgid "Important!"
+msgstr "Svarīgs!"
 
-#: omniva-woocommerce.php:1610
-msgid "Parcel terminals addresses"
-msgstr "Pakomātu adreses"
+#: manifest_page.php:352
+msgid "Latest call for same day pickup is until 3 pm."
+msgstr "Pēdējais izsaukums tajā pašā dienā ir līdz plkst. 15:00."
 
-#: omniva-woocommerce.php:1618
-msgid "Back"
-msgstr "Atpakaļ"
+#: omniva-woocommerce.php:402 omniva-woocommerce.php:414
+msgid "Leave empty to disable this method."
+msgstr "Atstājiet tukšu, lai atspējotu šo metodi."
 
-#. Name of the plugin
-msgid "Omniva shipping"
-msgstr "Omniva piegādes veidu"
+#: omniva-woocommerce.php:426 omniva-woocommerce.php:438
+msgid "Leave empty to not use."
+msgstr ""
+
+#: omniva-woocommerce.php:562
+msgid "Length"
+msgstr ""
+
+#: omniva-woocommerce.php:1382
+msgctxt "Manifest"
+msgid "Courier name, surname, signature"
+msgstr ""
+
+#: omniva-woocommerce.php:1361
+msgctxt "Manifest"
+msgid "Date"
+msgstr ""
+
+#: omniva-woocommerce.php:1359
+msgctxt "Manifest"
+msgid "No."
+msgstr ""
+
+#: omniva-woocommerce.php:1362
+msgctxt "Manifest"
+msgid "Quantity"
+msgstr ""
+
+#: omniva-woocommerce.php:1364
+msgctxt "Manifest"
+msgid "Recipient's address"
+msgstr ""
+
+#: omniva-woocommerce.php:1352
+msgctxt "Manifest"
+msgid "Sender address"
+msgstr ""
+
+#: omniva-woocommerce.php:1383
+msgctxt "Manifest"
+msgid "Sender name, surname, signature"
+msgstr ""
+
+#: omniva-woocommerce.php:1360
+msgctxt "Manifest"
+msgid "Shipment number"
+msgstr ""
+
+#: omniva-woocommerce.php:1363
+msgctxt "Manifest"
+msgid "Weight (kg)"
+msgstr ""
+
+#: manifest_page.php:266
+msgid "Manifest date"
+msgstr "Acīmredzams datums"
+
+#: omniva-woocommerce.php:468
+msgid "Map"
+msgstr "Karti"
+
+#: omniva-woocommerce.php:457
+#, php-format
+msgid "Max cart size (%s)"
+msgstr ""
+
+#: omniva-woocommerce.php:446
+#, php-format
+msgid "Max cart weight (%s)"
+msgstr ""
+
+#: omniva-woocommerce.php:452
+msgid "Maximum allowed all cart products weight for parcel terminals."
+msgstr ""
+
+#: omniva-woocommerce.php:459
+msgid "Maximum cart size for parcel terminals. Leave all empty to disable."
+msgstr ""
+
+#: manifest_page.php:11
+msgid "New orders"
+msgstr "Jauni pasūtījumi"
+
+#: omniva-woocommerce.php:1373
+msgid "No compatible orders for manifest"
+msgstr ""
+
+#: omniva-woocommerce.php:1065 omniva-woocommerce.php:1167
+msgid "No saved barcodes received"
+msgstr "Nav saņemtu saglabātu svītrkodu"
 
 #. Description of the plugin
-msgid "Omniva shipping plugin for WooCommerce"
+#, fuzzy
+#| msgid "Omniva shipping plugin for WooCommerce"
+msgid "Official Omniva shipping plugin for WooCommerce"
 msgstr ""
 "Omnivas piegādes veida spraudnis WooCommerce e-veikala platformai\n"
 
 #. Author of the plugin
 msgid "Omniva"
 msgstr "Omniva"
+
+#: omniva-woocommerce.php:1778
+msgid "Omniva courier called"
+msgstr "Zvanīja Omniva kurjers"
+
+#: omniva-woocommerce.php:718 omniva-woocommerce.php:1794
+msgid "Omniva courrier"
+msgstr "Omniva kurjerpakalpojums"
+
+#: omniva-woocommerce.php:1217
+msgid "Omniva label generated"
+msgstr "Omniva adrešu karte izveidota"
+
+#: manifest_page.php:46 omniva-woocommerce.php:1710 omniva-woocommerce.php:1711
+msgid "Omniva manifest"
+msgstr "Omniva sūtījumu saraksts"
+
+#: omniva-woocommerce.php:682 omniva-woocommerce.php:1586
+#: omniva-woocommerce.php:1600 omniva-woocommerce.php:1792
+msgid "Omniva parcel terminal"
+msgstr "Omniva pakomāts"
+
+#: omniva-woocommerce.php:1939
+msgid "Omniva parcel terminals"
+msgstr "Omniva pakomāti"
+
+#: omniva-woocommerce.php:234
+msgid "Omniva Shipping"
+msgstr "Omniva kuģniecība"
+
+#. Name of the plugin
+msgid "Omniva shipping"
+msgstr "Omniva piegādes veidu"
+
+#: omniva-woocommerce.php:1621 omniva-woocommerce.php:1749
+msgid "Omniva tracking number"
+msgstr "Omniva izsekošanas numurs"
+
+#: omniva-woocommerce.php:248
+msgid "Omnivalt Shipping"
+msgstr "Omnivas piegādes veida"
+
+#: manifest_page.php:263
+msgid "Order Date"
+msgstr ""
+
+#: manifest_page.php:262
+msgid "Order Status"
+msgstr "Statuss"
+
+#: omniva-woocommerce.php:369 omniva-woocommerce.php:378
+msgid "Parcel terminal"
+msgstr "Pakomāts"
+
+#: omniva-woocommerce.php:1576
+msgid "Parcel terminal not found!!!"
+msgstr "Pakomāts nav atrasts !!!"
+
+#: omniva-woocommerce.php:407
+msgid "Parcel terminal price"
+msgstr "Pakomāta pakalpojuma piegādes cena"
+
+#: omniva-woocommerce.php:1944
+msgid "Parcel terminals addresses"
+msgstr "Pakomātu adreses"
+
+#: omniva-woocommerce.php:361
+msgid "Pick up time end"
+msgstr "Kurjera izsaukuma beigu laiks"
+
+#: omniva-woocommerce.php:357
+msgid "Pick up time start"
+msgstr "Kurjera izsaukuma sākuma laiks"
+
+#: omniva-woocommerce.php:164
+msgid "Place not found"
+msgstr "Vieta nav atrasta"
+
+#: omniva-woocommerce.php:1807
+msgid "Please select parcel terminal."
+msgstr "Lūdzu, izvēlieties pakomāts."
+
+#: omniva-woocommerce.php:459
+msgid ""
+"Preliminary cart size is calculated by trying to fit all products by taking "
+"their dimensions (boxes) indicated in their settings."
+msgstr ""
+
+#: manifest_page.php:329
+msgid "Print label"
+msgstr ""
+
+#: manifest_page.php:205 manifest_page.php:206
+msgid "Print labels"
+msgstr "Drukāt adrešu kartes"
+
+#: omniva-woocommerce.php:1632
+msgid "Print Omniva labels"
+msgstr "Drukāt Omniva adrešu kartes"
+
+#: omniva-woocommerce.php:1633
+msgid "Print Omniva manifest"
+msgstr "Drukāt Omniva sūtījumu sarakstu"
+
+#: manifest_page.php:253
+msgid "Reset"
+msgstr "Atiestatīt"
+
+#: omniva-woocommerce.php:1034 omniva-woocommerce.php:1148
+msgid "Response is in the wrong format"
+msgstr "Atbilde ir nepareizā formātā"
+
+#: omniva-woocommerce.php:506
+msgid ""
+"Save the request which sent to Omniva server and display in below. Shows "
+"only last saved request."
+msgstr ""
+
+#: omniva-woocommerce.php:517
+msgid ""
+"Save the response received from the Omniva server and display in below. "
+"Shows only last saved response."
+msgstr ""
+
+#: manifest_page.php:436 manifest_page.php:452
+msgid "Select orders"
+msgstr "Atlasiet pasūtījumus"
+
+#: omniva-woocommerce.php:1518
+msgid "Select parcel terminal"
+msgstr "Izvēlieties pakomāts"
+
+#: omniva-woocommerce.php:162
+msgid "Select terminal"
+msgstr "Izvēlaties pakomātu"
+
+#: omniva-woocommerce.php:484
+msgid ""
+"Send an email to customer with tracking code, when the label is generated."
+msgstr ""
+
+#: omniva-woocommerce.php:494
+msgid "Send email on shipment arrive"
+msgstr ""
+
+#: omniva-woocommerce.php:496
+msgid ""
+"Send email to customer from Omniva, when the shipment arrives at the "
+"terminal."
+msgstr ""
+
+#: omniva-woocommerce.php:482
+msgid "Send email when a label is created"
+msgstr ""
+
+#: omniva-woocommerce.php:367
+msgid "Send from store type."
+msgstr "Kurjera izsaukuma veids"
+
+#: omniva-woocommerce.php:365
+msgid "Send off type"
+msgstr "Kurjera izsaukuma veids"
+
+#: manifest_page.php:264
+msgid "Service"
+msgstr "Apkalpošana"
+
+#: omniva-woocommerce.php:35
+msgid "Settings"
+msgstr ""
+
+#: omniva-woocommerce.php:235
+msgid "Shipping Method for Omniva"
+msgstr "Piegādes metode Omnivai"
+
+#: omniva-woocommerce.php:1199 omniva-woocommerce.php:1300
+msgid "Shipping method is not Omniva"
+msgstr "Piegādes veids nav Omniva"
+
+#: manifest_page.php:362 omniva-woocommerce.php:341
+msgid "Shop address"
+msgstr "Veikala adrese"
+
+#: omniva-woocommerce.php:337
+msgid "Shop city"
+msgstr "Veikala pilsēta"
+
+#: omniva-woocommerce.php:349
+msgid "Shop country code"
+msgstr "Veikala valsts kods"
+
+#: manifest_page.php:358 omniva-woocommerce.php:333
+msgid "Shop name"
+msgstr "Veikalu nosaukums"
+
+#: manifest_page.php:359 omniva-woocommerce.php:353
+msgid "Shop phone number"
+msgstr "Veikala tālruņa numurs"
+
+#: manifest_page.php:360 omniva-woocommerce.php:345
+msgid "Shop postcode"
+msgstr "Veikala indekss"
+
+#: omniva-woocommerce.php:385
+msgid "Show courrier method in checkout."
+msgstr "Parādiet kurjerpakalpojums metodi izrakstīšanās laikā."
+
+#: omniva-woocommerce.php:166 omniva-woocommerce.php:1533
+msgid "Show in map"
+msgstr "Apskatīt novietojumu"
+
+#: omniva-woocommerce.php:470
+msgid "Show map of terminals."
+msgstr "Parādīt pakomātus kartē"
+
+#: omniva-woocommerce.php:167
+msgid "Show more"
+msgstr "Parādīt vairāk"
+
+#: omniva-woocommerce.php:380
+msgid "Show parcel terminal method in checkout."
+msgstr "Parādiet piegādes termināla metodi izrakstā."
+
+#: omniva-woocommerce.php:1533
+msgid "Show parcel terminals map"
+msgstr "Parādīt pakomātus kartē"
+
+#: omniva-woocommerce.php:1476
+#, php-format
+msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
+msgstr "Atvainojiet,% d kg pārsniedz maksimālo svaru% d kg% s"
+
+#: manifest_page.php:246
+msgid "To"
+msgstr "Līdz"
+
+#: omniva-woocommerce.php:484
+#, php-format
+msgid ""
+"To override email template, copy template file from %1$s to your theme %2$s "
+"directory."
+msgstr ""
+
+#: omniva-woocommerce.php:1678
+msgid "VIew Omniva label"
+msgstr "Apskatīt Omniva adrešu karti"
+
+#: templates/emails/customer-created_label.php:29
+msgid ""
+"We are writing to let you know that a tracking number has been generated for "
+"your shipment."
+msgstr ""
+
+#: omniva-woocommerce.php:567
+msgid "Width"
+msgstr ""
+
+#: omniva-woocommerce.php:1752
+msgid "You can track your parcel with this number"
+msgstr "Ar šo numuru varat izsekot sūtījumam"
+
+#: omniva-woocommerce.php:491 includes/class-emails.php:18
+msgid "Your order shipment has been registered"
+msgstr ""
+
+#: templates/emails/customer-created_label.php:29
+#, php-format
+msgid "Your tracking number is %s."
+msgstr ""
