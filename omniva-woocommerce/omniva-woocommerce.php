@@ -5,13 +5,13 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.6.0
+ * Version: 1.6.1
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
- * Tested up to: 5.5.3
+ * Tested up to: 5.6
  * WC requires at least: 3.0.0
- * WC tested up to: 4.7.1
+ * WC tested up to: 4.8.0
  * Requires PHP: 7.2
  */
 
@@ -19,7 +19,8 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.6.0');
+define('OMNIVA_VERSION', '1.6.1');
+define('OMNIVA_DIR', plugin_dir_path(__FILE__));
 
 add_action( 'init', 'omnivalt_load_textdomain' );
 
@@ -496,6 +497,31 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'default' => '',
             'class' => 'omniva_terminal'
           );
+          $fields['hr_debug'] = array(
+            'type' => 'hr'
+          );
+          $fields['debug_request'] = array(
+            'title' => __('Enable request debug', 'omnivalt'),
+            'type' => 'checkbox',
+            'description' => __('Save the request which sent to Omniva server and display in below. Shows only last saved request.', 'omnivalt'),
+            'default' => 'yes'
+          );
+          $fields['debugview_request'] = array(
+            'type' => 'debug_window',
+            'file_path' => OMNIVA_DIR . 'debug/request.txt',
+            'class' => 'omniva_debug_request'
+          );
+          $fields['debug_response'] = array(
+            'title' => __('Enable response debug', 'omnivalt'),
+            'type' => 'checkbox',
+            'description' => __('Save the response received from the Omniva server and display in below. Shows only last saved response.', 'omnivalt'),
+            'default' => 'yes'
+          );
+          $fields['debugview_response'] = array(
+            'type' => 'debug_window',
+            'file_path' => OMNIVA_DIR . 'debug/response.txt',
+            'class' => 'omniva_debug_response'
+          );
 					$this->form_fields = $fields;
         }
 
@@ -561,6 +587,32 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     			return $values;
  				}
 
+        public function generate_debug_window_html( $key, $value ) {
+          $field_class = (isset($value['class'])) ? $value['class'] : '';
+          $file_path = (isset($value['file_path'])) ? $value['file_path'] : '';
+          if (!empty($file_path) && file_exists($file_path)) {
+            $file = fopen($file_path, 'r');
+            $file_content = fread($file,filesize($file_path));
+            fclose($file);
+          } else {
+            $file_content = '- ' . __('Debug file still not created','omnivalt') . ' -';
+          }
+          ob_start();
+          ?>
+          <tr valign="top">
+            <th scope="row" class="titledesc"></th>
+            <td class="forminp">
+              <fieldset class="field-debug <?php echo $field_class; ?>">
+                <textarea readonly rows="11" style="width:100%"><?php echo $file_content; ?></textarea>
+              </fieldset>
+            </td>
+          </tr>
+          <?php
+          $html = ob_get_contents();
+          ob_end_clean();
+          return $html;
+        }
+
         /**
          * This function is used to calculate the shipping cost. Within this function we can check for weights, dimensions and other parameters.
          *
@@ -589,7 +641,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             	array_push($products_for_dim, $_product);
             }
           }
-          $dimension_pass_pt = $this->cart_size_prediction($products_for_dim, $max_dimension_pt);
+          if ( (isset($max_dimension_pt[0]) && !empty($max_dimension_pt[0]))
+            || (isset($max_dimension_pt[1]) && !empty($max_dimension_pt[1]))
+            || (isset($max_dimension_pt[2]) && !empty($max_dimension_pt[2])) )
+          {
+            $dimension_pass_pt = $this->cart_size_prediction($products_for_dim, $max_dimension_pt);
+          }
 
           $weight = wc_get_weight($weight, 'kg');
           $weight_pass = (floatval($this->settings['weight']) >= $weight || floatval($this->settings['weight']) == 0);
@@ -676,9 +733,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $max_dim_height = (!empty($max_dimension[2])) ? $max_dimension[2] : 999999;
 
           foreach ($products as $product) {
-          	$prod_dim_length = $product->get_length();
-          	$prod_dim_width = $product->get_width();
-          	$prod_dim_height = $product->get_height();
+          	$prod_dim_length = (!empty($product->get_length())) ? $product->get_length() : 0;
+            $prod_dim_width = (!empty($product->get_width())) ? $product->get_width() : 0;
+            $prod_dim_height = (!empty($product->get_height())) ? $product->get_height() : 0;
 
           	//Add to length
           	if ( ($prod_dim_length + $all_cart_dim_length) <= $max_dim_length 
@@ -941,9 +998,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
         private function api_request($request)
         {
+          $this->debug_request($request);
           $barcodes = array();;
           $errors = array();
-          $url = $this->settings['api_url'] . '/epmx/services/messagesService.wsdl';
+          $url = $this->clean(preg_replace('{/$}', '', $this->settings['api_url'])) . '/epmx/services/messagesService.wsdl';
+          custom_log($url);
           $headers = array(
             "Content-type: text/xml;charset=\"utf-8\"",
             "Accept: text/xml",
@@ -956,13 +1015,14 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
           curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
           curl_setopt($ch, CURLOPT_HEADER, 0);
-          curl_setopt($ch, CURLOPT_USERPWD, $this->settings['api_user'] . ":" . $this->settings['api_pass']);
+          curl_setopt($ch, CURLOPT_USERPWD, $this->clean($this->settings['api_user']) . ":" . $this->clean($this->settings['api_pass']));
           curl_setopt($ch, CURLOPT_POST, 1);
           curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
           curl_setopt($ch, CURLOPT_TIMEOUT, 30);
           curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
           curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
           $xmlResponse = curl_exec($ch);
+          $this->debug_response($xmlResponse);
 
           if ($xmlResponse === false) {
             $errors[] = curl_error($ch);
@@ -1011,6 +1071,27 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           }
         }
 
+        private function debug_request($request) {
+          if (isset($this->settings['debug_request']) && $this->settings['debug_request'] === 'yes') {
+            if (!file_exists(OMNIVA_DIR . 'debug')) {
+              mkdir(OMNIVA_DIR . 'debug');
+            }
+            $file = fopen(OMNIVA_DIR . 'debug/request.txt', 'w');
+            fwrite($file, print_r($request,true));
+            fclose($file);
+          }
+        }
+        private function debug_response($response) {
+          if (isset($this->settings['debug_response']) && $this->settings['debug_response'] === 'yes') {
+            if (!file_exists(OMNIVA_DIR . 'debug')) {
+              mkdir(OMNIVA_DIR . 'debug');
+            }
+            $file = fopen(OMNIVA_DIR . 'debug/response.txt', 'w');
+            fwrite($file, print_r($response,true));
+            fclose($file);
+          }
+        }
+
         public function getShipmentLabels($barcodes, $order_id = 0)
         {
           $errors = array();
@@ -1034,9 +1115,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         </soapenv:Envelope>';
 
           // echo $xmlRequest;
-
+          $this->debug_request($xmlRequest);
           try {
-            $url = $this->clean($this->settings['api_url']) . '/epmx/services/messagesService.wsdl';
+            $url = $this->clean(preg_replace('{/$}', '', $this->settings['api_url'])) . '/epmx/services/messagesService.wsdl';
             $headers = array(
               "Content-type: text/xml;charset=\"utf-8\"",
               "Accept: text/xml",
@@ -1056,7 +1137,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             $xmlResponse = curl_exec($ch);
-            $debugData['result'] = $xmlResponse;
+            $this->debug_response($xmlResponse);
           } catch (Exception $e) {
             $errors[] = $e->getMessage() . ' ' . $e->getCode();
             $xmlResponse = '';
