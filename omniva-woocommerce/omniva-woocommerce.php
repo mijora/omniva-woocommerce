@@ -1002,7 +1002,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $barcodes = array();;
           $errors = array();
           $url = $this->clean(preg_replace('{/$}', '', $this->settings['api_url'])) . '/epmx/services/messagesService.wsdl';
-          custom_log($url);
           $headers = array(
             "Content-type: text/xml;charset=\"utf-8\"",
             "Accept: text/xml",
