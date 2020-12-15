@@ -4,6 +4,7 @@
 ### Fixes
 - fixed JS in Checkout when Omniva Shipping method is not displayed
 - fixed bulk action in orders list
+- fixed "id was called incorrectly" notice when WP logging is enabled
 
 ### Improved
 - merged debug settings to one option
