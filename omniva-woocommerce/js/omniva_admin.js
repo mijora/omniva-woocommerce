@@ -2,8 +2,7 @@ jQuery('document').ready(function($){
 	omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_method_c", ".omniva_courier");
 	omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_method_pt", ".omniva_terminal");
 	omniva_hide_admin_field_by_all_cb(["#woocommerce_omnivalt_method_c","#woocommerce_omnivalt_method_pt"],".omniva_both");
-	omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_debug_request",".omniva_debug_request");
-	omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_debug_response",".omniva_debug_response");
+	omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_debug_mode",".omniva_debug");
 
 	$( document ).on( 'change', '#woocommerce_omnivalt_method_c', function() {
 		omniva_show_admin_fields_by_cb(this, ".omniva_courier");
@@ -14,11 +13,8 @@ jQuery('document').ready(function($){
 		omniva_hide_admin_field_by_all_cb(["#woocommerce_omnivalt_method_c","#woocommerce_omnivalt_method_pt"],".omniva_both");
 	});
 
-	$( document ).on( 'change', '#woocommerce_omnivalt_debug_request', function() {
-		omniva_show_admin_fields_by_cb(this, ".omniva_debug_request");
-	});
-	$( document ).on( 'change', '#woocommerce_omnivalt_debug_response', function() {
-		omniva_show_admin_fields_by_cb(this, ".omniva_debug_response");
+	$( document ).on( 'change', '#woocommerce_omnivalt_debug_mode', function() {
+		omniva_show_admin_fields_by_cb(this, ".omniva_debug");
 	});
 
 	function omniva_show_admin_fields_by_cb(checkbox,fields_selector) {

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.2]
+### Fixes
+- fixed JS in Checkout when Omniva Shipping method is not displayed
+- fixed bulk action in orders list
+
+### Improved
+- merged debug settings to one option
+- added debug of response in WP notice message when debug is activated
+
 ## [1.6.1]
 ### Fixed
 - fixed size values get from products

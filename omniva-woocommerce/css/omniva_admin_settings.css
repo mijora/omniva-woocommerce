@@ -5,3 +5,13 @@
 .woocommerce table.form-table .field-dimensions span {
 	vertical-align: middle;
 }
+
+.woocommerce table.form-table .omniva-debugview th,
+.woocommerce table.form-table .omniva-debugview td {
+	padding-top: 0;
+}
+.woocommerce table.form-table .omniva-debugview td .title {
+	font-weight: 600;
+	margin-bottom: 5px;
+	display: block;
+}
