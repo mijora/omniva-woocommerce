@@ -315,7 +315,8 @@ $omnivalt = new Omnivalt_Shipping_Method();
                       <?php endif; ?>
                       <?php $error = $order->get_meta('_omnivalt_error'); ?>
                       <?php if ($error) : ?>
-                        <br />Error: <?php echo $error; ?>
+                        <?php if ($barcode) : ?><br /><?php endif; ?>
+                        <span><?php echo '<b>' . __('Error', 'omnivalt') . ':</b> ' . $error; ?></span>
                       <?php endif; ?>
                     </div>
                   </td>

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-29 09:53+0000\n"
-"PO-Revision-Date: 2020-12-10 12:18+0000\n"
+"PO-Revision-Date: 2020-12-15 12:45+0000\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Actions"
 msgstr "Veiksmai"
 
-#: manifest_page.php:353
+#: manifest_page.php:354
 msgid "Address and contact information can be changed in Omniva settings."
 msgstr ""
 "Adresą ir kontaktinius duomenis galima keisti Omniva modulio nustatymuose."
@@ -56,7 +56,7 @@ msgstr "Automatinis paštomato parinkimas"
 msgid "Automatically select terminal by postcode."
 msgstr "Automatiškai parinkti paštomatą pagal pašto kodą."
 
-#: omniva-woocommerce.php:1952
+#: omniva-woocommerce.php:1967
 msgid "Back"
 msgstr "Grįžti į sąrašą"
 
@@ -68,7 +68,7 @@ msgstr "Banko sąskaitos numeris"
 msgid "Barcode"
 msgstr "Barkodas"
 
-#: manifest_page.php:174 manifest_page.php:365
+#: manifest_page.php:174 manifest_page.php:366
 msgid "Call Omniva courier"
 msgstr "Kurjerio iškvietimas"
 
@@ -99,7 +99,7 @@ msgstr ""
 msgid "Customer"
 msgstr "Pirkėjas"
 
-#: omniva-woocommerce.php:598
+#: omniva-woocommerce.php:594
 msgid "Debug file still not created"
 msgstr "Testavimo failas vis dar nesukurtas"
 
@@ -108,24 +108,28 @@ msgid "Enable"
 msgstr "Įjungti"
 
 #: omniva-woocommerce.php:504
-msgid "Enable request debug"
-msgstr "Įjungti užklausos testavimą"
+msgid "Enable debug mode"
+msgstr "Įjungti klaidų tikrinimo režimą"
 
-#: omniva-woocommerce.php:515
-msgid "Enable response debug"
-msgstr "Įjungti atsakymo testavimą"
+#: omniva-woocommerce.php:506
+msgid "Enable request and response logging."
+msgstr "Įgalinti užklausų ir atsakymų registravimą."
 
 #: omniva-woocommerce.php:302
 msgid "Enable this shipping."
 msgstr "Įjungti šį siuntimą."
 
-#: omniva-woocommerce.php:163 omniva-woocommerce.php:1947
+#: omniva-woocommerce.php:163 omniva-woocommerce.php:1962
 msgid "Enter postcode"
 msgstr "Įveskite pašto kodą"
 
 #: omniva-woocommerce.php:165
 msgid "Enter postcode/address"
 msgstr "Įveskite pašto kodą / adresą"
+
+#: manifest_page.php:319
+msgid "Error"
+msgstr "Klaida"
 
 #: manifest_page.php:252
 msgid "Filter"
@@ -147,11 +151,11 @@ msgstr "Nuo"
 msgid "Generate manifest"
 msgstr "Generuoti manifestą"
 
-#: omniva-woocommerce.php:1676
+#: omniva-woocommerce.php:1691
 msgid "Generate Omniva label"
 msgstr "Generuoti Omniva lipdukus"
 
-#: omniva-woocommerce.php:572
+#: omniva-woocommerce.php:568
 msgid "Height"
 msgstr "Aukštis"
 
@@ -167,11 +171,19 @@ msgstr "https://www.omniva.lt/"
 msgid "ID"
 msgstr "ID"
 
-#: manifest_page.php:352
+#: manifest_page.php:353
 msgid "Important!"
 msgstr "Svarbu!"
 
-#: manifest_page.php:352
+#: omniva-woocommerce.php:512
+msgid "Last logged request"
+msgstr "Paskutinė užregistruota užklausa"
+
+#: omniva-woocommerce.php:518
+msgid "Last logged response"
+msgstr "Paskutinis užregistruotas atsakymas"
+
+#: manifest_page.php:353
 msgid "Latest call for same day pickup is until 3 pm."
 msgstr ""
 "Vėliausias galimas kurjerio iškvietimas yra iki 15val. Vėliau iškvietus "
@@ -185,51 +197,51 @@ msgstr "Palikite tuščią, kad išjungti šį metodą."
 msgid "Leave empty to not use."
 msgstr "Palikti tuščia, kad nenaudoti."
 
-#: omniva-woocommerce.php:562
+#: omniva-woocommerce.php:558
 msgid "Length"
 msgstr "Ilgis"
 
-#: omniva-woocommerce.php:1382
+#: omniva-woocommerce.php:1394
 msgctxt "Manifest"
 msgid "Courier name, surname, signature"
 msgstr "Kurjerio vardas, pavardė, parašas"
 
-#: omniva-woocommerce.php:1361
+#: omniva-woocommerce.php:1373
 msgctxt "Manifest"
 msgid "Date"
 msgstr "Data"
 
-#: omniva-woocommerce.php:1359
+#: omniva-woocommerce.php:1371
 msgctxt "Manifest"
 msgid "No."
 msgstr "Nr."
 
-#: omniva-woocommerce.php:1362
+#: omniva-woocommerce.php:1374
 msgctxt "Manifest"
 msgid "Quantity"
 msgstr "Kiekis"
 
-#: omniva-woocommerce.php:1364
+#: omniva-woocommerce.php:1376
 msgctxt "Manifest"
 msgid "Recipient's address"
 msgstr "Gavėjo adresas"
 
-#: omniva-woocommerce.php:1352
+#: omniva-woocommerce.php:1364
 msgctxt "Manifest"
 msgid "Sender address"
 msgstr "Siuntėjo adresas"
 
-#: omniva-woocommerce.php:1383
+#: omniva-woocommerce.php:1395
 msgctxt "Manifest"
 msgid "Sender name, surname, signature"
 msgstr "Siuntėjo vardas, pavardė, parašas"
 
-#: omniva-woocommerce.php:1360
+#: omniva-woocommerce.php:1372
 msgctxt "Manifest"
 msgid "Shipment number"
 msgstr "Siuntos numeris"
 
-#: omniva-woocommerce.php:1363
+#: omniva-woocommerce.php:1375
 msgctxt "Manifest"
 msgid "Weight (kg)"
 msgstr "Svoris (kg)"
@@ -269,11 +281,11 @@ msgstr ""
 msgid "New orders"
 msgstr "Nauji užsakymai"
 
-#: omniva-woocommerce.php:1373
+#: omniva-woocommerce.php:1385
 msgid "No compatible orders for manifest"
 msgstr "Nėra su manifestu suderinamų užsakymų"
 
-#: omniva-woocommerce.php:1065 omniva-woocommerce.php:1167
+#: omniva-woocommerce.php:1064 omniva-woocommerce.php:1173
 msgid "No saved barcodes received"
 msgstr "Nerasta išsaugotų barkodų"
 
@@ -286,28 +298,28 @@ msgstr "Oficialus Omniva siuntimo įskiepis skirtas WooCommerce"
 msgid "Omniva"
 msgstr "Omniva"
 
-#: omniva-woocommerce.php:1778
+#: omniva-woocommerce.php:1793
 msgid "Omniva courier called"
 msgstr "Omniva kurjeris iškviestas"
 
-#: omniva-woocommerce.php:718 omniva-woocommerce.php:1794
+#: omniva-woocommerce.php:715 omniva-woocommerce.php:1809
 msgid "Omniva courrier"
 msgstr "Omniva kurjeris"
 
-#: omniva-woocommerce.php:1217
+#: omniva-woocommerce.php:1226
 msgid "Omniva label generated"
 msgstr "Omniva lipdukas sugeneruotas"
 
-#: manifest_page.php:46 omniva-woocommerce.php:1710 omniva-woocommerce.php:1711
+#: manifest_page.php:46 omniva-woocommerce.php:1725 omniva-woocommerce.php:1726
 msgid "Omniva manifest"
 msgstr "Omniva manifestas"
 
-#: omniva-woocommerce.php:682 omniva-woocommerce.php:1586
-#: omniva-woocommerce.php:1600 omniva-woocommerce.php:1792
+#: omniva-woocommerce.php:679 omniva-woocommerce.php:1598
+#: omniva-woocommerce.php:1612 omniva-woocommerce.php:1807
 msgid "Omniva parcel terminal"
 msgstr "Omniva paštomatas"
 
-#: omniva-woocommerce.php:1939
+#: omniva-woocommerce.php:1954
 msgid "Omniva parcel terminals"
 msgstr "Omniva paštomatai"
 
@@ -319,7 +331,7 @@ msgstr "Siuntimas su Omniva"
 msgid "Omniva shipping"
 msgstr "Omniva siuntimas"
 
-#: omniva-woocommerce.php:1621 omniva-woocommerce.php:1749
+#: omniva-woocommerce.php:1633 omniva-woocommerce.php:1764
 msgid "Omniva tracking number"
 msgstr "Omniva siuntos sekimas"
 
@@ -339,7 +351,7 @@ msgstr "Būsena"
 msgid "Parcel terminal"
 msgstr "Paštomatas"
 
-#: omniva-woocommerce.php:1576
+#: omniva-woocommerce.php:1588
 msgid "Parcel terminal not found!!!"
 msgstr "Paštomatas nerastas !!!"
 
@@ -347,7 +359,7 @@ msgstr "Paštomatas nerastas !!!"
 msgid "Parcel terminal price"
 msgstr "Paštomato kaina"
 
-#: omniva-woocommerce.php:1944
+#: omniva-woocommerce.php:1959
 msgid "Parcel terminals addresses"
 msgstr "Paštomatų adresai"
 
@@ -363,7 +375,7 @@ msgstr "Paėmimo iš parduotuvės pradžia"
 msgid "Place not found"
 msgstr "Vieta nerasta"
 
-#: omniva-woocommerce.php:1807
+#: omniva-woocommerce.php:1822
 msgid "Please select parcel terminal."
 msgstr "Pasirinkite paštomatą."
 
@@ -375,7 +387,7 @@ msgstr ""
 "Preliminarus krepšelio dydis apskaičiuojamas bandant sudėlioti visus "
 "produktus (jų dėžes) pagal jų nustatymuose nurodytus matmenis."
 
-#: manifest_page.php:329
+#: manifest_page.php:330
 msgid "Print label"
 msgstr "Spausdinti lipduką"
 
@@ -383,11 +395,11 @@ msgstr "Spausdinti lipduką"
 msgid "Print labels"
 msgstr "Spausdinti lipdukus"
 
-#: omniva-woocommerce.php:1632
+#: omniva-woocommerce.php:1644
 msgid "Print Omniva labels"
 msgstr "Spausdinti Omniva lipdukus"
 
-#: omniva-woocommerce.php:1633
+#: omniva-woocommerce.php:1645
 msgid "Print Omniva manifest"
 msgstr "Spausdinti Omniva manifestą"
 
@@ -395,31 +407,15 @@ msgstr "Spausdinti Omniva manifestą"
 msgid "Reset"
 msgstr "Valyti"
 
-#: omniva-woocommerce.php:1034 omniva-woocommerce.php:1148
+#: omniva-woocommerce.php:1031 omniva-woocommerce.php:1154
 msgid "Response is in the wrong format"
 msgstr "Blogas atsakas iš serverio"
 
-#: omniva-woocommerce.php:506
-msgid ""
-"Save the request which sent to Omniva server and display in below. Shows "
-"only last saved request."
-msgstr ""
-"Išsaugoti į Omniva serverį siunčiamą užklausą ir rodyti ją žemiau esančiame "
-"laukelyje. Rodoma tik paskutinė išsaugota užklausa."
-
-#: omniva-woocommerce.php:517
-msgid ""
-"Save the response received from the Omniva server and display in below. "
-"Shows only last saved response."
-msgstr ""
-"Išsaugoti iš Omniva serverio gaunamą atsakymą ir rodyti jį žemiau esančiame "
-"laukelyje. Rodomas tik paskutinis išsaugotas atsakymas."
-
-#: manifest_page.php:436 manifest_page.php:452
+#: manifest_page.php:437 manifest_page.php:453
 msgid "Select orders"
 msgstr "Pasirinkti užsakymus"
 
-#: omniva-woocommerce.php:1518
+#: omniva-woocommerce.php:1530
 msgid "Select parcel terminal"
 msgstr "Pasirinkti paštomatą"
 
@@ -469,11 +465,11 @@ msgstr "Nustatymai"
 msgid "Shipping Method for Omniva"
 msgstr "Omnivos siuntimo būdas"
 
-#: omniva-woocommerce.php:1199 omniva-woocommerce.php:1300
+#: omniva-woocommerce.php:1205 omniva-woocommerce.php:1309
 msgid "Shipping method is not Omniva"
 msgstr "Ne Omniva siuntimo būdas"
 
-#: manifest_page.php:362 omniva-woocommerce.php:341
+#: manifest_page.php:363 omniva-woocommerce.php:341
 msgid "Shop address"
 msgstr "Parduotuvės adresas"
 
@@ -485,15 +481,15 @@ msgstr "Parduotuvės miestas"
 msgid "Shop country code"
 msgstr "Parduotuvės šalies kodas"
 
-#: manifest_page.php:358 omniva-woocommerce.php:333
+#: manifest_page.php:359 omniva-woocommerce.php:333
 msgid "Shop name"
 msgstr "Parduotuvės pavadinimas"
 
-#: manifest_page.php:359 omniva-woocommerce.php:353
+#: manifest_page.php:360 omniva-woocommerce.php:353
 msgid "Shop phone number"
 msgstr "Parduotuvės telefonas"
 
-#: manifest_page.php:360 omniva-woocommerce.php:345
+#: manifest_page.php:361 omniva-woocommerce.php:345
 msgid "Shop postcode"
 msgstr "Parduotuvės pašto kodas"
 
@@ -501,7 +497,7 @@ msgstr "Parduotuvės pašto kodas"
 msgid "Show courrier method in checkout."
 msgstr "Rodyti kurjerio pasirinkimą."
 
-#: omniva-woocommerce.php:166 omniva-woocommerce.php:1533
+#: omniva-woocommerce.php:166 omniva-woocommerce.php:1545
 msgid "Show in map"
 msgstr "Žiūrėti žemėlapyje"
 
@@ -517,11 +513,11 @@ msgstr "Rodyti daugiau"
 msgid "Show parcel terminal method in checkout."
 msgstr "Rodyti paštomatų pasirinkimą."
 
-#: omniva-woocommerce.php:1533
+#: omniva-woocommerce.php:1545
 msgid "Show parcel terminals map"
 msgstr "Rodyti paštomatų žemėlapį"
 
-#: omniva-woocommerce.php:1476
+#: omniva-woocommerce.php:1488
 #, php-format
 msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
 msgstr ""
@@ -540,7 +536,7 @@ msgstr ""
 "Kad pakeisti el.laiško šabloną, reikia nukopijuoti šablono failą iš %1$s į "
 "temos %2$s aplankalą."
 
-#: omniva-woocommerce.php:1678
+#: omniva-woocommerce.php:1693
 msgid "VIew Omniva label"
 msgstr "Peržiūrėti Omniva lipduką"
 
@@ -550,11 +546,11 @@ msgid ""
 "your shipment."
 msgstr "Pranešame, jog buvo sukurtas siuntos sekimo numeris Jūsų užsakymui."
 
-#: omniva-woocommerce.php:567
+#: omniva-woocommerce.php:563
 msgid "Width"
 msgstr "Plotis"
 
-#: omniva-woocommerce.php:1752
+#: omniva-woocommerce.php:1767
 msgid "You can track your parcel with this number"
 msgstr "Siuntos kelią galite stebėti šiuo numeriu"
 

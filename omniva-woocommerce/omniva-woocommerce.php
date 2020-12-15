@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.6.1
+ * Version: 1.6.2
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.6.1');
+define('OMNIVA_VERSION', '1.6.2');
 define('OMNIVA_DIR', plugin_dir_path(__FILE__));
 
 add_action( 'init', 'omnivalt_load_textdomain' );
@@ -482,7 +482,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'title' => __('Send email when a label is created', 'omnivalt'),
             'type' => 'checkbox',
             'description' => __('Send an email to customer with tracking code, when the label is generated.', 'omnivalt') . '<br/>' . sprintf(__('To override email template, copy template file from %1$s to your theme %2$s directory.', 'omnivalt'), '<code>wp-content/plugins/omniva-woocommerce/templates/emails</code>', '<code>wp-content/themes/theme-name/omniva/emails</code>'),
-            'default' => 'yes'
+            'default' => ''
           );
           $fields['email_created_label_subject'] = array(
             'title' => __('', 'omnivalt'),
@@ -500,27 +500,23 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $fields['hr_debug'] = array(
             'type' => 'hr'
           );
-          $fields['debug_request'] = array(
-            'title' => __('Enable request debug', 'omnivalt'),
+          $fields['debug_mode'] = array(
+            'title' => __('Enable debug mode', 'omnivalt'),
             'type' => 'checkbox',
-            'description' => __('Save the request which sent to Omniva server and display in below. Shows only last saved request.', 'omnivalt'),
-            'default' => 'yes'
+            'description' => __('Enable request and response logging.', 'omnivalt'),
+            'default' => ''
           );
           $fields['debugview_request'] = array(
             'type' => 'debug_window',
             'file_path' => OMNIVA_DIR . 'debug/request.txt',
-            'class' => 'omniva_debug_request'
-          );
-          $fields['debug_response'] = array(
-            'title' => __('Enable response debug', 'omnivalt'),
-            'type' => 'checkbox',
-            'description' => __('Save the response received from the Omniva server and display in below. Shows only last saved response.', 'omnivalt'),
-            'default' => 'yes'
+            'title' => __('Last logged request', 'omnivalt'),
+            'class' => 'omniva_debug'
           );
           $fields['debugview_response'] = array(
             'type' => 'debug_window',
             'file_path' => OMNIVA_DIR . 'debug/response.txt',
-            'class' => 'omniva_debug_response'
+            'title' => __('Last logged response', 'omnivalt'),
+            'class' => 'omniva_debug'
           );
 					$this->form_fields = $fields;
         }
@@ -599,10 +595,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           }
           ob_start();
           ?>
-          <tr valign="top">
+          <tr class="omniva-debugview" valign="top">
             <th scope="row" class="titledesc"></th>
             <td class="forminp">
               <fieldset class="field-debug <?php echo $field_class; ?>">
+                <span class="title"><?php echo esc_html($value['title']); ?></span>
                 <textarea readonly rows="11" style="width:100%"><?php echo $file_content; ?></textarea>
               </fieldset>
             </td>
@@ -779,7 +776,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               <values code="item_value" amount="' . $amount . '"/>
             </monetary_values>
             <account>' . $bank_account . '</account>
-            <reference_number>' . $this->getReferenceNumber($order->ID) . '</reference_number>';
+            <reference_number>' . $this->getReferenceNumber($order->get_id()) . '</reference_number>';
           } else {
             return '';
           }
@@ -1021,7 +1018,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
           curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
           $xmlResponse = curl_exec($ch);
-          $this->debug_response($xmlResponse);
+          $debug_response = $this->debug_response($xmlResponse);
 
           if ($xmlResponse === false) {
             $errors[] = curl_error($ch);
@@ -1055,39 +1052,48 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           if (!empty($errors)) {
             return array(
               'status' => false,
-              'msg' => implode('. ', $errors)
+              'msg' => implode('. ', $errors),
+              'debug' => $debug_response
             );
           } else {
             if (!empty($barcodes)) return array(
               'status' => true,
-              'barcodes' => $barcodes
+              'barcodes' => $barcodes,
+              'debug' => $debug_response
             );
             $errors[] = __('No saved barcodes received', 'omnivalt');
             return array(
               'status' => false,
-              'msg' => implode('. ', $errors)
+              'msg' => implode('. ', $errors),
+              'debug' => $debug_response
             );
           }
         }
 
         private function debug_request($request) {
-          if (isset($this->settings['debug_request']) && $this->settings['debug_request'] === 'yes') {
+          if (isset($this->settings['debug_mode']) && $this->settings['debug_mode'] === 'yes') {
             if (!file_exists(OMNIVA_DIR . 'debug')) {
               mkdir(OMNIVA_DIR . 'debug');
             }
             $file = fopen(OMNIVA_DIR . 'debug/request.txt', 'w');
             fwrite($file, print_r($request,true));
             fclose($file);
+            return $request;
+          } else {
+            return '';
           }
         }
         private function debug_response($response) {
-          if (isset($this->settings['debug_response']) && $this->settings['debug_response'] === 'yes') {
+          if (isset($this->settings['debug_mode']) && $this->settings['debug_mode'] === 'yes') {
             if (!file_exists(OMNIVA_DIR . 'debug')) {
               mkdir(OMNIVA_DIR . 'debug');
             }
             $file = fopen(OMNIVA_DIR . 'debug/response.txt', 'w');
             fwrite($file, print_r($response,true));
             fclose($file);
+            return $response;
+          } else {
+            return '';
           }
         }
 
@@ -1199,12 +1205,15 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               $this->add_msg($orderId . ' - ' . __('Shipping method is not Omniva', 'omnivalt'), 'error');
               continue;
             }
-            $track_numer = get_post_meta($order->ID, '_omnivalt_barcode', true);
-            if ($track_numer == '' || !$download || !file_exists(plugin_dir_path(__FILE__) . 'pdf/' . $order->ID . '.pdf')) {
-              if (file_exists(plugin_dir_path(__FILE__) . 'pdf/' . $order->ID . '.pdf')) {
-                unlink(plugin_dir_path(__FILE__) . 'pdf/' . $order->ID . '.pdf');
+            $track_numer = get_post_meta($orderId, '_omnivalt_barcode', true);
+            if ($track_numer == '' || !$download || !file_exists(plugin_dir_path(__FILE__) . 'pdf/' . $orderId . '.pdf')) {
+              if (file_exists(plugin_dir_path(__FILE__) . 'pdf/' . $orderId . '.pdf')) {
+                unlink(plugin_dir_path(__FILE__) . 'pdf/' . $orderId . '.pdf');
               }
               $status = $this->get_tracking_number($orderId);
+              if (!empty($status['debug'])) {
+                $this->add_msg('<b>OMNIVA RESPONSE DEBUG:</b><br/><pre style="white-space:pre-wrap;">' . htmlspecialchars($status['debug']) . '</pre>', 'notice');
+              }
               if ($status['status']) {
                 update_post_meta($orderId, '_omnivalt_barcode', $status['barcodes'][0]);
                 $label_status = $this->getShipmentLabels($status['barcodes'], $orderId);
@@ -1235,8 +1244,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             }
 
             $label_url = '';
-            if (file_exists(plugin_dir_path(__FILE__) . 'pdf/' . $order->ID . '.pdf')) {
-              $label_url = plugin_dir_path(__FILE__) . 'pdf/' . $order->ID . '.pdf';
+            if (file_exists(plugin_dir_path(__FILE__) . 'pdf/' . $orderId . '.pdf')) {
+              $label_url = plugin_dir_path(__FILE__) . 'pdf/' . $orderId . '.pdf';
             }
             if ($label_url == '') {
               continue;
@@ -1300,14 +1309,17 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $this->add_msg($orderId . ' - ' . __('Shipping method is not Omniva', 'omnivalt'), 'error');
                 continue;
               }
-              $track_numer = get_post_meta($order->ID, '_omnivalt_barcode', true);
+              $track_numer = get_post_meta($orderId, '_omnivalt_barcode', true);
               if ($track_numer == '') {
                 $status = $this->get_tracking_number($orderId);
+                if (!empty($status['debug'])) {
+                  $this->add_msg('<b>OMNIVA RESPONSE DEBUG:</b><br/><pre style="white-space:pre-wrap;">' . htmlspecialchars($status['debug']) . '</pre>', 'notice');
+                }
                 if ($status['status']) {
-                  update_post_meta($order->ID, '_omnivalt_barcode', $status['barcodes'][0]);
+                  update_post_meta($orderId, '_omnivalt_barcode', $status['barcodes'][0]);
                   $track_numer = $status['barcodes'][0];
-                  if (file_exists(plugin_dir_path(__FILE__) . 'pdf/' . $order->ID . '.pdf')) {
-                    unlink(plugin_dir_path(__FILE__) . 'pdf/' . $order->ID . '.pdf');
+                  if (file_exists(plugin_dir_path(__FILE__) . 'pdf/' . $orderId . '.pdf')) {
+                    unlink(plugin_dir_path(__FILE__) . 'pdf/' . $orderId . '.pdf');
                   }
                   $label_status = $this->getShipmentLabels($status['barcodes'], $orderId);
                   if (!$label_status['status']) {
@@ -1650,6 +1662,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       $omnivalt->printBulkManifests($ids);
       return 0;
     }
+
+    return $redirect_to;
   }
 
   add_filter('admin_post_omnivalt_labels', 'omnivalt_post_label_actions', 20, 3);
@@ -1671,11 +1685,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   add_filter('woocommerce_admin_order_actions_end', 'omnivalt_order_actions', 10, 1);
   function omnivalt_order_actions($order)
   {
-    $send_method = get_post_meta($order->ID, '_shipping_method', true);
+    $order_id = $order->get_id();
+    $send_method = get_post_meta($order_id, '_shipping_method', true);
     if ((isset($send_method[0]) && ($send_method[0] == 'omnivalt_pt' || $send_method[0] == 'omnivalt_c' || $send_method[0] == 'omnivalt'))) {
-      echo '<a class="button tips omnivalt_generate_label" href="' . wp_nonce_url(admin_url('admin-ajax.php?action=generate_omnivalt_label&order_id=' . $order->ID), 'woocommerce-mark-order-status') . '" data-tip="' . __('Generate Omniva label', 'omnivalt') . '"> </a>';
-      if (file_exists(plugin_dir_path(__FILE__) . "pdf/" . $order->ID . '.pdf')) {
-        echo '<a class="button tips omnivalt_view_label" href="' . plugins_url('pdf/' . $order->ID . '.pdf', __FILE__) . '" target = "_blank" data-tip="' . __('VIew Omniva label', 'omnivalt') . '"> </a>';
+      echo '<a class="button tips omnivalt_generate_label" href="' . wp_nonce_url(admin_url('admin-ajax.php?action=generate_omnivalt_label&order_id=' . $order_id), 'woocommerce-mark-order-status') . '" data-tip="' . __('Generate Omniva label', 'omnivalt') . '"> </a>';
+      if (file_exists(plugin_dir_path(__FILE__) . "pdf/" . $order_id . '.pdf')) {
+        echo '<a class="button tips omnivalt_view_label" href="' . plugins_url('pdf/' . $order_id . '.pdf', __FILE__) . '" target = "_blank" data-tip="' . __('VIew Omniva label', 'omnivalt') . '"> </a>';
       }
     }
   }
@@ -1775,7 +1790,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $omnivalt = new Omnivalt_Shipping_Method();
     $callCarrierReturn = $omnivalt->call_omniva();
     if ($callCarrierReturn['status'] == true)
-      $omnivalt->add_msg(__("Omniva courier called", 'omnivalt'), 'notice');
+      $omnivalt->add_msg(__("Omniva courier called", 'omnivalt'), 'omniva-notice');
     else
       $omnivalt->add_msg(__("There was an error calling Omniva courier. Error: " . $callCarrierReturn['msg'], 'omnivalt'), 'error');
     wp_safe_redirect(wp_get_referer());
