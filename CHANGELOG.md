@@ -1,7 +1,11 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed order ID in COD
+
 ## [1.6.2]
-### Fixes
+### Fixed
 - fixed JS in Checkout when Omniva Shipping method is not displayed
 - fixed bulk action in orders list
 - fixed "id was called incorrectly" notice when WP logging is enabled
