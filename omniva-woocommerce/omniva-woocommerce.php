@@ -776,7 +776,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               <values code="item_value" amount="' . $amount . '"/>
             </monetary_values>
             <account>' . $bank_account . '</account>
-            <reference_number>' . $this->getReferenceNumber($order->get_id()) . '</reference_number>';
+            <reference_number>' . $this->getReferenceNumber($order->ID) . '</reference_number>';
           } else {
             return '';
           }
