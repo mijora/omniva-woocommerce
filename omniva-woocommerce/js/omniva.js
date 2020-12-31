@@ -59,7 +59,7 @@ jQuery('document').ready(function($){
                 postcode_value = $('#calc_shipping_postcode').val();
             }
             if (current_postcode != postcode_value) {
-                console.log('postcode changed (billing):', current_postcode, $('#billing_postcode').val());
+                //console.log('postcode changed (billing):', current_postcode, $('#billing_postcode').val());
                 current_postcode = postcode_value;
             }
             if (current_postcode) {

@@ -211,10 +211,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   function add_terminal_to_session()
   {
     if (isset($_POST['terminal_id']) && is_numeric($_POST['terminal_id'])) {
-    	$before = WC()->session->get('omnivalt_terminal_id');
     	WC()->session->set('omnivalt_terminal_id', $_POST['terminal_id']);
-    	$after = WC()->session->get('omnivalt_terminal_id');
-    	echo json_encode( array('before'=>$before, 'after'=>$after) );
     }
     wp_die();
   }
@@ -1001,9 +998,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 </xsd:businessToClientMsgRequest>
              </soapenv:Body>
           </soapenv:Envelope>';
-          //return self::api_request($xmlRequest);
-          $this->debug_request($xmlRequest);
-          return array('status'=>true);
+          return self::api_request($xmlRequest);
         }
 
         private function get_formated_time($value, $value_if_not) {
