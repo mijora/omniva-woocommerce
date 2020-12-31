@@ -1,5 +1,6 @@
 jQuery('document').ready(function($){
     var current_postcode = '';
+    var allow_change = true;
     $('input.shipping_method').on('click',function(){
         var current_method = $(this);
         if (current_method.val() == "omnivalt_pt"){
@@ -19,22 +20,23 @@ jQuery('document').ready(function($){
                 action : 'add_terminal_to_session',
                 terminal_id : terminal_id
             },
+            dataType: 'json',
             success : function( response ) {
-               
+               allow_change = false;
             }
         });
     });
 
     if (typeof omnivaSettings !== 'undefined') {
     	$( document ).on( 'omnivalt.checkpostcode, updated_checkout', function() {
-        if (omnivaSettings.auto_select == "yes" && omniva_current_terminal === '') {
-            current_postcode = select_terminal(current_postcode);
-        }
+            if (omnivaSettings.auto_select == "yes" && allow_change === true) {
+                current_postcode = select_terminal(current_postcode);
+            }
     	});
     	$( document ).on('change', '#shipping_postcode, #billing_postcode',function(){
-        if (omnivaSettings.auto_select == "yes" && omniva_current_terminal === '') {
-            current_postcode = select_terminal(current_postcode);
-        }
+            if (omnivaSettings.auto_select == "yes" && allow_change === true) {
+                current_postcode = select_terminal(current_postcode);
+            }
     	});
     }  
     $( document.body ).on( 'updated_wc_div', function(){
@@ -57,7 +59,7 @@ jQuery('document').ready(function($){
                 postcode_value = $('#calc_shipping_postcode').val();
             }
             if (current_postcode != postcode_value) {
-                //console.log('postcode changed (billing):', current_postcode, $('#billing_postcode').val());
+                console.log('postcode changed (billing):', current_postcode, $('#billing_postcode').val());
                 current_postcode = postcode_value;
             }
             if (current_postcode) {

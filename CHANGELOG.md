@@ -4,6 +4,9 @@
 ### Fixed
 - fixed order ID in COD
 
+### Improved
+- created pick up time fields value check
+
 ## [1.6.2]
 ### Fixed
 - fixed JS in Checkout when Omniva Shipping method is not displayed

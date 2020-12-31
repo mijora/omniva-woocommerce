@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.6.2
+ * Version: 1.6.3-dev
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -210,7 +210,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   add_action('wp_ajax_add_terminal_to_session', 'add_terminal_to_session');
   function add_terminal_to_session()
   {
-    if (isset($_POST['terminal_id']) && is_numeric($_POST['terminal_id'])) WC()->session->set('omnivalt_terminal_id', $_POST['terminal_id']);
+    if (isset($_POST['terminal_id']) && is_numeric($_POST['terminal_id'])) {
+    	$before = WC()->session->get('omnivalt_terminal_id');
+    	WC()->session->set('omnivalt_terminal_id', $_POST['terminal_id']);
+    	$after = WC()->session->get('omnivalt_terminal_id');
+    	echo json_encode( array('before'=>$before, 'after'=>$after) );
+    }
     wp_die();
   }
 
@@ -356,10 +361,14 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'pick_up_start' => array(
               'title' => __('Pick up time start', 'omnivalt'),
               'type' => 'text',
+              'placeholder' => '08:00',
+              'description' => sprintf(__('Allowed formats: %1$s. Default time is %2$s, if incorrect value is entered or field is empty.', 'omnivalt'),'<i>07:00, 7:00, 7</i>', '08:00'),
             ),
             'pick_up_end' => array(
               'title' => __('Pick up time end', 'omnivalt'),
               'type' => 'text',
+              'placeholder' => '17:00',
+              'description' => sprintf(__('Allowed formats: %1$s. Default time is %2$s, if incorrect value is entered or field is empty.', 'omnivalt'),'<i>09:00, 9:00, 9</i>', '17:00'),
             ),
             'send_off' => array(
               'title' => __('Send off type', 'omnivalt'),
@@ -943,7 +952,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $is_cod = false;
           $parcel_terminal = "";
           $pickStart = $this->settings['pick_up_start'] ? $this->clean($this->settings['pick_up_start']) : '8:00';
+          $pickStart = $this->get_formated_time($pickStart, '8:00');
           $pickFinish = $this->settings['pick_up_end'] ? $this->clean($this->settings['pick_up_end']) : '17:00';
+          $pickFinish = $this->get_formated_time($pickFinish, '8:00');
           $pickDay = date('Y-m-d');
           if (time() > strtotime($pickDay . ' ' . $pickFinish)) $pickDay = date('Y-m-d', strtotime($pickDay . "+1 days"));
           $shop_country_iso = $this->clean($this->settings['shop_countrycode']);
@@ -990,7 +1001,21 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 </xsd:businessToClientMsgRequest>
              </soapenv:Body>
           </soapenv:Envelope>';
-          return self::api_request($xmlRequest);
+          //return self::api_request($xmlRequest);
+          $this->debug_request($xmlRequest);
+          return array('status'=>true);
+        }
+
+        private function get_formated_time($value, $value_if_not) {
+        	if (!preg_match("/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/", $value)) {
+          	if ((string)(int)$value === $value || is_int($value)) {
+          		return $value . ':00';
+          	} else {
+          		return $value_if_not;
+          	}
+          } else {
+          	return $value;
+          }
         }
 
         private function api_request($request)
