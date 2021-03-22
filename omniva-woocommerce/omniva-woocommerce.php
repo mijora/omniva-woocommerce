@@ -644,7 +644,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                           $field_name = $box_key . '[c_enable]';
                           $field_checked = ($values['c_enable']['value']) ? 'checked' : '';
                           /* -Compatibility with old data- */
-                          if (isset($values['c_price_single']['value']) && $values['c_price_single']['value'] !== '') {
+                          if ($values['c_price_single']['is_old'] && isset($values['c_price_single']['value']) && $values['c_price_single']['value'] !== '') {
                           	$field_checked = 'checked';
                           }
                           /* -End of Compatibility with old data- */
@@ -680,7 +680,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                               $field_name = $box_key . '[c_enable_free_from]';
                               $field_checked = ($values['c_enable_free_from']['value']) ? 'checked' : '';
                               /* -Compatibility with old data- */
-                              if (isset($values['c_free_from']['value']) && $values['c_free_from']['value'] !== '') {
+                              if ($values['c_free_from']['is_old'] && isset($values['c_free_from']['value']) && $values['c_free_from']['value'] !== '') {
                           			$field_checked = 'checked';
                           		}
                           		/* -End of Compatibility with old data- */
