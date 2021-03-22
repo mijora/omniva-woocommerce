@@ -1,17 +1,150 @@
-.woocommerce table.form-table .field-dimensions input[type="number"] {
+.woocommerce table.omniva-settings .field-dimensions input[type="number"] {
 	width: 90px;
 	vertical-align: middle;
 }
-.woocommerce table.form-table .field-dimensions span {
+.woocommerce table.omniva-settings .field-dimensions span {
 	vertical-align: middle;
 }
 
-.woocommerce table.form-table .omniva-debugview th,
-.woocommerce table.form-table .omniva-debugview td {
+.woocommerce table.omniva-settings .omniva-debugview th,
+.woocommerce table.omniva-settings .omniva-debugview td {
 	padding-top: 0;
 }
-.woocommerce table.form-table .omniva-debugview td .title {
+.woocommerce table.omniva-settings .omniva-debugview td .title {
 	font-weight: 600;
 	margin-bottom: 5px;
 	display: block;
+}
+
+.woocommerce table.omniva-settings .row-prices > td {
+  padding: 0;
+}
+.woocommerce table.omniva-settings .prices_box {
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0px 0px 2px 0px #666;
+  margin-bottom: 10px;
+}
+.woocommerce table.omniva-settings .prices_box .pb-lang {
+  padding-bottom: 10px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #ccc;
+}
+.woocommerce table.omniva-settings .prices_box .pb-lang img {
+  vertical-align: middle;
+  width: 20px;
+}
+.woocommerce table.omniva-settings .prices_box .pb-lang span {
+  vertical-align: middle;
+  font-weight: 600;
+}
+.woocommerce table.omniva-settings .prices_box .pb-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices {
+  display: inline-block;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 48%;
+  position: relative;
+  transition: box-shadow 0.5s ease;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices:hover {
+  box-shadow: 0px 0px 2px 1px #2196f3;
+}
+.woocommerce table.omniva-settings .prices_box .disabled:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #eee;
+  opacity: 0.5;
+  border-radius: 5px;
+  box-shadow: 0px 0px 1px 0px #666 inset;
+  z-index: 1;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .sec-title {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .sec-prices {
+  position: relative;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .sec-prices > div {
+  margin-bottom: 5px;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .sec-prices > div:last-child {
+  margin-bottom: 0;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .sec-prices label {
+  vertical-align: middle;
+  width: 24%;
+  display: inline-block;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .sec-prices input[type="number"] {
+  vertical-align: middle;
+  width: 75%;
+  display: inline-block;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .sec-prices .price_free {
+  position: relative;
+}
+.woocommerce table.omniva-settings .prices_box .switcher {
+  float: right;
+  margin-top: -2px;
+}
+.woocommerce table.omniva-settings .switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+}
+.woocommerce table.omniva-settings .switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.woocommerce table.omniva-settings .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.woocommerce table.omniva-settings .slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.woocommerce table.omniva-settings input:checked + .slider {
+  background-color: #2196F3;
+}
+.woocommerce table.omniva-settings input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+.woocommerce table.omniva-settings input:checked + .slider:before {
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px);
+}
+.woocommerce table.omniva-settings .slider.round {
+  border-radius: 24px;
+}
+.woocommerce table.omniva-settings .slider.round:before {
+  border-radius: 50%;
 }

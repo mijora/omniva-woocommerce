@@ -5,13 +5,13 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.6.2
+ * Version: 1.7.0
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
- * Tested up to: 5.6
+ * Tested up to: 5.7
  * WC requires at least: 3.0.0
- * WC tested up to: 4.8.0
+ * WC tested up to: 5.1.0
  * Requires PHP: 7.2
  */
 
@@ -21,6 +21,7 @@ if (!defined('WPINC')) {
 
 define('OMNIVA_VERSION', '1.6.2');
 define('OMNIVA_DIR', plugin_dir_path(__FILE__));
+define('OMNIVA_URL', plugin_dir_url(__FILE__));
 
 add_action( 'init', 'omnivalt_load_textdomain' );
 
@@ -133,6 +134,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       ));
       */
 
+      wp_enqueue_script('omniva-helper', plugins_url('/js/omniva_helper.js', __FILE__), array('jquery'), OMNIVA_VERSION);
       wp_enqueue_script('omniva', plugins_url('/js/omniva.js', __FILE__), array('jquery'), OMNIVA_VERSION);
 
       wp_enqueue_style('omniva', plugins_url('/css/omniva.css', __FILE__), array(), OMNIVA_VERSION);
@@ -210,7 +212,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   add_action('wp_ajax_add_terminal_to_session', 'add_terminal_to_session');
   function add_terminal_to_session()
   {
-    if (isset($_POST['terminal_id']) && is_numeric($_POST['terminal_id'])) WC()->session->set('omnivalt_terminal_id', $_POST['terminal_id']);
+    if (isset($_POST['terminal_id']) && is_numeric($_POST['terminal_id'])) {
+    	WC()->session->set('omnivalt_terminal_id', $_POST['terminal_id']);
+    }
     wp_die();
   }
 
@@ -244,6 +248,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           );
 
           $this->init();
+
           $this->enabled = isset($this->settings['enabled']) ? $this->settings['enabled'] : 'yes';
           $this->title = isset($this->settings['title']) ? $this->settings['title'] : __('Omnivalt Shipping', 'omnivalt');
         }
@@ -290,6 +295,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           fclose($fp);
         }
         /**
+         * Load settings form
+         */
+        function admin_options()
+        {
+          ?>
+          <h2><?php echo $this->method_title; ?></h2>
+          <p><?php echo $this->method_description; ?></p>
+          <table class="form-table omniva-settings">
+            <?php $this->generate_settings_html(); ?>
+          </table>
+          <?php
+        }
+        /**
          * Define settings field for this shipping
          * @return void
          */
@@ -308,7 +326,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'api_url' => array(
               'title' => __('Api URL', 'omnivalt'),
               'type' => 'text',
-              'default' => 'https://edixml.post.ee'
+              'default' => 'https://edixml.post.ee',
+              'description' => __('Change only if want use custom Api URL.', 'omnivalt') . ' ' . sprintf(__('Default is %s', 'omnivalt'),'<code>https://edixml.post.ee</code>'),
             ),
             'api_user' => array(
               'title' => __('Api user', 'omnivalt'),
@@ -344,11 +363,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'shop_postcode' => array(
               'title' => __('Shop postcode', 'omnivalt'),
               'type' => 'text',
+              'description' => sprintf(__('Example for Latvia: %1$s. Example for other countries: %2$s.', 'omnivalt'), '<code>LV-0123</code>', '<code>01234</code>'),
             ),
             'shop_countrycode' => array(
-              'title' => __('Shop country code', 'omnivalt'),
-              'type' => 'text',
-            ),
+            	'title' => __('Shop country code', 'omnivalt'),
+            	'type'    => 'select',
+            	'class' => 'checkout-style pickup-point',
+            	'options' => array(
+                'EE'  => 'EE - ' . __('Estonia', 'omnivalt'),
+                'LV' => 'LV - ' . __('Latvia', 'omnivalt'),
+                'LT' => 'LT - ' . __('Lithuania', 'omnivalt'),
+            	),
+            	'default' => 'LT',
+        		),
             'shop_phone' => array(
               'title' => __('Shop phone number', 'omnivalt'),
               'type' => 'text',
@@ -356,10 +383,14 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'pick_up_start' => array(
               'title' => __('Pick up time start', 'omnivalt'),
               'type' => 'text',
+              'placeholder' => '08:00',
+              'description' => sprintf(__('Allowed formats: %1$s. Default time is %2$s, if incorrect value is entered or field is empty.', 'omnivalt'),'<i>07:00, 7:00, 7</i>', '08:00'),
             ),
             'pick_up_end' => array(
               'title' => __('Pick up time end', 'omnivalt'),
               'type' => 'text',
+              'placeholder' => '17:00',
+              'description' => sprintf(__('Allowed formats: %1$s. Default time is %2$s, if incorrect value is entered or field is empty.', 'omnivalt'),'<i>09:00, 9:00, 9</i>', '17:00'),
             ),
             'send_off' => array(
               'title' => __('Send off type', 'omnivalt'),
@@ -385,58 +416,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'description' => __('Show courrier method in checkout.', 'omnivalt')
           );
           foreach ($this->countries as $country) {
-          	$country = strtoupper($country); //Make sure it is really uppercase
-          	$fields['hr_'.$country] = array(
-            	'type' => 'empty',
-              'class' => 'omniva_both'
-          	);
-
-          	$fields['c_price_'.$country] = array(
-              'title' => $country . ' ' . __('Courrier price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step' => 0.01,
-                'min' => 0
-              ),
-              'default' => 2,
-              'description' => __('Leave empty to disable this method.', 'omnivalt'),
-              'class' => 'omniva_courier'
-            );
-
-            $fields['pt_price_'.$country] = array(
-              'title' => $country . ' ' . __('Parcel terminal price', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step' => 0.01,
-                'min' => 0
-              ),
-              'default' => 2,
-              'description' => __('Leave empty to disable this method.', 'omnivalt'),
-              'class' => 'omniva_terminal'
-            );
-
-            $fields['c_price_'.$country.'_FREE'] = array(
-              'title' => $country . ' ' . __('Free shipping then price is higher (Courier)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step' => 0.01,
-                'min' => 0.01
-              ),
-              'default' => 100,
-              'description' => __('Leave empty to not use.', 'omnivalt'),
-              'class' => 'omniva_courier'
-            );
-            
-            $fields['pt_price_'.$country.'_FREE'] = array(
-              'title' => $country . ' ' . __('Free shipping then price is higher (Terminals)', 'omnivalt'),
-              'type' => 'number',
-              'custom_attributes' => array(
-                'step' => 0.01,
-                'min' => 0.01
-              ),
-              'default' => 100,
-              'description' => __('Leave empty to not use.', 'omnivalt'),
-              'class' => 'omniva_terminal'
+            $fields['prices_'.$country] = array(
+              'type' => 'prices_box',
+              'lang' => $country,
             );
           }
           $fields['hr_settings'] = array(
@@ -446,11 +428,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'title' => sprintf(__('Max cart weight (%s)', 'omnivalt'),'kg'),
             'type' => 'number',
             'custom_attributes' => array(
-              'step' => 0.01,
+              'step' => 0.001,
               'min' => 0
             ),
             'description' => __('Maximum allowed all cart products weight for parcel terminals.', 'omnivalt'),
-            'default' => 100,
+            'default' => 30,
             'class' => 'omniva_terminal'
           );
           $fields['size_pt'] = array(
@@ -478,6 +460,16 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'default' => 'yes',
             'class' => 'omniva_terminal'
           );
+          $fields['print_type'] = array(
+            'title' => __('Labels print type', 'omnivalt'),
+            'type' => 'select',
+            'options' => array(
+              '1' => __('Original (single label)', 'omnivalt'),
+              '4' => __('A4 (4 labels)', 'omnivalt')
+            ),
+            'default' => '4',
+            'description' => __('How many labels to print per page.', 'omnivalt')
+          );
           $fields['email_created_label'] = array(
             'title' => __('Send email when a label is created', 'omnivalt'),
             'type' => 'checkbox',
@@ -485,7 +477,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'default' => ''
           );
           $fields['email_created_label_subject'] = array(
-            'title' => __('', 'omnivalt'),
+            'title' => '',
             'type' => 'text',
             'description' => __('Custom email subject (this field value not translating into other languages).', 'omnivalt'),
             'placeholder' => __('Your order shipment has been registered', 'omnivalt')
@@ -531,6 +523,201 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         	$html = '<tr valign="top"><td colspan="2" class="' . $class . '"></td></tr>';
     			return $html;
         }
+
+        public function generate_prices_box_html( $key, $value ) {
+        	$box_key = $this->get_field_key($key);
+          $html = '';
+          if (isset($value['lang'])) {
+            $flag_img_url = OMNIVA_URL . 'css/images/flags/' . strtolower($value['lang']) . '.png';
+            $fields = array(
+              'pt_enable' => 'pt_enable_' . $value['lang'],
+              'pt_price_single' => 'pt_price_' . $value['lang'],
+              'pt_enable_free_from' => 'pt_price_' . $value['lang'] . '_enFree',
+              'pt_free_from' => 'pt_price_' . $value['lang'] . '_FREE',
+              'c_enable' => 'c_enable_' . $value['lang'],
+              'c_price_single' => 'c_price_' . $value['lang'],
+              'c_free_from' => 'c_price_' . $value['lang'] . '_FREE',
+              'c_enable_free_from' => 'c_price_' . $value['lang'] . '_enFree',
+            );
+            $saved_values = json_decode($this->get_option($key));
+            $values = array();
+            foreach ($fields as $id => $field) {
+            	$cur_value = (isset($saved_values->{$id})) ? $saved_values->{$id} : '';
+            	/* -Compatibility with old data- */
+            	$old_value = $this->get_option($field);
+            	$is_old = false;
+            	if ($cur_value === '' && (!empty($old_value) || $old_value === 0 || $old_value === '0')) {
+            		$cur_value = $old_value;
+            		$is_old = true;
+            	}
+            	/* -End of Compatibility with old data- */
+              $values[$id] = array(
+                'id' => $field,
+                'key' => $this->get_field_key($field),
+                'value' => $cur_value,
+                'is_old' => $is_old,
+              );
+            }
+            ob_start();
+            ?>
+            <tr class="row-prices" valign="top">
+              <td colspan="2">
+                <div class="prices_box">
+                  <div class="pb-lang">
+                    <img src="<?php echo $flag_img_url; ?>" alt="[<?php echo $value['lang']; ?>]">
+                    <span><?php echo $value['lang'] . ' ' . __('prices','omnivalt'); ?></span>
+                  </div>
+                  <div class="pb-content">
+                    <?php if (isset($values['pt_enable'])) : ?>
+                      <div class="block-prices terminal">
+                        <div class="sec-title">
+                          <?php
+                          $field_title = __('Enable parcel terminal','omnivalt');
+                          $field_id = $values['pt_enable']['key'];
+                          $field_name = $box_key . '[pt_enable]';
+                          $field_checked = ($values['pt_enable']['value']) ? 'checked' : '';
+                          /* -Compatibility with old data- */
+                          if ($values['pt_price_single']['is_old'] && isset($values['pt_price_single']['value']) && $values['pt_price_single']['value'] !== '') {
+                          	$field_checked = 'checked';
+                          }
+                          /* -End of Compatibility with old data- */
+                          ?>
+                          <label for="<?php echo $field_id; ?>"><?php echo __('Parcel terminal','omnivalt'); ?></label>
+                          <div class="switcher" title="<?php echo $field_title; ?>">
+                            <label class="switch">
+                              <input type="checkbox" class="pt_enable" id="<?php echo $field_id; ?>" name="<?php echo $field_name; ?>" <?php echo $field_checked; ?> value="1">
+                              <span class="slider round"></span>
+                            </label>
+                          </div>
+                        </div>
+                        <div class="sec-prices">
+                          <?php if (isset($values['pt_price_single'])) : ?>
+                            <div class="prices-single">
+                              <?php
+                              $field_id = $values['pt_price_single']['key'];
+                              $field_name = $box_key . '[pt_price_single]';
+                              $field_value = $values['pt_price_single']['value'];
+                              if (empty($field_value) && $field_value != 0) {
+                                $field_value = 2;
+                              }
+                              ?>
+                              <label for="<?php echo $field_id; ?>"><?php echo __('Price','omnivalt'); ?>:</label>
+                              <input class="input-text regular-input" type="number" name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>" value="<?php echo $field_value; ?>" step="0.01" min="0">
+                            </div>
+                          <?php endif; ?>
+                          <?php if (isset($values['pt_free_from'])) : ?>
+                            <div class="prices-free">
+                              <?php
+                              $field_id = $values['pt_enable_free_from']['key'];
+                              $field_name = $box_key . '[pt_enable_free_from]';
+                              $field_checked = ($values['pt_enable_free_from']['value']) ? 'checked' : '';
+                              /* -Compatibility with old data- */
+                              if ($values['pt_free_from']['is_old'] && isset($values['pt_free_from']['value']) && $values['pt_free_from']['value'] !== '') {
+                          			$field_checked = 'checked';
+                          		}
+                          		/* -End of Compatibility with old data- */
+                              ?>
+                              <label>
+                              	<input type="checkbox" class="pt_enable_free" id="<?php echo $field_id; ?>" name="<?php echo $field_name; ?>" <?php echo $field_checked; ?> value="1">
+                              	<?php echo __('Free from','omnivalt'); ?>:
+                              </label>
+                              <?php
+                              $field_id = $values['pt_free_from']['key'];
+                              $field_name = $box_key . '[pt_free_from]';
+                              $field_value = $values['pt_free_from']['value'];
+                              if (empty($field_value) && $field_value != 0) {
+                                $field_value = 100;
+                              }
+                              ?>
+                              <input class="input-text regular-input price_free" type="number" name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>" value="<?php echo $field_value; ?>" step="0.01" min="0">
+                            </div>
+                          <?php endif; ?>
+                        </div>
+                      </div>
+                    <?php endif; ?>
+                    <?php if (isset($values['c_enable'])) : ?>
+                      <div class="block-prices courier">
+                        <div class="sec-title">
+                          <?php
+                          $field_title = __('Enable courier','omnivalt');
+                          $field_id = $values['c_enable']['key'];
+                          $field_name = $box_key . '[c_enable]';
+                          $field_checked = ($values['c_enable']['value']) ? 'checked' : '';
+                          /* -Compatibility with old data- */
+                          if (isset($values['c_price_single']['value']) && $values['c_price_single']['value'] !== '') {
+                          	$field_checked = 'checked';
+                          }
+                          /* -End of Compatibility with old data- */
+                          ?>
+                          <label for="<?php echo $field_id; ?>"><?php echo __('Courier','omnivalt'); ?></label>
+                          <div class="switcher" title="<?php echo $field_title; ?>">
+                            <label class="switch">
+                              <input type="checkbox" class="c_enable" id="<?php echo $field_id; ?>" name="<?php echo $field_name; ?>" <?php echo $field_checked; ?> value="1">
+                              <span class="slider round"></span>
+                            </label>
+                            </label>
+                          </div>
+                        </div>
+                        <div class="sec-prices">
+                          <?php if (isset($values['c_price_single'])) : ?>
+                            <div class="prices-single">
+                              <?php
+                              $field_id = $values['c_price_single']['key'];
+                              $field_name = $box_key . '[c_price_single]';
+                              $field_value = $values['c_price_single']['value'];
+                              if (empty($field_value) && $field_value != 0) {
+                                $field_value = 3;
+                              }
+                              ?>
+                              <label for="<?php echo $field_id; ?>"><?php echo __('Price','omnivalt'); ?>:</label>
+                              <input class="input-text regular-input" type="number" name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>" value="<?php echo $field_value; ?>" step="0.01" min="0">
+                            </div>
+                          <?php endif; ?>
+                          <?php if (isset($values['c_free_from'])) : ?>
+                            <div class="prices-free">
+                              <?php
+                              $field_id = $values['c_enable_free_from']['key'];
+                              $field_name = $box_key . '[c_enable_free_from]';
+                              $field_checked = ($values['c_enable_free_from']['value']) ? 'checked' : '';
+                              /* -Compatibility with old data- */
+                              if (isset($values['c_free_from']['value']) && $values['c_free_from']['value'] !== '') {
+                          			$field_checked = 'checked';
+                          		}
+                          		/* -End of Compatibility with old data- */
+                              ?>
+                              <label>
+                              	<input type="checkbox" class="c_enable_free" id="<?php echo $field_id; ?>" name="<?php echo $field_name; ?>" <?php echo $field_checked; ?> value="1">
+                              	<?php echo __('Free from','omnivalt'); ?>:
+                              </label>
+                              <?php
+                              $field_id = $values['c_free_from']['key'];
+                              $field_name = $box_key . '[c_free_from]';
+                              $field_value = $values['c_free_from']['value'];
+                              if (empty($field_value) && $field_value != 0) {
+                                $field_value = 100;
+                              }
+                              ?>
+                              <input class="input-text regular-input price_free" type="number" name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>" value="<?php echo $field_value; ?>" step="0.01" min="0">
+                            </div>
+                          <?php endif; ?>
+                        </div>
+                      </div>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <?php
+            $html = ob_get_contents();
+            ob_end_clean();
+          }
+          return $html;
+        }
+        public function validate_prices_box_field( $key, $value ) {
+    			$values = wp_json_encode($value);
+    			return $values;
+ 				}
+
         public function generate_dimensions_html( $key, $value ) {
         	$field_key = $this->get_field_key($key);
           $field_class = (isset($value['class'])) ? $value['class'] : '';
@@ -648,31 +835,38 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $weight = wc_get_weight($weight, 'kg');
           $weight_pass = (floatval($this->settings['weight']) >= $weight || floatval($this->settings['weight']) == 0);
 
+          $prices_key = (in_array($country, $this->countries)) ? 'prices_' . $country : 'prices_LT';
+          $prices = (isset($this->settings[$prices_key])) ? json_decode($this->settings[$prices_key]) : array();
+
           if ($this->settings['method_pt'] == 'yes' && $weight_pass && $dimension_pass_pt) {
             $show = true;
+            /* -For compatibility with old version settings- */
             if ( in_array($country, $this->countries) ) {
-              /* -For compatibility with old version settings- */
               $pt_price_name = (isset($this->settings['pt_price_' . $country])) ? 'pt_price_' . $country : 'pt_price' . $country;
               $pt_free_name = (isset($this->settings['pt_price_' . $country . '_FREE'])) ? 'pt_price_' . $country . '_FREE' : 'pt_price' . $country . '_FREE';
               if ($country == 'LT') {
                 $pt_price_name = (isset($this->settings['pt_price_LT'])) ? 'pt_price_LT' : 'pt_price';
                 $pt_free_name = (isset($this->settings['pt_price_LT_FREE'])) ? 'pt_price_LT_FREE' : 'pt_priceFREE';
               }
-              /* -End of compatibility- */
-              $amount = $this->settings[$pt_price_name];
-              $amount_free = floatval($this->settings[$pt_free_name]);
             } else {
-              /* -For compatibility with old version settings- */
               $pt_price_name = (isset($this->settings['pt_price_LT'])) ? 'pt_price_LT' : 'pt_price';
               $pt_free_name = (isset($this->settings['pt_price_LT_FREE'])) ? 'pt_price_LT_FREE' : 'pt_priceFREE';
-              /* -End of compatibility- */
-              $amount = $this->settings[$pt_price_name];
-              $amount_free = floatval($this->settings[$pt_free_name]);
             }
+            $amount = isset($this->settings[$pt_price_name]) ? $this->settings[$pt_price_name] : '';
+            $amount_free = isset($this->settings[$pt_free_name]) ? floatval($this->settings[$pt_free_name]) : 100;
             if ($amount === '') 
               $show = false;
             if ($cart_amount >= $amount_free && $amount_free > 0)
               $amount = 0.0;
+            /* -End of compatibility- */
+            $amount = (isset($prices->pt_price_single)) ? $prices->pt_price_single : $amount;
+            $amount_free = (isset($prices->pt_free_from)) ? $prices->pt_free_from : $amount_free;
+            if (!isset($prices->pt_enable)) {
+            	$show = false;
+            }
+            if (isset($prices->pt_enable_free_from)) {
+            	if ($cart_amount >= $amount_free) $amount = 0.0;
+            }
 
             $rate = array(
               'id' => 'omnivalt_pt',
@@ -686,29 +880,33 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
           if ($this->settings['method_c'] == 'yes' /*&& $dimension_pass_c*/) {
             $show = true;
+            /* -For compatibility with old version settings- */
             if ( in_array($country, $this->countries) ) {
-              /* -For compatibility with old version settings- */
               $c_price_name = (isset($this->settings['c_price_' . $country])) ? 'c_price_' . $country : 'c_price' . $country;
               $c_free_name = (isset($this->settings['c_price_' . $country . '_FREE'])) ? 'c_price_' . $country . '_FREE' : 'pt_price_C_' . $country . '_FREE';
               if ($country == 'LT') {
                 $c_price_name = (isset($this->settings['c_price_LT'])) ? 'c_price_LT' : 'c_price';
                 $c_free_name = (isset($this->settings['c_price_LT_FREE'])) ? 'c_price_LT_FREE' : 'pt_price_C_FREE';
               }
-              /* -End of compatibility- */
-              $amountC = $this->settings[$c_price_name];
-              $amountC_free = floatval($this->settings[$c_free_name]);
             } else {
-              /* -For compatibility with old version settings- */
               $c_price_name = (isset($this->settings['c_price_LT'])) ? 'c_price_LT' : 'c_price';
               $c_free_name = (isset($this->settings['c_price_LT_FREE'])) ? 'c_price_LT_FREE' : 'pt_price_C_FREE';
-              /* -End of compatibility- */
-              $amountC = $this->settings[$c_price_name];
-              $amountC_free = floatval($this->settings[$c_free_name]);
             }
+            $amountC = isset($this->settings[$c_price_name]) ? $this->settings[$c_price_name] : '';
+            $amountC_free = isset($this->settings[$c_free_name]) ? floatval($this->settings[$c_free_name]) : 100;
             if ($amountC === '') 
               $show = false;
             if ($cart_amount >= $amountC_free && $amountC_free > 0)
               $amountC = 0.0;
+            /* -End of compatibility- */
+            $amountC = (isset($prices->c_price_single)) ? $prices->c_price_single : $amountC;
+            $amountC_free = (isset($prices->c_free_from)) ? $prices->c_free_from : $amountC_free;
+            if (!isset($prices->c_enable)) {
+            	$show = false;
+            }
+            if (isset($prices->c_enable_free_from)) {
+            	if ($cart_amount >= $amountC_free) $amountC = 0.0;
+            }
 
             $rate = array(
               'id' => 'omnivalt_c',
@@ -943,7 +1141,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           $is_cod = false;
           $parcel_terminal = "";
           $pickStart = $this->settings['pick_up_start'] ? $this->clean($this->settings['pick_up_start']) : '8:00';
+          $pickStart = $this->get_formated_time($pickStart, '8:00');
           $pickFinish = $this->settings['pick_up_end'] ? $this->clean($this->settings['pick_up_end']) : '17:00';
+          $pickFinish = $this->get_formated_time($pickFinish, '17:00');
           $pickDay = date('Y-m-d');
           if (time() > strtotime($pickDay . ' ' . $pickFinish)) $pickDay = date('Y-m-d', strtotime($pickDay . "+1 days"));
           $shop_country_iso = $this->clean($this->settings['shop_countrycode']);
@@ -991,6 +1191,18 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
              </soapenv:Body>
           </soapenv:Envelope>';
           return self::api_request($xmlRequest);
+        }
+
+        private function get_formated_time($value, $value_if_not) {
+        	if (!preg_match("/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/", $value)) {
+          	if ((string)(int)$value === $value || is_int($value)) {
+          		return $value . ':00';
+          	} else {
+          		return $value_if_not;
+          	}
+          } else {
+          	return $value;
+          }
         }
 
         private function api_request($request)
@@ -1182,6 +1394,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           if (empty($orderIds) || !$orderIds) {
             return;
           }
+          $omniva_settings = get_option('woocommerce_omnivalt_settings');
+          $print_type = (isset($omniva_settings['print_type'])) ? $omniva_settings['print_type'] : '4';
           $count = 0;
           $label_count = 0;
           require_once(plugin_dir_path(__FILE__) . 'tcpdf/tcpdf.php');
@@ -1224,7 +1438,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 }
                 if (!$download)
                   $this->add_msg($orderId . ' - ' . __('Omniva label generated', 'omnivalt'), 'updated');
-                $omniva_settings = get_option('woocommerce_omnivalt_settings');
                 $send_email = (isset($omniva_settings['email_created_label'])) ? $omniva_settings['email_created_label'] : 'yes';
                 if ($send_email === 'yes') {
                   $emails = new Omniva_Emails( plugin_dir_path(__FILE__) . '/templates/');
@@ -1254,22 +1467,24 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             $pagecount = $pdf->setSourceFile($label_url);
             for ($i = 1; $i <= $pagecount; $i++) {
               $tplidx = $pdf->ImportPage($i);
-              if ($label_count == 0 || $label_count == 4) {
-                $pdf->AddPage('P');
-                $label_count = 0;
-                $pdf->useTemplate($tplidx, 5, 15, 94.5, 108, false);
-              } else if ($label_count == 1) {
-                $pdf->useTemplate($tplidx, 110, 15, 94.5, 108, false);
-              } else if ($label_count == 2) {
-                $pdf->useTemplate($tplidx, 5, 160, 94.5, 108, false);
-              } else if ($label_count == 3) {
-                $pdf->useTemplate($tplidx, 110, 160, 94.5, 108, false);
+              if ($print_type == '1') {
+                $s = $pdf->getTemplatesize($tplidx);
+                $pdf->AddPage('P', array($s['width'], $s['height']));
+                $pdf->useTemplate($tplidx);
+              } else if ($print_type == '4') {
+                if ($label_count == 0 || $label_count == 4) {
+                  $pdf->AddPage('P');
+                  $label_count = 0;
+                  $pdf->useTemplate($tplidx, 5, 15, 94.5, 108, false);
+                } else if ($label_count == 1) {
+                  $pdf->useTemplate($tplidx, 110, 15, 94.5, 108, false);
+                } else if ($label_count == 2) {
+                  $pdf->useTemplate($tplidx, 5, 160, 94.5, 108, false);
+                } else if ($label_count == 3) {
+                  $pdf->useTemplate($tplidx, 110, 160, 94.5, 108, false);
+                }
+                $label_count++;
               }
-              $label_count++;
-              //$tplidx = $pdf->ImportPage($i);
-              //$s = $pdf->getTemplatesize($tplidx);
-              //$pdf->AddPage('P', array($s['width'], $s['height']));
-              //$pdf->useTemplate($tplidx);
             }
             $count++;
           }
@@ -1544,8 +1759,29 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     if (!isset($omniva_settings['show_map']) || isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == "yes") {
       $button = '<button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn" style = "display: none;">' . __('Show in map', 'omnivalt') . '<img src = "' . plugin_dir_url(__FILE__) . '/sasi.png" title = "' . __("Show parcel terminals map", "omnivalt") . '"/></button>';
     }
-    return '<div class = "terminal-container"><select class = "omnivalt_terminal" name = "omnivalt_terminal">' . $parcel_terminals . '</select>
+    return '<div class="terminal-container"><select class="omnivalt_terminal" name="omnivalt_terminal">' . $parcel_terminals . '</select>
       ' . $button . ' </div>' . $script;
+  }
+
+  function omnivaltGetTerminalsList($country = "ALL") {
+  	$terminals_json_file_dir = dirname(__file__) . '/' . "locations.json";
+    $terminals_file = fopen($terminals_json_file_dir, "r");
+    $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
+    fclose($terminals_file);
+    $terminals = json_decode($terminals, true);
+    $grouped_options = array();
+    if (is_array($terminals)) {
+      foreach ($terminals as $terminal) {
+        if (intval($terminal['TYPE']) == 1) {
+          continue;
+        }
+        //if ($terminal['A0_NAME'] != $country && $country != "ALL") continue;
+        if (!isset($grouped_options[$terminal['A0_NAME']])) $grouped_options[(string) $terminal['A0_NAME']] = array();
+        if (!isset($grouped_options[$terminal['A0_NAME']][$terminal['A1_NAME']])) $grouped_options[(string) $terminal['A0_NAME']][(string) $terminal['A1_NAME']] = array();
+        $grouped_options[(string) $terminal['A0_NAME']][(string) $terminal['A1_NAME']][(string) $terminal['ZIP']] = $terminal['NAME'];
+      }
+    }
+    return ($country != "ALL" && isset($grouped_options[$country])) ? $grouped_options[$country] : $grouped_options;
   }
 
   function omnivaltTerminalName($terminal_code)
@@ -1803,14 +2039,66 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   function omniva_terminal_field_display_admin_order_meta($order, $print_barcode = true, $admin_panel = true)
   {
     $send_method = getOmnivaMethod($order);
+    if ($send_method != 'omnivalt_pt' && $send_method != 'omnivalt_c') {
+      return;
+    }
+    global $post_type;
+    $only_in_order = true;
+    if ('shop_order' != $post_type) {
+      $only_in_order = false;
+    }
+
+    if ($only_in_order) {
+      echo '<br class="clear"/>';
+      echo '<hr style="margin-top:20px;">';
+      echo '<h4>' . __('Omniva Shipping', 'omnivalt') . '</h4>';
+    }
+    echo '<div class="address">';
     if ($send_method == 'omnivalt_pt') {
-      echo '<p><strong>' . __('Omniva parcel terminal', 'omnivalt') . ':</strong> <br/>' . getOmnivaTerminalAddress($order) . '</p>';
+      echo '<p><strong class="title">' . __('Parcel terminal', 'omnivalt') . ':</strong> ' . getOmnivaTerminalAddress($order) . '</p>';
     } else if ($send_method == 'omnivalt_c') {
-      echo '<p><strong>' . __('Omniva courrier', 'omnivalt') . ':</strong> <br/>' . $order->get_formatted_shipping_address() . '</p>';
+      echo '<p><strong class="title">' . __('Courrier', 'omnivalt') . ':</strong> ' . $order->get_formatted_shipping_address() . '</p>';
     }
 
     if ($print_barcode) {
       echo printTrackingLink($order, $admin_panel, true);
+    }
+    echo '</div>';
+
+    if (!$only_in_order) {
+      return;
+    }
+    echo '<div class="edit_address">';
+    if ($send_method == 'omnivalt_pt') {
+      $all_terminals = omnivaltGetTerminalsList($order->get_shipping_country());
+      $selected_terminal = get_post_meta($order->get_id(), '_omnivalt_terminal_id', true);
+      echo '<label for="omnivalt_terminal">' . __('Change parcel terminal', 'omnivalt') . '</label>';
+      echo '<select id="omnivalt_terminal" class="select short" name="omnivalt_terminal_id">';
+      foreach ($all_terminals as $county => $terminals) {
+        echo '<optgroup label="' . $county . '">';
+        foreach ($terminals as $terminal_id => $terminal_name) {
+          $selected = ($terminal_id == $selected_terminal) ? 'selected' : '';
+          echo '<option value="' . $terminal_id . '" ' . $selected . '>' . $terminal_name . '</option>';
+        }
+        echo '</optgroup>';
+      }
+      echo '</select>';
+    }
+    if ($send_method == 'omnivalt_c') {
+      echo __('The delivery address for the courier is changed in the fields above ', 'omnivalt');
+    }
+    echo '</div>';
+    echo '<hr style="margin-top:20px;">';
+  }
+
+  add_action( 'save_post', 'omniva_terminal_field_save_admin_order_meta');
+  function omniva_terminal_field_save_admin_order_meta($post_id) {
+    global $post_type;
+    if ( 'shop_order' != $post_type ) {
+      return $post_id;
+    }
+    if (isset($_POST['omnivalt_terminal_id'])) {
+      update_post_meta($post_id, '_omnivalt_terminal_id', wc_clean($_POST['omnivalt_terminal_id']));
     }
   }
 

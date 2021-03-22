@@ -1,5 +1,4 @@
 jQuery('document').ready(function($){
-    var current_postcode = '';
     $('input.shipping_method').on('click',function(){
         var current_method = $(this);
         if (current_method.val() == "omnivalt_pt"){
@@ -9,62 +8,26 @@ jQuery('document').ready(function($){
         }
     });
     $('input.shipping_method:checked').trigger('click');
-    
-    $( document ).on( 'change', '.omnivalt_terminal', function() {
-        var terminal_id = $(this).val();
-        $.ajax({
-            url : omnivadata.ajax_url,
-            type : 'post',
-            data : {
-                action : 'add_terminal_to_session',
-                terminal_id : terminal_id
-            },
-            success : function( response ) {
-               
-            }
-        });
-    });
-
-    if (typeof omnivaSettings !== 'undefined') {
-    	$( document ).on( 'omnivalt.checkpostcode, updated_checkout', function() {
-        if (omnivaSettings.auto_select == "yes" && omniva_current_terminal === '') {
-            current_postcode = select_terminal(current_postcode);
-        }
-    	});
-    	$( document ).on('change', '#shipping_postcode, #billing_postcode',function(){
-        if (omnivaSettings.auto_select == "yes" && omniva_current_terminal === '') {
-            current_postcode = select_terminal(current_postcode);
-        }
-    	});
-    }  
+ 
     $( document.body ).on( 'updated_wc_div', function(){
         //$('.omnivalt_terminal').omniva();
         $("select.shipping_method, :input[name^=shipping_method]:checked").trigger('change'); //TODO: Need better solution for dropdown update when in cart change country
     });
 
-    function select_terminal(current_postcode = '') {
-        if ($('#ship-to-different-address-checkbox').length > 0 && $('#ship-to-different-address-checkbox').is(':checked')){
-            if (current_postcode != $('#shipping_postcode').val()) {
-                //console.log('postcode changed (shipping):', current_postcode, $('#shipping_postcode').val());
-                current_postcode = $('#shipping_postcode').val();
-                $('.terminal-container .search-input').val(current_postcode).trigger('selectpostcode');
+    function omniva_getPostcode() {
+        var postcode;
+        if ($('#ship-to-different-address-checkbox').length && $('#ship-to-different-address-checkbox').is(':checked')) {
+            if ($("#shipping_postcode").length && $("#shipping_postcode").val()) {
+                postcode = $("#shipping_postcode").val();
             }
         } else {
-            var postcode_value = '';
-            if ($('#billing_postcode').length) { //For Checkout billing field
-                postcode_value = $('#billing_postcode').val();
-            } else if ($('#calc_shipping_postcode').length) { //For Cart page
-                postcode_value = $('#calc_shipping_postcode').val();
-            }
-            if (current_postcode != postcode_value) {
-                //console.log('postcode changed (billing):', current_postcode, $('#billing_postcode').val());
-                current_postcode = postcode_value;
-            }
-            if (current_postcode) {
-                $('.terminal-container .search-input').val(current_postcode).trigger('selectpostcode');
+            if ($("#billing_postcode").length && $("#billing_postcode").val()) {
+                postcode = $("#billing_postcode").val();
+            } else if ($("#calc_shipping_postcode").length && $("#calc_shipping_postcode").val()) {
+                postcode = $("#calc_shipping_postcode").val();
             }
         }
-        return current_postcode;
+        return postcode;
     }
 });
 
@@ -75,7 +38,6 @@ var omniva_addrese_change = false;
             maxShow: 8,
             showMap: true,
         }, options );
-        //console.log('called');
         var timeoutID = null;
         var currentLocationIcon = false;
         var autoSelectTerminal = false;
@@ -94,6 +56,7 @@ var omniva_addrese_change = false;
         if (select.val()){
             selected = {'id':select.val(),'text':select.find('option:selected').text(),'distance':false};
         }
+        var cookie_terminal = omniva_getCookie('omniva_terminal');
         /*
         select.find('option').each(function(i,val){
            if (val.value != "")
@@ -183,6 +146,12 @@ var omniva_addrese_change = false;
         });
        
         searchByAddress();
+        if (cookie_terminal !== null) {
+            list.find('li').removeClass('selected');
+            var list_item = list.find('[data-id="' + cookie_terminal + '"]');
+            list_item.addClass('selected');
+            selectOption(list_item);
+        }
         
         
         function showModal(){
@@ -211,39 +180,54 @@ var omniva_addrese_change = false;
                 event.initEvent('resize', true, true);
             }
             window.dispatchEvent(event);
-            //console.log('1');
           }
 
-        function searchByAddress(){
-            if (selected == false){
+        function searchByAddress() {
+            if (selected == false) {
             var postcode = '';
-            if (omniva_addrese_change == true){
-                if ($('#ship-to-different-address-checkbox').length > 0 && $('#ship-to-different-address-checkbox').is(':checked')){
-                    postcode = $('#shipping_postcode').val();
-                }  
-                if ($('#ship-to-different-address-checkbox').length > 0 && !$('#ship-to-different-address-checkbox').is(':checked')){
-                    postcode = $('#billing_postcode').val();
-                }
-                if (postcode != ''){
+            if (omniva_addrese_change == true) {
+                postcode = getPostcode();
+                if (postcode != '') {
                     search.val(postcode).trigger('selectpostcode');
                 }
-                //console.log('search '+postcode);
             } else {
                 omniva_addrese_change = true;
             }
-            $('#shipping_postcode').on('change',function(){
-              if ($('#ship-to-different-address-checkbox').length > 0 && $('#ship-to-different-address-checkbox').is(':checked')){
-                postcode = $(this).val();
-                search.val(postcode).trigger('select');
-              }
+            $('#shipping_postcode, #billing_postcode').on('change', function() {
+                var cookie_terminal = omniva_getCookie('omniva_terminal');
+                postcode = getPostcode();
+                if (omnivaSettings.auto_select == "yes" && !cookie_terminal) {
+                    search.val(postcode).trigger('selectpostcode');
+                } else {
+                    search.val(postcode).trigger('keyup');
+                }
             });
-            $('#billing_postcode').on('change',function(){
-              if ($('#ship-to-different-address-checkbox').length > 0 && !$('#ship-to-different-address-checkbox').is(':checked')){
-                postcode = $(this).val();
-                search.val(postcode).trigger('select');
-              }
-            }); 
+            $(document).on('updated_checkout', function() {
+                var cookie_terminal = omniva_getCookie('omniva_terminal');
+                postcode = getPostcode();
+                search.val(postcode).trigger('keyup');
+                if (omnivaSettings.auto_select == "yes" && !cookie_terminal) {
+                    search.val(postcode).trigger('selectpostcode');
+                }
+            });
+
             }
+        }
+
+        function getPostcode() {
+            var postcode;
+            if ($('#ship-to-different-address-checkbox').length && $('#ship-to-different-address-checkbox').is(':checked')) {
+                if ($("#shipping_postcode").length && $("#shipping_postcode").val()) {
+                    postcode = $("#shipping_postcode").val();
+                }
+            } else {
+                if ($("#billing_postcode").length && $("#billing_postcode").val()) {
+                    postcode = $("#billing_postcode").val();
+                } else if ($("#calc_shipping_postcode").length && $("#calc_shipping_postcode").val()) {
+                    postcode = $("#calc_shipping_postcode").val();
+                }
+            }
+            return postcode;
         }
 
         function showAll(){
@@ -251,7 +235,7 @@ var omniva_addrese_change = false;
             showMore.hide();
         }
         
-        function refreshList(autoselect){            
+        function refreshList(autoselect){        
             $('.omniva-back-to-list').hide();
             var counter = 0;
             var city = false;
@@ -266,7 +250,6 @@ var omniva_addrese_change = false;
                     li.append(' <strong>' + val['distance'] + 'km</strong>');  
                     counter++;
                     if (settings.showMap == true && counter <= settings.maxShow){
-                        //console.log('add-to-map');
                         html += '<li data-pos="['+[val[1], val[2]]+']" data-id="'+val[3]+'" ><div><a class="omniva-li">'+counter+'. <b>'+val[0]+'</b></a> <b>'+val['distance']+' km.</b>\
                                   <div align="left" id="omn-'+val[3]+'" class="omniva-details" style="display:none;"><small>\
                                   '+val[5]+' <br/>'+val[6]+'</small><br/>\
@@ -276,7 +259,6 @@ var omniva_addrese_change = false;
                     }
                 } else {
                     if (settings.showMap == true ){
-                        //console.log('add-to-map');
                         html += '<li data-pos="['+[val[1], val[2]]+']" data-id="'+val[3]+'" ><div><a class="omniva-li">'+(i+1)+'. <b>'+val[0]+'</b></a>\
                                   <div align="left" id="omn-'+val[3]+'" class="omniva-details" style="display:none;"><small>\
                                   '+val[5]+' <br/>'+val[6]+'</small><br/>\
@@ -308,7 +290,8 @@ var omniva_addrese_change = false;
                     selectOption($(this));
                 }
             });
-            if (autoselect == true){
+
+            if (autoselect == true && !cookie_terminal){
                 var first = list.find('li:not(.city):first');
                 list.find('li').removeClass('selected');
                 first.addClass('selected');
@@ -341,6 +324,7 @@ var omniva_addrese_change = false;
         
         function selectOption(option){
             select.val(option.attr('data-id'));
+            omniva_setCookie('omniva_terminal', option.attr('data-id'), 30);
             select.trigger('change');
             selected = {'id':option.attr('data-id'),'text':option.text(),'distance':false};
             updateSelection();
@@ -349,7 +333,7 @@ var omniva_addrese_change = false;
         
         function updateSelection(){
             if (selected != false){
-               dropdown.html(selected.text); 
+                dropdown.html(selected.text); 
             }
         }
         
@@ -432,7 +416,6 @@ var omniva_addrese_change = false;
         }
         
         function findPosition(address,autoselect){
-            //console.log(address);
             if (address == "" || address.length < 3){
                 resetList();
                 showMore.hide();
@@ -444,7 +427,6 @@ var omniva_addrese_change = false;
                 calculateDistance(data.candidates[0].location.y,data.candidates[0].location.x);
                 refreshList(autoselect);
                 list.prepend(showMapBtn);
-                //console.log('add');
                 showMore.show();
                 if (settings.showMap == true){
                     setCurrentLocation([data.candidates[0].location.y,data.candidates[0].location.x]);
@@ -558,7 +540,6 @@ var omniva_addrese_change = false;
             $.getJSON( "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text="+address+"&sourceCountry="+omniva_current_country+"&f=pjson&maxSuggestions=4", function( data ) {
               if (data.suggestions != undefined && data.suggestions.length > 0){
                   $.each(data.suggestions ,function(i,item){
-                    //console.log(item);
                     //if (founded.indexOf(item.attributes.StAddr) == -1){
                         //const li = $("<li data-location-y = '"+item.location.y+"' data-location-x = '"+item.location.x+"'>"+item.address+"</li>");
                         const li = $("<li data-magickey = '"+item.magicKey+"' data-text = '"+item.text+"'>"+item.text+"</li>");
@@ -605,7 +586,6 @@ var omniva_addrese_change = false;
             if (currentLocationIcon){
               map.removeLayer(currentLocationIcon);
             }
-            //console.log('home');
             currentLocationIcon = L.marker(pos, {icon: homeIcon}).addTo(map);
             map.setView(pos,16);
             //calculateDistance(pos[0],pos[1]);
@@ -630,7 +610,6 @@ var omniva_addrese_change = false;
                 previous_list = []; 
              }
             $('.found_terminals').html('');
-            //console.log(id);
             $.each( locations, function( key, location ) {
               if (limit != 0 && limit < counter){
                 return false;
