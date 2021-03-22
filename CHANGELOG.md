@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased]
+## [1.7.0]
 ### Fixed
 - fixed order ID in COD
+
+### Improved
+- improved terminal selection field working in cart and checkout pages
+- improved prices settings structure and Omniva shipping methods displaying
+- created a ability to choose labels printing type (single label or 4 labels in a PDF page)
+- created a ability to change terminal in admin order edit page
 
 ## [1.6.2]
 ### Fixed

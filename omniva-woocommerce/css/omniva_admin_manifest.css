@@ -259,6 +259,10 @@
   box-sizing: border-box;
 }
 
+.page-omniva_manifest .table-container strong.title {
+  display: block;
+}
+
 .omniva-table {
   border-collapse: separate;
   border-spacing: 0 2px 0 0;
