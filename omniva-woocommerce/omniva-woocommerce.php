@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.7.0
+ * Version: 1.7.1
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -204,8 +204,20 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   {
   	if ($hook == 'woocommerce_page_wc-settings' && isset($_GET['section']) && $_GET['section'] == 'omnivalt') {
   		wp_enqueue_style('omnivalt_admin_settings', plugins_url('/css/omniva_admin_settings.css', __FILE__), array(), OMNIVA_VERSION);
-      wp_enqueue_script('omniva_admin_settings', plugins_url( '/js/omniva_admin.js', __FILE__ ), array('jquery'), OMNIVA_VERSION );
+      wp_enqueue_script('omniva_admin_settings', plugins_url( '/js/omniva_admin_settings.js', __FILE__ ), array('jquery'), OMNIVA_VERSION );
   	}
+  }
+
+  add_action('admin_enqueue_scripts', 'omnivalt_admin_order_scripts');
+  function omnivalt_admin_order_scripts($hook)
+  {
+    global $post;
+
+    if ($hook == 'post-new.php' || $hook == 'post.php') {
+      if ($post->post_type === 'shop_order') {
+        wp_enqueue_script('omniva_admin_order', plugins_url( '/js/omniva_admin_order.js', __FILE__ ), array('jquery'), OMNIVA_VERSION );
+      }
+    }
   }
 
   add_action('wp_ajax_nopriv_add_terminal_to_session', 'add_terminal_to_session');
@@ -1781,7 +1793,18 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         $grouped_options[(string) $terminal['A0_NAME']][(string) $terminal['A1_NAME']][(string) $terminal['ZIP']] = $terminal['NAME'];
       }
     }
+    $grouped_options = omnivaltSortTerminalList($grouped_options);
     return ($country != "ALL" && isset($grouped_options[$country])) ? $grouped_options[$country] : $grouped_options;
+  }
+
+  function omnivaltSortTerminalList($list) 
+  {
+    $sorted_list = array();
+    foreach ($list as $key => $elem) {
+      ksort($elem);
+      $sorted_list[$key] = $elem;
+    }
+    return $sorted_list;
   }
 
   function omnivaltTerminalName($terminal_code)
@@ -2070,17 +2093,21 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     }
     echo '<div class="edit_address">';
     if ($send_method == 'omnivalt_pt') {
-      $all_terminals = omnivaltGetTerminalsList($order->get_shipping_country());
+      $all_terminals = omnivaltGetTerminalsList();
       $selected_terminal = get_post_meta($order->get_id(), '_omnivalt_terminal_id', true);
       echo '<label for="omnivalt_terminal">' . __('Change parcel terminal', 'omnivalt') . '</label>';
+      echo '<input type="hidden" id="omniva-order-country" value="' . $order->get_shipping_country() . '">';
       echo '<select id="omnivalt_terminal" class="select short" name="omnivalt_terminal_id">';
-      foreach ($all_terminals as $county => $terminals) {
-        echo '<optgroup label="' . $county . '">';
-        foreach ($terminals as $terminal_id => $terminal_name) {
-          $selected = ($terminal_id == $selected_terminal) ? 'selected' : '';
-          echo '<option value="' . $terminal_id . '" ' . $selected . '>' . $terminal_name . '</option>';
+      echo '<option>-</option>';
+      foreach ($all_terminals as $country => $country_terminals) {
+        foreach ($country_terminals as $county => $terminals) {
+          echo '<optgroup data-country="' . $country . '" label="' . $county . '">';
+          foreach ($terminals as $terminal_id => $terminal_name) {
+            $selected = ($terminal_id == $selected_terminal) ? 'selected' : '';
+            echo '<option value="' . $terminal_id . '" ' . $selected . '>' . $terminal_name . '</option>';
+          }
+          echo '</optgroup>';
         }
-        echo '</optgroup>';
       }
       echo '</select>';
     }
