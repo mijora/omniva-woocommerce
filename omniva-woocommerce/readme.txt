@@ -1,5 +1,15 @@
 == Changelog ==
 
+= 1.7.1 =
+- fixed terminal selection field in order edit
+
+= 1.7.0 =
+- fixed order ID in COD
+- improved terminal selection field working in cart and checkout pages
+- improved prices settings structure and Omniva shipping methods displaying
+- created a ability to choose labels printing type (single label or 4 labels in a PDF page)
+- created a ability to change terminal in admin order edit page
+
 = 1.6.2 =
 - fixed JS in Checkout when Omniva Shipping method is not displayed
 - fixed bulk action in orders list
