@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.7.1]
+### Fixed
+- fixed terminal selection field in order edit
+
 ## [1.7.0]
 ### Fixed
 - fixed order ID in COD
