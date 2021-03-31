@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.7.2]
+### Fixed
+- fixed shipping methods display compatibility function
+- fixed terminal selection when changed country
+
+### Improved
+- added phone number pick from shipping field
+- added additional display:none style for omniva script tag to avoid javascript displaying in terminal selection
+
 ## [1.7.1]
 ### Fixed
 - fixed terminal selection field in order edit

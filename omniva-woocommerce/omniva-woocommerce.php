@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.7.1
+ * Version: 1.7.2
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.6.2');
+define('OMNIVA_VERSION', '1.7.2');
 define('OMNIVA_DIR', plugin_dir_path(__FILE__));
 define('OMNIVA_URL', plugin_dir_url(__FILE__));
 
@@ -866,7 +866,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             }
             $amount = isset($this->settings[$pt_price_name]) ? $this->settings[$pt_price_name] : '';
             $amount_free = isset($this->settings[$pt_free_name]) ? floatval($this->settings[$pt_free_name]) : 100;
-            if ($amount === '') 
+            if (isset($this->settings[$pt_price_name]) && $amount === '') 
               $show = false;
             if ($cart_amount >= $amount_free && $amount_free > 0)
               $amount = 0.0;
@@ -906,7 +906,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             }
             $amountC = isset($this->settings[$c_price_name]) ? $this->settings[$c_price_name] : '';
             $amountC_free = isset($this->settings[$c_free_name]) ? floatval($this->settings[$c_free_name]) : 100;
-            if ($amountC === '') 
+            if (isset($this->settings[$c_price_name]) && $amountC === '') 
               $show = false;
             if ($cart_amount >= $amountC_free && $amountC_free > 0)
               $amountC = 0.0;
@@ -1089,7 +1089,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           	$client_country = $this->clean($wc_order->get_billing_country());
           }
           if (empty($client_country)) $client_country = 'LT';
-          $client_phone = $this->clean($wc_order->get_billing_phone());
+          $client_phone = get_post_meta($id_order, '_shipping_phone', true);
+          if (empty($client_phone)) {
+            $client_phone = $this->clean($wc_order->get_billing_phone());
+          }
           $client_name = $this->clean($wc_order->get_shipping_first_name());
           if (empty($client_name)) $client_name = $this->clean($wc_order->get_billing_first_name());
           $client_surname = $this->clean($wc_order->get_shipping_last_name());
@@ -1756,7 +1759,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $omniva_settings = get_option('woocommerce_omnivalt_settings');
     $parcel_terminals = '<option value = "">' . __('Select parcel terminal', 'omnivalt') . '</option>' . $parcel_terminals;
     $set_autoselect = (isset($omniva_settings['auto_select'])) ? $omniva_settings['auto_select'] : 'yes';
-    $script = "<script>var omniva_current_country = '" . $country . "';
+    $script = "<script style='display:none;'>var omniva_current_country = '" . $country . "';
       var omnivaSettings = {
         auto_select:'" . $set_autoselect . "'
       };
