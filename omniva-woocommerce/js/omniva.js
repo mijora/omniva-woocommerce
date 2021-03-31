@@ -147,10 +147,12 @@ var omniva_addrese_change = false;
        
         searchByAddress();
         if (cookie_terminal !== null) {
-            list.find('li').removeClass('selected');
             var list_item = list.find('[data-id="' + cookie_terminal + '"]');
-            list_item.addClass('selected');
-            selectOption(list_item);
+            if (list_item.length > 0) {
+                list.find('li').removeClass('selected');
+                list_item.addClass('selected');
+                selectOption(list_item);
+            }
         }
         
         
