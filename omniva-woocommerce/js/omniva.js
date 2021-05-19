@@ -87,6 +87,7 @@ var omniva_addrese_change = false;
             initMap();
         }
         
+        resetList();
         refreshList(false);
         
         list.on('click','a.show-in-map',function(e){
@@ -293,7 +294,7 @@ var omniva_addrese_change = false;
                 }
             });
 
-            if (autoselect == true && !cookie_terminal){
+            if ( autoselect == true && !cookie_terminal && ($('#shipping_postcode').val() || $('#billing_postcode').val()) ){
                 var first = list.find('li:not(.city):first');
                 list.find('li').removeClass('selected');
                 first.addClass('selected');
@@ -360,10 +361,9 @@ var omniva_addrese_change = false;
    
             $.each( terminals, function( key, location ) {
                 location['distance'] = false;
-                
             });
     
-            terminals.sort(function(a, b) {
+            /*terminals.sort(function(a, b) { //Old sort
                 var distOne = a[0];
                 var distTwo = b[0];
                 if (parseFloat(distOne) < parseFloat(distTwo)) {
@@ -373,7 +373,12 @@ var omniva_addrese_change = false;
                     return 1;
                 }
                     return 0;
-            });   
+            });*/
+            terminals.sort(function(a, b){ //Sort by name
+                var nameOne = a[0];
+                var nameTwo = b[0];
+                return a[4].localeCompare(b[4]) || a[0].localeCompare(b[0]);
+            });
         }
         
         function calculateDistance(y,x){
