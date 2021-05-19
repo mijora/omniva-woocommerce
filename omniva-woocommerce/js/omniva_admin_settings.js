@@ -28,6 +28,17 @@ jQuery('document').ready(function($){
 		omniva_disable_by_cb(c_prices_free[i], field, "disabled", false, "readonly");
 	}
 
+	var pt_prices_coupon = $(".pt_enable_coupon");
+	for (var i=0; i<pt_prices_coupon.length; i++) {
+		var field = $(pt_prices_coupon[i]).closest('.prices-coupon').find('.price_coupon');
+		omniva_disable_by_cb(pt_prices_coupon[i], field, "disabled", false);
+	}
+	var c_prices_coupon = $(".c_enable_coupon");
+	for (var i=0; i<c_prices_coupon.length; i++) {
+		var field = $(c_prices_coupon[i]).closest('.prices-coupon').find('.price_coupon');
+		omniva_disable_by_cb(c_prices_coupon[i], field, "disabled", false);
+	}
+
 	$( document ).on( 'change', '#woocommerce_omnivalt_method_c', function() {
 		omniva_show_admin_fields_by_cb(this, ".omniva_courier");
 		omniva_hide_admin_field_by_all_cb(["#woocommerce_omnivalt_method_c","#woocommerce_omnivalt_method_pt"],".omniva_both");
@@ -55,6 +66,15 @@ jQuery('document').ready(function($){
 	$( document ).on( 'change', '.c_enable_free', function() {
 		var field = $(this).closest('.prices-free').find('.price_free');
 		omniva_disable_by_cb(this, field, "disabled", false, "readonly");
+	});
+
+	$( document ).on( 'change', '.pt_enable_coupon', function() {
+		var field = $(this).closest('.prices-coupon').find('.price_coupon');
+		omniva_disable_by_cb(this, field, "disabled", false);
+	});
+	$( document ).on( 'change', '.c_enable_coupon', function() {
+		var field = $(this).closest('.prices-coupon').find('.price_coupon');
+		omniva_disable_by_cb(this, field, "disabled", false);
 	});
 
 	$( document ).on( 'change', '#woocommerce_omnivalt_debug_mode', function() {

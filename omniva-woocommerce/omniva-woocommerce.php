@@ -557,10 +557,14 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'pt_price_single' => 'pt_price_' . $value['lang'],
               'pt_enable_free_from' => 'pt_price_' . $value['lang'] . '_enFree',
               'pt_free_from' => 'pt_price_' . $value['lang'] . '_FREE',
+              'pt_enable_coupon' => 'pt_price_' . $value['lang'] . '_enCoupon',
+              'pt_coupon' => 'pt_price_' . $value['lang'] . '_coupon',
               'c_enable' => 'c_enable_' . $value['lang'],
               'c_price_single' => 'c_price_' . $value['lang'],
               'c_free_from' => 'c_price_' . $value['lang'] . '_FREE',
               'c_enable_free_from' => 'c_price_' . $value['lang'] . '_enFree',
+              'c_enable_coupon' => 'c_price_' . $value['lang'] . '_enCoupon',
+              'c_coupon' => 'c_price_' . $value['lang'] . '_coupon',
             );
             $saved_values = json_decode($this->get_option($key));
             $values = array();
@@ -581,6 +585,16 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 'is_old' => $is_old,
               );
             }
+
+            $args = array(
+              'posts_per_page'   => -1,
+              'orderby'          => 'title',
+              'order'            => 'asc',
+              'post_type'        => 'shop_coupon',
+              'post_status'      => 'publish',
+            );  
+            $coupons = get_posts($args);
+
             ob_start();
             ?>
             <tr class="row-prices" valign="top">
@@ -655,6 +669,36 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                               <input class="input-text regular-input price_free" type="number" name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>" value="<?php echo $field_value; ?>" step="0.01" min="0">
                             </div>
                           <?php endif; ?>
+                          <?php if (isset($values['pt_coupon'])) : ?>
+                            <div class="prices-coupon">
+                              <?php
+                              $field_id = $values['pt_enable_coupon']['key'];
+                              $field_name = $box_key . '[pt_enable_coupon]';
+                              $field_checked = ($values['pt_enable_coupon']['value']) ? 'checked' : '';
+                              ?>
+                              <label>
+                                <input type="checkbox" class="pt_enable_coupon" id="<?php echo $field_id; ?>" name="<?php echo $field_name; ?>" <?php echo $field_checked; ?> value="1">
+                                <?php echo __('Free with coupon','omnivalt'); ?>:
+                              </label>
+                              <?php
+                              $field_id = $values['pt_coupon']['key'];
+                              $field_name = $box_key . '[pt_coupon]';
+                              $field_value = $values['pt_coupon']['value'];
+                              ?>
+                              <select id="<?php echo $field_id; ?>" class="select price_coupon" name="<?php echo $field_name; ?>">
+                                <?php $selected = (empty($values['pt_coupon']['value'])) ? 'selected' : ''; ?>
+                                <option <?php echo $selected; ?>>-</option>
+                                <?php foreach($coupons as $coupon) : ?>
+                                  <?php
+                                  $coupon_value = strtolower($coupon->post_title);
+                                  $coupon_title = $coupon->post_title;
+                                  $selected = ($coupon_value == $values['pt_coupon']['value']) ? 'selected' : '';
+                                  ?>
+                                  <option value="<?php echo $coupon_value; ?>" <?php echo $selected; ?>><?php echo $coupon_title; ?></option>
+                                <?php endforeach; ?>
+                              </select>
+                            </div>
+                          <?php endif; ?>
                         </div>
                       </div>
                     <?php endif; ?>
@@ -721,6 +765,36 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                               }
                               ?>
                               <input class="input-text regular-input price_free" type="number" name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>" value="<?php echo $field_value; ?>" step="0.01" min="0">
+                            </div>
+                          <?php endif; ?>
+                          <?php if (isset($values['c_coupon'])) : ?>
+                            <div class="prices-coupon">
+                              <?php
+                              $field_id = $values['c_enable_coupon']['key'];
+                              $field_name = $box_key . '[c_enable_coupon]';
+                              $field_checked = ($values['c_enable_coupon']['value']) ? 'checked' : '';
+                              ?>
+                              <label>
+                                <input type="checkbox" class="c_enable_coupon" id="<?php echo $field_id; ?>" name="<?php echo $field_name; ?>" <?php echo $field_checked; ?> value="1">
+                                <?php echo __('Free with coupon','omnivalt'); ?>:
+                              </label>
+                              <?php
+                              $field_id = $values['c_coupon']['key'];
+                              $field_name = $box_key . '[c_coupon]';
+                              $field_value = $values['c_coupon']['value'];
+                              ?>
+                              <select id="<?php echo $field_id; ?>" class="select price_coupon" name="<?php echo $field_name; ?>">
+                                <?php $selected = (empty($values['c_coupon']['value'])) ? 'selected' : ''; ?>
+                                <option <?php echo $selected; ?>>-</option>
+                                <?php foreach($coupons as $coupon) : ?>
+                                  <?php
+                                  $coupon_value = strtolower($coupon->post_title);
+                                  $coupon_title = $coupon->post_title;
+                                  $selected = ($coupon_value == $values['c_coupon']['value']) ? 'selected' : '';
+                                  ?>
+                                  <option value="<?php echo $coupon_value; ?>" <?php echo $selected; ?>><?php echo $coupon_title; ?></option>
+                                <?php endforeach; ?>
+                              </select>
                             </div>
                           <?php endif; ?>
                         </div>
@@ -899,6 +973,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             if (isset($prices->pt_enable_free_from)) {
             	if ($cart_amount >= $amount_free) $amount = 0.0;
             }
+            if (isset($prices->pt_enable_coupon)) {
+              if (isset($prices->pt_coupon) && !empty($package["applied_coupons"])) {
+                foreach ($package["applied_coupons"] as $coupon) {
+                  if ($prices->pt_coupon == $coupon) $amount = 0.0;
+                }
+              }
+            }
 
             $rate = array(
               'id' => 'omnivalt_pt',
@@ -938,6 +1019,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             }
             if (isset($prices->c_enable_free_from)) {
             	if ($cart_amount >= $amountC_free) $amountC = 0.0;
+            }
+            if (isset($prices->c_enable_coupon)) {
+              if (isset($prices->c_coupon) && !empty($package["applied_coupons"])) {
+                foreach ($package["applied_coupons"] as $coupon) {
+                  if ($prices->c_coupon == $coupon) $amountC = 0.0;
+                }
+              }
             }
 
             $rate = array(
