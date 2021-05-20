@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.7.2
+ * Version: 1.8.0
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.7.2');
+define('OMNIVA_VERSION', '1.8.0');
 define('OMNIVA_DIR', plugin_dir_path(__FILE__));
 define('OMNIVA_URL', plugin_dir_url(__FILE__));
 
@@ -437,7 +437,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'type' => 'hr'
           );
           $fields['weight'] = array(
-            'title' => sprintf(__('Max cart weight (%s)', 'omnivalt'),'kg'),
+            'title' => sprintf(__('Max cart weight (%s) for terminal', 'omnivalt'),'kg'),
             'type' => 'number',
             'custom_attributes' => array(
               'step' => 0.001,
@@ -447,8 +447,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'default' => 30,
             'class' => 'omniva_terminal'
           );
+          $fields['weight_c'] = array(
+            'title' => sprintf(__('Max cart weight (%s) for courier', 'omnivalt'),'kg'),
+            'type' => 'number',
+            'custom_attributes' => array(
+              'step' => 0.001,
+              'min' => 0
+            ),
+            'description' => __('Maximum allowed all cart products weight for courier.', 'omnivalt'),
+            'default' => 100,
+            'class' => 'omniva_courier'
+          );
           $fields['size_pt'] = array(
-            'title' => sprintf(__('Max cart size (%s)', 'omnivalt'),get_option('woocommerce_dimension_unit')),
+            'title' => sprintf(__('Max cart size (%s) for terminal', 'omnivalt'),get_option('woocommerce_dimension_unit')),
             'type' => 'dimensions',
             'description' => __('Maximum cart size for parcel terminals. Leave all empty to disable.', 'omnivalt') . '<br/>' . __('Preliminary cart size is calculated by trying to fit all products by taking their dimensions (boxes) indicated in their settings.', 'omnivalt'),
             'class' => 'omniva_terminal'
@@ -546,10 +557,14 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'pt_price_single' => 'pt_price_' . $value['lang'],
               'pt_enable_free_from' => 'pt_price_' . $value['lang'] . '_enFree',
               'pt_free_from' => 'pt_price_' . $value['lang'] . '_FREE',
+              'pt_enable_coupon' => 'pt_price_' . $value['lang'] . '_enCoupon',
+              'pt_coupon' => 'pt_price_' . $value['lang'] . '_coupon',
               'c_enable' => 'c_enable_' . $value['lang'],
               'c_price_single' => 'c_price_' . $value['lang'],
               'c_free_from' => 'c_price_' . $value['lang'] . '_FREE',
               'c_enable_free_from' => 'c_price_' . $value['lang'] . '_enFree',
+              'c_enable_coupon' => 'c_price_' . $value['lang'] . '_enCoupon',
+              'c_coupon' => 'c_price_' . $value['lang'] . '_coupon',
             );
             $saved_values = json_decode($this->get_option($key));
             $values = array();
@@ -570,6 +585,16 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 'is_old' => $is_old,
               );
             }
+
+            $args = array(
+              'posts_per_page'   => -1,
+              'orderby'          => 'title',
+              'order'            => 'asc',
+              'post_type'        => 'shop_coupon',
+              'post_status'      => 'publish',
+            );  
+            $coupons = get_posts($args);
+
             ob_start();
             ?>
             <tr class="row-prices" valign="top">
@@ -644,6 +669,36 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                               <input class="input-text regular-input price_free" type="number" name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>" value="<?php echo $field_value; ?>" step="0.01" min="0">
                             </div>
                           <?php endif; ?>
+                          <?php if (isset($values['pt_coupon'])) : ?>
+                            <div class="prices-coupon">
+                              <?php
+                              $field_id = $values['pt_enable_coupon']['key'];
+                              $field_name = $box_key . '[pt_enable_coupon]';
+                              $field_checked = ($values['pt_enable_coupon']['value']) ? 'checked' : '';
+                              ?>
+                              <label>
+                                <input type="checkbox" class="pt_enable_coupon" id="<?php echo $field_id; ?>" name="<?php echo $field_name; ?>" <?php echo $field_checked; ?> value="1">
+                                <?php echo __('Free with coupon','omnivalt'); ?>:
+                              </label>
+                              <?php
+                              $field_id = $values['pt_coupon']['key'];
+                              $field_name = $box_key . '[pt_coupon]';
+                              $field_value = $values['pt_coupon']['value'];
+                              ?>
+                              <select id="<?php echo $field_id; ?>" class="select price_coupon" name="<?php echo $field_name; ?>">
+                                <?php $selected = (empty($values['pt_coupon']['value'])) ? 'selected' : ''; ?>
+                                <option <?php echo $selected; ?>>-</option>
+                                <?php foreach($coupons as $coupon) : ?>
+                                  <?php
+                                  $coupon_value = strtolower($coupon->post_title);
+                                  $coupon_title = $coupon->post_title;
+                                  $selected = ($coupon_value == $values['pt_coupon']['value']) ? 'selected' : '';
+                                  ?>
+                                  <option value="<?php echo $coupon_value; ?>" <?php echo $selected; ?>><?php echo $coupon_title; ?></option>
+                                <?php endforeach; ?>
+                              </select>
+                            </div>
+                          <?php endif; ?>
                         </div>
                       </div>
                     <?php endif; ?>
@@ -710,6 +765,36 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                               }
                               ?>
                               <input class="input-text regular-input price_free" type="number" name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>" value="<?php echo $field_value; ?>" step="0.01" min="0">
+                            </div>
+                          <?php endif; ?>
+                          <?php if (isset($values['c_coupon'])) : ?>
+                            <div class="prices-coupon">
+                              <?php
+                              $field_id = $values['c_enable_coupon']['key'];
+                              $field_name = $box_key . '[c_enable_coupon]';
+                              $field_checked = ($values['c_enable_coupon']['value']) ? 'checked' : '';
+                              ?>
+                              <label>
+                                <input type="checkbox" class="c_enable_coupon" id="<?php echo $field_id; ?>" name="<?php echo $field_name; ?>" <?php echo $field_checked; ?> value="1">
+                                <?php echo __('Free with coupon','omnivalt'); ?>:
+                              </label>
+                              <?php
+                              $field_id = $values['c_coupon']['key'];
+                              $field_name = $box_key . '[c_coupon]';
+                              $field_value = $values['c_coupon']['value'];
+                              ?>
+                              <select id="<?php echo $field_id; ?>" class="select price_coupon" name="<?php echo $field_name; ?>">
+                                <?php $selected = (empty($values['c_coupon']['value'])) ? 'selected' : ''; ?>
+                                <option <?php echo $selected; ?>>-</option>
+                                <?php foreach($coupons as $coupon) : ?>
+                                  <?php
+                                  $coupon_value = strtolower($coupon->post_title);
+                                  $coupon_title = $coupon->post_title;
+                                  $selected = ($coupon_value == $values['c_coupon']['value']) ? 'selected' : '';
+                                  ?>
+                                  <option value="<?php echo $coupon_value; ?>" <?php echo $selected; ?>><?php echo $coupon_title; ?></option>
+                                <?php endforeach; ?>
+                              </select>
                             </div>
                           <?php endif; ?>
                         </div>
@@ -845,12 +930,21 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
           }
 
           $weight = wc_get_weight($weight, 'kg');
-          $weight_pass = (floatval($this->settings['weight']) >= $weight || floatval($this->settings['weight']) == 0);
+          if (isset($this->settings['weight'])) {
+            $weight_pass_pt = (floatval($this->settings['weight']) >= $weight || floatval($this->settings['weight']) == 0);
+          } else {
+            $weight_pass_pt = true;
+          }
+          if (isset($this->settings['weight_c'])) {
+            $weight_pass_c = (floatval($this->settings['weight_c']) >= $weight || floatval($this->settings['weight_c']) == 0);
+          } else {
+            $weight_pass_c = true;
+          }
 
           $prices_key = (in_array($country, $this->countries)) ? 'prices_' . $country : 'prices_LT';
           $prices = (isset($this->settings[$prices_key])) ? json_decode($this->settings[$prices_key]) : array();
 
-          if ($this->settings['method_pt'] == 'yes' && $weight_pass && $dimension_pass_pt) {
+          if ($this->settings['method_pt'] == 'yes' && $weight_pass_pt && $dimension_pass_pt) {
             $show = true;
             /* -For compatibility with old version settings- */
             if ( in_array($country, $this->countries) ) {
@@ -879,6 +973,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             if (isset($prices->pt_enable_free_from)) {
             	if ($cart_amount >= $amount_free) $amount = 0.0;
             }
+            if (isset($prices->pt_enable_coupon)) {
+              if (isset($prices->pt_coupon) && !empty($package["applied_coupons"])) {
+                foreach ($package["applied_coupons"] as $coupon) {
+                  if ($prices->pt_coupon == $coupon) $amount = 0.0;
+                }
+              }
+            }
 
             $rate = array(
               'id' => 'omnivalt_pt',
@@ -890,7 +991,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             }
           }
 
-          if ($this->settings['method_c'] == 'yes' /*&& $dimension_pass_c*/) {
+          if ($this->settings['method_c'] == 'yes' && $weight_pass_c /*&& $dimension_pass_c*/) {
             $show = true;
             /* -For compatibility with old version settings- */
             if ( in_array($country, $this->countries) ) {
@@ -918,6 +1019,13 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             }
             if (isset($prices->c_enable_free_from)) {
             	if ($cart_amount >= $amountC_free) $amountC = 0.0;
+            }
+            if (isset($prices->c_enable_coupon)) {
+              if (isset($prices->c_coupon) && !empty($package["applied_coupons"])) {
+                foreach ($package["applied_coupons"] as $coupon) {
+                  if ($prices->c_coupon == $coupon) $amountC = 0.0;
+                }
+              }
             }
 
             $rate = array(
@@ -1690,8 +1798,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     if (isset($_POST['omnivalt_terminal']) && $order_id) {
       update_post_meta($order_id, '_omnivalt_terminal_id', $_POST['omnivalt_terminal']);
     }
-    if (isset($_POST['shipping_method'][0]) && ($_POST['shipping_method'][0] == "omnivalt_pt" || $_POST['shipping_method'][0] == "omnivalt_c")) {
-      update_post_meta($order_id, '_omnivalt_method', $_POST['shipping_method'][0]);
+    if (isset($_POST['shipping_method']) && is_array($_POST['shipping_method'])) {
+      foreach ($_POST['shipping_method'] as $ship_method) {
+        if ($ship_method == "omnivalt_pt" || $ship_method == "omnivalt_c") {
+          update_post_meta($order_id, '_omnivalt_method', $ship_method);
+        }
+      }
     }
   }
 
