@@ -9,9 +9,9 @@
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
- * Tested up to: 5.7
+ * Tested up to: 5.7.2
  * WC requires at least: 3.0.0
- * WC tested up to: 5.1.0
+ * WC tested up to: 5.3.0
  * Requires PHP: 7.2
  */
 
