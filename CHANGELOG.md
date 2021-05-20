@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.8.0]
+### Fixed
+- fixed shipping method check for order
+- fixed terminal autoselect when shipping address is not entered
+
+### Improved
+- added max weight option to courier
+- created a ability to use coupon for free shipping
+
 ## [1.7.2]
 ### Fixed
 - fixed shipping methods display compatibility function
