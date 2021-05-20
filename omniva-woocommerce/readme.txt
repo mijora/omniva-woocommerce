@@ -1,5 +1,17 @@
 == Changelog ==
 
+= 1.8.0 =
+- fixed shipping method check for order
+- fixed terminal autoselect when shipping address is not entered
+- added max weight option to courier
+- created a ability to use coupon for free shipping
+
+= 1.7.2 =
+- fixed shipping methods display compatibility function
+- fixed terminal selection when changed country
+- added phone number pick from shipping field
+- added additional display:none style for omniva script tag to avoid javascript displaying in terminal selection
+
 = 1.7.1 =
 - fixed terminal selection field in order edit
 
