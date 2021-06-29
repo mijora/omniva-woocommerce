@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.8.1]
+### Improved
+- added a ability to set shipping price by cart weight or cart amount
+
 ## [1.8.0]
 ### Fixed
 - fixed shipping method check for order
