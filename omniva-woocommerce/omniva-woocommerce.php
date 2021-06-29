@@ -5,13 +5,13 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.8.0
+ * Version: 1.8.1
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
  * Tested up to: 5.7.2
  * WC requires at least: 3.0.0
- * WC tested up to: 5.3.0
+ * WC tested up to: 5.4.1
  * Requires PHP: 7.2
  */
 
@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.8.0');
+define('OMNIVA_VERSION', '1.8.1');
 define('OMNIVA_DIR', plugin_dir_path(__FILE__));
 define('OMNIVA_URL', plugin_dir_url(__FILE__));
 
@@ -115,6 +115,7 @@ function omnivalt_deactivation()
 if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
 
   require_once plugin_dir_path(__FILE__) . 'includes/class-emails.php';
+  require_once plugin_dir_path(__FILE__) . 'includes/class-admin-html.php';
   // add select2 js script
 
   add_action('wp_enqueue_scripts', 'omnivalt_scripts', 99);
@@ -554,13 +555,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             $flag_img_url = OMNIVA_URL . 'css/images/flags/' . strtolower($value['lang']) . '.png';
             $fields = array(
               'pt_enable' => 'pt_enable_' . $value['lang'],
+              'pt_price_type' => 'pt_price_type_' . $value['lang'],
               'pt_price_single' => 'pt_price_' . $value['lang'],
+              'pt_price_by_weight' => 'pt_price_by_weight_' . $value['lang'],
+              'pt_price_by_amount' => 'pt_price_by_amount_' . $value['lang'],
               'pt_enable_free_from' => 'pt_price_' . $value['lang'] . '_enFree',
               'pt_free_from' => 'pt_price_' . $value['lang'] . '_FREE',
               'pt_enable_coupon' => 'pt_price_' . $value['lang'] . '_enCoupon',
               'pt_coupon' => 'pt_price_' . $value['lang'] . '_coupon',
               'c_enable' => 'c_enable_' . $value['lang'],
+              'c_price_type' => 'c_price_type_' . $value['lang'],
               'c_price_single' => 'c_price_' . $value['lang'],
+              'c_price_by_weight' => 'c_price_by_weight_' . $value['lang'],
+              'c_price_by_amount' => 'c_price_by_amount_' . $value['lang'],
               'c_free_from' => 'c_price_' . $value['lang'] . '_FREE',
               'c_enable_free_from' => 'c_price_' . $value['lang'] . '_enFree',
               'c_enable_coupon' => 'c_price_' . $value['lang'] . '_enCoupon',
@@ -628,6 +635,16 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                           </div>
                         </div>
                         <div class="sec-prices">
+                          <?php if (isset($values['pt_price_type'])) : ?>
+                            <?php
+                            $html_params = array(
+                              'field_id' => $values['pt_price_type']['key'],
+                              'field_name' => $box_key . '[pt_price_type]',
+                              'field_value' => $values['pt_price_type']['value'],
+                            );
+                            echo OmnivaLt_Admin_Html::buildPriceType($html_params);
+                            ?>
+                          <?php endif; ?>
                           <?php if (isset($values['pt_price_single'])) : ?>
                             <div class="prices-single">
                               <?php
@@ -641,6 +658,32 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                               <label for="<?php echo $field_id; ?>"><?php echo __('Price','omnivalt'); ?>:</label>
                               <input class="input-text regular-input" type="number" name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>" value="<?php echo $field_value; ?>" step="0.01" min="0">
                             </div>
+                          <?php endif; ?>
+                          <?php if (isset($values['pt_price_by_weight'])) : ?>
+                            <?php
+                            $html_params = array(
+                              'type' => 'weight',
+                              'field_id' => $values['pt_price_by_weight']['key'],
+                              'field_name' => $box_key . '[pt_price_by_weight]',
+                              'values' => $values['pt_price_by_weight']['value'],
+                              'c1_title' => __('Weight','omnivalt') . ' (' . get_option('woocommerce_weight_unit') . ')',
+                              'c1_step' => 0.001,
+                            );
+                            echo OmnivaLt_Admin_Html::buildPricesTable($html_params);
+                            ?>
+                          <?php endif; ?>
+                          <?php if (isset($values['pt_price_by_amount'])) : ?>
+                            <?php
+                            $html_params = array(
+                              'type' => 'amount',
+                              'field_id' => $values['pt_price_by_amount']['key'],
+                              'field_name' => $box_key . '[pt_price_by_amount]',
+                              'values' => $values['pt_price_by_amount']['value'],
+                              'c1_title' => __('Cart amount','omnivalt'),
+                              'c1_step' => 0.01,
+                            );
+                            echo OmnivaLt_Admin_Html::buildPricesTable($html_params);
+                            ?>
                           <?php endif; ?>
                           <?php if (isset($values['pt_free_from'])) : ?>
                             <div class="prices-free">
@@ -726,6 +769,16 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                           </div>
                         </div>
                         <div class="sec-prices">
+                          <?php if (isset($values['c_price_type'])) : ?>
+                            <?php
+                            $html_params = array(
+                              'field_id' => $values['c_price_type']['key'],
+                              'field_name' => $box_key . '[c_price_type]',
+                              'field_value' => $values['c_price_type']['value'],
+                            );
+                            echo OmnivaLt_Admin_Html::buildPriceType($html_params);
+                            ?>
+                          <?php endif; ?>
                           <?php if (isset($values['c_price_single'])) : ?>
                             <div class="prices-single">
                               <?php
@@ -739,6 +792,32 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                               <label for="<?php echo $field_id; ?>"><?php echo __('Price','omnivalt'); ?>:</label>
                               <input class="input-text regular-input" type="number" name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>" value="<?php echo $field_value; ?>" step="0.01" min="0">
                             </div>
+                          <?php endif; ?>
+                          <?php if (isset($values['c_price_by_weight'])) : ?>
+                            <?php
+                            $html_params = array(
+                              'type' => 'weight',
+                              'field_id' => $values['c_price_by_weight']['key'],
+                              'field_name' => $box_key . '[c_price_by_weight]',
+                              'values' => $values['c_price_by_weight']['value'],
+                              'c1_title' => __('Weight','omnivalt') . ' (' . get_option('woocommerce_weight_unit') . ')',
+                              'c1_step' => 0.001,
+                            );
+                            echo OmnivaLt_Admin_Html::buildPricesTable($html_params);
+                            ?>
+                          <?php endif; ?>
+                          <?php if (isset($values['c_price_by_amount'])) : ?>
+                            <?php
+                            $html_params = array(
+                              'type' => 'amount',
+                              'field_id' => $values['c_price_by_amount']['key'],
+                              'field_name' => $box_key . '[c_price_by_amount]',
+                              'values' => $values['c_price_by_amount']['value'],
+                              'c1_title' => __('Cart amount','omnivalt'),
+                              'c1_step' => 0.01,
+                            );
+                            echo OmnivaLt_Admin_Html::buildPricesTable($html_params);
+                            ?>
                           <?php endif; ?>
                           <?php if (isset($values['c_free_from'])) : ?>
                             <div class="prices-free">
@@ -966,6 +1045,14 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               $amount = 0.0;
             /* -End of compatibility- */
             $amount = (isset($prices->pt_price_single)) ? $prices->pt_price_single : $amount;
+            if (isset($prices->pt_price_type)) {
+              if ($prices->pt_price_type == 'weight' && isset($prices->pt_price_by_weight)) {
+                $amount = $this->get_price_from_table($prices->pt_price_by_weight, $weight, $amount);
+              }
+              if ($prices->pt_price_type == 'amount' && isset($prices->pt_price_by_amount)) {
+                $amount = $this->get_price_from_table($prices->pt_price_by_amount, $cart_amount, $amount);
+              }
+            }
             $amount_free = (isset($prices->pt_free_from)) ? $prices->pt_free_from : $amount_free;
             if (!isset($prices->pt_enable)) {
             	$show = false;
@@ -1013,6 +1100,14 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               $amountC = 0.0;
             /* -End of compatibility- */
             $amountC = (isset($prices->c_price_single)) ? $prices->c_price_single : $amountC;
+            if (isset($prices->c_price_type)) {
+              if ($prices->c_price_type == 'weight' && isset($prices->c_price_by_weight)) {
+                $amountC = $this->get_price_from_table($prices->c_price_by_weight, $weight, $amountC);
+              }
+              if ($prices->c_price_type == 'amount' && isset($prices->c_price_by_amount)) {
+                $amountC = $this->get_price_from_table($prices->c_price_by_amount, $cart_amount, $amountC);
+              }
+            }
             $amountC_free = (isset($prices->c_free_from)) ? $prices->c_free_from : $amountC_free;
             if (!isset($prices->c_enable)) {
             	$show = false;
@@ -1037,6 +1132,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             	$this->add_rate($rate);
             }
           }
+        }
+
+        private function get_price_from_table($table_values, $cart_value, $default_value) {
+          foreach ($table_values as $values) {
+            if (empty($values->value) && !empty($values->price)) {
+              return $values->price;
+            }
+            if ($cart_value < $values->value) {
+              return $values->price;
+            }
+          }
+
+          return $default_value;
         }
 
         private function cart_size_prediction($products, $max_dimension) {

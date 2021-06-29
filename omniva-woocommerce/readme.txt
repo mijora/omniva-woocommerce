@@ -1,5 +1,8 @@
 == Changelog ==
 
+= 1.8.1 =
+- added a ability to set shipping price by cart weight or cart amount
+
 = 1.8.0 =
 - fixed shipping method check for order
 - fixed terminal autoselect when shipping address is not entered

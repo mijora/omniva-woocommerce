@@ -1,3 +1,18 @@
+.woocommerce table.omniva-settings .omniva-fake-btn {
+  display: inline-block;
+  padding: 4px 7px;
+  border: 1px solid #9d9da9;
+  cursor: pointer;
+  background: #e9e9ed;
+  color: #4a4a4b;
+  position: relative;
+}
+.woocommerce table.omniva-settings .omniva-fake-btn:hover {
+  background-color: #c6c6c6;
+}
+.woocommerce table.omniva-settings .omniva-fake-btn.disabled {
+  pointer-events: none;
+}
 .woocommerce table.omniva-settings .field-dimensions input[type="number"] {
 	width: 90px;
 	vertical-align: middle;
@@ -99,6 +114,36 @@
 }
 .woocommerce table.omniva-settings .prices_box .block-prices .sec-prices .price_free {
   position: relative;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-table table {
+  display: inline-table;
+  width: 75%;
+  vertical-align: top;
+  border-collapse: collapse;
+  transition: all 0.5s ease;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-table table:hover {
+  box-shadow: 0 0 0 1px #2271b1;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-table th,
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-table td {
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #8c8f94;
+  border-collapse: collapse;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-table table:hover th,
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-table table:hover td {
+  border-color: #2271b1;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-table .column-value input {
+  max-width: 100px;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-table .column-price {
+  width: 30%;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-table .column-actions {
+  width: 10%;
 }
 .woocommerce table.omniva-settings .prices_box .switcher {
   float: right;
