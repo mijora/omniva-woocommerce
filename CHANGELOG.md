@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Improved
+- added a ability to set shipping method description
+
 ## [1.8.1]
 ### Improved
 - added a ability to set shipping price by cart weight or cart amount

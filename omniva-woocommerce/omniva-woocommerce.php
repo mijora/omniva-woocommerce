@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.8.1
+ * Version: 1.8.1-new
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.8.1');
+define('OMNIVA_VERSION', '1.8.1-new');
 define('OMNIVA_DIR', plugin_dir_path(__FILE__));
 define('OMNIVA_URL', plugin_dir_url(__FILE__));
 
@@ -563,6 +563,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'pt_free_from' => 'pt_price_' . $value['lang'] . '_FREE',
               'pt_enable_coupon' => 'pt_price_' . $value['lang'] . '_enCoupon',
               'pt_coupon' => 'pt_price_' . $value['lang'] . '_coupon',
+              'pt_description' => 'pt_description_' . $value['lang'],
               'c_enable' => 'c_enable_' . $value['lang'],
               'c_price_type' => 'c_price_type_' . $value['lang'],
               'c_price_single' => 'c_price_' . $value['lang'],
@@ -572,6 +573,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               'c_enable_free_from' => 'c_price_' . $value['lang'] . '_enFree',
               'c_enable_coupon' => 'c_price_' . $value['lang'] . '_enCoupon',
               'c_coupon' => 'c_price_' . $value['lang'] . '_coupon',
+              'c_description' => 'c_description_' . $value['lang'],
             );
             $saved_values = json_decode($this->get_option($key));
             $values = array();
@@ -743,6 +745,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                             </div>
                           <?php endif; ?>
                         </div>
+                        <div class="sec-other">
+                          <?php if (isset($values['pt_description'])) : ?>
+                            <div class="other-description">
+                              <?php
+                              $field_id = $values['pt_description']['key'];
+                              $field_name = $box_key . '[pt_description]';
+                              $field_value = $values['pt_description']['value'];
+                              ?>
+                              <label for="<?php echo $field_id; ?>">Aprašymas</label>
+                              <textarea name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>"><?php echo $field_value; ?></textarea>
+                            </div>
+                          <?php endif; ?>
+                        </div>
                       </div>
                     <?php endif; ?>
                     <?php if (isset($values['c_enable'])) : ?>
@@ -764,7 +779,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                             <label class="switch">
                               <input type="checkbox" class="c_enable" id="<?php echo $field_id; ?>" name="<?php echo $field_name; ?>" <?php echo $field_checked; ?> value="1">
                               <span class="slider round"></span>
-                            </label>
                             </label>
                           </div>
                         </div>
@@ -874,6 +888,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                                   <option value="<?php echo $coupon_value; ?>" <?php echo $selected; ?>><?php echo $coupon_title; ?></option>
                                 <?php endforeach; ?>
                               </select>
+                            </div>
+                          <?php endif; ?>
+                        </div>
+                        <div class="sec-other">
+                          <?php if (isset($values['c_description'])) : ?>
+                            <div class="other-description">
+                              <?php
+                              $field_id = $values['c_description']['key'];
+                              $field_name = $box_key . '[c_description]';
+                              $field_value = $values['c_description']['value'];
+                              ?>
+                              <label for="<?php echo $field_id; ?>">Aprašymas</label>
+                              <textarea name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>"><?php echo $field_value; ?></textarea>
                             </div>
                           <?php endif; ?>
                         </div>
@@ -1879,6 +1906,30 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   }
 
   add_action('woocommerce_shipping_init', 'omnivalt_shipping_method');
+
+  add_action( 'woocommerce_after_shipping_rate', 'omnivalt_after_shipping_rate', 20, 2 );
+  function omnivalt_after_shipping_rate ( $method, $index ) {
+    if( is_cart() ) return; // Exit on cart page
+
+    $customer = WC()->session->get('customer');
+    if ( ! isset($customer['country']) ) {
+      return;
+    }
+
+    $omnivalt_Shipping_Method = new Omnivalt_Shipping_Method();
+    if ( ! isset($omnivalt_Shipping_Method->settings['prices_' . $customer['country']]) ) {
+      return;
+    }
+
+    $rate_settings = json_decode($omnivalt_Shipping_Method->settings['prices_' . $customer['country']]);
+
+    if ( ! empty($rate_settings->pt_description) && $method->id === 'omnivalt_pt' ) {
+      echo '<span class="omnivalt-shipping-description">' . $rate_settings->pt_description . '</span>';
+    }
+    if ( ! empty($rate_settings->c_description) && $method->id === 'omnivalt_c' ) {
+      echo '<span class="omnivalt-shipping-description">' . $rate_settings->c_description . '</span>';
+    }
+  }
 
   add_filter('woocommerce_shipping_methods', 'add_omnivalt_shipping_method');
   function add_omnivalt_shipping_method($methods)
