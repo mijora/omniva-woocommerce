@@ -1911,17 +1911,17 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   function omnivalt_after_shipping_rate ( $method, $index ) {
     if( is_cart() ) return; // Exit on cart page
 
-    $omnivalt_Shipping_Method = new Omnivalt_Shipping_Method();
-    if ( ! isset($omnivalt_Shipping_Method->settings['prices_LT']) ) {
-      return;
-    }
-
-    $rate_settings = json_decode($omnivalt_Shipping_Method->settings['prices_LT']);
-
     $customer = WC()->session->get('customer');
     if ( ! isset($customer['country']) ) {
       return;
     }
+
+    $omnivalt_Shipping_Method = new Omnivalt_Shipping_Method();
+    if ( ! isset($omnivalt_Shipping_Method->settings['prices_' . $customer['country']]) ) {
+      return;
+    }
+
+    $rate_settings = json_decode($omnivalt_Shipping_Method->settings['prices_' . $customer['country']]);
 
     if ( ! empty($rate_settings->pt_description) && $method->id === 'omnivalt_pt' ) {
       echo '<span class="omnivalt-shipping-description">' . $rate_settings->pt_description . '</span>';
