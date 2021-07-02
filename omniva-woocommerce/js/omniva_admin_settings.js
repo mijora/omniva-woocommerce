@@ -10,10 +10,14 @@ jQuery('document').ready(function($){
 	for (var i=0; i<pt_prices_blocks.length; i++) {
 		var block = $(pt_prices_blocks[i]).closest('.block-prices').find('.sec-prices');
 		omniva_toggle_class_by_cb(pt_prices_blocks[i], block, "disabled", false);
+		var block = $(pt_prices_blocks[i]).closest('.block-prices').find('.sec-other');
+		omniva_toggle_class_by_cb(pt_prices_blocks[i], block, "disabled", false);
 	}
 	var c_prices_blocks = $(".c_enable");
 	for (var i=0; i<c_prices_blocks.length; i++) {
 		var block = $(c_prices_blocks[i]).closest('.block-prices').find('.sec-prices');
+		omniva_toggle_class_by_cb(c_prices_blocks[i], block, "disabled", false);
+		var block = $(c_prices_blocks[i]).closest('.block-prices').find('.sec-other');
 		omniva_toggle_class_by_cb(c_prices_blocks[i], block, "disabled", false);
 	}
 	
@@ -53,9 +57,13 @@ jQuery('document').ready(function($){
 	$( document ).on( 'change', '.pt_enable', function() {
 		var block = $(this).closest('.block-prices').find('.sec-prices');
 		omniva_toggle_class_by_cb(this, block, "disabled", false);
+		var block = $(this).closest('.block-prices').find('.sec-other');
+		omniva_toggle_class_by_cb(this, block, "disabled", false);
 	});
 	$( document ).on( 'change', '.c_enable', function() {
 		var block = $(this).closest('.block-prices').find('.sec-prices');
+		omniva_toggle_class_by_cb(this, block, "disabled", false);
+		var block = $(this).closest('.block-prices').find('.sec-other');
 		omniva_toggle_class_by_cb(this, block, "disabled", false);
 	});
 
