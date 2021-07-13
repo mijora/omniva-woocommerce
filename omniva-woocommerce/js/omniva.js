@@ -9,9 +9,20 @@ jQuery('document').ready(function($){
     });
     $('input.shipping_method:checked').trigger('click');
  
-    $( document.body ).on( 'updated_wc_div', function(){
+    $(document.body).on( 'updated_wc_div', function(){
         //$('.omnivalt_terminal').omniva();
         $("select.shipping_method, :input[name^=shipping_method]:checked").trigger('change'); //TODO: Need better solution for dropdown update when in cart change country
+    });
+
+    $(document.body).on('updated_checkout', function() {
+        var omniva_descriptions = $(".omnivalt-shipping-description");
+        for (var i=0;i<omniva_descriptions.length;i++) {
+            if ($(omniva_descriptions[i]).closest("li").find("input.shipping_method").is(':checked')) {
+                $(omniva_descriptions[i]).show();
+            } else {
+                $(omniva_descriptions[i]).hide();
+            }
+        }
     });
 
     function omniva_getPostcode() {
