@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.8.2]
 ### Improved
 - added a ability to set shipping method description
 
