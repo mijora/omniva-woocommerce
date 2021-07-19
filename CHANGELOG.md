@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.3]
+### Fixed
+- fixed terminal validation function when required POST element not exists
+
+### Improved
+- added a ability to disable Omniva shipping method for specific categories
+
 ## [1.8.2]
 ### Improved
 - added a ability to set shipping method description
