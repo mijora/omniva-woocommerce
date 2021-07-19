@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.8.2
+ * Version: 1.8.2-new
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.8.2');
+define('OMNIVA_VERSION', '1.8.2-new');
 define('OMNIVA_DIR', plugin_dir_path(__FILE__));
 define('OMNIVA_URL', plugin_dir_url(__FILE__));
 
@@ -470,6 +470,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
             'type' => 'dimensions',
             'description' => __('Maximum product size for courier. Leave all empty to disable.', 'omnivalt') . '<br/>' . __('If the length, width or height of at least one product exceeds the specified values, then it will not be possible to select the courier delivery method for the whole cart.', 'omnivalt')
           );*/
+          $fields['restricted_categories'] = array(
+            'title' => __('Disable for specific categories', 'omnivalt'),
+            'type' => 'multiselect',
+            'class' => 'wc-enhanced-select',
+            'description' => __('Select categories you want to disable the Omniva method', 'omnivalt'),
+            'options' => $this->omnivalt_get_categories(),
+            'desc_tip' => true,
+            'required' => false,
+            'custom_attributes' => array(
+              'data-placeholder' => __('Select Categories', 'omnivalt'),
+              'data-name' => 'restricted_categories'
+            ),
+          );
           $fields['show_map'] = array(
             'title' => __('Map', 'omnivalt'),
             'type' => 'checkbox',
@@ -972,6 +985,65 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     			$values = wp_json_encode($value);
     			return $values;
  				}
+
+        /**
+         * Get categories for "restricted_categories" field
+         */
+        public function omnivalt_get_categories()
+        {
+          $cats = $this->get_categories_hierarchy();
+          $result = [];
+              
+          foreach ($cats as $item) {
+            $this->create_categories_list('', $item, $result);
+          }
+
+          return $result;
+        }
+
+        /**
+         * Makes a list of categories to select from in settings page. array(lowest cat id => full cat path name)
+         */
+        private function create_categories_list($prefix, $data, &$results)
+        {
+          if ($prefix) {
+            $prefix = $prefix . ' &gt; ';
+            $results[$data->term_id] = $prefix . $data->name;
+          }
+          if (!$data->children) {
+            $results[$data->term_id] = $prefix . $data->name;
+
+            return true;
+          }
+
+          foreach ($data->children as $child) {
+            $this->create_categories_list($prefix . $data->name, $child, $results);
+          }
+        }
+
+        private function get_categories_hierarchy( $parent = 0 )
+        {
+          $taxonomy = 'product_cat';
+          $orderby = 'name';
+          $hide_empty = 0;
+
+          $args = array(
+            'taxonomy'   => $taxonomy,
+            'parent'     => $parent,
+            'orderby'    => $orderby,
+            'hide_empty' => $hide_empty,
+          );
+
+          $cats = get_categories( $args );
+          $children = array();
+
+          foreach( $cats as $cat ) {
+            $cat->children = $this->get_categories_hierarchy( $cat->term_id );
+            $children[ $cat->term_id ] = $cat;
+          }
+
+          return $children;
+        }
 
         public function generate_debug_window_html( $key, $value ) {
           $field_class = (isset($value['class'])) ? $value['class'] : '';
@@ -1951,6 +2023,44 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     }
   }
 
+  /**
+   * Restrict Omniva Shipping methods if cart products has restricted categories
+   */
+  add_filter('woocommerce_package_rates', 'restrict_omnivalt_shipping_methods', 10, 1);
+  function restrict_omnivalt_shipping_methods($rates)
+  {
+    global $woocommerce;
+    $cart_categories_ids = array();
+
+    foreach( $woocommerce->cart->get_cart() as $cart_item ) {
+      $cats = get_the_terms( $cart_item['product_id'], 'product_cat' );
+      foreach ($cats as $cat) {
+        $cart_categories_ids[] = $cat->term_id;
+        if ($cat->parent != 0) {
+          $cart_categories_ids[] = $cat->parent;
+        }
+      }
+    }
+
+    $cart_categories_ids = array_unique($cart_categories_ids);
+
+    $omniva_options = get_option('woocommerce_omnivalt_settings');
+    $restricted_categories = $omniva_options['restricted_categories'];
+    if (!is_array($restricted_categories)) {
+      $restricted_categories = array($restricted_categories);
+    }
+
+    foreach ($cart_categories_ids as $cart_product_categories_id) {
+      if (in_array($cart_product_categories_id, $restricted_categories)) {
+        unset($rates['omnivalt_pt']);
+        unset($rates['omnivalt_c']);
+        break;
+      }
+    }
+
+    return $rates;
+  }
+
   add_action('woocommerce_checkout_update_order_meta', 'add_terminal_id_to_order');
   function add_terminal_id_to_order($order_id)
   {
@@ -2406,7 +2516,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   add_action('woocommerce_checkout_process', 'omnivalt_terminal_validate');
   function omnivalt_terminal_validate()
   {
-    if (in_array('omnivalt_pt', $_POST['shipping_method'])) {
+    if (isset($_POST['shipping_method']) && in_array('omnivalt_pt', $_POST['shipping_method'])) {
       if (empty($_POST['omnivalt_terminal']))
         wc_add_notice(__('Please select parcel terminal.', 'omnivalt'), 'error');
     }
