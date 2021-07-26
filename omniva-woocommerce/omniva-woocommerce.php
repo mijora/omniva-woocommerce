@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.8.3
+ * Version: 1.8.3-new
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVA_VERSION', '1.8.3');
+define('OMNIVA_VERSION', '1.8.3-new');
 define('OMNIVA_DIR', plugin_dir_path(__FILE__));
 define('OMNIVA_URL', plugin_dir_url(__FILE__));
 
@@ -2017,8 +2017,18 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $country = "ALL";
     if (isset($customer['country']))
       $country = $customer['country'];
+    
     $termnal_id = WC()->session->get('omnivalt_terminal_id');
-    if (($method->id == "omnivalt_pt" && !isset($_POST['shipping_method'][0])) || ($method->id == "omnivalt_pt" && isset($_POST['shipping_method'][0]) && $_POST['shipping_method'][0] == "omnivalt_pt")) {
+    
+    $selected_shipping_method = WC()->session->get('chosen_shipping_methods');
+    if (empty($selected_shipping_method)) {
+      $selected_shipping_method = array();
+    }
+    if (!is_array($selected_shipping_method)) {
+      $selected_shipping_method = array($selected_shipping_method);
+    }
+
+    if ( $method->id == "omnivalt_pt" && in_array("omnivalt_pt", $selected_shipping_method) ) {
       echo omnivaltGetTerminalsOptions($termnal_id, $country);
     }
   }
