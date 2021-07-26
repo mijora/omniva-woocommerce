@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed terminal selection field showing when country is changed and Omniva pickup become selected
+
 ## [1.8.3]
 ### Fixed
 - fixed terminal validation function when required POST element not exists
