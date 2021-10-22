@@ -1152,6 +1152,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                 $amount = $this->get_price_from_table($prices->pt_price_by_amount, $cart_amount, $amount);
               }
             }
+            if ($amount !== '') { //Fix compatibility
+              $show = true;
+            }
             $amount_free = (isset($prices->pt_free_from)) ? $prices->pt_free_from : $amount_free;
             if (!isset($prices->pt_enable)) {
             	$show = false;
@@ -1206,6 +1209,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
               if ($prices->c_price_type == 'amount' && isset($prices->c_price_by_amount)) {
                 $amountC = $this->get_price_from_table($prices->c_price_by_amount, $cart_amount, $amountC);
               }
+            }
+            if ($amountC !== '') { //Fix compatibility
+              $show = true;
             }
             $amountC_free = (isset($prices->c_free_from)) ? $prices->c_free_from : $amountC_free;
             if (!isset($prices->c_enable)) {

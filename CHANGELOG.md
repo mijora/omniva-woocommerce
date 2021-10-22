@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed terminal selection field showing when country is changed and Omniva pickup become selected
+- fixed compatibility with old plugin settings
 
 ## [1.8.3]
 ### Fixed
