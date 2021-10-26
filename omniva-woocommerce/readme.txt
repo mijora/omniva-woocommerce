@@ -1,5 +1,13 @@
 == Changelog ==
 
+= 1.8.4 =
+- fixed terminal selection field showing when country is changed and Omniva pickup become selected
+- fixed compatibility with old version plugin settings
+
+= 1.8.3 =
+- fixed terminal validation function when required POST element not exists
+- added a ability to disable Omniva shipping method for specific categories
+
 = 1.8.2 =
 - added a ability to set shipping method description
 
