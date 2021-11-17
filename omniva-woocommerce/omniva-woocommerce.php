@@ -766,7 +766,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
                               $field_name = $box_key . '[pt_description]';
                               $field_value = $values['pt_description']['value'];
                               ?>
-                              <label for="<?php echo $field_id; ?>">Aprašymas</label>
+                              <label for="<?php echo $field_id; ?>"><?php echo __('Description', 'omnivalt'); ?></label>
                               <textarea name="<?php echo $field_name; ?>" id="<?php echo $field_id; ?>"><?php echo $field_value; ?></textarea>
                             </div>
                           <?php endif; ?>
