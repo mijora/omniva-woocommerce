@@ -2021,8 +2021,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   {
     $customer = WC()->session->get('customer');
     $country = "ALL";
-    if (isset($customer['country']))
+    if (isset($customer['shipping_country'])) {
+      $country = $customer['shipping_country'];
+    } elseif (isset($customer['country'])) {
       $country = $customer['country'];
+    }
     
     $termnal_id = WC()->session->get('omnivalt_terminal_id');
     
