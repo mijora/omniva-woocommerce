@@ -1032,7 +1032,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
     foreach ($configs_services as $service_key => $service_values) {
       if (isset($_POST['omnivalt_' . $service_key])) {
-        culog('Atnaujinta');
         update_post_meta($post_id, '_omnivalt_' . $service_key, wc_clean($_POST['omnivalt_' . $service_key]));
       }
     }
