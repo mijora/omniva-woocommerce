@@ -370,7 +370,7 @@ msgstr "Žemėlapis"
 #: includes/class-shipping-method.php:684
 #, php-format
 msgid "Max %s cm"
-msgstr "Maks. %s cm"
+msgstr ""
 
 #: includes/class-shipping-method.php:272
 #, php-format

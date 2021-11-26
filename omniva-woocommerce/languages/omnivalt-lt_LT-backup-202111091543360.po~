@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-29 09:53+0000\n"
-"PO-Revision-Date: 2021-11-09 15:43+0000\n"
+"PO-Revision-Date: 2021-11-09 15:28+0000\n"
 "Last-Translator: \n"
 "Language-Team: Lietuvių kalba\n"
 "Language: lt_LT\n"
@@ -161,7 +161,7 @@ msgstr ""
 msgid "Customer"
 msgstr "Pirkėjas"
 
-#: includes/class-shipping-method.php:918
+#: includes/class-shipping-method.php:910
 msgid "Debug file still not created"
 msgstr "Testavimo failas vis dar nesukurtas"
 
@@ -256,7 +256,7 @@ msgstr "Generuoti manifestą"
 msgid "Generate Omniva label"
 msgstr "Generuoti Omniva lipdukus"
 
-#: includes/class-shipping-method.php:833
+#: includes/class-shipping-method.php:825
 msgid "Height"
 msgstr "Aukštis"
 
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Latvia"
 msgstr "Latvija"
 
-#: includes/class-shipping-method.php:823
+#: includes/class-shipping-method.php:815
 msgid "Length"
 msgstr "Ilgis"
 
@@ -314,47 +314,47 @@ msgstr "Lietuva"
 msgid "Logistics center"
 msgstr "Logistikos centras"
 
-#: includes/class-shipping-method.php:1572
+#: includes/class-shipping-method.php:1564
 msgctxt "Manifest"
 msgid "Courier name, surname, signature"
 msgstr "Kurjerio vardas, pavardė, parašas"
 
-#: includes/class-shipping-method.php:1551
+#: includes/class-shipping-method.php:1543
 msgctxt "Manifest"
 msgid "Date"
 msgstr "Data"
 
-#: includes/class-shipping-method.php:1549
+#: includes/class-shipping-method.php:1541
 msgctxt "Manifest"
 msgid "No."
 msgstr "Nr."
 
-#: includes/class-shipping-method.php:1552
+#: includes/class-shipping-method.php:1544
 msgctxt "Manifest"
 msgid "Quantity"
 msgstr "Kiekis"
 
-#: includes/class-shipping-method.php:1554
+#: includes/class-shipping-method.php:1546
 msgctxt "Manifest"
 msgid "Recipient's address"
 msgstr "Gavėjo adresas"
 
-#: includes/class-shipping-method.php:1542
+#: includes/class-shipping-method.php:1534
 msgctxt "Manifest"
 msgid "Sender address"
 msgstr "Siuntėjo adresas"
 
-#: includes/class-shipping-method.php:1573
+#: includes/class-shipping-method.php:1565
 msgctxt "Manifest"
 msgid "Sender name, surname, signature"
 msgstr "Siuntėjo vardas, pavardė, parašas"
 
-#: includes/class-shipping-method.php:1550
+#: includes/class-shipping-method.php:1542
 msgctxt "Manifest"
 msgid "Shipment number"
 msgstr "Siuntos numeris"
 
-#: includes/class-shipping-method.php:1553
+#: includes/class-shipping-method.php:1545
 msgctxt "Manifest"
 msgid "Weight (kg)"
 msgstr "Svoris (kg)"
@@ -366,11 +366,6 @@ msgstr "Manifesto data"
 #: includes/class-shipping-method.php:296
 msgid "Map"
 msgstr "Žemėlapis"
-
-#: includes/class-shipping-method.php:684
-#, php-format
-msgid "Max %s cm"
-msgstr "Maks. %s cm"
 
 #: includes/class-shipping-method.php:272
 #, php-format
@@ -416,7 +411,7 @@ msgstr ""
 msgid "New orders"
 msgstr "Nauji užsakymai"
 
-#: includes/class-shipping-method.php:1563
+#: includes/class-shipping-method.php:1555
 msgid "No compatible orders for manifest"
 msgstr "Nėra su manifestu suderinamų užsakymų"
 
@@ -437,11 +432,11 @@ msgstr "Omniva"
 msgid "Omniva courier called"
 msgstr "Omniva kurjeris iškviestas"
 
-#: includes/class-shipping-method.php:1105
+#: includes/class-shipping-method.php:1097
 msgid "Omniva courrier"
 msgstr "Omniva kurjeris"
 
-#: includes/class-shipping-method.php:1403
+#: includes/class-shipping-method.php:1395
 msgid "Omniva label generated"
 msgstr "Omniva lipdukas sugeneruotas"
 
@@ -450,7 +445,7 @@ msgid "Omniva manifest"
 msgstr "Omniva manifestas"
 
 #: omniva-woocommerce.php:570 omniva-woocommerce.php:584
-#: includes/class-shipping-method.php:1039
+#: includes/class-shipping-method.php:1031
 msgid "Omniva parcel terminal"
 msgstr "Omniva paštomatas"
 
@@ -458,7 +453,7 @@ msgstr "Omniva paštomatas"
 msgid "Omniva parcel terminals"
 msgstr "Omniva paštomatai"
 
-#: includes/class-shipping-method.php:1149
+#: includes/class-shipping-method.php:1141
 msgid "Omniva post office"
 msgstr "Omniva pašto skyrius"
 
@@ -640,8 +635,8 @@ msgstr "Pristatymas"
 msgid "Shipping Method for Omniva"
 msgstr "Omnivos siuntimo būdas"
 
-#: includes/class-shipping-method.php:1382
-#: includes/class-shipping-method.php:1487
+#: includes/class-shipping-method.php:1374
+#: includes/class-shipping-method.php:1479
 msgid "Shipping method is not Omniva"
 msgstr "Ne Omniva siuntimo būdas"
 
@@ -702,7 +697,7 @@ msgstr "Rodyti pristatymą į pašto skyrių užsakymo kūrimo puslapyje."
 msgid "Simple"
 msgstr "Paprasta"
 
-#: includes/class-shipping-method.php:1016
+#: includes/class-shipping-method.php:1008
 msgid "Size"
 msgstr "Dydis"
 
@@ -740,13 +735,13 @@ msgid ""
 msgstr "Pranešame, jog buvo sukurtas siuntos sekimo numeris Jūsų užsakymui."
 
 #: includes/class-shipping-method.php:533
-#: includes/class-shipping-method.php:1005
-#: includes/class-shipping-method.php:1079
-#: includes/class-shipping-method.php:1126
+#: includes/class-shipping-method.php:997
+#: includes/class-shipping-method.php:1071
+#: includes/class-shipping-method.php:1118
 msgid "Weight"
 msgstr "Svoris"
 
-#: includes/class-shipping-method.php:828
+#: includes/class-shipping-method.php:820
 msgid "Width"
 msgstr "Plotis"
 

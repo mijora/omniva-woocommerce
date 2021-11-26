@@ -1,5 +1,5 @@
 <?php
-class Omniva_Emails
+class OmnivaLt_Emails
 {
 	protected $WC_mailer;
 	protected $emails_dir;

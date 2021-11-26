@@ -54,13 +54,21 @@ var omniva_addrese_change = false;
         var autoSelectTerminal = false;
         var searchTimeout = null;
         var select = $(this);
-        var select_terminal = omnivadata.text_select_terminal;
         var not_found = omnivadata.not_found;
         var terminalIcon = null;
         var homeIcon = null;
         var map = null;
-        //var terminals = [];
         var terminals = JSON.parse(omnivaTerminals);
+        var text = {
+            'select_terminal' : omnivadata.text_select_terminal,
+            'map_title' : omnivadata.text_modal_title_terminal,
+            'map_search_title' : omnivadata.text_modal_search_title_terminal
+        };
+        if (omniva_type === 'post') {
+            text.select_terminal = omnivadata.text_select_post;
+            text.map_title = omnivadata.text_modal_title_post;
+            text.map_search_title = omnivadata.text_modal_search_title_post;
+        }
         var selected = false;
         var previous_list = [];
         select.hide();
@@ -80,7 +88,7 @@ var omniva_addrese_change = false;
         */
         var container = $(document.createElement('div'));
         container.addClass("omniva-terminals-list");
-        var dropdown = $('<div class = "dropdown">'+omnivadata.text_select_terminal+'</div>');
+        var dropdown = $('<div class = "dropdown">'+text.select_terminal+'</div>');
         updateSelection();
         
         var search = $('<input type = "text" placeholder = "'+omnivadata.text_enter_address+'" class = "search-input"/>');
@@ -100,6 +108,9 @@ var omniva_addrese_change = false;
         
         resetList();
         refreshList(false);
+
+        $("#omnivaLt_modal_title").html(text.map_title);
+        $("#omnivaLt_modal_search").html(text.map_search_title);
         
         list.on('click','a.show-in-map',function(e){
             e.preventDefault();            
@@ -267,7 +278,7 @@ var omniva_addrese_change = false;
                         html += '<li data-pos="['+[val[1], val[2]]+']" data-id="'+val[3]+'" ><div><a class="omniva-li">'+counter+'. <b>'+val[0]+'</b></a> <b>'+val['distance']+' km.</b>\
                                   <div align="left" id="omn-'+val[3]+'" class="omniva-details" style="display:none;"><small>\
                                   '+val[5]+' <br/>'+val[6]+'</small><br/>\
-                                  <button type="button" class="btn-marker" style="font-size:14px; padding:0px 5px;margin-bottom:10px; margin-top:5px;height:25px;" data-id="'+val[3]+'">'+select_terminal+'</button>\
+                                  <button type="button" class="btn-marker" style="font-size:14px; padding:0px 5px;margin-bottom:10px; margin-top:5px;height:25px;" data-id="'+val[3]+'">'+text.select_terminal+'</button>\
                                   </div>\
                                   </div></li>';
                     }
@@ -276,7 +287,7 @@ var omniva_addrese_change = false;
                         html += '<li data-pos="['+[val[1], val[2]]+']" data-id="'+val[3]+'" ><div><a class="omniva-li">'+(i+1)+'. <b>'+val[0]+'</b></a>\
                                   <div align="left" id="omn-'+val[3]+'" class="omniva-details" style="display:none;"><small>\
                                   '+val[5]+' <br/>'+val[6]+'</small><br/>\
-                                  <button type="button" class="btn-marker" style="font-size:14px; padding:0px 5px;margin-bottom:10px; margin-top:5px;height:25px;" data-id="'+val[3]+'">'+select_terminal+'</button>\
+                                  <button type="button" class="btn-marker" style="font-size:14px; padding:0px 5px;margin-bottom:10px; margin-top:5px;height:25px;" data-id="'+val[3]+'">'+text.select_terminal+'</button>\
                                   </div>\
                                   </div></li>';
                     }
@@ -654,7 +665,7 @@ var omniva_addrese_change = false;
               }
                html += '<div align="left" id="omn-'+location[3]+'" class="omniva-details" style="display:none;"><small>\
                                           '+location[5]+' <br/>'+location[6]+'</small><br/>\
-                                          <button type="button" class="btn-marker" style="font-size:14px; padding:0px 5px;margin-bottom:10px; margin-top:5px;height:25px;" data-id="'+location[3]+'">'+select_terminal+'</button>\
+                                          <button type="button" class="btn-marker" style="font-size:14px; padding:0px 5px;margin-bottom:10px; margin-top:5px;height:25px;" data-id="'+location[3]+'">'+text.select_terminal+'</button>\
                                           </div>\
                                           </div></li>';
                                               

@@ -127,7 +127,7 @@ $omnivalt = new Omnivalt_Shipping_Method();
   $args = array_merge(
     $args,
     array(
-      'omnivalt_method' => ['omnivalt_pt', 'omnivalt_c', 'omnivalt'],
+      'omnivalt_method' => ['omnivalt_pt', 'omnivalt_c', 'omnivalt_cp', 'omnivalt_po', 'omnivalt'],
       'paginate' => true,
       'limit' => $max_per_page,
       'paged' => $paged,

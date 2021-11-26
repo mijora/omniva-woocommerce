@@ -1,5 +1,16 @@
 == Changelog ==
 
+= Unreleased =
+- added terminal price set by terminal size
+- redesigned some features
+- added new country: Finland
+- added new shipping method: Post office
+- added new service: Fragile
+- improved debug working
+- added update checker
+- added "Bad API logins" error when failed generate label because of authentication
+- added a ability to add comment in label
+
 = 1.8.4 =
 - fixed terminal selection field showing when country is changed and Omniva pickup become selected
 - fixed compatibility with old version plugin settings
