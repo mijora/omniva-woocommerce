@@ -60,6 +60,7 @@ function omnivalt_configs($section_name = false) {
         'lc pt' => 'PP',
       ),
       'comment_lang' => 'lit',
+      'tracking_url' => 'https://www.omniva.lt/verslo/siuntos_sekimas?barcode=',
     ),
     'LV' => array(
       'title' => __('Latvia', 'omnivalt'),
@@ -74,6 +75,7 @@ function omnivalt_configs($section_name = false) {
         'lc pt' => 'PP',
       ),
       'comment_lang' => 'lav',
+      'tracking_url' => 'https://www.omniva.lv/privats/sutijuma_atrasanas_vieta?barcode=',
     ),
     'EE' => array(
       'title' => __('Estonia', 'omnivalt'),
@@ -92,6 +94,7 @@ function omnivalt_configs($section_name = false) {
         'lc pt' => 'PP',
       ),
       'comment_lang' => 'est',
+      'tracking_url' => 'https://www.omniva.ee/era/jalgimine?barcode=',
     ),
     'FI' => array(
       'title' => __('Finland', 'omnivalt'),
@@ -102,6 +105,7 @@ function omnivalt_configs($section_name = false) {
         'c c' => 'CE', //TODO: ?
       ),
       'comment_lang' => '',
+      'tracking_url' => '',
     ),
   );
 
@@ -265,7 +269,7 @@ function omnivalt_notices(){
     foreach ($_SESSION['omnivalt_notices'] as $notice):
     ?>
       <div class="<?php echo $notice['type']; ?>">
-          <p><?php echo $notice['msg']; ?></p>
+        <p><?php echo $notice['msg']; ?></p>
       </div><?php
     endforeach;
     unset( $_SESSION['omnivalt_notices'] );
@@ -450,12 +454,14 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     }
 
     $rate_settings = json_decode($omnivalt_Shipping_Method->settings['prices_' . $customer['country']]);
+    $shipping_methods = omnivalt_configs('method_params');
 
-    if ( ! empty($rate_settings->pt_description) && $method->id === 'omnivalt_pt' ) {
-      echo '<span class="omnivalt-shipping-description">' . $rate_settings->pt_description . '</span>';
-    }
-    if ( ! empty($rate_settings->c_description) && $method->id === 'omnivalt_c' ) {
-      echo '<span class="omnivalt-shipping-description">' . $rate_settings->c_description . '</span>';
+    foreach ($shipping_methods as $ship_method => $ship_method_values) {
+      if ($ship_method === 'logistic') continue;
+
+      if ( ! empty($rate_settings->{$ship_method_values['key'] . "_description"}) && $method->id === 'omnivalt_' . $ship_method_values['key'] ) {
+        echo '<span class="omnivalt-shipping-description">' . $rate_settings->{$ship_method_values['key'] . "_description"} . '</span>';
+      }
     }
   }
 
@@ -499,6 +505,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   function restrict_omnivalt_shipping_methods($rates)
   {
     global $woocommerce;
+    $shipping_methods = omnivalt_configs('method_params');
     $cart_categories_ids = array();
 
     foreach( $woocommerce->cart->get_cart() as $cart_item ) {
@@ -521,10 +528,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
     foreach ($cart_categories_ids as $cart_product_categories_id) {
       if (in_array($cart_product_categories_id, $restricted_categories)) {
-        unset($rates['omnivalt_pt']);
-        unset($rates['omnivalt_c']);
-        unset($rates['omnivalt_cp']);
-        unset($rates['omnivalt_po']);
+        foreach ($shipping_methods as $ship_method => $ship_method_values) {
+          if ($ship_method === 'logistic') continue;
+          unset($rates['omnivalt_' . $ship_method_values['key']]);
+        }
         break;
       }
     }
@@ -535,13 +542,19 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   add_action('woocommerce_checkout_update_order_meta', 'add_terminal_id_to_order');
   function add_terminal_id_to_order($order_id)
   {
+    $methods_params = omnivalt_configs('method_params');
+
     if (isset($_POST['omnivalt_terminal']) && $order_id) {
       update_post_meta($order_id, '_omnivalt_terminal_id', $_POST['omnivalt_terminal']);
     }
     if (isset($_POST['shipping_method']) && is_array($_POST['shipping_method'])) {
       foreach ($_POST['shipping_method'] as $ship_method) {
-        if ($ship_method == "omnivalt_pt" || $ship_method == "omnivalt_c" || $ship_method == "omnivalt_cp" || $ship_method == "omnivalt_po") {
-          update_post_meta($order_id, '_omnivalt_method', $ship_method);
+        foreach ($methods_params as $method_name => $method_values) {
+          if ($method_name === 'logistic') continue;
+          if ($ship_method == "omnivalt_" . $method_values['key']) {
+            update_post_meta($order_id, '_omnivalt_method', $ship_method);
+            break;
+          }
         }
       }
     }
@@ -637,7 +650,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       ' . $button . ' </div>' . $script;
   }
 
-  function omnivaltGetTerminalsList($country = "ALL") {
+  function omnivaltGetTerminalsList($country = "ALL", $get_list = 'terminal') {
     $terminals_json_file_dir = dirname(__file__) . '/' . "locations.json";
     $terminals_file = fopen($terminals_json_file_dir, "r");
     $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
@@ -646,7 +659,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $grouped_options = array();
     if (is_array($terminals)) {
       foreach ($terminals as $terminal) {
-        if (intval($terminal['TYPE']) == 1) {
+        if ( ($get_list === 'terminal' && intval($terminal['TYPE']) === 1)
+          || ($get_list === 'post' && intval($terminal['TYPE']) === 0) ) {
           continue;
         }
         //if ($terminal['A0_NAME'] != $country && $country != "ALL") continue;
@@ -706,7 +720,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $terminal_id = get_post_meta($order->get_id(), '_omnivalt_terminal_id', true);
     $terminal_name = omnivaltTerminalName($terminal_id);
     if (!$terminal_name)
-      $terminal_name  = __('Parcel terminal not found!!!', 'omnivalt');
+      $terminal_name  = __('Location not found!!!', 'omnivalt');
     return $terminal_name;
   }
 
@@ -717,6 +731,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $send_method = getOmnivaMethod($order);
     if ($send_method == 'omnivalt_pt') {
       echo "<p>" . __('Omniva parcel terminal', 'omnivalt') . ": " . getOmnivaTerminalAddress($order) . "</p>";
+    }
+    if ($send_method == 'omnivalt_po') {
+      echo "<p>" . __('Omniva post office', 'omnivalt') . ": " . getOmnivaTerminalAddress($order) . "</p>";
     }
 
     if ($send_method) {
@@ -731,6 +748,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     $send_method = getOmnivaMethod($order);
     if ($send_method == 'omnivalt_pt') {
       $data['shipping_via'] = __('Omniva parcel terminal', 'omnivalt') . ": " . getOmnivaTerminalAddress($order);
+    }
+    if ($send_method == 'omnivalt_po') {
+      $data['shipping_via'] = __('Omniva post office', 'omnivalt') . ": " . getOmnivaTerminalAddress($order);
     }
 
     if ($send_method) {
@@ -808,10 +828,14 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   {
     $order_id = $order->get_id();
     $send_method = get_post_meta($order_id, '_shipping_method', true);
-    if ((isset($send_method[0]) && ($send_method[0] == 'omnivalt_pt' || $send_method[0] == 'omnivalt_c' || $send_method[0] == 'omnivalt'))) {
-      echo '<a class="button tips omnivalt_generate_label" href="' . wp_nonce_url(admin_url('admin-ajax.php?action=generate_omnivalt_label&order_id=' . $order_id), 'woocommerce-mark-order-status') . '" data-tip="' . __('Generate Omniva label', 'omnivalt') . '"> </a>';
-      if (file_exists(OMNIVALT_DIR . "pdf/" . $order_id . '.pdf')) {
-        echo '<a class="button tips omnivalt_view_label" href="' . plugins_url('pdf/' . $order_id . '.pdf', __FILE__) . '" target = "_blank" data-tip="' . __('VIew Omniva label', 'omnivalt') . '"> </a>';
+    $methods_params = omnivalt_configs('method_params');
+    foreach ($methods_params as $method_name => $method_values) {
+      if ($method_name === 'logistic') continue;
+      if (isset($send_method[0]) && $send_method[0] == 'omnivalt_' . $method_values['key']) {
+        echo '<a class="button tips omnivalt_generate_label" href="' . wp_nonce_url(admin_url('admin-ajax.php?action=generate_omnivalt_label&order_id=' . $order_id), 'woocommerce-mark-order-status') . '" data-tip="' . __('Generate Omniva label', 'omnivalt') . '"> </a>';
+        if (file_exists(OMNIVALT_DIR . "pdf/" . $order_id . '.pdf')) {
+          echo '<a class="button tips omnivalt_view_label" href="' . plugins_url('pdf/' . $order_id . '.pdf', __FILE__) . '" target = "_blank" data-tip="' . __('VIew Omniva label', 'omnivalt') . '"> </a>';
+        }
       }
     }
   }
@@ -861,12 +885,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   function getTrackingLink($country_code, $barcode, $link_only = false)
   {
     $country_code = strtoupper($country_code);
-    $omniva_tracking_url = array(
-      'LT' => 'https://www.omniva.lt/verslo/siuntos_sekimas?barcode=',
-      'LV' => 'https://www.omniva.lv/privats/sutijuma_atrasanas_vieta?barcode=',
-      'EE' => 'https://www.omniva.ee/era/jalgimine?barcode='
-    );
-    if (!isset($omniva_tracking_url[$country_code])) {
+    $shipping_params = omnivalt_configs('shipping_params');
+    $omniva_tracking_url = array();
+    foreach ($shipping_params as $ship_country => $ship_values) {
+      $omniva_tracking_url[$ship_country] = $ship_values['tracking_url'];
+    }
+    if (!isset($omniva_tracking_url[$country_code]) || empty($omniva_tracking_url[$country_code])) {
       return $barcode;
     }
     if ($link_only) {
@@ -924,10 +948,17 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
   function omniva_terminal_field_display_admin_order_meta($order, $print_barcode = true, $admin_panel = true)
   {
     $configs_services = omnivalt_configs('additional_services');
+    $shipping_methods = omnivalt_configs('method_params');
     $send_method = getOmnivaMethod($order);
-    if ($send_method != 'omnivalt_pt' && $send_method != 'omnivalt_c' && $send_method != 'omnivalt_cp' && $send_method != 'omnivalt_po') {
-      return;
+    
+    $is_omniva = false;
+    foreach ($shipping_methods as $ship_method => $ship_values) {
+      if ($send_method == 'omnivalt_' . $ship_values['key']) {
+        $is_omniva = true;
+      }
     }
+    if (!$is_omniva) return;
+
     global $post_type;
     $only_in_order = true;
     if ('shop_order' != $post_type) {
@@ -973,8 +1004,9 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       return;
     }
     echo '<div class="edit_address">';
-    if ($send_method == 'omnivalt_pt') {
-      $all_terminals = omnivaltGetTerminalsList();
+    if ($send_method == 'omnivalt_pt' || $send_method == 'omnivalt_po') {
+      $terminal_key = ($send_method == 'omnivalt_po') ? 'post' : 'terminal';
+      $all_terminals = omnivaltGetTerminalsList('ALL',$terminal_key);
       $selected_terminal = get_post_meta($order->get_id(), '_omnivalt_terminal_id', true);
       echo '<p class="form-field-wide">';
       echo '<label for="omnivalt_terminal">' . __('Change parcel terminal', 'omnivalt') . '</label>';
@@ -994,7 +1026,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       echo '</select>';
       echo '</p>';
     }
-    if ($send_method == 'omnivalt_c') {
+    if ($send_method == 'omnivalt_c' || $send_method == 'omnivalt_cp') {
       echo __('The delivery address for the courier is changed in the fields above', 'omnivalt');
     }
 
@@ -1043,6 +1075,10 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     if (isset($_POST['shipping_method']) && in_array('omnivalt_pt', $_POST['shipping_method'])) {
       if (empty($_POST['omnivalt_terminal']))
         wc_add_notice(__('Please select parcel terminal.', 'omnivalt'), 'error');
+    }
+    if (isset($_POST['shipping_method']) && in_array('omnivalt_po', $_POST['shipping_method'])) {
+      if (empty($_POST['omnivalt_terminal']))
+        wc_add_notice(__('Please select post office.', 'omnivalt'), 'error');
     }
   }
 
@@ -1193,7 +1229,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     </div>';
   }
 
-  function generate_json_terminals($term = "", $country = "ALL")
+  function generate_json_terminals($term = "", $country = "ALL", $get_list = 'terminal') //TODO: Pritaikyti Post Office
   {
     $c_p = false;
     if (strlen($term) >= 4 && strlen($term)) {
@@ -1208,7 +1244,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     if (is_array($terminals)) {
       $grouped_options = array();
       foreach ($terminals as $terminal) {
-        if (intval($terminal['TYPE']) == 1) {
+        if ( ($get_list === 'terminal' && intval($terminal['TYPE']) === 1)
+          || ($get_list === 'post' && intval($terminal['TYPE']) === 0) ) {
           continue;
         }
         if ($terminal['A0_NAME'] != $country && $country != "ALL") continue;
