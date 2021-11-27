@@ -834,7 +834,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       if (isset($send_method[0]) && $send_method[0] == 'omnivalt_' . $method_values['key']) {
         echo '<a class="button tips omnivalt_generate_label" href="' . wp_nonce_url(admin_url('admin-ajax.php?action=generate_omnivalt_label&order_id=' . $order_id), 'woocommerce-mark-order-status') . '" data-tip="' . __('Generate Omniva label', 'omnivalt') . '"> </a>';
         if (file_exists(OMNIVALT_DIR . "pdf/" . $order_id . '.pdf')) {
-          echo '<a class="button tips omnivalt_view_label" href="' . plugins_url('pdf/' . $order_id . '.pdf', __FILE__) . '" target = "_blank" data-tip="' . __('VIew Omniva label', 'omnivalt') . '"> </a>';
+          echo '<a class="button tips omnivalt_view_label" href="' . plugins_url('pdf/' . $order_id . '.pdf', __FILE__) . '" target = "_blank" data-tip="' . __('View Omniva label', 'omnivalt') . '"> </a>';
         }
       }
     }
