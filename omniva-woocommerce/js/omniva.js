@@ -473,17 +473,21 @@ var omniva_addrese_change = false;
         }
         
         function initMap(){
-           $('#omnivaMapContainer').html('<div id="omnivaMap"></div>');
-          if (omniva_current_country == "LT"){
-            map = L.map('omnivaMap').setView([54.999921, 23.96472], 8);
-          }
-          if (omniva_current_country == "LV"){
-            map = L.map('omnivaMap').setView([56.8796, 24.6032], 8);
-          }
-          if (omniva_current_country == "EE"){
-            map = L.map('omnivaMap').setView([58.7952, 25.5923], 7);
-          }
-          L.tileLayer('https://maps.omnivasiunta.lt/tile/{z}/{x}/{y}.png', {
+            $('#omnivaMapContainer').html('<div id="omnivaMap"></div>');
+            map = L.map('omnivaMap');
+            if (omniva_current_country == "LT") {
+                map.setView([54.999921, 23.96472], 8);
+            }
+            if (omniva_current_country == "LV") {
+                map.setView([56.8796, 24.6032], 8);
+            }
+            if (omniva_current_country == "EE"){
+                map.setView([58.7952, 25.5923], 7);
+            }
+            if (omniva_current_country == "FI"){
+                map.setView([61.9241, 25.7482], 6);
+            }
+            L.tileLayer('https://maps.omnivasiunta.lt/tile/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.omniva.lt">Omniva</a>' +
                     ' | Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
             }).addTo(map);
