@@ -5,11 +5,12 @@
 - redesigned some features
 - added new country: Finland
 - added new shipping method: Post office
-- added new service: Fragile
+- added new services: Fragile, Delivery to private customer, Document return
 - improved debug working
 - added update checker
 - added "Bad API logins" error when failed generate label because of authentication
 - added a ability to add comment in label
+- fixed bug with country in checkout page
 
 = 1.8.4 =
 - fixed terminal selection field showing when country is changed and Omniva pickup become selected

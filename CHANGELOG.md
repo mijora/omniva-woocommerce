@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed bug with country in checkout page
+
+### Improved
+- improved debug working
+- added "Bad API logins" error when failed generate label because of authentication
+- added a ability to add comment in label
+- added terminal price set by terminal size
+- redesigned some features
+
+### Added
+- added update checker
+- added new country: Finland
+- added new shipping method: Post office
+- added new services: Fragile, Delivery to private customer, Document return
+
 ## [1.8.4]
 ### Fixed
 - fixed terminal selection field showing when country is changed and Omniva pickup become selected
