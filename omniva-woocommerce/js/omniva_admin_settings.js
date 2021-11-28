@@ -3,18 +3,20 @@ jQuery('document').ready(function($){
 	var all_keys = {
 		"pt":"terminal",
 		"c":"courier",
-    "cp":"courier_plus",
+                "cp":"courier_plus",
+                "pc":"private_customer",
 		"po":"post"
 	};
 	var enable_only = { //Enable shipping method only in specified countries in array. If array empty, enable for all countries.
 		"pt":[],
 		"c":[],
-    "cp":["EE"],
-		"po":["EE"]
-	}
+                "cp":["EE"],
+		"po":["EE"],
+		"pc":["EE"]
+	};
 	for (var key in all_keys) {
 		omnivalt_load_shipping_method(key, all_keys[key], all_keys);
-	}
+	};
 	omniva_hide_admin_field_by_all_cb(all_keys,".omniva_both");
 	omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_debug_mode",".omniva_debug");
 

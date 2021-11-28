@@ -42,7 +42,7 @@ function omnivalt_configs($section_name = false) {
    * Every shipping method params. All bellow array fields is required.
    *
    * title - Country name
-   * methods - Value of one of this: courier, courier_plus, pickup, post
+   * methods - Value of one of this: courier, courier_plus, pickup, post, private_customer
    * services - Omniva service codes for country
    * comment_lang - Identifier for terminals map
    */
@@ -81,28 +81,28 @@ function omnivalt_configs($section_name = false) {
       'title' => __('Estonia', 'omnivalt'),
       'methods' => array('pickup', 'courier', 'courier_plus', 'post'),
       'services' => array(
-        'pt pt' => 'PA',
-        'pt po' => 'PO',
-        'pt c' => 'PK',
-        'c pt' => 'PU',
-        'c c' => 'CI',
-        //'c+ ???' => 'LX', //TODO: ?
-        'po cp' => 'LH',
-        'po pt' => 'PV',
-        'po po' => 'CD',
-        'po c' => 'CE',
-        'lc pt' => 'PP',
+        'pt pt' => 'PA',//
+        'pt po' => 'PO',//
+        'pt c' => 'PK',//
+        'c pt' => 'PU',//
+        'c c' => 'CI',//
+        'c cp' => 'LX', //not sure
+        'po cp' => 'LH',//
+        'po pt' => 'PV',//
+        'po po' => 'CD',//
+        'po c' => 'CE',//
+        'lc pt' => 'PP',//
       ),
       'comment_lang' => 'est',
       'tracking_url' => 'https://www.omniva.ee/era/jalgimine?barcode=',
     ),
     'FI' => array(
       'title' => __('Finland', 'omnivalt'),
-      'methods' => array('pickup', 'courier', 'post'),
+      'methods' => array('post', 'courier', 'private_customer'),
       'services' => array(
-        'c pc' => 'QG', //TODO: ?
-        'c po' => 'CD', //TODO: ?
-        'c c' => 'CE', //TODO: ?
+        'c pc' => 'QB', //QB in documentation
+        'c po' => 'CD', //not sure
+        'c c' => 'CE', //not sure
       ),
       'comment_lang' => '',
       'tracking_url' => '',
@@ -136,6 +136,10 @@ function omnivalt_configs($section_name = false) {
       'key' => 'cp',
       'title' => __('Courier Plus', 'omnivalt'),
     ),
+    'private_customer' => array(
+      'key' => 'pc',
+      'title' => __('Private customer', 'omnivalt'),
+    ),
     'post' => array(
       'key' => 'po',
       'title' => __('Post office', 'omnivalt'),
@@ -162,10 +166,18 @@ function omnivalt_configs($section_name = false) {
     'arrival_sms' => array(
       'title' => __('Arrival SMS', 'omnivalt'),
       'code' => 'ST',
-      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'CD', 'CE'),
+      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'CD', 'CE', 'LX', 'LH'),
       'in_product' => false,
       'in_order' => false,
       'add_always' => true,
+    ),
+    'arrival_email' => array(
+      'title' => __('Arrival email', 'omnivalt'),
+      'code' => 'SF',
+      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'CD', 'CE', 'LX', 'LH'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
     ),
     'fragile' => array(
       'title' => __('Fragile', 'omnivalt'),
@@ -179,7 +191,7 @@ function omnivalt_configs($section_name = false) {
     'private_customer' => array(
       'title' => __('Delivery to private customer', 'omnivalt'),
       'code' => 'CL',
-      'only_for' => array('CI', 'QH', 'QL'),
+      'only_for' => array('CI'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -192,7 +204,115 @@ function omnivalt_configs($section_name = false) {
       'in_order' => 'checkbox',
       'add_always' => false,
     ),
+    'paid_by_receiver' => array(
+      'title' => __('Paid by receiver', 'omnivalt'),
+      'code' => 'BS',
+      'only_for' => array('LX', 'LH'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
+    ),
+    'insurance' => array(
+      'title' => __('Insurance', 'omnivalt'),
+      'code' => 'BI',
+      'only_for' => array('LX', 'LH', 'QB', 'CE', 'CD'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
+    ),
+    'personal_delivery' => array(
+      'title' => __('Personal delivery', 'omnivalt'),
+      'code' => 'BK',
+      'only_for' => array('LX', 'LH', 'CE', 'CD'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
+    ),
+    'paid_parcel_sms' => array(
+      'title' => __('Paid parcel SMS', 'omnivalt'),
+      'code' => 'GN',
+      'only_for' => array('CE', 'CD'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
+    ),
+    'paid_parcel_email' => array(
+      'title' => __('Paid parcel email', 'omnivalt'),
+      'code' => 'GM',
+      'only_for' => array('CE', 'CD'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
+    ),
+    'return_notification_sms' => array(
+      'title' => __('Return notification SMS', 'omnivalt'),
+      'code' => 'SB',
+      'only_for' => array('CE', 'CD', 'LX', 'LH'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
+    ),
+    'return_notification_email' => array(
+      'title' => __('Return notification email', 'omnivalt'),
+      'code' => 'SG',
+      'only_for' => array('CE', 'CD', 'LX', 'LH'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
+    ),
+    'persons_over_18' => array(
+      'title' => __('Issue to persons at the age of 18+', 'omnivalt'),
+      'code' => 'PC',
+      'only_for' => array('CE', 'CD'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
+    ),
+    'delivery_confirmation_sms' => array(
+      'title' => __('Delivery confirmation SMS to sender', 'omnivalt'),
+      'code' => 'SS',
+      'only_for' => array('LX', 'LH'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
+    ),
+    'delivery_confirmation_email' => array(
+      'title' => __('Delivery confirmation e-mail to sender', 'omnivalt'),
+      'code' => 'SE',
+      'only_for' => array('LX', 'LH'),
+      'in_product' => false,
+      'in_order' => 'checkbox',
+      'add_always' => false,
+    ),
   );
+  
+    $params['services_by_country'] = array(
+        'LX' => [
+           'sender_countries' => [
+               'EE'
+           ],
+        ],
+        'LH' => [
+           'sender_countries' => [
+               'EE'
+           ],
+        ],
+        'CD' => [
+           'sender_countries' => [
+               'EE'
+           ],
+        ],
+        'CE' => [
+           'sender_countries' => [
+               'EE'
+           ],
+        ],
+        'QB' => [
+           'sender_countries' => [
+               'EE'
+           ],
+        ],
+    );
 
   /*
    * Params for update
@@ -960,6 +1080,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         $is_omniva = true;
       }
     }
+    
     if (!$is_omniva) return;
 
     global $post_type;
@@ -980,6 +1101,8 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       echo '<p><strong class="title">' . __('Courier', 'omnivalt') . ':</strong> ' . $order->get_formatted_shipping_address() . '</p>';
     } else if ($send_method == 'omnivalt_cp') {
       echo '<p><strong class="title">' . __('Courier Plus', 'omnivalt') . ':</strong> ' . $order->get_formatted_shipping_address() . '</p>';
+    } else if ($send_method == 'omnivalt_pc') {
+      echo '<p><strong class="title">' . __('Private customer', 'omnivalt') . ':</strong> ' . $order->get_formatted_shipping_address() . '</p>';
     } else if ($send_method == 'omnivalt_po') {
       echo '<p><strong class="title">' . __('Post office', 'omnivalt') . ':</strong> ' . getOmnivaTerminalAddress($order) . '</p>';
     }
@@ -1002,7 +1125,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
       echo str_replace('<br/>', '', printTrackingLink($order, $admin_panel, false));
     }
     echo '</div>';
-
+    
     if (!$only_in_order) {
       return;
     }
@@ -1032,7 +1155,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     if ($send_method == 'omnivalt_c' || $send_method == 'omnivalt_cp') {
       echo __('The delivery address for the courier is changed in the fields above', 'omnivalt');
     }
-
+    
     foreach ($configs_services as $service_key => $service_values) {
       if ($service_values['add_always']) continue;
       echo '<p class="form-field-wide">';

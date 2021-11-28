@@ -12,6 +12,7 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
 
     private $omnivalt_shipping_params;
     private $omnivalt_text_variables;
+    private $services_by_country;
 
     private $omnivalt_locations_url = 'https://www.omniva.ee/locations.json';
 
@@ -26,6 +27,7 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
       $this->omnivalt_api = new OmnivaLt_Api();
       $this->omnivalt_shipping_params = omnivalt_configs('shipping_params');
       $this->omnivalt_text_variables = omnivalt_configs('text_variables');
+      $this->services_by_country = omnivalt_configs('services_by_country');
 
       // Availability & Countries
       $this->availability = 'including';
@@ -42,6 +44,7 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
       $asociations = array(
         'c' => 'courier',
         'cp' => 'courier_plus',
+        'pc' => 'private_customer',
         'pt' => 'pickup',
         'po' => 'post',
       );
@@ -229,6 +232,11 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
         'type' => 'checkbox',
         'description' => __('Show courier plus method in checkout.', 'omnivalt') . ' ' . sprintf(__('Available only in %s.', 'omnivalt'), __('Estonia', 'omnivalt')),
       );
+      $fields['method_pc'] = array(
+        'title' => __('Private customer', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('Show private customer method in checkout.', 'omnivalt') . ' ' . sprintf(__('Available only in %s.', 'omnivalt'), __('Estonia', 'omnivalt')),
+      );
       $fields['method_po'] = array(
         'title' => __('Post office', 'omnivalt'),
         'type' => 'checkbox',
@@ -404,7 +412,7 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
             $shipping_keys[] = $this->omnivalt_convert_method_name_to_short($ship_method);
           }
         } else {
-          $shipping_keys = array('pt','c','cp','po');
+          $shipping_keys = array('pt','c','cp','po','pc');
         }
         $fields = array();
         foreach ($shipping_keys as $ship_key) {
@@ -516,6 +524,11 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
                       $params['type'] = 'courier_plus';
                       $params['title'] = __('Courier Plus','omnivalt');
                       $params['enable']['title'] = __('Enable courier plus','omnivalt');
+                    }
+                    if ($ship_key === 'pc') {
+                      $params['type'] = 'private_customer';
+                      $params['title'] = __('Private customer','omnivalt');
+                      $params['enable']['title'] = __('Enable private customer','omnivalt');
                     }
                     if ($ship_key === 'po') {
                       $params['type'] = 'post';
@@ -845,18 +858,18 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
         </th>
         <td class="forminp">
           <fieldset class="field-dimensions <?php echo $field_class; ?>">
-            <input type="number" value="<?php echo $dim_values[0]; ?>"
-              id="<?php echo esc_html($field_key); ?>"
+            <input type="number" value="<?php echo $dim_values[0] ?? ''; ?>"
+              id="<?php echo esc_html($field_key); ?>_0"
               name="<?php echo esc_html($field_key); ?>[0]"
               min="0.001" step="0.001" placeholder="<?php echo __('Length','omnivalt'); ?>">
             <span>x</span>
-            <input type="number" value="<?php echo $dim_values[1]; ?>"
-              id="<?php echo esc_html($field_key); ?>"
+            <input type="number" value="<?php echo $dim_values[1] ?? ''; ?>"
+              id="<?php echo esc_html($field_key); ?>_1"
               name="<?php echo esc_html($field_key); ?>[1]"
               min="0.001" step="0.001" placeholder="<?php echo __('Width','omnivalt'); ?>">
             <span>x</span>
-            <input type="number" value="<?php echo $dim_values[2]; ?>"
-              id="<?php echo esc_html($field_key); ?>"
+            <input type="number" value="<?php echo $dim_values[2] ?? ''; ?>"
+              id="<?php echo esc_html($field_key); ?>_2"
               name="<?php echo esc_html($field_key); ?>[2]"
               min="0.001" step="0.001" placeholder="<?php echo __('Height','omnivalt'); ?>">
              <span><?php echo get_option('woocommerce_dimension_unit'); ?></span>
@@ -1016,7 +1029,8 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
       $this->add_parcel_terminal_rate($products_for_dim, $weight, $country, $cart_amount, $prices, $package);
       $this->add_courier_rate($weight, $country, $cart_amount, $prices, $package);
       $this->add_courier_plus_rate($weight, $country, $cart_amount, $prices, $package);
-      $this->add_post_office_rate($weight, $prices, $cart_amount, $package);
+      $this->add_private_customer_rate($weight, $country, $cart_amount, $prices, $package);
+      $this->add_post_office_rate($weight, $prices, $cart_amount, $package, $country);
     }
 
     private function add_parcel_terminal_rate($products_for_dim, $weight, $country, $cart_amount, $prices, $package)
@@ -1088,6 +1102,9 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
           'cost' => $amount,
           'meta_data' => $meta_data,
         );
+        if (!$this->is_rate_allowed_by_country('pt', $country)){
+            $show = false;
+        }
         if ($show) {
           $this->add_rate($rate);
         }
@@ -1154,6 +1171,9 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
           'cost' => $amount,
           'meta_data' => $meta_data,
         );
+        if (!$this->is_rate_allowed_by_country('c', $country)){
+            $show = false;
+        }
         if ($show) {
           $this->add_rate($rate);
         }
@@ -1198,13 +1218,63 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
           'cost' => $amount,
           'meta_data' => $meta_data,
         );
+        if (!$this->is_rate_allowed_by_country('cp', $country)){
+            $show = false;
+        }
+        if ($show) {
+          $this->add_rate($rate);
+        }
+      }
+    }
+    
+    private function add_private_customer_rate($weight, $country, $cart_amount, $prices, $package)
+    {
+      $weight_pass = $this->check_weight($weight, 'weight_pc');
+
+      if (isset($this->settings['method_pc']) && $this->settings['method_pc'] == 'yes' && $weight_pass) {
+        $show = true;
+        $meta_data = array();
+        $amount = (isset($prices->pc_price_single)) ? $prices->pc_price_single : '';
+        if (isset($prices->pc_price_type)) {
+          if ($prices->pc_price_type == 'weight' && isset($prices->pc_price_by_weight)) {
+            $amount = $this->get_price_from_table($prices->pc_price_by_weight, $weight, $amount);
+            $meta_data[__('Weight', 'omnivalt')] = $weight;
+          }
+          if ($prices->pc_price_type == 'amount' && isset($prices->pc_price_by_amount)) {
+            $amount = $this->get_price_from_table($prices->pc_price_by_amount, $cart_amount, $amount);
+          }
+        }
+        $amount_free = (isset($prices->pc_free_from)) ? $prices->pc_free_from : 100;
+        if (!isset($prices->pc_enable)) {
+          $show = false;
+        }
+        if (isset($prices->pc_enable_free_from)) {
+          if ($cart_amount >= $amount_free) $amount = 0.0;
+        }
+        if (isset($prices->pc_enable_coupon)) {
+          if (isset($prices->pc_coupon) && !empty($package["applied_coupons"])) {
+            foreach ($package["applied_coupons"] as $coupon) {
+              if ($prices->pc_coupon == $coupon) $amount = 0.0;
+            }
+          }
+        }
+
+        $rate = array(
+          'id' => 'omnivalt_pc',
+          'label' => __('Omniva private customer', 'omnivalt'),
+          'cost' => $amount,
+          'meta_data' => $meta_data,
+        );
+        if (!$this->is_rate_allowed_by_country('pc', $country)){
+            $show = false;
+        }
         if ($show) {
           $this->add_rate($rate);
         }
       }
     }
 
-    private function add_post_office_rate($weight, $prices, $cart_amount, $package)
+    private function add_post_office_rate($weight, $prices, $cart_amount, $package, $country)
     {
       $weight_pass = $this->check_weight($weight, 'weight_po');
 
@@ -1242,10 +1312,37 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
           'cost' => $amount,
           'meta_data' => $meta_data,
         );
+        if (!$this->is_rate_allowed_by_country('po', $country)){
+            $show = false;
+        }
         if ($show) {
           $this->add_rate($rate);
         }
       }
+    }
+    
+    /*
+     * Check if method allowed by selected send off type, shop country code
+     */
+    
+    private function is_rate_allowed_by_country($code, $receiver_country){
+        $send_off = $this->settings['send_off'] ?? false;
+        $sender_country = $this->settings['shop_countrycode'] ?? false;
+        if (!$send_off || !$sender_country){
+            return true;
+        }
+        //check if we have service with send off and receiver type
+        if (isset($this->omnivalt_shipping_params[$receiver_country]) && isset($this->omnivalt_shipping_params[$receiver_country]['services'][$send_off . ' ' . $code])){
+            $service = $this->omnivalt_shipping_params[$receiver_country]['services'][$send_off . ' ' . $code];
+            if (isset($this->services_by_country[$service])){
+                if (!in_array($sender_country, $this->services_by_country[$service]['sender_countries'])){
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        return false;
     }
 
     private function check_weight($weight, $settings_key)
@@ -1564,7 +1661,7 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
       $pdf->AddPage();
       $order_table = '';
       $count = 0;
-      if (is_array($orderIds))
+      if (is_array($orderIds)){
         foreach ($orderIds as $orderId) {
           $order = get_post((int) $orderId);
           $wc_order = wc_get_order((int) $orderId);
@@ -1630,6 +1727,7 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
             $history->changeIdOrderState((int)Configuration::get('PS_OS_SHIPPING'), $order);
             $history->addWithEmail(true);*/
         }
+      }
       $pdf->SetFont('freeserif', '', 14);
       $shop_addr = '<table cellspacing="0" cellpadding="1" border="0"><tr><td>' . date('Y-m-d H:i:s') . '</td><td>' . _x('Sender address', 'Manifest', 'omnivalt') . ':<br/>' . $this->settings['shop_name'] . '<br/>' . $this->settings['shop_address'] . ', ' . $this->settings['shop_postcode'] . '<br/>' . $this->settings['shop_city'] . ', ' . $this->settings['shop_countrycode'] . '<br/></td></tr></table>';
 

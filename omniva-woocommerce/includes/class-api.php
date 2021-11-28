@@ -357,6 +357,7 @@ class OmnivaLt_Api
     if ($send_method == 'omnivalt_pt') $send_method = 'pt';
     if ($send_method == 'omnivalt_c') $send_method = 'c';
     if ($send_method == 'omnivalt_cp') $send_method = 'cp';
+    if ($send_method == 'omnivalt_pc') $send_method = 'pc';
     if ($send_method == 'omnivalt_po') $send_method = 'po';
 
     return $send_method;

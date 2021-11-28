@@ -1,0 +1,31 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://service.core.epmx.application.eestipost.ee/xsd">
+        <soapenv:Header/>
+        <soapenv:Body>
+          <xsd:businessToClientMsgRequest>
+            <partner>134835</partner>
+            <interchange msg_type="info11">
+              <header file_id="20211128141159" sender_cd="134835" >                
+              </header>
+              <item_list><item service="LX" >
+      <add_service><option code="ST" /><option code="BC" /></add_service>
+      <measures weight="2" />
+      
+      
+      <receiverAddressee>
+        <person_name>T T</person_name>
+        <mobile>863157262</mobile>
+        
+        <address postcode="10111"  deliverypoint="Sint obcaecati aut d" country="EE" street="226 Milton Extension" />
+      </receiverAddressee>
+      <!--Optional:-->
+      <returnAddressee>
+        <person_name>Test Omniva</person_name>
+        <!--Optional:-->
+        <phone>63000000</phone>
+        <address postcode="10111" deliverypoint="Kaunas" country="EE" street="Street" />
+      </returnAddressee>
+    </item>  </item_list>
+            </interchange>
+          </xsd:businessToClientMsgRequest>
+        </soapenv:Body>
+      </soapenv:Envelope>

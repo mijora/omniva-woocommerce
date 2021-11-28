@@ -3,3 +3,4 @@
 
 # Ignore pdf files for stickers
 */pdf/*.pdf
+/nbproject/private/
