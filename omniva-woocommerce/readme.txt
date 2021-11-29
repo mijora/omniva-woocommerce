@@ -4,8 +4,8 @@
 - added terminal price set by terminal size
 - redesigned some features
 - added new country: Finland
-- added new shipping method: Post office
-- added new services: Fragile, Delivery to private customer, Document return
+- added new shipping methods: Post office, Private customer, Courier Plus
+- added new services: Fragile, Document return, Insurance
 - improved debug working
 - added update checker
 - added "Bad API logins" error when failed generate label because of authentication

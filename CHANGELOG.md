@@ -14,8 +14,8 @@
 ### Added
 - added update checker
 - added new country: Finland
-- added new shipping method: Post office
-- added new services: Fragile, Delivery to private customer, Document return
+- added new shipping methods: Post office, Private customer, Courier Plus
+- added new services: Fragile, Document return, Insurance
 
 ## [1.8.4]
 ### Fixed

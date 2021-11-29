@@ -32,13 +32,6 @@ function omnivalt_configs($section_name = false) {
   $params['settings_key'] = 'woocommerce_omnivalt_settings';
 
   /*
-   * Post offices and terminals params
-   */
-  $params['locations'] = array(
-    'source_url' => 'https://www.omniva.ee/locations.json',
-  );
-
-  /*
    * Every shipping method params. All bellow array fields is required.
    *
    * title - Country name
@@ -81,17 +74,17 @@ function omnivalt_configs($section_name = false) {
       'title' => __('Estonia', 'omnivalt'),
       'methods' => array('pickup', 'courier', 'courier_plus', 'post'),
       'services' => array(
-        'pt pt' => 'PA',//
-        'pt po' => 'PO',//
-        'pt c' => 'PK',//
-        'c pt' => 'PU',//
-        'c c' => 'CI',//
+        'pt pt' => 'PA',
+        'pt po' => 'PO',
+        'pt c' => 'PK',
+        'c pt' => 'PU',
+        'c c' => 'CI',
         'c cp' => 'LX', //not sure
-        'po cp' => 'LH',//
-        'po pt' => 'PV',//
-        'po po' => 'CD',//
-        'po c' => 'CE',//
-        'lc pt' => 'PP',//
+        'po cp' => 'LH',
+        'po pt' => 'PV',
+        'po po' => 'CD',
+        'po c' => 'CE',
+        'lc pt' => 'PP',
       ),
       'comment_lang' => 'est',
       'tracking_url' => 'https://www.omniva.ee/era/jalgimine?barcode=',
@@ -111,11 +104,17 @@ function omnivalt_configs($section_name = false) {
 
   /*
    * Params for every shipping method
+   *
+   * Required values:
+   * key (string) - Method key
+   * title (string) - Method title
+   * is_shipping_method (boolean) - If this method is shipping method. Using to exclude methods which using only in "send off" parameter.
    */
   $params['method_params'] = array(
     'terminal' => array(
       'key' => 'pt',
       'title' => __('Parcel terminal', 'omnivalt'),
+      'is_shipping_method' => true,
       'sizes' => array(
         'min' => array(2, 9, 14),
         'S' => array(9, 38, 64),
@@ -131,22 +130,27 @@ function omnivalt_configs($section_name = false) {
     'courier' => array(
       'key' => 'c',
       'title' => __('Courier', 'omnivalt'),
+      'is_shipping_method' => true,
     ),
     'courier_plus' => array(
       'key' => 'cp',
       'title' => __('Courier Plus', 'omnivalt'),
+      'is_shipping_method' => true,
     ),
     'private_customer' => array(
       'key' => 'pc',
       'title' => __('Private customer', 'omnivalt'),
+      'is_shipping_method' => true,
     ),
     'post' => array(
       'key' => 'po',
       'title' => __('Post office', 'omnivalt'),
+      'is_shipping_method' => true,
     ),
     'logistic' => array(
       'key' => 'lc',
       'title' => __('Logistics center', 'omnivalt'),
+      'is_shipping_method' => false,
     ),
   );
 
@@ -159,6 +163,7 @@ function omnivalt_configs($section_name = false) {
    * in_product (string / boolean) - Service option type in Product edit page. If not use, then false.
    * in_order (string / boolean) - Service option type in Order edit page. If not use, then false.
    * add_always (boolean) - Add always this service to labels
+   * desc_product (string) - Parameter desription in Product edit page.
    *
    * Available service types: checkbox.
    */
@@ -315,6 +320,13 @@ function omnivalt_configs($section_name = false) {
     );
 
   /*
+   * Post offices and terminals params
+   */
+  $params['locations'] = array(
+    'source_url' => 'https://www.omniva.ee/locations.json',
+  );
+
+  /*
    * Params for update
    */
   $params['update'] = array(
@@ -323,7 +335,7 @@ function omnivalt_configs($section_name = false) {
   );
 
   /*
-   * Variables, which using to replace some value in string
+   * Variables, which using to replace some value in string. Using like {variable_key}.
    */
   $params['text_variables'] = array(
     'order_number' => __('Order number', 'omnivalt'),
@@ -331,6 +343,8 @@ function omnivalt_configs($section_name = false) {
 
   /*
    * Debug params
+   *
+   * delete_after (integer) - The number of days after which to delete old debug files
    */
   $params['debug'] = array(
     'delete_after' => 30,

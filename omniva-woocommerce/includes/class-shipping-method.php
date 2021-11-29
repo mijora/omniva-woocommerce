@@ -123,10 +123,14 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
      */
     function init_form_fields()
     {
+      $shipping_params = omnivalt_configs('shipping_params');
+      $shipping_methods = omnivalt_configs('method_params');
+
       $countries_options = array();
       foreach ($this->omnivalt_shipping_params as $country_code => $ship_params) {
         $countries_options[$country_code] = $country_code . ' - ' . $ship_params['title'];
       }
+      
       $fields = array(
         'enabled' => array(
           'title' => __('Enable', 'omnivalt'),
@@ -217,31 +221,34 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
       $fields['hr_methods'] = array(
         'type' => 'hr'
       );
-      $fields['method_pt'] = array(
-        'title' => __('Parcel terminal', 'omnivalt'),
-        'type' => 'checkbox',
-        'description' => __('Show parcel terminal method in checkout.', 'omnivalt')
-      );
-      $fields['method_c'] = array(
-        'title' => __('Courier', 'omnivalt'),
-        'type' => 'checkbox',
-        'description' => __('Show courier method in checkout.', 'omnivalt')
-      );
-      $fields['method_cp'] = array(
-        'title' => __('Courier Plus', 'omnivalt'),
-        'type' => 'checkbox',
-        'description' => __('Show courier plus method in checkout.', 'omnivalt') . ' ' . sprintf(__('Available only in %s.', 'omnivalt'), __('Estonia', 'omnivalt')),
-      );
-      $fields['method_pc'] = array(
-        'title' => __('Private customer', 'omnivalt'),
-        'type' => 'checkbox',
-        'description' => __('Show private customer method in checkout.', 'omnivalt') . ' ' . sprintf(__('Available only in %s.', 'omnivalt'), __('Estonia', 'omnivalt')),
-      );
-      $fields['method_po'] = array(
-        'title' => __('Post office', 'omnivalt'),
-        'type' => 'checkbox',
-        'description' => __('Show post office method in checkout.', 'omnivalt') . ' ' . sprintf(__('Available only in %s.', 'omnivalt'), __('Estonia', 'omnivalt')),
-      );
+      foreach ($shipping_methods as $ship_method => $ship_method_values) {
+        if ($ship_method_values['is_shipping_method'] === false) continue;
+
+        $except_countries = array_keys($shipping_params);
+        foreach ($shipping_params as $ship_country => $ship_params) {
+          $ship_method_name = ($ship_method === 'terminal') ? 'pickup' : $ship_method;
+          if (!in_array($ship_method_name, $ship_params['methods'])) {
+            if (($unset_key = array_search($ship_country, $except_countries)) !== false) {
+              unset($except_countries[$unset_key]);
+            }
+          }
+        }
+        $description = sprintf(__('Show %s method in checkout.', 'omnivalt'), strtolower($ship_method_values['title']));
+        if (!empty($except_countries) && count($except_countries) != count($shipping_params)) {
+          $txt_countries = '';
+          foreach ($except_countries as $exc_country) {
+            if (!empty($txt_countries)) $txt_countries .= ', ';
+            $txt_countries .=$shipping_params[$exc_country]['title'];
+          }
+          $description .= '<br/><small>' . sprintf(__('Available only in %s.', 'omnivalt'), '<i>' . $txt_countries . '</i>') . '</small>';
+        }
+
+        $fields['method_' . $ship_method_values['key']] = array(
+          'title' => $ship_method_values['title'],
+          'type' => 'checkbox',
+          'description' => $description,
+        );
+      }
       foreach ($this->omnivalt_shipping_params as $country_code => $ship_params) {
         $fields['prices_'.$country_code] = array(
           'type' => 'prices_box',
@@ -251,39 +258,28 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
       $fields['hr_settings'] = array(
         'type' => 'hr'
       );
-      $fields['weight'] = array(
-        'title' => sprintf(__('Max cart weight (%s) for terminal', 'omnivalt'),'kg'),
-        'type' => 'number',
-        'custom_attributes' => array(
-          'step' => 0.001,
-          'min' => 0
-        ),
-        'description' => __('Maximum allowed all cart products weight for parcel terminals.', 'omnivalt'),
-        'default' => 30,
-        'class' => 'omniva_terminal'
-      );
-      $fields['weight_c'] = array(
-        'title' => sprintf(__('Max cart weight (%s) for courier', 'omnivalt'),'kg'),
-        'type' => 'number',
-        'custom_attributes' => array(
-          'step' => 0.001,
-          'min' => 0
-        ),
-        'description' => __('Maximum allowed all cart products weight for courier.', 'omnivalt'),
-        'default' => 100,
-        'class' => 'omniva_courier'
-      );
-      $fields['weight_po'] = array(
-        'title' => sprintf(__('Max cart weight (%s) for post office', 'omnivalt'),'kg'),
-        'type' => 'number',
-        'custom_attributes' => array(
-          'step' => 0.001,
-          'min' => 0
-        ),
-        'description' => __('Maximum allowed all cart products weight for post office.', 'omnivalt'),
-        'default' => 100,
-        'class' => 'omniva_post'
-      );
+      foreach ($shipping_methods as $ship_method => $ship_method_values) {
+        if ($ship_method_values['is_shipping_method'] === false) continue;
+
+        $field_key = 'weight_' . $ship_method_values['key'];
+        $field_default = 100;
+        if ($ship_method_values['key'] === 'pt') {
+          $field_key = 'weight';
+          $field_default = 30;
+        }
+
+        $fields[$field_key] = array(
+          'title' => sprintf(__('Max cart weight (%1$s) for %2$s', 'omnivalt'), 'kg', strtolower($ship_method_values['title'])),
+          'type' => 'number',
+          'custom_attributes' => array(
+            'step' => 0.001,
+            'min' => 0
+          ),
+          'description' => sprintf(__('Maximum allowed all cart products weight for %s.', 'omnivalt'), strtolower($ship_method_values['title'])),
+          'default' => $field_default,
+          'class' => 'omniva_' . $ship_method,
+        );
+      }
       $fields['size_pt'] = array(
         'title' => sprintf(__('Max cart size (%s) for terminal', 'omnivalt'),get_option('woocommerce_dimension_unit')),
         'type' => 'dimensions',
@@ -389,18 +385,21 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
       $this->form_fields = $fields;
     }
 
-    public function generate_hr_html( $key, $value ) {
+    public function generate_hr_html( $key, $value )
+    {
       $class = (isset($value['class'])) ? $value['class'] : '';
       $html = '<tr valign="top"><td colspan="2"><hr class="' . $class . '"></td></tr>';
       return $html;
     }
-    public function generate_empty_html( $key, $value ) {
+    public function generate_empty_html( $key, $value )
+    {
       $class = (isset($value['class'])) ? $value['class'] : '';
       $html = '<tr valign="top"><td colspan="2" class="' . $class . '"></td></tr>';
       return $html;
     }
 
-    public function generate_prices_box_html( $key, $value ) {
+    public function generate_prices_box_html( $key, $value )
+    {
       $box_key = $this->get_field_key($key);
       $html = '';
       if (isset($value['lang'])) {
@@ -1324,7 +1323,6 @@ if (!class_exists('Omnivalt_Shipping_Method')) {
     /*
      * Check if method allowed by selected send off type, shop country code
      */
-    
     private function is_rate_allowed_by_country($code, $receiver_country){
         $send_off = $this->settings['send_off'] ?? false;
         $sender_country = $this->settings['shop_countrycode'] ?? false;
