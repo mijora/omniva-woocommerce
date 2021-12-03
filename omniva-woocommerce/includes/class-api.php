@@ -206,7 +206,7 @@ class OmnivaLt_Api
 
   public function call_courier()
   {
-    $service = "QH";
+    $service = 'QH';
     $is_cod = false;
     $parcel_terminal = "";
     $shop = $this->get_shop_data();

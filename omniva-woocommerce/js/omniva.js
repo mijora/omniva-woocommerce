@@ -138,7 +138,7 @@ var omniva_addrese_change = false;
     
         search.on('keyup',function(){
             clearTimeout(searchTimeout);      
-            searchTimeout = setTimeout(function() { suggest(search.val())}, 400);    
+            searchTimeout = setTimeout(function() { suggest(search.val()); }, 400);    
                   
         });
         search.on('selectpostcode',function(){
@@ -365,7 +365,7 @@ var omniva_addrese_change = false;
         function toggleDropdown(){
             if (container.hasClass('open')){
                 innerContainer.hide();
-                container.removeClass('open') 
+                container.removeClass('open');
             } else {
                 innerContainer.show();
                 container.addClass('open');
@@ -375,7 +375,7 @@ var omniva_addrese_change = false;
         function closeDropdown(){
             if (container.hasClass('open')){
                 innerContainer.hide();
-                container.removeClass('open') 
+                container.removeClass('open');
             } 
         }
         
@@ -710,7 +710,7 @@ var omniva_addrese_change = false;
           }
               var matches = document.querySelectorAll(".omnivaOption");
               for (var i = 0; i < matches.length; i++) {
-                node = matches[i]
+                node = matches[i];
                 if ( node.value.includes(terminal)) {
                   node.selected = 'selected';
                 } else {
