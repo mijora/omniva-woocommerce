@@ -366,7 +366,7 @@ class OmnivaLt_Api
   private function api_request($request)
   {
     OmnivaLt_Debug::debug_request($request);
-    $barcodes = array();;
+    $barcodes = array();
     $errors = array();
     $url = $this->clean(preg_replace('{/$}', '', $this->_settings['api_url'])) . '/epmx/services/messagesService.wsdl';
     $headers = array(

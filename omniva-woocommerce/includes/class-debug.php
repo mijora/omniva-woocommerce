@@ -11,7 +11,7 @@ class OmnivaLt_Debug
     if (isset($settings['debug_mode']) && $settings['debug_mode'] === 'yes') {
       omnivalt_add_required_directories();
       
-      $file_name = 'request_' . current_time('Ymd_His') . '.txt';
+      $file_name = 'request_' . current_time('Ymd_His_'.substr((string)microtime(), 2, 4)) . '.txt';
       $file = fopen(self::$_debug_dir . $file_name, 'w');
       fwrite($file, print_r($request,true));
       fclose($file);
@@ -27,7 +27,7 @@ class OmnivaLt_Debug
     if (isset($settings['debug_mode']) && $settings['debug_mode'] === 'yes') {
       omnivalt_add_required_directories();
       
-      $file_name = 'response_' . current_time('Ymd_His') . '.txt';
+      $file_name = 'response_' . current_time('Ymd_His_'.substr((string)microtime(), 2, 4)) . '.txt';
       $file = fopen(self::$_debug_dir . $file_name, 'w');
       fwrite($file, print_r($response,true));
       fclose($file);
