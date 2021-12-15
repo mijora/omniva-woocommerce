@@ -251,6 +251,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'description' => $ship_method_values['description'],
         );
       }
+      $fields['txt_returns'] = array(
+        'title' => __('Returns', 'omnivalt'),
+        'type' => 'string',
+        'text' => __('Please contact Omniva about parcels returns.', 'omnivalt'),
+      );
       foreach ($this->destinations_countries as $country_code => $country_name) { //TODO: testi
         $fields['prices_'.$country_code] = array(
           'type' => 'prices_box',
@@ -406,6 +411,17 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     {
       $class = (isset($value['class'])) ? $value['class'] : '';
       $html = '<tr valign="top"><td colspan="2" class="' . $class . '"></td></tr>';
+      return $html;
+    }
+
+    public function generate_string_html( $key, $value )
+    {
+      $class = (isset($value['class'])) ? $value['class'] : '';
+      $html = '<tr valign="top">';
+      $html .= '<th scope="row" class="titledesc"><label>' . $value['title'] . '</label></th>';
+      $html .= '<td class="forminp"><fieldset><p class="description">' . $value['text'] . '</p></fieldset></td>';
+      $html .= '</tr>';
+
       return $html;
     }
 
@@ -883,6 +899,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $values = wp_json_encode($value);
       return $values;
     }
+
+
 
     /**
      * Get categories for "restricted_categories" field
