@@ -1,3 +1,10 @@
+== Explanations of errors ==
+
+001 'The service is not available to the sender country' - There is no desired key in configs 'shipping_params' section
+002 'The service is not available to the receiver country' - There is no desired key in configs 'shipping_params' section 'shipping_sets' subsection
+003 'This shipping set does not exist' - There is no desired key in configs 'shipping_sets' section
+004 'The service does not exist for the specified method' - There is no desired key in configs 'shipping_sets' section subsection
+
 == Changelog ==
 
 = Unreleased =
@@ -11,6 +18,8 @@
 - added "Bad API logins" error when failed generate label because of authentication
 - added a ability to add comment in label
 - fixed bug with country in checkout page
+- added fix, which select shop country if country is not set in order
+- added error message, when are error in API account
 
 = 1.8.4 =
 - fixed terminal selection field showing when country is changed and Omniva pickup become selected

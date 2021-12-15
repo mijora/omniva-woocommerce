@@ -6,6 +6,21 @@ class OmnivaLt_Cronjob
     add_filter('cron_schedules', array(__CLASS__, 'add_weekly'));
 
     add_action('omnivalt_location_update', array(__CLASS__, 'do_daily_update'));
+
+    register_activation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'activation'));
+    register_deactivation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'deactivation'));
+  }
+
+  public static function activation()
+  {
+    if ( ! wp_next_scheduled('omnivalt_location_update')) {
+      wp_schedule_event(time(), 'daily', 'omnivalt_location_update');
+    }
+  }
+
+  public static function deactivation()
+  {
+    wp_clear_scheduled_hook('omnivalt_location_update');
   }
 
   public static function add_weekly($schedules)
@@ -19,8 +34,12 @@ class OmnivaLt_Cronjob
 
   public static function do_daily_update()
   {
-    file_put_contents(OMNIVALT_DIR . 'logs/cronjob.log', current_time('Y-m-d H:i:s') . ' Preparing locations update...' . PHP_EOL, FILE_APPEND);
-    $location_params = omnivalt_configs('locations');
+    self::log('Preparing locations update...', true, true);
+    $location_params = OmnivaLt_Core::get_configs('locations');
+    if ( empty($location_params['source_url']) ) {
+      self::log('Empty source URL.', false);
+      return;
+    }
     
     $url = $location_params['source_url'];
     $fp = fopen(OMNIVALT_DIR . "locations_new.json", "w");
@@ -37,9 +56,19 @@ class OmnivaLt_Cronjob
     fclose($fp);
 
     $new_data = file_get_contents(OMNIVALT_DIR . "locations_new.json");
-    if (json_decode($new_data)) {
+    if ( json_decode($new_data) ) {
       rename(OMNIVALT_DIR . "locations_new.json", OMNIVALT_DIR . "locations.json");
-      file_put_contents(OMNIVALT_DIR . 'logs/cronjob.log', current_time('Y-m-d H:i:s') . ' Locations updated.' . PHP_EOL, FILE_APPEND);
+      self::log('Locations updated.', false);
+    } else {
+      self::log('Failed.', false);
     }
+  }
+
+  public static function log($message, $show_date = true, $next_same_line = false)
+  {
+    $message = ($show_date) ? current_time('Y-m-d H:i:s') . ' ' . $message : $message;
+    $message = ($next_same_line) ? $message . ' ' : $message . PHP_EOL;
+
+    file_put_contents(OMNIVALT_DIR . 'logs/cronjob.log', $message, FILE_APPEND);
   }
 }

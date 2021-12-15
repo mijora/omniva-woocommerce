@@ -1,42 +1,36 @@
 <?php
 class OmnivaLt_Api
 {
-  private $_settings;
-  private $omniva_configs;
+  private $omnivalt_settings;
+  private $omnivalt_configs;
 
   public function __construct()
   {
-    $this->_settings = get_option(omnivalt_configs('settings_key'));
-    $this->omniva_configs = omnivalt_configs();
+    $this->omnivalt_configs = OmnivaLt_Core::get_configs();
+    $this->omnivalt_settings = get_option($this->omnivalt_configs['settings_key']);
   }
 
   public function get_tracking_number($id_order)
   {
     $order = get_post($id_order);
-    $terminal_id = get_post_meta($id_order, '_omnivalt_terminal_id', true);
+    $terminal_id = get_post_meta($id_order, $this->omnivalt_configs['meta_keys']['terminal_id'], true);
     $wc_order = wc_get_order((int) $id_order);
     $client = $this->get_client_data($wc_order);
     $shop = $this->get_shop_data();
   
     $weight = $this->get_order_weight($id_order);
     
-    if (!isset($this->omniva_configs['shipping_params'][$client->country])) {
+    if ( ! isset($this->omnivalt_configs['shipping_params'][$client->country]) ) {
       return array('msg' => __('Shipping parameters for customer country not found', 'omnivalt'));
     }
-    $shipping_params = $this->omniva_configs['shipping_params'][$client->country];
+    $shipping_params = $this->omnivalt_configs['shipping_params'][$client->country];
 
     $send_method = $this->get_send_method($wc_order);
-    $pickup_method = $this->_settings['send_off'];
+    $pickup_method = $this->omnivalt_settings['send_off'];
 
-    $service = $this->get_shipping_service($shipping_params, $pickup_method, $send_method);
-    if (empty($service)) {
-      $pickup_title = $pickup_method;
-      $sendoff_title = $send_method;
-      foreach ($this->omniva_configs['method_params'] as $key => $params) {
-        if ($params['key'] === $pickup_method) $pickup_title = $params['title'];
-        if ($params['key'] === $send_method) $sendoff_title = $params['title'];
-      }
-      return array('msg' => __('Service for this combination is not exists', 'omnivalt') . '. ' . __('Combination', 'omnivalt') .': ' . $pickup_title . ' -> ' . $sendoff_title);
+    $service = OmnivaLt_Helper::get_shipping_service_code($shop->country, $client->country, $pickup_method . ' ' . $send_method);
+    if ( isset($service['status']) && $service['status'] === 'error' ) {
+      return array('msg' => OmnivaLt_Core::get_error_text($service['error_code']));
     }
 
     $other_services = OmnivaLt_Product::get_order_items_services($wc_order, true);
@@ -47,51 +41,51 @@ class OmnivaLt_Api
 
     $additionalService = '';
     $is_cod = false;
-    if (get_post_meta($id_order, '_payment_method', true) == "cod") {
+    if ( get_post_meta($id_order, '_payment_method', true) == "cod" ) {
       $is_cod = true;
     }
     $send_email_on_arrive = false;
-    if (isset($this->_settings['send_email_on_arrive'])) {
-      $send_email_on_arrive = ($this->_settings['send_email_on_arrive'] == 'yes') ? true : false;
+    if ( isset($this->omnivalt_settings['send_email_on_arrive']) ) {
+      $send_email_on_arrive = ($this->omnivalt_settings['send_email_on_arrive'] == 'yes') ? true : false;
     }
     $emails = '';
-    if (!empty($client->email) && $send_email_on_arrive && $arrival_message) {
+    if ( ! empty($client->email) && $send_email_on_arrive && $arrival_message ) {
       $emails = '<email>' . $client->email . '</email>';
       $additionalService .= '<option code="SF" />';
     }
-    if ($is_cod) $additionalService .= '<option code="BP" />';
-    foreach ($this->omniva_configs['additional_services'] as $service_key => $service_values) {
+    if ( $is_cod ) $additionalService .= '<option code="BP" />';
+    foreach ( $this->omnivalt_configs['additional_services'] as $service_key => $service_values ) {
       $add_service = (in_array($service_key, $other_services)) ? true : false;
-      if ($service_values['add_always']) {
+      if ( $service_values['add_always'] ) {
         $add_service = true;
-        if (is_array($service_values['only_for']) && !in_array($service, $service_values['only_for'])) {
+        if ( is_array($service_values['only_for']) && !in_array($service, $service_values['only_for']) ) {
           $add_service = false;
         }
       }
-      if ($add_service) {
+      if ( $add_service ) {
         $additionalService .= '<option code="' . $service_values['code'] . '" />';
       }
     }
-    if ($additionalService) {
+    if ( $additionalService ) {
       $additionalService = '<add_service>' . $additionalService . '</add_service>';
     }
 
     $parcel_terminal = "";
-    if ($send_method == "pt" || $send_method == "po") {
+    if ( $send_method == "pt" || $send_method == "po" ) {
       $parcel_terminal = 'offloadPostcode="' . $terminal_id . '" ';
     }
 
     $client_address = '<address postcode="' . $client->postcode . '" ' . $parcel_terminal . ' deliverypoint="' . $client->city . '" country="' . $client->country . '" street="' . $client->address_1 . '" />';
     $phones = '';
-    if (!empty($client->phone)) $phones .= '<mobile>' . $client->phone . '</mobile>';
+    if ( ! empty($client->phone) ) $phones .= '<mobile>' . $client->phone . '</mobile>';
 
     $label_comment = '';
-    if (!empty($this->_settings['label_note'])) {
-      $prepare_comment = esc_html($this->_settings['label_note']);
-      foreach ($this->omniva_configs['text_variables'] as $key => $title) {
+    if ( ! empty($this->omnivalt_settings['label_note']) ) {
+      $prepare_comment = esc_html($this->omnivalt_settings['label_note']);
+      foreach ( $this->omnivalt_configs['text_variables'] as $key => $title ) {
         $value = '';
         
-        if ($key === 'order_number') $value = $wc_order->get_id();
+        if ( $key === 'order_number' ) $value = $wc_order->get_id();
         
         $prepare_comment = str_replace('{' . $key . '}', $value, $prepare_comment);
       }
@@ -127,7 +121,7 @@ class OmnivaLt_Api
   {
     $errors = array();
     $barcodeXML = '';
-    foreach ($barcodes as $barcode) {
+    foreach ( $barcodes as $barcode ) {
       $barcodeXML .= '<barcode>' . $barcode . '</barcode>';
     }
 
@@ -137,7 +131,7 @@ class OmnivaLt_Api
        <soapenv:Header/>
        <soapenv:Body>
           <xsd:addrcardMsgRequest>
-             <partner>' . $this->clean($this->_settings['api_user']) . '</partner>
+             <partner>' . $this->clean($this->omnivalt_settings['api_user']) . '</partner>
              <sendAddressCardTo>response</sendAddressCardTo>
              <barcodes>
                 ' . $barcodeXML . '
@@ -148,7 +142,7 @@ class OmnivaLt_Api
 
     OmnivaLt_Debug::debug_request($xmlRequest);
     try {
-      $url = $this->clean(preg_replace('{/$}', '', $this->_settings['api_url'])) . '/epmx/services/messagesService.wsdl';
+      $url = $this->clean(preg_replace('{/$}', '', $this->omnivalt_settings['api_url'])) . '/epmx/services/messagesService.wsdl';
       $headers = array(
         "Content-type: text/xml;charset=\"utf-8\"",
         "Accept: text/xml",
@@ -161,7 +155,7 @@ class OmnivaLt_Api
       curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($ch, CURLOPT_HEADER, 0);
-      curl_setopt($ch, CURLOPT_USERPWD, $this->clean($this->_settings['api_user']) . ":" . $this->clean($this->_settings['api_pass']));
+      curl_setopt($ch, CURLOPT_USERPWD, $this->clean($this->omnivalt_settings['api_user']) . ":" . $this->clean($this->omnivalt_settings['api_pass']));
       curl_setopt($ch, CURLOPT_POST, 1);
       curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlRequest);
       curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -176,24 +170,24 @@ class OmnivaLt_Api
 
     $xmlResponse = str_ireplace(['SOAP-ENV:', 'SOAP:'], '', $xmlResponse);
     $xml = simplexml_load_string($xmlResponse);
-    if (!is_object($xml)) {
+    if ( ! is_object($xml) ) {
       $errors[] = $this->get_xml_error_from_response($xmlResponse);
     }
 
-    if (is_object($xml) && is_object($xml->Body->addrcardMsgResponse->successAddressCards->addressCardData->barcode)) {
+    if ( is_object($xml) && is_object($xml->Body->addrcardMsgResponse->successAddressCards->addressCardData->barcode) ) {
       $shippingLabelContent = (string) $xml->Body->addrcardMsgResponse->successAddressCards->addressCardData->fileData;
       file_put_contents(OMNIVALT_DIR . "pdf/" . $order_id . '.pdf', base64_decode($shippingLabelContent));
     } else {
       $errors[] = 'No label received from webservice';
     }
 
-    if (!empty($errors)) {
+    if ( ! empty($errors) ) {
       return array(
         'status' => false,
         'msg' => implode('. ', $errors)
       );
     } else {
-      if (!empty($barcodes)) return array(
+      if ( ! empty($barcodes) ) return array(
         'status' => true
       );
       $errors[] = __('No saved barcodes received', 'omnivalt');
@@ -206,12 +200,16 @@ class OmnivaLt_Api
 
   public function call_courier()
   {
-    $service = 'QH';
     $is_cod = false;
     $parcel_terminal = "";
     $shop = $this->get_shop_data();
     $pickStart = OmnivaLt_Helper::get_formated_time($shop->pick_from, '8:00');
     $pickFinish = OmnivaLt_Helper::get_formated_time($shop->pick_until, '17:00');
+    
+    $service = OmnivaLt_Helper::get_shipping_service_code($shop->country, 'call', 'courier_call');
+    if ( isset($service['status']) && $service['status'] === 'error' ) {
+      return array('status' => false, 'msg' => OmnivaLt_Core::get_error_text($service['error_code']));
+    }
 
     $xmlRequest = $this->xml_header();
     $xmlRequest .= '<item service="' . $service . '" >
@@ -248,9 +246,9 @@ class OmnivaLt_Api
         <soapenv:Header/>
         <soapenv:Body>
           <xsd:businessToClientMsgRequest>
-            <partner>' . $this->clean($this->_settings['api_user']) . '</partner>
+            <partner>' . $this->clean($this->omnivalt_settings['api_user']) . '</partner>
             <interchange msg_type="info11">
-              <header file_id="' . current_time('YmdHms') . '" sender_cd="' . $this->clean($this->_settings['api_user']) . '" >                
+              <header file_id="' . current_time('YmdHms') . '" sender_cd="' . $this->clean($this->omnivalt_settings['api_user']) . '" >                
               </header>
               <item_list>';
   }
@@ -269,14 +267,14 @@ class OmnivaLt_Api
     $method = $pickup_method . ' ' . $send_method;
     $matches = $shipping_params['services'];
 
-    return (isset($matches[$method])) ? $matches[$method] : '';
+    return ( isset($matches[$method]) ) ? $matches[$method] : '';
   }
 
   private function cod($order, $cod = 0, $amount = 0)
   {
-    $company = $this->_settings['company'];
-    $bank_account = $this->_settings['bank_account'];
-    if ($cod) {
+    $company = $this->omnivalt_settings['company'];
+    $bank_account = $this->omnivalt_settings['bank_account'];
+    if ( $cod ) {
       return '<monetary_values>
         <cod$service_receiver>' . $company . '</cod_receiver>
         <values code="item_value" amount="' . $amount . '"/>
@@ -291,17 +289,17 @@ class OmnivaLt_Api
   private function get_shop_data($object = true)
   {
     $data = array(
-      'name' => $this->clean($this->_settings['shop_name']),
-      'street' => $this->clean($this->_settings['shop_address']),
-      'city' => $this->clean($this->_settings['shop_city']),
-      'country' => $this->clean($this->_settings['shop_countrycode']),
-      'postcode' => $this->clean($this->_settings['shop_postcode']),
-      'phone' => $this->clean($this->_settings['shop_phone']),
+      'name' => $this->clean($this->omnivalt_settings['shop_name']),
+      'street' => $this->clean($this->omnivalt_settings['shop_address']),
+      'city' => $this->clean($this->omnivalt_settings['shop_city']),
+      'country' => $this->clean($this->omnivalt_settings['shop_countrycode']),
+      'postcode' => $this->clean($this->omnivalt_settings['shop_postcode']),
+      'phone' => $this->clean($this->omnivalt_settings['shop_phone']),
       'pick_day' => current_time('Y-m-d'),
-      'pick_from' => $this->_settings['pick_up_start'] ? $this->clean($this->_settings['pick_up_start']) : '8:00',
-      'pick_until' => $this->_settings['pick_up_end'] ? $this->clean($this->_settings['pick_up_end']) : '17:00',
+      'pick_from' => $this->omnivalt_settings['pick_up_start'] ? $this->clean($this->omnivalt_settings['pick_up_start']) : '8:00',
+      'pick_until' => $this->omnivalt_settings['pick_up_end'] ? $this->clean($this->omnivalt_settings['pick_up_end']) : '17:00',
     );
-    if (current_time('timestamp') > strtotime($data['pick_day'] . ' ' . $data['pick_until'])) {
+    if ( current_time('timestamp') > strtotime($data['pick_day'] . ' ' . $data['pick_until']) ) {
       $data['pick_day'] = date('Y-m-d', strtotime($data['pick_day'] . "+1 days"));
     }
 
@@ -320,16 +318,17 @@ class OmnivaLt_Api
       'email' => $this->clean($order->get_billing_email()),
       'phone' => get_post_meta($order->get_id(), '_shipping_phone', true),
     );
-    if (empty($data['postcode']) && empty($data['city']) && empty($data['address_1']) && empty($data['country'])) {
+    if ( empty($data['postcode']) && empty($data['city']) && empty($data['address_1']) && empty($data['country']) ) {
       $data['postcode'] = $this->clean($order->get_billing_postcode());
       $data['city'] = $this->clean($order->get_billing_city());
       $data['address_1'] = $this->clean($order->get_billing_address_1());
       $data['country'] = $this->clean($order->get_billing_country());
     }
-    if (empty($data['name'])) $data['name'] = $this->clean($order->get_billing_first_name());
-    if (empty($data['surname'])) $data['surname'] = $this->clean($order->get_billing_last_name());
-    if (empty($data['country'])) $data['country'] = 'LT';
-    if (empty($data['phone'])) $data['phone'] = $this->clean($order->get_billing_phone());
+    if ( empty($data['name']) ) $data['name'] = $this->clean($order->get_billing_first_name());
+    if ( empty($data['surname']) ) $data['surname'] = $this->clean($order->get_billing_last_name());
+    if ( empty($data['country']) ) $data['country'] = $this->clean($this->omnivalt_settings['shop_countrycode']);
+    if ( empty($data['country']) ) $data['country'] = 'LT';
+    if ( empty($data['phone']) ) $data['phone'] = $this->clean($order->get_billing_phone());
     
     return ($object) ? (object) $data : $data;
   }
@@ -338,7 +337,7 @@ class OmnivaLt_Api
   {
     $weight_unit = get_option('woocommerce_weight_unit');
     $weight = get_post_meta($id_order, '_cart_weight', true);
-    if ($weight_unit != 'kg') {
+    if ( $weight_unit != 'kg' ) {
       $weight = wc_get_weight($weight, 'kg', $weight_unit);
     }
 
@@ -348,13 +347,13 @@ class OmnivaLt_Api
   private function get_send_method($order)
   {
     $send_method = '';
-    foreach ($order->get_items('shipping') as $item_id => $shipping_item_obj) {
+    foreach ( $order->get_items('shipping') as $item_id => $shipping_item_obj ) {
       $send_method = $shipping_item_obj->get_method_id();
     }
-    if ($send_method == 'omnivalt') {
+    if ( $send_method == 'omnivalt' ) {
       $send_method = get_post_meta($order->get_id(), '_omnivalt_method', true);
     }
-    if ($send_method == 'omnivalt_pt') $send_method = 'pt';
+    if ($send_method == 'omnivalt_pt') $send_method = 'pt'; //TODO: Make dynamicaly
     if ($send_method == 'omnivalt_c') $send_method = 'c';
     if ($send_method == 'omnivalt_cp') $send_method = 'cp';
     if ($send_method == 'omnivalt_pc') $send_method = 'pc';
@@ -368,7 +367,7 @@ class OmnivaLt_Api
     OmnivaLt_Debug::debug_request($request);
     $barcodes = array();
     $errors = array();
-    $url = $this->clean(preg_replace('{/$}', '', $this->_settings['api_url'])) . '/epmx/services/messagesService.wsdl';
+    $url = $this->clean(preg_replace('{/$}', '', $this->omnivalt_settings['api_url'])) . '/epmx/services/messagesService.wsdl';
     $headers = array(
       "Content-type: text/xml;charset=\"utf-8\"",
       "Accept: text/xml",
@@ -381,7 +380,7 @@ class OmnivaLt_Api
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_USERPWD, $this->clean($this->_settings['api_user']) . ":" . $this->clean($this->_settings['api_pass']));
+    curl_setopt($ch, CURLOPT_USERPWD, $this->clean($this->omnivalt_settings['api_user']) . ":" . $this->clean($this->omnivalt_settings['api_pass']));
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -390,25 +389,29 @@ class OmnivaLt_Api
     $xmlResponse = curl_exec($ch);
     $debug_response = OmnivaLt_Debug::debug_response($xmlResponse);
 
-    if ($xmlResponse === false) {
+    if ( $xmlResponse === false ) {
       $errors[] = curl_error($ch);
     } else {
       $errorTitle = '';
-      if (strlen(trim($xmlResponse)) > 0) {
+      if ( strlen(trim($xmlResponse)) > 0 ) {
         $xmlResponse = str_ireplace(['SOAP-ENV:', 'SOAP:'], '', $xmlResponse);
         $xml = simplexml_load_string($xmlResponse);
-        if (!is_object($xml)) {
+        if ( ! is_object($xml) ) {
           $errors[] = $this->get_xml_error_from_response($xmlResponse);
         }
 
-        if (is_object($xml) && is_object($xml->Body->businessToClientMsgResponse->faultyPacketInfo->barcodeInfo)) {
+        if ( is_object($xml) && is_object($xml->Body->businessToClientMsgResponse->faultyPacketInfo->barcodeInfo) ) {
           foreach ($xml->Body->businessToClientMsgResponse->faultyPacketInfo->barcodeInfo as $data) {
             $errors[] = $data->clientItemId . ' - ' . $data->barcode . ' - ' . $data->message;
           }
+          if ( is_object($xml->Body->businessToClientMsgResponse->prompt)
+            && strpos($xml->Body->businessToClientMsgResponse->prompt, 'AppException:') !== false ) {
+            $errors[] = str_replace('AppException: ', '', $xml->Body->businessToClientMsgResponse->prompt);
+          }
         }
 
-        if (empty($errors)) {
-          if (is_object($xml) && is_object($xml->Body->businessToClientMsgResponse->savedPacketInfo->barcodeInfo)) {
+        if ( empty($errors) ) {
+          if ( is_object($xml) && is_object($xml->Body->businessToClientMsgResponse->savedPacketInfo->barcodeInfo) ) {
             foreach ($xml->Body->businessToClientMsgResponse->savedPacketInfo->barcodeInfo as $data) {
               $barcodes[] = (string) $data->barcode;
             }
@@ -417,14 +420,14 @@ class OmnivaLt_Api
       }
     }
 
-    if (!empty($errors)) {
+    if ( ! empty($errors) ) {
       return array(
         'status' => false,
         'msg' => implode('. ', $errors),
         'debug' => $debug_response
       );
     } else {
-      if (!empty($barcodes)) return array(
+      if ( ! empty($barcodes) ) return array(
         'status' => true,
         'barcodes' => $barcodes,
         'debug' => $debug_response
@@ -444,7 +447,7 @@ class OmnivaLt_Api
     $kaal = array(7, 3, 1);
     $sl = $st = strlen($order_number);
     $total = 0;
-    while ($sl > 0 and substr($order_number, --$sl, 1) >= '0') {
+    while ( $sl > 0 and substr($order_number, --$sl, 1) >= '0' ) {
       $total += substr($order_number, ($st - 1) - $sl, 1) * $kaal[($sl % 3)];
     }
     $kontrollnr = ((ceil(($total / 10)) * 10) - $total);

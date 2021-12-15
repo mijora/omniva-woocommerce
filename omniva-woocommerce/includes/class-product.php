@@ -48,7 +48,7 @@ class OmnivaLt_Product
   public static function options_content()
   {
     global $post;
-    $configs_services = omnivalt_configs('additional_services');
+    $configs_services = OmnivaLt_Core::get_configs('additional_services');
     ?>
     <div id='omnivalt_options' class='panel woocommerce_options_panel'>
       <div class='options_group'>
@@ -95,7 +95,7 @@ class OmnivaLt_Product
    */
   public static function save_options_fields($post_id)
   {
-    $configs_services = omnivalt_configs('additional_services');
+    $configs_services = OmnivaLt_Core::get_configs('additional_services');
 
     foreach ($configs_services as $service_key => $service_values) {
       if (!$service_values['in_product']) continue;
@@ -123,7 +123,7 @@ class OmnivaLt_Product
    */
   public static function get_order_items_services($order, $merged = false)
   {
-    $configs_services = omnivalt_configs('additional_services');
+    $configs_services = OmnivaLt_Core::get_configs('additional_services');
     $services = array();
     
     foreach ($order->get_items() as $item_id => $item) {

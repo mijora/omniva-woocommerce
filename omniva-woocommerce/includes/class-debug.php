@@ -7,9 +7,9 @@ class OmnivaLt_Debug
 
   public static function debug_request($request)
   {
-    $settings = get_option(omnivalt_configs('settings_key'));
+    $settings = get_option(OmnivaLt_Core::get_configs('settings_key'));
     if (isset($settings['debug_mode']) && $settings['debug_mode'] === 'yes') {
-      omnivalt_add_required_directories();
+      OmnivaLt_Core::add_required_directories();
       
       $file_name = 'request_' . current_time('Ymd_His_'.substr((string)microtime(), 2, 4)) . '.txt';
       $file = fopen(self::$_debug_dir . $file_name, 'w');
@@ -23,9 +23,9 @@ class OmnivaLt_Debug
 
   public static function debug_response($response)
   {
-    $settings = get_option(omnivalt_configs('settings_key'));
+    $settings = get_option(OmnivaLt_Core::get_configs('settings_key'));
     if (isset($settings['debug_mode']) && $settings['debug_mode'] === 'yes') {
-      omnivalt_add_required_directories();
+      OmnivaLt_Core::add_required_directories();
       
       $file_name = 'response_' . current_time('Ymd_His_'.substr((string)microtime(), 2, 4)) . '.txt';
       $file = fopen(self::$_debug_dir . $file_name, 'w');
@@ -39,7 +39,7 @@ class OmnivaLt_Debug
 
   public static function get_all_files($get_section = '')
   {
-    $debug_params = omnivalt_configs('debug');
+    $debug_params = OmnivaLt_Core::get_configs('debug');
     self::delete_old_files($debug_params['delete_after']);
     $files = array_diff(scandir(self::$_debug_dir), array('.', '..'));
     $request_files = array();

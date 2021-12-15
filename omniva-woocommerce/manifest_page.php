@@ -1,195 +1,43 @@
 <?php
-if (!defined('ABSPATH')) {
+if ( ! defined('ABSPATH') ) {
   exit; // Exit if accessed directly
 }
 
-/**
- * Manifest page defaults
- */
-$tab_strings = array(
-  'all_orders' => __('All orders', 'omnivalt'),
-  'new_orders' => __('New orders', 'omnivalt'),
-  'completed_orders' => __('Completed orders', 'omnivalt')
-);
-
-$filter_keys = array(
-  'customer',
-  'status',
-  'barcode',
-  'id',
-  'start_date',
-  'end_date'
-);
-
-// amount of orders to show per page
-$max_per_page = 25;
-
-/**
- * helper function to create links
- */
-function make_link($args)
-{
-  $query_args = array('page' => 'omniva-manifest');
-  $query_args = array_merge($query_args, $args);
-  return add_query_arg($query_args, admin_url('/admin.php'));
-}
-
-// append custom css and js
-do_action('omniva_admin_manifest_head');
-
-// prep access to Omnivalt shipping class
-$wc_shipping = new WC_Shipping();
+// Prepare
+$wc_shipping = new WC_Shipping(); // Required for shipping method get
 $omnivalt = new Omnivalt_Shipping_Method();
+$configs = OmnivaLt_Core::get_configs();
+$page_params = OmnivaLt_Manifest::page_params();
+
+$orders_data = OmnivaLt_Manifest::page_get_orders();
+
+// Append custom css and js
+do_action('omniva_admin_manifest_head');
 ?>
 
 <div class="wrap page-omniva_manifest">
   <h1><?php _e('Omniva manifest', 'omnivalt'); ?></h1>
-
-  <?php
-
-  $paged = 1;
-  if (isset($_GET['paged']))
-    $paged = filter_input(INPUT_GET, 'paged');
-
-  $action = 'all_orders';
-  if (isset($_GET['action'])) {
-    $action = filter_input(INPUT_GET, 'action');
-  }
-
-  $filters = array();
-  foreach ($filter_keys as $filter_key) {
-    if (isset($_POST['filter_' . $filter_key]) && intval($_POST['filter_' . $filter_key]) !== -1) {
-      $filters[$filter_key] = filter_input(INPUT_POST, 'filter_' . $filter_key); //$_POST['filter_' . $filter_key];
-    } else {
-      $filters[$filter_key] = false;
-    }
-  }
-
-  // Handle query variables depending on selected tab
-  switch ($action) {
-    case 'new_orders':
-      $page_title = $tab_strings[$action];
-      $args = array(
-        'omnivalt_manifest' => false,
-      );
-      break;
-    case 'completed_orders':
-      $page_title = $tab_strings[$action];
-      $args = array(
-        'omnivalt_manifest' => true,
-        // latest manifest at the top
-        'meta_key' => '_manifest_generation_date',
-        'orderby' => 'meta_value',
-        'order' => 'DESC'
-      );
-      break;
-    case 'all_orders':
-    default:
-      $action = 'all_orders';
-      $page_title = $tab_strings['all_orders'];
-      $args = array();
-      break;
-  }
-
-  foreach ($filters as $key => $filter) {
-    if ($filter) {
-      switch ($key) {
-        case 'status':
-          $args = array_merge(
-            $args,
-            array('status' => $filter)
-          );
-          break;
-        case 'barcode':
-          $args = array_merge(
-            $args,
-            array('omnivalt_barcode' => $filter)
-          );
-          break;
-        case 'customer':
-          $args = array_merge(
-            $args,
-            array('omnivalt_customer' => $filter)
-          );
-          break;
-      }
-    }
-  }
-  // date filter is a special case
-  if ($filters['start_date'] || $filters['end_date']) {
-    $args = array_merge(
-      $args,
-      array('omnivalt_manifest_date' => array($filters['start_date'], $filters['end_date']))
-    );
-  }
-
-  // Get orders with extra info about the results.
-  $args = array_merge(
-    $args,
-    array(
-      'omnivalt_method' => ['omnivalt_pt', 'omnivalt_c', 'omnivalt_cp', 'omnivalt_po', 'omnivalt'],
-      'paginate' => true,
-      'limit' => $max_per_page,
-      'paged' => $paged,
-    )
-  );
-
-  // Searching by ID takes priority
-  $singleOrder = false;
-  if ($filters['id']) {
-    $singleOrder = wc_get_order($filters['id']);
-    if ($singleOrder) {
-      $orders = array($singleOrder); // table printer expects array
-      $paged = 1;
-    }
-  }
-
-  // if there is no search by ID use to custom query
-  $results = false;
-  if (!$singleOrder) {
-    $results = wc_get_orders($args);
-    $orders = $results->orders;
-  }
-
-  $thereIsOrders = ($singleOrder || ($results && $results->total > 0));
-
-  // make pagination
-  $page_links = false;
-  if ($results) {
-    $page_links = paginate_links(array(
-      'base' => add_query_arg('paged', '%#%'),
-      'format' => '?paged=%#%',
-      'prev_text' => __('&laquo;', 'text-domain'),
-      'next_text' => __('&raquo;', 'text-domain'),
-      'total' => $results->max_num_pages,
-      'current' => $paged,
-      'type' => 'plain'
-    ));
-  }
-
-  $order_statuses = wc_get_order_statuses();
-  ?>
 
       <div class="call-courier-container">
         <button id="omniva-call-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>
       </div>
 
       <ul class="nav nav-tabs">
-        <?php foreach ($tab_strings as $tab => $tab_title) : ?>
+        <?php foreach ( $page_params['strings'] as $tab => $tab_title ) : ?>
           <li class="nav-item">
-            <a class="nav-link <?php echo $action == $tab ? 'active' : ''; ?>" href="<?php echo make_link(array('paged' => ($action == $tab ? $paged : 1), 'action' => $tab)); ?>"><?php echo $tab_title; ?></a>
+            <a class="nav-link <?php echo $orders_data['action'] == $tab ? 'active' : ''; ?>" href="<?php echo OmnivaLt_Manifest::page_make_link(array('paged' => ($orders_data['action'] == $tab ? $orders_data['paged'] : 1), 'action' => $tab)); ?>"><?php echo $tab_title; ?></a>
           </li>
         <?php endforeach; ?>
       </ul>
 
-      <?php if ($page_links) : ?>
+      <?php if ( $orders_data['links'] ) : ?>
         <div class="tablenav">
           <div class="tablenav-pages">
-            <?php echo $page_links; ?>
+            <?php echo $orders_data['links']; ?>
           </div>
         </div>
       <?php endif; ?>
-      <?php if ($thereIsOrders) : ?>
+      <?php if ( $orders_data['is_orders'] ) : ?>
         <div class="mass-print-container">
           <form id="manifest-print-form" action="admin-post.php" method="GET">
             <input type="hidden" name="action" value="omnivalt_manifest" />
@@ -209,7 +57,7 @@ $omnivalt = new Omnivalt_Shipping_Method();
       <?php endif; ?>
 
       <div class="table-container">
-        <form id="filter-form" class="" action="<?php echo make_link(array('action' => $action)); ?>" method="POST">
+        <form id="filter-form" class="" action="<?php echo OmnivaLt_Manifest::page_make_link(array('action' => $orders_data['action'])); ?>" method="POST">
           <?php wp_nonce_field('omnivalt_labels', 'omnivalt_labels_nonce'); ?>
           <table class="wp-list-table widefat fixed striped posts">
             <thead>
@@ -217,16 +65,16 @@ $omnivalt = new Omnivalt_Shipping_Method();
               <tr class="omniva-filter">
                 <td class="manage-column column-cb check-column"><input type="checkbox" class="check-all" /></td>
                 <th class="manage-column column-order_id">
-                  <input type="text" class="d-inline" name="filter_id" id="filter_id" value="<?php echo $filters['id']; ?>" placeholder="<?php echo __('ID', 'omnivalt'); ?>" aria-label="Order ID filter">
+                  <input type="text" class="d-inline" name="filter_id" id="filter_id" value="<?php echo $orders_data['filters']['id']; ?>" placeholder="<?php echo __('ID', 'omnivalt'); ?>" aria-label="Order ID filter">
                 </th>
                 <th class="manage-column">
-                  <input type="text" class="d-inline" name="filter_customer" id="filter_customer" value="<?php echo $filters['customer']; ?>" placeholder="<?php echo __('Customer', 'omnivalt'); ?>" aria-label="Order ID filter">
+                  <input type="text" class="d-inline" name="filter_customer" id="filter_customer" value="<?php echo $orders_data['filters']['customer']; ?>" placeholder="<?php echo __('Customer', 'omnivalt'); ?>" aria-label="Order ID filter">
                 </th>
                 <th class="column-order_status">
                   <select class="d-inline" name="filter_status" id="filter_status" aria-label="Order status filter">
                     <option value="-1" selected><?php echo _x('All', 'All status', 'omnivalt'); ?></option>
-                    <?php foreach ($order_statuses as $status_key => $status) : ?>
-                      <option value="<?php echo $status_key; ?>" <?php echo ($status_key == $filters['status'] ? 'selected' : ''); ?>><?php echo $status; ?></option>
+                    <?php foreach ( $orders_data['statuses'] as $status_key => $status ) : ?>
+                      <option value="<?php echo $status_key; ?>" <?php echo ($status_key == $orders_data['filters']['status'] ? 'selected' : ''); ?>><?php echo $status; ?></option>
                     <?php endforeach; ?>
                   </select>
                 </th>
@@ -235,15 +83,15 @@ $omnivalt = new Omnivalt_Shipping_Method();
                 <th class="manage-column">
                 </th>
                 <th class="manage-column">
-                  <input type="text" class="d-inline" name="filter_barcode" id="filter_barcode" value="<?php echo $filters['barcode']; ?>" placeholder="<?php echo __('Barcode', 'omnivalt'); ?>" aria-label="Order barcode filter">
+                  <input type="text" class="d-inline" name="filter_barcode" id="filter_barcode" value="<?php echo $orders_data['filters']['barcode']; ?>" placeholder="<?php echo __('Barcode', 'omnivalt'); ?>" aria-label="Order barcode filter">
                 </th>
                 <th class="column-manifest_date">
                   <div class='datetimepicker'>
                     <div>
-                      <input name="filter_start_date" type='text' class="" id='datetimepicker1' data-date-format="YYYY-MM-DD" value="<?php echo $filters['start_date']; ?>" placeholder="<?php echo __('From', 'omnivalt'); ?>" autocomplete="off" />
+                      <input name="filter_start_date" type='text' class="" id='datetimepicker1' data-date-format="YYYY-MM-DD" value="<?php echo $orders_data['filters']['start_date']; ?>" placeholder="<?php echo __('From', 'omnivalt'); ?>" autocomplete="off" />
                     </div>
                     <div>
-                      <input name="filter_end_date" type='text' class="" id='datetimepicker2' data-date-format="YYYY-MM-DD" value="<?php echo $filters['end_date']; ?>" placeholder="<?php echo __('To', 'omnivalt'); ?>" autocomplete="off" />
+                      <input name="filter_end_date" type='text' class="" id='datetimepicker2' data-date-format="YYYY-MM-DD" value="<?php echo $orders_data['filters']['end_date']; ?>" placeholder="<?php echo __('To', 'omnivalt'); ?>" autocomplete="off" />
                     </div>
                   </div>
                 </th>
@@ -270,12 +118,14 @@ $omnivalt = new Omnivalt_Shipping_Method();
             </thead>
             <tbody>
               <?php $date_tracker = false; ?>
-              <?php foreach ($orders as $order) : ?>
+              <?php foreach ( $orders_data['orders'] as $order ) : ?>
                 <?php
-                  $manifest_date = $order->get_meta('_manifest_generation_date');
+                  $manifest_date = $order->get_meta($configs['meta_keys']['manifest_date']);
                   $date = date('Y-m-d H:i', strtotime($manifest_date));
+                  $manifest_date_old = $order->get_meta($configs['meta_keys']['manifest_date_old']); // Compatible with old
+                  $date_old = date('Y-m-d H:i', strtotime($manifest_date_old));
                   ?>
-                <?php if ($action == 'completed_orders' && $date_tracker !== $date) : ?>
+                <?php if ( $orders_data['action'] == 'completed_orders' && $date_tracker !== $date && $date_tracker !== $date_old ) : ?>
                   <tr>
                     <td colspan="9" class="manifest-date-title">
                       <?php echo $date_tracker = $date; ?>
@@ -304,36 +154,39 @@ $omnivalt = new Omnivalt_Shipping_Method();
                   </td>
                   <td class="manage-column">
                     <div class="data-grid-cell-content">
-                      <?php omniva_terminal_field_display_admin_order_meta($order, false); ?>
+                      <?php OmnivaLt_Order::admin_order_display($order, false); ?>
                     </div>
                   </td>
                   <td class="manage-column">
                     <div class="data-grid-cell-content">
-                      <?php $barcode = $order->get_meta('_omnivalt_barcode'); ?>
-                      <?php if ($barcode) : ?>
+                      <?php $barcode = $order->get_meta($configs['meta_keys']['barcode']); ?>
+                      <?php if ( $barcode ) : ?>
                         <?php do_action('print_omniva_tracking_url', $omnivalt->settings['shop_countrycode'], $barcode); ?>
                       <?php endif; ?>
-                      <?php $error = $order->get_meta('_omnivalt_error'); ?>
-                      <?php if ($error) : ?>
-                        <?php if ($barcode) : ?><br /><?php endif; ?>
+                      <?php $error = $order->get_meta($configs['meta_keys']['error']); ?>
+                      <?php if ( $error ) : ?>
+                        <?php if ( $barcode ) : ?><br /><?php endif; ?>
                         <span><?php echo '<b>' . __('Error', 'omnivalt') . ':</b> ' . $error; ?></span>
                       <?php endif; ?>
                     </div>
                   </td>
                   <td class="column-manifest_date">
                     <div class="data-grid-cell-content">
-                      <?php echo $manifest_date; ?>
+                      <?php echo $manifest_date . $manifest_date_old; ?>
                     </div>
                   </td>
                   <td class="manage-column">
                     <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order->get_id(); ?>" class="button action">
-                      <?php echo __('Print label', 'omnivalt'); ?>
+                      <?php echo _x('Print', 'button', 'omnivalt'); ?>
+                    </a>
+                    <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order->get_id(); ?>&process=regenerate" class="button action">
+                      <?php echo _x('Regenerate', 'button', 'omnivalt'); ?>
                     </a>
                   </td>
                 </tr>
               <?php endforeach; ?>
 
-              <?php if (!$orders) : ?>
+              <?php if ( ! $orders_data['orders'] ) : ?>
                 <tr>
                   <td colspan="9">
                     <?php echo __('No orders found', 'woocommerce'); ?>

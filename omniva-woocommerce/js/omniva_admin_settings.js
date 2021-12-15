@@ -3,14 +3,14 @@ jQuery('document').ready(function($){
 	var all_keys = {
 		"pt":"terminal",
 		"c":"courier",
-                "cp":"courier_plus",
-                "pc":"private_customer",
+    "cp":"courier_plus",
+    "pc":"private_customer",
 		"po":"post"
 	};
 	var enable_only = { //Enable shipping method only in specified countries in array. If array empty, enable for all countries.
 		"pt":[],
 		"c":[],
-                "cp":["EE"],
+    "cp":["EE"],
 		"po":["EE"],
 		"pc":["EE"]
 	};
@@ -24,18 +24,18 @@ jQuery('document').ready(function($){
 		omniva_show_admin_fields_by_cb(this, ".omniva_debug");
 	});
 
-	$(document).on('change', '#woocommerce_omnivalt_shop_countrycode', function() {
-		for (var key in enable_only) {
-			if (enable_only[key].length > 0) {
-				if (enable_only[key].indexOf(this.value) >= 0) {
-					$("#woocommerce_omnivalt_method_" + key).prop("checked", true);
-				} else {
-					$("#woocommerce_omnivalt_method_" + key).prop("checked", false);
-				}
-			}
-			$("#woocommerce_omnivalt_method_" + key).trigger("change");
-		}
-	});
+	$(document).on('change', '#woocommerce_omnivalt_api_country', function() {
+    for (var key in enable_only) {
+      if (enable_only[key].length > 0) {
+        if (enable_only[key].indexOf(this.value) >= 0) {
+          $("#woocommerce_omnivalt_method_" + key).prop("checked", true);
+        } else {
+          $("#woocommerce_omnivalt_method_" + key).prop("checked", false);
+        }
+      }
+      $("#woocommerce_omnivalt_method_" + key).trigger("change");
+    }
+  });
 
 	$(document).on('click', '.debug-row .date', function() {
 		if ($(this).hasClass("active")) {
