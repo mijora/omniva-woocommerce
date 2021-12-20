@@ -259,6 +259,16 @@
   box-sizing: border-box;
 }
 
+.table-container .manage-column .button.action {
+  display: block;
+  text-align: center;
+  margin-bottom: 3px;
+}
+
+.table-container .manage-column .button.action:last-child {
+  margin-bottom: 0;
+}
+
 .page-omniva_manifest .table-container strong.title {
   display: block;
 }

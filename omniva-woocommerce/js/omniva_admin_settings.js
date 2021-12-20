@@ -1,93 +1,105 @@
+/*** Settings ***/
 jQuery('document').ready(function($){
-	omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_method_c", ".omniva_courier");
-	omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_method_pt", ".omniva_terminal");
-	omniva_hide_admin_field_by_all_cb(["#woocommerce_omnivalt_method_c","#woocommerce_omnivalt_method_pt"],".omniva_both");
-	omniva_toggle_class_by_cb("#woocommerce_omnivalt_method_c",".block-prices.courier", "disabled", false);
-	omniva_toggle_class_by_cb("#woocommerce_omnivalt_method_pt",".block-prices.terminal", "disabled", false);
+	var all_keys = {
+		"pt":"terminal",
+		"c":"courier",
+    "cp":"courier_plus",
+    "pc":"private_customer",
+		"po":"post"
+	};
+	var enable_only = { //Enable shipping method only in specified countries in array. If array empty, enable for all countries.
+		"pt":[],
+		"c":[],
+    "cp":["EE"],
+		"po":["EE"],
+		"pc":["EE"]
+	};
+	for (var key in all_keys) {
+		omnivalt_load_shipping_method(key, all_keys[key], all_keys);
+	};
+	omniva_hide_admin_field_by_all_cb(all_keys,".omniva_both");
 	omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_debug_mode",".omniva_debug");
-	
-	var pt_prices_blocks = $(".pt_enable");
-	for (var i=0; i<pt_prices_blocks.length; i++) {
-		var block = $(pt_prices_blocks[i]).closest('.block-prices').find('.sec-prices');
-		omniva_toggle_class_by_cb(pt_prices_blocks[i], block, "disabled", false);
-		var block = $(pt_prices_blocks[i]).closest('.block-prices').find('.sec-other');
-		omniva_toggle_class_by_cb(pt_prices_blocks[i], block, "disabled", false);
-	}
-	var c_prices_blocks = $(".c_enable");
-	for (var i=0; i<c_prices_blocks.length; i++) {
-		var block = $(c_prices_blocks[i]).closest('.block-prices').find('.sec-prices');
-		omniva_toggle_class_by_cb(c_prices_blocks[i], block, "disabled", false);
-		var block = $(c_prices_blocks[i]).closest('.block-prices').find('.sec-other');
-		omniva_toggle_class_by_cb(c_prices_blocks[i], block, "disabled", false);
-	}
-	
-	var pt_prices_free = $(".pt_enable_free");
-	for (var i=0; i<pt_prices_free.length; i++) {
-		var field = $(pt_prices_free[i]).closest('.prices-free').find('.price_free');
-		omniva_disable_by_cb(pt_prices_free[i], field, "disabled", false, "readonly");
-	}
-	var c_prices_free = $(".c_enable_free");
-	for (var i=0; i<c_prices_free.length; i++) {
-		var field = $(c_prices_free[i]).closest('.prices-free').find('.price_free');
-		omniva_disable_by_cb(c_prices_free[i], field, "disabled", false, "readonly");
-	}
 
-	var pt_prices_coupon = $(".pt_enable_coupon");
-	for (var i=0; i<pt_prices_coupon.length; i++) {
-		var field = $(pt_prices_coupon[i]).closest('.prices-coupon').find('.price_coupon');
-		omniva_disable_by_cb(pt_prices_coupon[i], field, "disabled", false);
-	}
-	var c_prices_coupon = $(".c_enable_coupon");
-	for (var i=0; i<c_prices_coupon.length; i++) {
-		var field = $(c_prices_coupon[i]).closest('.prices-coupon').find('.price_coupon');
-		omniva_disable_by_cb(c_prices_coupon[i], field, "disabled", false);
-	}
-
-	$( document ).on( 'change', '#woocommerce_omnivalt_method_c', function() {
-		omniva_show_admin_fields_by_cb(this, ".omniva_courier");
-		omniva_hide_admin_field_by_all_cb(["#woocommerce_omnivalt_method_c","#woocommerce_omnivalt_method_pt"],".omniva_both");
-		omniva_toggle_class_by_cb(this, ".block-prices.courier", "disabled", false);
-	});
-	$( document ).on( 'change', '#woocommerce_omnivalt_method_pt', function() {
-		omniva_show_admin_fields_by_cb(this, ".omniva_terminal");
-		omniva_hide_admin_field_by_all_cb(["#woocommerce_omnivalt_method_c","#woocommerce_omnivalt_method_pt"],".omniva_both");
-		omniva_toggle_class_by_cb(this, ".block-prices.terminal", "disabled", false);
-	});
-
-	$( document ).on( 'change', '.pt_enable', function() {
-		var block = $(this).closest('.block-prices').find('.sec-prices');
-		omniva_toggle_class_by_cb(this, block, "disabled", false);
-		var block = $(this).closest('.block-prices').find('.sec-other');
-		omniva_toggle_class_by_cb(this, block, "disabled", false);
-	});
-	$( document ).on( 'change', '.c_enable', function() {
-		var block = $(this).closest('.block-prices').find('.sec-prices');
-		omniva_toggle_class_by_cb(this, block, "disabled", false);
-		var block = $(this).closest('.block-prices').find('.sec-other');
-		omniva_toggle_class_by_cb(this, block, "disabled", false);
-	});
-
-	$( document ).on( 'change', '.pt_enable_free', function() {
-		var field = $(this).closest('.prices-free').find('.price_free');
-		omniva_disable_by_cb(this, field, "disabled", false, "readonly");
-	});
-	$( document ).on( 'change', '.c_enable_free', function() {
-		var field = $(this).closest('.prices-free').find('.price_free');
-		omniva_disable_by_cb(this, field, "disabled", false, "readonly");
-	});
-
-	$( document ).on( 'change', '.pt_enable_coupon', function() {
-		var field = $(this).closest('.prices-coupon').find('.price_coupon');
-		omniva_disable_by_cb(this, field, "disabled", false);
-	});
-	$( document ).on( 'change', '.c_enable_coupon', function() {
-		var field = $(this).closest('.prices-coupon').find('.price_coupon');
-		omniva_disable_by_cb(this, field, "disabled", false);
-	});
-
-	$( document ).on( 'change', '#woocommerce_omnivalt_debug_mode', function() {
+	$(document).on('change', '#woocommerce_omnivalt_debug_mode', function() {
 		omniva_show_admin_fields_by_cb(this, ".omniva_debug");
 	});
+
+	$(document).on('change', '#woocommerce_omnivalt_api_country', function() {
+    for (var key in enable_only) {
+      if (enable_only[key].length > 0) {
+        if (enable_only[key].indexOf(this.value) >= 0) {
+          $("#woocommerce_omnivalt_method_" + key).prop("checked", true);
+        } else {
+          $("#woocommerce_omnivalt_method_" + key).prop("checked", false);
+        }
+      }
+      $("#woocommerce_omnivalt_method_" + key).trigger("change");
+    }
+  });
+
+	$(document).on('click', '.debug-row .date', function() {
+		if ($(this).hasClass("active")) {
+			$(this).siblings("textarea").stop().slideUp("slow");
+			$(this).removeClass("active");
+		} else {
+			$(this).siblings("textarea").stop().slideDown("slow");
+			$(this).addClass("active");
+		}
+	});
+
+	/** Functions **/
+	function omnivalt_load_shipping_method(key, name, all_keys) {
+		var activation_field = "#woocommerce_omnivalt_method_" + key;
+		omniva_show_admin_fields_by_cb(activation_field, ".omniva_" + name);
+		omniva_toggle_class_by_cb(activation_field,".block-prices." + name, "disabled", false);
+		
+		var prices_blocks = $("." + key + "_enable");
+		for (var i=0; i<prices_blocks.length; i++) {
+			var block = $(prices_blocks[i]).closest('.block-prices').find('.sec-prices');
+			omniva_toggle_class_by_cb(prices_blocks[i], block, "disabled", false);
+			var block = $(prices_blocks[i]).closest('.block-prices').find('.sec-other');
+			omniva_toggle_class_by_cb(prices_blocks[i], block, "disabled", false);
+		}
+
+		var prices_free = $("." + key + "_enable_free");
+		for (var i=0; i<prices_free.length; i++) {
+			var field = $(prices_free[i]).closest('.prices-free').find('.price_free');
+			omniva_disable_by_cb(prices_free[i], field, "disabled", false, "readonly");
+		}
+
+		var pt_prices_coupon = $("." + key + "_enable_coupon");
+		for (var i=0; i<pt_prices_coupon.length; i++) {
+			var field = $(pt_prices_coupon[i]).closest('.prices-coupon').find('.price_coupon');
+			omniva_disable_by_cb(pt_prices_coupon[i], field, "disabled", false);
+		}
+
+		var all_activation_fields = [];
+		for (var i=0;i<all_keys.length;i++) {
+			all_activation_fields.push("#woocommerce_omnivalt_method_" + all_keys[i]);
+		}
+		$( document ).on( 'change', '#woocommerce_omnivalt_method_' + key, function() {
+			omniva_show_admin_fields_by_cb(this, ".omniva_" + name);
+			omniva_hide_admin_field_by_all_cb(all_activation_fields,".omniva_both");
+			omniva_toggle_class_by_cb(this, ".block-prices." + name, "disabled", false);
+		});
+
+		$( document ).on( 'change', '.' + key + '_enable', function() {
+			var block = $(this).closest('.block-prices').find('.sec-prices');
+			omniva_toggle_class_by_cb(this, block, "disabled", false);
+			var block = $(this).closest('.block-prices').find('.sec-other');
+			omniva_toggle_class_by_cb(this, block, "disabled", false);
+		});
+
+		$( document ).on( 'change', '.' + key + '_enable_free', function() {
+			var field = $(this).closest('.prices-free').find('.price_free');
+			omniva_disable_by_cb(this, field, "disabled", false, "readonly");
+		});
+
+		$( document ).on( 'change', '.' + key + '_enable_coupon', function() {
+			var field = $(this).closest('.prices-coupon').find('.price_coupon');
+			omniva_disable_by_cb(this, field, "disabled", false);
+		});
+	}
 
 	function omniva_show_admin_fields_by_cb(checkbox,fields_selector) {
 		if ($(checkbox).is(':checked')) {
@@ -147,6 +159,7 @@ jQuery('document').ready(function($){
 	}
 });
 
+/*** Tables ***/
 jQuery("document").ready(function($) {
 	omnivalt_checkAllRows($(".prices-table > table")[0]);
 	omnivalt_checkTableAddRowButton($(".prices-table > table")[0]);
@@ -181,6 +194,7 @@ jQuery("document").ready(function($) {
 		omnivalt_showPricesSection(this);
 	});
 
+	/** Functions **/
 	function omnivalt_btnAct_addPricesTableRow(button) {
 		var btn_row = $(button).closest("tr");
 		var table = $(button).closest("table");
@@ -359,6 +373,7 @@ jQuery("document").ready(function($) {
   	var prices_single = $(select_field).closest(".sec-prices").find(".prices-single");
   	var prices_weight = $(select_field).closest(".sec-prices").find(".prices-table.table-weight");
   	var prices_amount = $(select_field).closest(".sec-prices").find(".prices-table.table-amount");
+    var prices_boxsize = $(select_field).closest(".sec-prices").find(".prices-table.table-boxsize");
   	
   	if ($(select_field).val() != "simple") {
   		$(prices_single).slideUp("slow");
@@ -377,5 +392,11 @@ jQuery("document").ready(function($) {
   	} else {
   		$(prices_amount).slideDown("slow");
   	}
+
+    if ($(select_field).val() != "boxsize") {
+      $(prices_boxsize).slideUp("slow");
+    } else {
+      $(prices_boxsize).slideDown("slow");
+    }
   }
 });

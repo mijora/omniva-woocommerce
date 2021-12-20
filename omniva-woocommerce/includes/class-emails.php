@@ -1,14 +1,14 @@
 <?php
-class Omniva_Emails
+class OmnivaLt_Emails
 {
 	protected $WC_mailer;
 	protected $emails_dir;
 	protected $overrides_dir;
 
-	public function __construct($templates_dir) {
+	public function __construct() {
 		$this->WC_mailer = WC()->mailer();
-		$this->emails_dir = $templates_dir . 'emails/';
-		$this->overrides_dir = get_stylesheet_directory() . '/omniva/emails/';
+		$this->emails_dir = OMNIVALT_DIR . '/templates/emails/';
+		$this->overrides_dir = OmnivaLt_Core::get_overrides_dir() . 'emails/';
 	}
 
 	public function send_label($order, $recipient, $params=array()) {

@@ -3,3 +3,6 @@
 
 # Ignore pdf files for stickers
 */pdf/*.pdf
+*/debug/*
+*/logs/*
+/nbproject

@@ -1,4 +1,26 @@
+== Explanations of errors ==
+
+001 'The service is not available to the sender country' - There is no desired key in configs 'shipping_params' section
+002 'The service is not available to the receiver country' - There is no desired key in configs 'shipping_params' section 'shipping_sets' subsection
+003 'This shipping set does not exist' - There is no desired key in configs 'shipping_sets' section
+004 'The service does not exist for the specified method' - There is no desired key in configs 'shipping_sets' section subsection
+
 == Changelog ==
+
+= 1.9.0 =
+- added terminal price set by terminal size
+- redesigned some features
+- adapted for use with Estonian API logins
+- added new destination country: Finland
+- added new shipping methods: Post office, Private customer, Courier Plus
+- added support of additional services
+- improved debug working
+- added update checker
+- added "Bad API logins" error when failed generate label because of authentication
+- added a ability to add comment in label
+- fixed bug with country in checkout page
+- added fix, which select shop country if country is not set in order
+- created global errors with codes
 
 = 1.8.4 =
 - fixed terminal selection field showing when country is changed and Omniva pickup become selected
