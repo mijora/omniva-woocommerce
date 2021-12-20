@@ -1,8 +1,9 @@
 # Changelog
 
-## [Unreleased]
+## [2.0.0]
 ### Fixed
 - fixed bug with country in checkout page
+- added fix, which is selecting shop country if country is not set in order
 
 ### Improved
 - improved debug working
@@ -10,12 +11,14 @@
 - added a ability to add comment in label
 - added terminal price set by terminal size
 - redesigned some features
+- adapted for use with Estonian API logins
 
 ### Added
 - added update checker
 - added new country: Finland
 - added new shipping methods: Post office, Private customer, Courier Plus
-- added new services: Fragile, Document return, Insurance
+- added support of additional services
+- created global errors with codes (for now, it is using only programmatically)
 
 ## [1.8.4]
 ### Fixed

@@ -7,7 +7,7 @@
 
 == Changelog ==
 
-= Unreleased =
+= 2.0.0 =
 - added terminal price set by terminal size
 - redesigned some features
 - adapted for use with Estonian API logins
