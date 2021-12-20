@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0]
+## [1.9.0]
 ### Fixed
 - fixed bug with country in checkout page
 - added fix, which is selecting shop country if country is not set in order
