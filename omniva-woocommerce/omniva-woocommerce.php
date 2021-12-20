@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.8.4-ee_1215
+ * Version: 1.8.4-ee_1220
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -134,7 +134,7 @@ function omnivalt_configs($section_name = false) {
       'key' => 'pt',
       'title' => __('Parcel terminal', 'omnivalt'),
       'is_shipping_method' => true,
-      'description' => __('Activate this service, when you want to send parcels to parcel terminals.', 'omnivalt'),
+      'description' => __('Activate this service, when you want to send parcels to parcel terminals.', 'omnivalt'),
       'sizes' => array(
         'min' => array(2, 9, 14),
         'S' => array(9, 38, 64),
@@ -146,30 +146,45 @@ function omnivalt_configs($section_name = false) {
         'M' => _x('Medium', 'Box size', 'omnivalt'),
         'L' => _x('Large', 'Box size', 'omnivalt'),
       ),
+      'weight' => array(
+        'default' => 30,
+      ),
     ),
     'courier' => array(
       'key' => 'c',
       'title' => __('Courier Baltic', 'omnivalt'),
       'is_shipping_method' => true,
-      'description' => __('Activate this service, when you want to send parcels between Baltic states.', 'omnivalt'),
+      'description' => __('Activate this service, when you want to send parcels within Latvia and Lithuania.', 'omnivalt'),
+      'weight' => array(
+        'default' => 100,
+      ),
     ),
     'courier_plus' => array(
       'key' => 'cp',
       'title' => __('Courier', 'omnivalt'),
       'is_shipping_method' => true,
-      'description' => __('Activate this service, when your e-shop customers would like to receive parcels in Estonia. Available for Estonian customers only.', 'omnivalt'),
+      'description' => __('Activate this service, when your e-shop customers would like to receive parcels in Estonia.', 'omnivalt') . '  ' . __('Available for Estonian customers only.', 'omnivalt'),
+      'weight' => array(
+        'default' => 100,
+      ),
     ),
     'private_customer' => array(
       'key' => 'pc',
       'title' => __('Courier Finland', 'omnivalt'),
       'is_shipping_method' => true,
-      'description' => __('Activate this service, when you want to send parcels to private persons in Finland.', 'omnivalt'),
+      'description' => __('Activate this service, when you want to send parcels to private persons in Finland.', 'omnivalt')  . '  ' . __('Available for Estonian customers only.', 'omnivalt'),
+      'weight' => array(
+        'default' => 100,
+      ),
     ),
     'post' => array(
       'key' => 'po',
       'title' => __('Post office', 'omnivalt'),
       'is_shipping_method' => true,
-      'description' => __('Activate this service, when you want to send parcels to post offices.', 'omnivalt'),
+      'description' => __('Activate this service, when you want to send parcels to post offices.', 'omnivalt'),
+      'weight' => array(
+        'default' => 100,
+      ),
     ),
     'logistic' => array(
       'key' => 'lc',

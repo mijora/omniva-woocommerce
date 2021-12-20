@@ -214,6 +214,7 @@ class OmnivaLt_Core
 
   public static function init_shipping_method()
   {
+    require_once OMNIVALT_DIR . 'includes/class-shipping-method-helper.php';
     include OMNIVALT_DIR . 'includes/class-shipping-method.php';
   }
 

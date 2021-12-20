@@ -147,4 +147,21 @@ class OmnivaLt_Helper
 
     return $shipping_sets;
   }
+
+  public static function convert_method_name_to_short($asociations, $method_name, $reverse = false)
+  {
+    foreach ( $asociations as $key => $value ) {
+      if ( ! $reverse ) {
+        if ( $method_name === $value ) {
+          return $key;
+        }
+      } else {
+        if ( $method_name === $key ) {
+          return $value;
+        }
+      }
+    }
+
+    return $method_name;
+  }
 }

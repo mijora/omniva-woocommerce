@@ -120,11 +120,12 @@ do_action('omniva_admin_manifest_head');
               <?php $date_tracker = false; ?>
               <?php foreach ( $orders_data['orders'] as $order ) : ?>
                 <?php
-                  $manifest_date = $order->get_meta($configs['meta_keys']['manifest_date']);
-                  $date = date('Y-m-d H:i', strtotime($manifest_date));
-                  $manifest_date_old = $order->get_meta($configs['meta_keys']['manifest_date_old']); // Compatible with old
-                  $date_old = date('Y-m-d H:i', strtotime($manifest_date_old));
-                  ?>
+                $barcode = $order->get_meta($configs['meta_keys']['barcode']);
+                $manifest_date = $order->get_meta($configs['meta_keys']['manifest_date']);
+                $date = date('Y-m-d H:i', strtotime($manifest_date));
+                $manifest_date_old = $order->get_meta($configs['meta_keys']['manifest_date_old']); // Compatible with old
+                $date_old = date('Y-m-d H:i', strtotime($manifest_date_old));
+                ?>
                 <?php if ( $orders_data['action'] == 'completed_orders' && $date_tracker !== $date && $date_tracker !== $date_old ) : ?>
                   <tr>
                     <td colspan="9" class="manifest-date-title">
@@ -159,7 +160,6 @@ do_action('omniva_admin_manifest_head');
                   </td>
                   <td class="manage-column">
                     <div class="data-grid-cell-content">
-                      <?php $barcode = $order->get_meta($configs['meta_keys']['barcode']); ?>
                       <?php if ( $barcode ) : ?>
                         <?php do_action('print_omniva_tracking_url', $omnivalt->settings['shop_countrycode'], $barcode); ?>
                       <?php endif; ?>
@@ -179,9 +179,11 @@ do_action('omniva_admin_manifest_head');
                     <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order->get_id(); ?>" class="button action">
                       <?php echo _x('Print', 'button', 'omnivalt'); ?>
                     </a>
-                    <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order->get_id(); ?>&process=regenerate" class="button action">
-                      <?php echo _x('Regenerate', 'button', 'omnivalt'); ?>
-                    </a>
+                    <?php if ( $barcode ) : ?>
+                      <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order->get_id(); ?>&process=regenerate" class="button action">
+                        <?php echo _x('Regenerate', 'button', 'omnivalt'); ?>
+                      </a>
+                    <?php endif; ?>
                   </td>
                 </tr>
               <?php endforeach; ?>
