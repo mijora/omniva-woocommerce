@@ -10,16 +10,17 @@
 = Unreleased =
 - added terminal price set by terminal size
 - redesigned some features
-- added new country: Finland
+- adapted for use with Estonian API logins
+- added new destination country: Finland
 - added new shipping methods: Post office, Private customer, Courier Plus
-- added new services: Fragile, Document return, Insurance
+- added support of additional services
 - improved debug working
 - added update checker
 - added "Bad API logins" error when failed generate label because of authentication
 - added a ability to add comment in label
 - fixed bug with country in checkout page
 - added fix, which select shop country if country is not set in order
-- added error message, when are error in API account
+- created global errors with codes
 
 = 1.8.4 =
 - fixed terminal selection field showing when country is changed and Omniva pickup become selected

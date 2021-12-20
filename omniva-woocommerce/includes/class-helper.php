@@ -56,36 +56,10 @@ class OmnivaLt_Helper
       if ( ! in_array($exploded[1], $allowed_methods) ) {
         $allowed_methods[] = $exploded[1];
       }
-      /*foreach ( $exploded as $method_key ) {
-        if ( ! in_array($method_key, $allowed_methods) ) {
-          $allowed_methods[] = $method_key;
-        }
-      }*/
     }
 
     return $allowed_methods;
   }
-
-  /*public static function get_allowed_methods_by_country($country)
-  {
-    $configs = OmnivaLt_Core::get_configs();
-
-    if ( ! isset($configs['shipping_params'][$country]) ) {
-      return array('status' => 'error', 'error_code' => '001');
-    }
-
-    $allowed_methods = array();
-    foreach ( $configs['shipping_params'][$country]['shipping_sets'] as $country => $set_name ) {
-      $set_methods = self::get_allowed_methods($set_name);
-      foreach ( $set_methods as $method ) {
-        if ( ! in_array($method, $allowed_methods) ) {
-          $allowed_methods[] = $method;
-        }
-      }
-    }
-
-    return $allowed_methods;
-  }*/
 
   public static function add_msg($msg, $type)
   {

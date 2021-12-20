@@ -51,7 +51,7 @@ class OmnivaLt_Core
     return $shipping_method->settings;
   }
 
-  public static function get_shipping_method_info($args = '') //TODO: Make a mapping (simple function to return required info)
+  public static function get_shipping_method_info($args = '') //TODO: Not completed and still not using. Make a mapping (simple function to return required info)
   {
     $args['receiver_country'] = (isset($args['receiver_country'])) ? $args['receiver_country'] : '';
     $args['get_all'] = (isset($args['get_all'])) ? $args['get_all'] : false;
