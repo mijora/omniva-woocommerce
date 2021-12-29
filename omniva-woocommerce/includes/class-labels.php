@@ -27,8 +27,7 @@ class OmnivaLt_Labels
       return;
     }
 
-    require_once(OMNIVALT_DIR . 'tcpdf/tcpdf.php');
-    require_once(OMNIVALT_DIR . 'fpdi/src/autoload.php');
+    OmnivaLt_Core::load_vendors(array('tcpdf', 'fpdi'));
 
     $print_type = (isset($this->omnivalt_settings['print_type'])) ? $this->omnivalt_settings['print_type'] : '4';
     $count = 0;
