@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed PHP errors, when new settings is not saved
+
+### Improved
+- moved vendors to separate folder
+
 ## [1.9.0]
 ### Fixed
 - fixed bug with country in checkout page

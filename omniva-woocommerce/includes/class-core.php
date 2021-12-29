@@ -248,6 +248,16 @@ class OmnivaLt_Core
     }
   }
 
+  public static function load_vendors($vendors = array())
+  {
+    if (empty($vendors) || in_array('tcpdf', $vendors)) {
+      require_once(OMNIVALT_DIR . 'vendor/tcpdf/tcpdf.php');
+    }
+    if (empty($vendors) || in_array('fpdi', $vendors)) {
+      require_once(OMNIVALT_DIR . 'vendor/fpdi/src/autoload.php');
+    }
+  }
+
   public static function get_error_text($error_code)
   {
     $errors = array(
