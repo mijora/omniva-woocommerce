@@ -49,6 +49,16 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $this->enabled = isset($this->settings['enabled']) ? $this->settings['enabled'] : 'yes';
       $this->title = isset($this->settings['title']) ? $this->settings['title'] : __('Omnivalt Shipping', 'omnivalt');
 
+      // Default values
+      if ( empty($this->settings['api_country']) ) {
+        $this->settings['api_country'] = 'LT';
+      }
+      foreach ( $this->methods_asociations as $key => $name ) {
+        if ( empty($this->settings['method_' . $key]) ) {
+          $this->settings['method_' . $key] = 'no';
+        }
+      }
+
       $this->shipping_sets = OmnivaLt_Helper::get_shipping_sets($this->settings['api_country']);
     }
 
