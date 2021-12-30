@@ -216,6 +216,7 @@ class OmnivaLt_Core
   {
     require_once OMNIVALT_DIR . 'includes/class-shipping-method-helper.php';
     include OMNIVALT_DIR . 'includes/class-shipping-method.php';
+    self::load_conditional_hooks();
   }
 
   public static function add_shipping_method($methods)
@@ -342,8 +343,9 @@ class OmnivaLt_Core
     add_action('woocommerce_checkout_update_order_meta', 'OmnivaLt_Order::add_terminal_id_to_order');
     add_action('woocommerce_review_order_before_cart_contents', 'OmnivaLt_Order::validate_order', 10);
     add_action('woocommerce_after_checkout_validation', 'OmnivaLt_Order::validate_order', 10);
-    add_action('woocommerce_order_details_after_order_table', 'OmnivaLt_Order::show_terminal_details', 10, 1);
-    add_action('woocommerce_email_after_order_table', 'OmnivaLt_Order::show_terminal_details', 10, 1);
+    add_action('woocommerce_order_details_after_order_table', 'OmnivaLt_Order::show_selected_terminal', 10, 1);
+    add_action('woocommerce_order_details_after_order_table', 'OmnivaLt_Order::show_tracking_link', 10, 1);
+    add_action('woocommerce_email_after_order_table', 'OmnivaLt_Order::show_selected_terminal', 10, 1);
     add_action('woocommerce_admin_order_preview_end', 'OmnivaLt_Order::display_order_data_in_admin');
     add_action('wp_ajax_generate_omnivalt_label', 'OmnivaLt_Order::generate_label');
     add_action('woocommerce_checkout_update_order_meta', 'OmnivaLt_Order::add_cart_weight');
@@ -363,5 +365,16 @@ class OmnivaLt_Core
     add_filter('admin_post_omnivalt_labels', 'OmnivaLt_Order::post_label_actions', 20, 3);
     add_filter('admin_post_omnivalt_manifest', 'OmnivaLt_Order::post_manifest_actions', 20, 3);
     add_filter('woocommerce_admin_order_actions_end', 'OmnivaLt_Order::order_actions', 10, 1);
+  }
+
+  private static function load_conditional_hooks()
+  {
+    $omnivalt_Shipping_Method = new Omnivalt_Shipping_Method();
+
+    $track_info_in_emails = (isset($omnivalt_Shipping_Method->settings['track_info_in_email'])) ? $omnivalt_Shipping_Method->settings['track_info_in_email'] : 'yes';
+    
+    if ( $track_info_in_emails === 'yes' ) {
+      add_action('woocommerce_email_after_order_table', 'OmnivaLt_Order::show_tracking_link', 10, 1);
+    }
   }
 }
