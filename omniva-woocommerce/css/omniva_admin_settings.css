@@ -1,3 +1,14 @@
+.woocommerce table.omniva-settings .section_title {
+  padding-left: 0;
+}
+.woocommerce table.omniva-settings .section_title hr.have_title {
+  margin-bottom: 0;
+}
+.woocommerce table.omniva-settings .section_title span {
+  font-size: 12px;
+  line-height: 12px;
+  color: #999;
+}
 .woocommerce table.omniva-settings .omniva-fake-btn {
   display: inline-block;
   padding: 4px 7px;

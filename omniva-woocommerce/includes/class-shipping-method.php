@@ -150,7 +150,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'default' => 'yes',
         ),
         'hr_api' => array(
-          'type' => 'hr'
+          'type' => 'hr',
+          'title' => __('API', 'omnivalt'),
         ),
         'api_url' => array(
           'title' => __('API URL', 'omnivalt'),
@@ -178,7 +179,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'description' => __('Choose the country of Omniva support from which you received API logins.', 'omnivalt'),
         ),
         'hr_shop' => array(
-          'type' => 'hr'
+          'type' => 'hr',
+          'title' => __('Sender information', 'omnivalt'),
         ),
         'company' => array(
           'title' => __('Company name', 'omnivalt'),
@@ -241,7 +243,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         ),
       );
       $fields['hr_methods'] = array(
-        'type' => 'hr'
+        'type' => 'hr',
+        'title' => __('Shipping methods', 'omnivalt'),
       );
       foreach ($this->omnivalt_configs['method_params'] as $ship_method => $ship_method_values) {
         if ($ship_method_values['is_shipping_method'] === false) continue;
@@ -275,7 +278,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         );
       }
       $fields['hr_settings'] = array(
-        'type' => 'hr'
+        'type' => 'hr',
+        'title' => __('Shipping methods settings', 'omnivalt'),
       );
       foreach ( $this->omnivalt_configs['method_params'] as $ship_method => $ship_method_values ) {
         if ($ship_method_values['is_shipping_method'] === false) continue;
@@ -335,6 +339,20 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'default' => 'yes',
         'class' => 'omniva_terminal'
       );
+      $fields['hr_orders'] = array(
+        'type' => 'hr',
+        'title' => __('Orders', 'omnivalt'),
+      );
+      $fields['track_info_in_email'] = array(
+        'title' => __('Show tracking information in emails', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('Show tracking information in WooCommerce Order emails.', 'omnivalt'),
+        'default' => 'yes',
+      );
+      $fields['hr_labels'] = array(
+        'type' => 'hr',
+        'title' => __('Labels', 'omnivalt'),
+      );
       $fields['print_type'] = array(
         'title' => __('Labels print type', 'omnivalt'),
         'type' => 'select',
@@ -377,7 +395,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'class' => 'omniva_terminal'
       );
       $fields['hr_manifest'] = array(
-        'type' => 'hr'
+        'type' => 'hr',
+        'title' => __('Manifest', 'omnivalt'),
       );
       $fields['manifest_show_barcode'] = array(
         'title' => __('Show barcode in manifest', 'omnivalt'),
@@ -386,7 +405,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'default' => 'yes',
       );
       $fields['hr_debug'] = array(
-        'type' => 'hr'
+        'type' => 'hr',
+        'title' => __('Debug', 'omnivalt'),
       );
       $fields['debug_mode'] = array(
         'title' => __('Enable debug mode', 'omnivalt'),
@@ -408,14 +428,25 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'subtitle' => __('Response', 'omnivalt'),
         'class' => 'omniva_debug'
       );
+      $fields['hr_end'] = array(
+        'type' => 'hr',
+      );
       $this->form_fields = $fields;
     }
 
     public function generate_hr_html( $key, $value )
     {
       $class = (isset($value['class'])) ? $value['class'] : '';
+      $title = '';
+      if ( ! empty($value['title']) ) {
+        if ( ! empty($class) ) {
+          $class .= ' ';
+        }
+        $class .= 'have_title';
+        $title = '<span>' . $value['title'] . '</span>';
+      }
       
-      $html = '<tr valign="top"><td colspan="2"><hr class="' . $class . '"></td></tr>';
+      $html = '<tr valign="top"><td colspan="2" class="section_title"><hr class="' . $class . '">' . $title . '</td></tr>';
       
       return $html;
     }

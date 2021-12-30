@@ -156,7 +156,7 @@ class OmnivaLt_Order
     }
   }
 
-  public static function show_terminal_details($order)
+  public static function show_selected_terminal($order)
   {
     $configs_methods = OmnivaLt_Core::get_configs('method_params');
     $send_method = self::get_omniva_method($order);
@@ -169,6 +169,11 @@ class OmnivaLt_Order
         echo '<p>Omniva ' . strtolower($method_values['title']) . ": " . OmnivaLt_Terminals::get_terminal_address($order) . '</p>';
       }
     }
+  }
+
+  public static function show_tracking_link($order)
+  {
+    $send_method = self::get_omniva_method($order);
 
     if ( $send_method ) {
       $omnivalt_labels = new OmnivaLt_Labels();
