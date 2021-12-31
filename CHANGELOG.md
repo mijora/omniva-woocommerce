@@ -8,6 +8,8 @@
 - moved vendors to separate folder
 - added a option to disable tracking link showing in Woocommerce emails
 - the settings page is organized into sections
+- excluded locations.json file in install zip to generate the latest terminals list during each installation
+- images moved to separate folder
 
 ## [1.9.0]
 ### Fixed
