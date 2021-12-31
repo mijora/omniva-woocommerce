@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.9.1]
 ### Fixed
 - fixed PHP errors, when new settings is not saved
 
