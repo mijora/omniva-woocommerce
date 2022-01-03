@@ -184,6 +184,13 @@ class OmnivaLt_Terminals
     </div>';
   }
 
+  public static function check_terminals_json_file()
+  {
+    if ( ! file_exists(OMNIVALT_DIR . 'locations.json') ) {
+      OmnivaLt_Cronjob::generate_locations_file();
+    }
+  }
+
   public static function get_terminals_json()
   {
     if ( ! wp_verify_nonce($_REQUEST['nonce'], "omniva_terminals_json_nonce") ) {
