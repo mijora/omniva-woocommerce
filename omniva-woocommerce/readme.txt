@@ -7,6 +7,13 @@
 
 == Changelog ==
 
+= 1.9.2 =
+- fixed bug, when terminal locations file not exists
+- changed maximum width of the call courier popup window
+- fixed free shipping
+- added the number of parcels when a courier is called
+- improved plugin security
+
 = 1.9.1 =
 - fixed PHP errors, when new settings is not saved
 - moved vendors to separate folder
