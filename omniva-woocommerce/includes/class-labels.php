@@ -194,7 +194,7 @@ class OmnivaLt_Labels
   {
     $wc_shipping = new WC_Shipping();
     $omnivalt_api = new OmnivaLt_Api();
-    $callCarrierReturn = $omnivalt_api->call_courier();
+    $callCarrierReturn = $omnivalt_api->call_courier(intval($_GET['call_quantity']));
     if ($callCarrierReturn['status'] == true)
       OmnivaLt_Helper::add_msg(__("Omniva courier called", 'omnivalt'), 'omniva-notice');
     else

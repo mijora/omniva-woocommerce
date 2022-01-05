@@ -325,6 +325,10 @@
   border: 1px solid grey;
 }
 
+#omniva-call input[type=number] {
+  width: 70px;
+}
+
 @media only screen and (min-width: 1600px) {
   .page-omniva_manifest .column-order_id {
     width: 120px;
