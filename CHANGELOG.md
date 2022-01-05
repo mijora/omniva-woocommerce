@@ -1,7 +1,12 @@
 # Changelog
 
 ### Fixed
-- added terminals list file check
+- fixed bug, when terminal locations file not exists
+- changed maximum width of the call courier popup window
+
+### Improved
+- added the number of parcels when a courier is called
+- improved plugin files security
 
 ## [1.9.1]
 ### Fixed
