@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed terminal selection field load
+
 ## [1.9.2]
 ### Fixed
 - fixed bug, when terminal locations file not exists
