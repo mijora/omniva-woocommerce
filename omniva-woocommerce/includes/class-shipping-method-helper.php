@@ -91,7 +91,7 @@ class OmnivaLt_Shipmethod_Helper
     return $amount;
   }
 
-  public static function check_coupon($key, $amount, $applied_coupons)
+  public static function check_coupon($key, $prices, $amount, $applied_coupons)
   {
     $keys = array(
       'enable' => $key . '_enable_coupon',

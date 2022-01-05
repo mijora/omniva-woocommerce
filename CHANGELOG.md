@@ -3,6 +3,7 @@
 ## [1.9.2.1]
 ### Fixed
 - fixed terminal selection field load
+- fixed free shipping with coupons
 
 ## [1.9.2]
 ### Fixed

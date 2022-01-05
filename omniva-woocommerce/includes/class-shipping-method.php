@@ -1113,7 +1113,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         }
 
         $amount = OmnivaLt_Shipmethod_Helper::check_amount_free($rate_key, $prices, $amount, $cart_amount);
-        $amount = OmnivaLt_Shipmethod_Helper::check_coupon($rate_key, $amount, $package['applied_coupons']);
+        $amount = OmnivaLt_Shipmethod_Helper::check_coupon($rate_key, $prices, $amount, $package['applied_coupons']);
 
         $rate = array(
           'id' => 'omnivalt_' . $rate_key,

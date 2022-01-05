@@ -9,6 +9,7 @@
 
 = 1.9.2.1 =
 - fixed terminal selection field load
+- fixed free shipping with coupons
 
 = 1.9.2 =
 - fixed bug, when terminal locations file not exists
