@@ -7,6 +7,9 @@
 
 == Changelog ==
 
+= 1.9.2.1 =
+- fixed terminal selection field load
+
 = 1.9.2 =
 - fixed bug, when terminal locations file not exists
 - changed maximum width of the call courier popup window
