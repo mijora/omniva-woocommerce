@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: omniva\n"
-"POT-Creation-Date: 2021-12-30 09:27+0000\n"
+"POT-Creation-Date: 2022-01-05 09:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -66,7 +66,7 @@ msgstr ""
 msgid "Address and contact information can be changed in Omniva settings."
 msgstr ""
 
-#: includes/class-manifest.php:111
+#: includes/class-manifest.php:113
 msgid "All orders"
 msgstr ""
 
@@ -127,7 +127,7 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: includes/class-api.php:462
+#: includes/class-api.php:466
 msgid "Bad API logins"
 msgstr ""
 
@@ -180,7 +180,7 @@ msgstr ""
 msgid "By cart weight"
 msgstr ""
 
-#: manifest_page.php:22 manifest_page.php:221
+#: manifest_page.php:22 manifest_page.php:225
 msgid "Call Omniva courier"
 msgstr ""
 
@@ -209,7 +209,7 @@ msgstr ""
 msgid "Company name"
 msgstr ""
 
-#: includes/class-manifest.php:113
+#: includes/class-manifest.php:115
 msgid "Completed orders"
 msgstr ""
 
@@ -313,27 +313,27 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: includes/class-core.php:268
+#: includes/class-core.php:269
 msgctxt "error"
 msgid "The service does not exist for the specified method"
 msgstr ""
 
-#: includes/class-core.php:266
+#: includes/class-core.php:267
 msgctxt "error"
 msgid "The service is not available to the receiver country"
 msgstr ""
 
-#: includes/class-core.php:265
+#: includes/class-core.php:266
 msgctxt "error"
 msgid "The service is not available to the sender country"
 msgstr ""
 
-#: includes/class-core.php:267
+#: includes/class-core.php:268
 msgctxt "error"
 msgid "This shipping set does not exist"
 msgstr ""
 
-#: includes/class-core.php:272
+#: includes/class-core.php:273
 msgctxt "error"
 msgid "Unknown error"
 msgstr ""
@@ -556,7 +556,7 @@ msgstr ""
 msgid "Maximum cart size for parcel terminals. Leave all empty to disable."
 msgstr ""
 
-#: includes/class-manifest.php:112
+#: includes/class-manifest.php:114
 msgid "New orders"
 msgstr ""
 
@@ -568,7 +568,7 @@ msgstr ""
 msgid "No compatible orders for manifest"
 msgstr ""
 
-#: includes/class-api.php:193 includes/class-api.php:435
+#: includes/class-api.php:193 includes/class-api.php:439
 msgid "No saved barcodes received"
 msgstr ""
 
@@ -578,6 +578,10 @@ msgstr ""
 
 #: includes/class-shipping-method.php:371
 msgid "Note on label"
+msgstr ""
+
+#: manifest_page.php:221
+msgid "Number of parcels"
 msgstr ""
 
 #. Description of the plugin
@@ -612,7 +616,7 @@ msgstr ""
 msgid "Omniva post offices"
 msgstr ""
 
-#: includes/class-manifest.php:16 includes/class-manifest.php:17
+#: includes/class-manifest.php:18 includes/class-manifest.php:19
 #: includes/class-order.php:342 includes/class-shipping-method.php:22
 msgid "Omniva Shipping"
 msgstr ""
@@ -759,7 +763,7 @@ msgstr ""
 msgid "Response"
 msgstr ""
 
-#: includes/class-api.php:465
+#: includes/class-api.php:469
 msgid "Response is in the wrong format"
 msgstr ""
 
@@ -783,7 +787,7 @@ msgstr ""
 msgid "Select categories for which you want to disable the Omniva method."
 msgstr ""
 
-#: manifest_page.php:292 manifest_page.php:308
+#: manifest_page.php:296 manifest_page.php:312
 msgid "Select orders"
 msgstr ""
 
@@ -838,7 +842,7 @@ msgstr ""
 msgid "Services"
 msgstr ""
 
-#: includes/class-core.php:229
+#: includes/class-core.php:230
 msgid "Settings"
 msgstr ""
 
@@ -923,12 +927,12 @@ msgstr ""
 msgid "Show post offices map"
 msgstr ""
 
-#: includes/class-shipping-method.php:349
-msgid "Show shipment tracking link with code in WooCommerce Order emails."
-msgstr ""
-
 #: includes/class-shipping-method.php:347
 msgid "Show tracking information in emails"
+msgstr ""
+
+#: includes/class-shipping-method.php:349
+msgid "Show tracking information in WooCommerce Order emails."
 msgstr ""
 
 #: includes/class-admin-html.php:13

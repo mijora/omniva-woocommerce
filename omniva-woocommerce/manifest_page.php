@@ -200,7 +200,7 @@ do_action('omniva_admin_manifest_head');
         </form>
       </div>
 
-      <!-- Modal Carier call-->
+      <!-- Modal Courier call-->
       <div id="omniva-courier-modal" class="modal" role="dialog">
         <!-- Modal content-->
         <div class="modal-content">
@@ -217,8 +217,12 @@ do_action('omniva_admin_manifest_head');
             <div>
               <span><?php echo __("Shop address", 'omnivalt'); ?>:</span> <?php echo $omnivalt->settings['shop_address'] . ', ' . $omnivalt->settings['shop_city']; ?>
             </div>
+            <div>
+              <span><?php echo __("Number of parcels", 'omnivalt'); ?>:</span>
+              <input type="number" id="call_quantity" name="call_quantity" min="0" max="29" step="1" value="0"/>
+            </div>
             <div class="modal-footer">
-              <button type="submit" id="omniva-call-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>
+              <button type="submit" id="omniva-call-confirm-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>
               <button type="button" id="omniva-call-cancel-btn" class="button action"><?php _e('Cancel') ?></button>
             </div>
           </form>

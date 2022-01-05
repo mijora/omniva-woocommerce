@@ -5,7 +5,7 @@ class OmnivaLt_Cronjob
   {
     add_filter('cron_schedules', array(__CLASS__, 'add_weekly'));
 
-    add_action('omnivalt_location_update', array(__CLASS__, 'do_daily_update'));
+    add_action('omnivalt_location_update', array(__CLASS__, 'generate_locations_file'));
 
     register_activation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'activation'));
     register_deactivation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'deactivation'));
@@ -32,7 +32,7 @@ class OmnivaLt_Cronjob
     return $schedules;
   }
 
-  public static function do_daily_update()
+  public static function generate_locations_file()
   {
     self::log('Preparing locations update...', true, true);
     $location_params = OmnivaLt_Core::get_configs('locations');

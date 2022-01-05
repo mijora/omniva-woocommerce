@@ -110,7 +110,7 @@
     padding: 20px;
     border: 1px solid #888;
     width: fit-content;
-    max-width: 90%;
+    max-width: 450px;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.3);
   }
 
@@ -323,6 +323,10 @@
   display: none;
   background-color: #fff;
   border: 1px solid grey;
+}
+
+#omniva-call input[type=number] {
+  width: 70px;
 }
 
 @media only screen and (min-width: 1600px) {

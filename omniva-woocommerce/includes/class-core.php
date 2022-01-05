@@ -217,6 +217,7 @@ class OmnivaLt_Core
     require_once OMNIVALT_DIR . 'includes/class-shipping-method-helper.php';
     include OMNIVALT_DIR . 'includes/class-shipping-method.php';
     self::load_conditional_hooks();
+    OmnivaLt_Terminals::check_terminals_json_file();
   }
 
   public static function add_shipping_method($methods)

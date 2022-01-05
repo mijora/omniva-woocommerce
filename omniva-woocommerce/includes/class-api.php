@@ -198,13 +198,14 @@ class OmnivaLt_Api
     }
   }
 
-  public function call_courier()
+  public function call_courier($parcels_number = 0)
   {
     $is_cod = false;
     $parcel_terminal = "";
     $shop = $this->get_shop_data();
     $pickStart = OmnivaLt_Helper::get_formated_time($shop->pick_from, '8:00');
     $pickFinish = OmnivaLt_Helper::get_formated_time($shop->pick_until, '17:00');
+    $parcels_number = ($parcels_number > 0) ? $parcels_number : 1;
     
     $service = OmnivaLt_Helper::get_shipping_service_code($shop->country, 'call', 'courier_call');
     if ( isset($service['status']) && $service['status'] === 'error' ) {
@@ -212,29 +213,32 @@ class OmnivaLt_Api
     }
 
     $xmlRequest = $this->xml_header();
-    $xmlRequest .= '<item service="' . $service . '" >
-      <measures weight="1" />
-      <receiverAddressee>
-        <person_name>' . $shop->name . '</person_name>
-        <!--Optional:-->
-        <phone>' . $shop->phone . '</phone>
-        <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
-      </receiverAddressee>
-      <!--Optional:-->
-      <returnAddressee>
-        <person_name>' . $shop->name . '</person_name>
-        <!--Optional:-->
-        <phone>' . $shop->phone . '</phone>
-        <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
-      </returnAddressee>
-      <onloadAddressee>
-        <person_name>' . $shop->name . '</person_name>
-        <!--Optional:-->
-        <phone>' . $shop->phone . '</phone>
-        <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
-        <pick_up_time start="' . date("c", strtotime($shop->pick_day . ' ' . $pickStart)) . '" finish="' . date("c", strtotime($shop->pick_day . ' ' . $pickFinish)) . '"/>
-      </onloadAddressee>
-    </item>';
+    for ( $i = 0; $i < $parcels_number; $i++ ) {
+      $xmlRequest .= '
+        <item service="' . $service . '" >
+          <measures weight="1" />
+          <receiverAddressee>
+            <person_name>' . $shop->name . '</person_name>
+            <!--Optional:-->
+            <phone>' . $shop->phone . '</phone>
+            <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
+          </receiverAddressee>
+          <!--Optional:-->
+          <returnAddressee>
+            <person_name>' . $shop->name . '</person_name>
+            <!--Optional:-->
+            <phone>' . $shop->phone . '</phone>
+            <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
+          </returnAddressee>
+          <onloadAddressee>
+            <person_name>' . $shop->name . '</person_name>
+            <!--Optional:-->
+            <phone>' . $shop->phone . '</phone>
+            <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
+            <pick_up_time start="' . date("c", strtotime($shop->pick_day . ' ' . $pickStart)) . '" finish="' . date("c", strtotime($shop->pick_day . ' ' . $pickFinish)) . '"/>
+          </onloadAddressee>
+        </item>';
+    }
     $xmlRequest .= $this->xml_footer();
 
     return $this->api_request($xmlRequest);

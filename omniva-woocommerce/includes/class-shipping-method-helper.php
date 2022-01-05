@@ -74,7 +74,7 @@ class OmnivaLt_Shipmethod_Helper
     );
   }
 
-  public static function check_amount_free($key, $amount, $cart_amount)
+  public static function check_amount_free($key, $prices, $amount, $cart_amount)
   {
     $keys = array(
       'enable' => $key . '_enable_free_from',
