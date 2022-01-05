@@ -3,6 +3,7 @@
 ### Fixed
 - fixed bug, when terminal locations file not exists
 - changed maximum width of the call courier popup window
+- fixed free shipping
 
 ### Improved
 - added the number of parcels when a courier is called
