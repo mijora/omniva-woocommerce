@@ -16,7 +16,7 @@ do_action('omniva_admin_manifest_head');
 ?>
 
 <div class="wrap page-omniva_manifest">
-  <h1><?php _e('Omniva manifest', 'omnivalt'); ?></h1>
+  <h1><?php _e('Omniva Shipping', 'omnivalt'); ?></h1>
 
       <div class="call-courier-container">
         <button id="omniva-call-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>
@@ -323,3 +323,4 @@ do_action('omniva_admin_manifest_head');
           });
         });
       </script>
+</div>

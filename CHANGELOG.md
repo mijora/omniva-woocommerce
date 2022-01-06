@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed and renamed manifest page
+
 ## [1.9.2.1]
 ### Fixed
 - fixed terminal selection field load
