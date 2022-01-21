@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed and renamed manifest page
+- added parameter "SameSite" for cookies when creating cookie via JavaSript
 
 ### Improved
 - added orders selection from multiple pages in Omniva Shipping page
