@@ -7,6 +7,11 @@
 
 == Changelog ==
 
+= 1.9.3c =
+- fixed and renamed manifest page
+- added parameter "SameSite" for cookies when creating cookie via JavaSript
+- added orders selection from multiple pages in Omniva Shipping page
+
 = 1.9.2.1 =
 - fixed terminal selection field load
 - fixed free shipping with coupons
