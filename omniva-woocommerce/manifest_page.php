@@ -64,14 +64,12 @@ do_action('omniva_admin_manifest_head');
               <span class="desc">*<?php echo $desc; ?></span>
             <?php endif; ?>
           </div>
-          <div>
           <button id="submit_manifest_items" title="<?php echo __('Generate manifest', 'omnivalt'); ?>" type="button" class="button action">
             <?php echo __('Generate manifest', 'omnivalt'); ?>
           </button>
           <button id="submit_manifest_labels" title="<?php echo __('Print labels', 'omnivalt'); ?>" type="button" class="button action">
             <?php echo __('Print labels', 'omnivalt'); ?>
           </button>
-          </div>
         </div>
       <?php endif; ?>
 
