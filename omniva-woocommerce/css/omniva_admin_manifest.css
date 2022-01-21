@@ -78,6 +78,83 @@
     line-height: 1.85;
 }
 
+.selected-orders {
+    display: inline-block;
+    line-height: 26px;
+    width: 75%;
+    text-align: left;
+    float: left;
+    position: relative;
+    padding-bottom: 14px;
+}
+
+.selected-orders.has-desc {
+    padding-bottom: 14px;
+}
+
+.selected-orders span {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.selected-orders .title {
+    color: #7fb8d4;
+}
+
+.selected-orders.has-desc .title {
+    cursor: help;
+}
+
+.selected-orders .desc {
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    line-height: 10px;
+    font-size: 10px;
+    color: #999;
+}
+
+.selected-orders.has-desc .title:hover ~ .desc {
+    color: #333;
+}
+
+.selected-orders .item {
+    padding: 0 0 0 3px;
+    margin: 0 1px 1px 0;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.selected-orders .item:hover {
+    cursor: pointer;
+    color: #e70000;
+    background: #e700001c;
+}
+
+.selected-orders .item.removing {
+    transition: all 0.6s ease;
+    background: #e700008a;
+    color: #fff;
+}
+
+.selected-orders .item.adding {
+    background: #059d0078;
+    color: #fff;
+}
+
+.selected-orders .item .dashicons {
+    color: #dc4747;
+    padding: 0;
+    vertical-align: text-bottom;
+    height: 16px;
+    width: 16px;
+    font-size: 16px;
+}
+.selected-orders .item:hover .dashicons {
+    color: #a80000;
+    background: unset;
+}
+
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */

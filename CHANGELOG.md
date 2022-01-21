@@ -4,6 +4,9 @@
 ### Fixed
 - fixed and renamed manifest page
 
+### Improved
+- added orders selection from multiple pages in Omniva Shipping page
+
 ## [1.9.2.1]
 ### Fixed
 - fixed terminal selection field load

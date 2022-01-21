@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-29 09:53+0000\n"
-"PO-Revision-Date: 2022-01-05 09:02+0000\n"
+"PO-Revision-Date: 2022-01-21 13:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: Lietuvių kalba\n"
 "Language: lt_LT\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 74461\n"
 "X-Loco-Api-Version: 1.0.24 20191119-1\n"
-"X-Loco-Version: 2.5.5; wp-5.8.2"
+"X-Loco-Version: 2.5.7; wp-5.8.3"
 
 #: includes/class-core.php:154
 #, php-format
@@ -27,7 +27,7 @@ msgstr "Buvo išleista nauja įskiepio versija (%s)."
 msgid "A4 (4 labels)"
 msgstr "A4 (4 lipdukai)"
 
-#: manifest_page.php:115
+#: manifest_page.php:134
 msgid "Actions"
 msgstr "Veiksmai"
 
@@ -72,16 +72,16 @@ msgstr ""
 msgid "Add row"
 msgstr "Pridėti eilutę"
 
-#: manifest_page.php:209
+#: manifest_page.php:229
 msgid "Address and contact information can be changed in Omniva settings."
 msgstr ""
 "Adresą ir kontaktinius duomenis galima keisti Omniva modulio nustatymuose."
 
-#: includes/class-manifest.php:113
+#: includes/class-manifest.php:122
 msgid "All orders"
 msgstr "Visi užsakymai"
 
-#: manifest_page.php:75
+#: manifest_page.php:94
 msgctxt "All status"
 msgid "All"
 msgstr "Visos"
@@ -150,7 +150,7 @@ msgstr "Blogi API prisijungimai"
 msgid "Bank account"
 msgstr "Banko sąskaitos numeris"
 
-#: manifest_page.php:86 manifest_page.php:113
+#: manifest_page.php:105 manifest_page.php:132
 msgid "Barcode"
 msgstr "Barkodas"
 
@@ -173,12 +173,12 @@ msgctxt "Box size"
 msgid "Small"
 msgstr "Maža"
 
-#: manifest_page.php:180
+#: manifest_page.php:200
 msgctxt "button"
 msgid "Print"
 msgstr "Spausdinti"
 
-#: manifest_page.php:184
+#: manifest_page.php:204
 msgctxt "button"
 msgid "Regenerate"
 msgstr "Pergeneruoti"
@@ -195,7 +195,7 @@ msgstr "Pagal krepšelio sumą"
 msgid "By cart weight"
 msgstr "Pagal krepšelio svorį"
 
-#: manifest_page.php:22 manifest_page.php:225
+#: manifest_page.php:29 manifest_page.php:245
 msgid "Call Omniva courier"
 msgstr "Kurjerio iškvietimas"
 
@@ -226,7 +226,7 @@ msgstr "Pasirinkite Omniva padalinio šalį, iš kurios gavote API prisijungimus
 msgid "Company name"
 msgstr "Įmonės pavadinimas"
 
-#: includes/class-manifest.php:115
+#: includes/class-manifest.php:124
 msgid "Completed orders"
 msgstr "Išsiųsti užsakymai"
 
@@ -253,7 +253,7 @@ msgstr ""
 "Pasirinktinis el.laiško pavadinimas (šio laikelio reikšmė nėra verčiama į "
 "kitas kalbas)."
 
-#: manifest_page.php:71 manifest_page.php:109
+#: manifest_page.php:90 manifest_page.php:128
 msgid "Customer"
 msgstr "Pirkėjas"
 
@@ -329,7 +329,7 @@ msgstr "Įveskite pašto kodą"
 msgid "Enter postcode/address"
 msgstr "Įveskite pašto kodą / adresą"
 
-#: manifest_page.php:169
+#: manifest_page.php:189
 msgid "Error"
 msgstr "Klaida"
 
@@ -371,7 +371,7 @@ msgstr "Pavyzdys Latvijai: %1$s. Pavyzdys kitoms šalims: %2$s."
 msgid "File is empty"
 msgstr "Failas yra tuščias"
 
-#: manifest_page.php:100
+#: manifest_page.php:119
 msgid "Filter"
 msgstr "Ieškoti"
 
@@ -391,11 +391,11 @@ msgstr "Nemokama nuo"
 msgid "Free with coupon"
 msgstr "Nemokama su kuponu"
 
-#: manifest_page.php:91
+#: manifest_page.php:110
 msgid "From"
 msgstr "Nuo"
 
-#: manifest_page.php:50 manifest_page.php:51
+#: manifest_page.php:68 manifest_page.php:69
 msgid "Generate manifest"
 msgstr "Generuoti manifestą"
 
@@ -423,7 +423,7 @@ msgstr "https://iskiepiai.omnivasiunta.lt/"
 msgid "https://www.omniva.lt/"
 msgstr "https://www.omniva.lt/"
 
-#: manifest_page.php:68 manifest_page.php:108
+#: manifest_page.php:87 manifest_page.php:127
 msgid "ID"
 msgstr "ID"
 
@@ -441,7 +441,7 @@ msgid ""
 msgstr ""
 "Jeigu ši prekė bus įtraukta į siuntą, pažymėti tą siuntą kaip dūžtančia"
 
-#: manifest_page.php:208
+#: manifest_page.php:228
 msgid "Important!"
 msgstr "Svarbu!"
 
@@ -461,7 +461,7 @@ msgstr "Lipdukai"
 msgid "Labels print type"
 msgstr "Lipdukų spausdinimo tipas"
 
-#: manifest_page.php:208
+#: manifest_page.php:228
 msgid "Latest call for same day pickup is until 3 pm."
 msgstr ""
 "Vėliausias galimas kurjerio iškvietimas yra iki 15val. Vėliau iškvietus "
@@ -549,7 +549,7 @@ msgctxt "Manifest"
 msgid "Weight (kg)"
 msgstr "Svoris (kg)"
 
-#: manifest_page.php:114
+#: manifest_page.php:133
 msgid "Manifest date"
 msgstr "Manifesto data"
 
@@ -586,7 +586,7 @@ msgstr ""
 "Maksimalus viso krepšelio dydis paštomatams. Palikti visus tuščius, kad "
 "išjungti."
 
-#: includes/class-manifest.php:114
+#: includes/class-manifest.php:123
 msgid "New orders"
 msgstr "Nauji užsakymai"
 
@@ -610,7 +610,7 @@ msgstr "PASTABA"
 msgid "Note on label"
 msgstr "Pastaba lipduke"
 
-#: manifest_page.php:221
+#: manifest_page.php:241
 msgid "Number of parcels"
 msgstr "Siuntų skaičius"
 
@@ -631,10 +631,6 @@ msgstr "Omniva kurjeris iškviestas"
 msgid "Omniva label generated"
 msgstr "Omniva lipdukas sugeneruotas"
 
-#: manifest_page.php:19
-msgid "Omniva manifest"
-msgstr "Omniva manifestas"
-
 #: includes/class-product.php:22
 msgid "Omniva options"
 msgstr "Omniva nustatymai"
@@ -647,8 +643,9 @@ msgstr "Omniva paštomatai"
 msgid "Omniva post offices"
 msgstr "Omniva pašto skyriai"
 
-#: includes/class-manifest.php:18 includes/class-manifest.php:19
-#: includes/class-order.php:342 includes/class-shipping-method.php:22
+#: manifest_page.php:26 includes/class-manifest.php:27
+#: includes/class-manifest.php:28 includes/class-order.php:342
+#: includes/class-shipping-method.php:22
 msgid "Omniva Shipping"
 msgstr "Siuntimas su Omniva"
 
@@ -668,7 +665,7 @@ msgstr "Omniva siuntimas"
 msgid "Once daily"
 msgstr "Kartą per dieną"
 
-#: manifest_page.php:111
+#: manifest_page.php:130
 msgid "Order Date"
 msgstr "Užsakymo data"
 
@@ -676,7 +673,7 @@ msgstr "Užsakymo data"
 msgid "Order number"
 msgstr "Užsakymo numeris"
 
-#: manifest_page.php:110
+#: manifest_page.php:129
 msgid "Order Status"
 msgstr "Būsena"
 
@@ -732,6 +729,10 @@ msgstr "Prašome susisiekti su Omniva dėl siuntų grąžinimo."
 msgid "Please contact Omniva for API access codes."
 msgstr "Dėl API prieigos kodų susisiekite su Omniva."
 
+#: includes/class-manifest.php:19
+msgid "Please select orders"
+msgstr "Prašome pasirinkti užsakymus"
+
 #: includes/class-order.php:461
 msgid "Please select parcel terminal."
 msgstr "Pasirinkite paštomatą."
@@ -772,7 +773,7 @@ msgstr "Kainos"
 msgid "prices"
 msgstr "kainos"
 
-#: manifest_page.php:53 manifest_page.php:54
+#: manifest_page.php:71 manifest_page.php:72
 msgid "Print labels"
 msgstr "Spausdinti lipdukus"
 
@@ -788,7 +789,7 @@ msgstr "Spausdinti Omniva manifestą"
 msgid "Request"
 msgstr "Užklausa"
 
-#: manifest_page.php:101
+#: manifest_page.php:120
 msgid "Reset"
 msgstr "Valyti"
 
@@ -821,10 +822,6 @@ msgstr "Pasirinkti kategorijas"
 msgid "Select categories for which you want to disable the Omniva method."
 msgstr "Pasirinkite kategorijas, kurioms norite išjungti Omniva metodus."
 
-#: manifest_page.php:296 manifest_page.php:312
-msgid "Select orders"
-msgstr "Pasirinkti užsakymus"
-
 #: includes/class-terminals.php:41
 msgid "Select parcel terminal"
 msgstr "Pasirinkti paštomatą"
@@ -836,6 +833,10 @@ msgstr "Pasirinkti pašto skyrių"
 #: includes/class-core.php:180
 msgid "Select terminal"
 msgstr "Pasirinkti paštomatą"
+
+#: manifest_page.php:59
+msgid "Selected"
+msgstr "Pasirinkta"
 
 #: includes/class-shipping-method.php:381
 msgid ""
@@ -871,7 +872,7 @@ msgstr "Išsiuntimo tipas"
 msgid "Sender information"
 msgstr "Siuntėjo informacija"
 
-#: manifest_page.php:112
+#: manifest_page.php:131
 msgid "Service"
 msgstr "Servisas"
 
@@ -907,7 +908,7 @@ msgstr "Pristatymo būdų nustatymai"
 msgid "Shipping parameters for customer country not found"
 msgstr "Nerasti pristatymo parametrai pirkėjo adresui"
 
-#: manifest_page.php:218 includes/class-shipping-method.php:202
+#: manifest_page.php:238 includes/class-shipping-method.php:202
 msgid "Shop address"
 msgstr "Parduotuvės adresas"
 
@@ -919,15 +920,15 @@ msgstr "Parduotuvės miestas"
 msgid "Shop country code"
 msgstr "Parduotuvės šalies kodas"
 
-#: manifest_page.php:214 includes/class-shipping-method.php:194
+#: manifest_page.php:234 includes/class-shipping-method.php:194
 msgid "Shop name"
 msgstr "Parduotuvės pavadinimas"
 
-#: manifest_page.php:215 includes/class-shipping-method.php:218
+#: manifest_page.php:235 includes/class-shipping-method.php:218
 msgid "Shop phone number"
 msgstr "Parduotuvės telefonas"
 
-#: manifest_page.php:216 includes/class-shipping-method.php:206
+#: manifest_page.php:236 includes/class-shipping-method.php:206
 msgid "Shop postcode"
 msgstr "Parduotuvės pašto kodas"
 
@@ -992,7 +993,7 @@ msgstr ""
 msgid "The delivery address is changed in the fields above"
 msgstr "Pristatymo adresas yra keičiamas laukeliuose viršuje."
 
-#: manifest_page.php:94
+#: manifest_page.php:113
 msgid "To"
 msgstr "Iki"
 
