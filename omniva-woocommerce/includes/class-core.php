@@ -290,6 +290,7 @@ class OmnivaLt_Core
     require_once OMNIVALT_DIR . 'includes/class-terminals.php';
     require_once OMNIVALT_DIR . 'includes/class-manifest.php';
     require_once OMNIVALT_DIR . 'includes/class-order.php';
+    require_once OMNIVALT_DIR . 'includes/class-frontend.php';
   }
 
   private static function default_configs()
@@ -366,6 +367,7 @@ class OmnivaLt_Core
     add_filter('admin_post_omnivalt_labels', 'OmnivaLt_Order::post_label_actions', 20, 3);
     add_filter('admin_post_omnivalt_manifest', 'OmnivaLt_Order::post_manifest_actions', 20, 3);
     add_filter('woocommerce_admin_order_actions_end', 'OmnivaLt_Order::order_actions', 10, 1);
+    add_filter( 'woocommerce_cart_shipping_method_full_label', 'OmnivaLt_Frontend::add_logo_to_method', 10, 2 );
   }
 
   private static function load_conditional_hooks()

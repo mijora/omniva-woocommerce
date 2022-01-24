@@ -4,6 +4,9 @@
 ### Fixed
 - fixed and renamed manifest page
 
+### Improved
+- added option to choose label design for delivery methods
+
 ## [1.9.2.1]
 ### Fixed
 - fixed terminal selection field load
