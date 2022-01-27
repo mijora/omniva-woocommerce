@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed and renamed manifest page
+- added separation between delivery methods and delivery countries in settings page
 
 ### Improved
 - added option to choose label design for delivery methods
