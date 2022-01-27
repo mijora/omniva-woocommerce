@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed and renamed manifest page
+- added separation between delivery methods and delivery countries in settings page
 
 ## [1.9.2.1]
 ### Fixed

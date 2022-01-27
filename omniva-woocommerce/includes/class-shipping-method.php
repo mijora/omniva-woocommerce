@@ -20,7 +20,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     {
       $this->id = 'omnivalt';
       $this->method_title = __('Omniva Shipping', 'omnivalt');
-      $this->method_description = __('Shipping Method for Omniva', 'omnivalt');
+      $this->method_description = __('Shipping methods for Omniva', 'omnivalt');
 
       $this->omnivalt_api = new OmnivaLt_Api();
       $this->omnivalt_configs = OmnivaLt_Core::get_configs();
@@ -145,7 +145,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'enabled' => array(
           'title' => __('Enable', 'omnivalt'),
           'type' => 'checkbox',
-          'description' => __('Enable this shipping.', 'omnivalt'),
+          'description' => sprintf(__('Disable this setting to turn off all %s methods.', 'omnivalt'), $this->method_title),
           //'desc_tip' => true,
           'default' => 'yes',
         ),
@@ -270,6 +270,10 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'title' => __('Returns', 'omnivalt'),
         'type' => 'string',
         'text' => __('Please contact Omniva about parcels returns.', 'omnivalt'),
+      );
+      $fields['hr_prices'] = array(
+        'type' => 'hr',
+        'title' => __('Delivery countries and prices', 'omnivalt'),
       );
       foreach ( $this->destinations_countries as $country_code => $country_name ) {
         $fields['prices_'.$country_code] = array(
