@@ -20,7 +20,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     {
       $this->id = 'omnivalt';
       $this->method_title = __('Omniva Shipping', 'omnivalt');
-      $this->method_description = __('Shipping Method for Omniva', 'omnivalt');
+      $this->method_description = __('Shipping methods for Omniva', 'omnivalt');
 
       $this->omnivalt_api = new OmnivaLt_Api();
       $this->omnivalt_configs = OmnivaLt_Core::get_configs();
@@ -145,7 +145,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'enabled' => array(
           'title' => __('Enable', 'omnivalt'),
           'type' => 'checkbox',
-          'description' => __('Enable this shipping.', 'omnivalt'),
+          'description' => sprintf(__('Disable this setting to turn off all %s methods.', 'omnivalt'), $this->method_title),
           //'desc_tip' => true,
           'default' => 'yes',
         ),
@@ -271,6 +271,10 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'string',
         'text' => __('Please contact Omniva about parcels returns.', 'omnivalt'),
       );
+      $fields['hr_prices'] = array(
+        'type' => 'hr',
+        'title' => __('Delivery countries and prices', 'omnivalt'),
+      );
       foreach ( $this->destinations_countries as $country_code => $country_name ) {
         $fields['prices_'.$country_code] = array(
           'type' => 'prices_box',
@@ -325,6 +329,17 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'data-name' => 'restricted_categories'
         ),
       );
+      $fields['auto_select'] = array(
+        'title' => __('Automatic terminal selection', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('Automatically select terminal by postcode.', 'omnivalt'),
+        'default' => 'yes',
+        'class' => 'omniva_terminal'
+      );
+      $fields['hr_design'] = array(
+        'type' => 'hr',
+        'title' => __('Design', 'omnivalt'),
+      );
       $fields['show_map'] = array(
         'title' => __('Map', 'omnivalt'),
         'type' => 'checkbox',
@@ -332,12 +347,16 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'default' => 'yes',
         'class' => 'omniva_terminal'
       );
-      $fields['auto_select'] = array(
-        'title' => __('Automatic terminal selection', 'omnivalt'),
-        'type' => 'checkbox',
-        'description' => __('Automatically select terminal by postcode.', 'omnivalt'),
-        'default' => 'yes',
-        'class' => 'omniva_terminal'
+      $fields['label_design'] = array(
+        'title' => __('Label design', 'omnivalt'),
+        'type' => 'select',
+        'description' => __('Choose what the shipping method label will be displayed on the Cart and Checkout pages.', 'omnivalt'),
+        'options' => array(
+          'classic' => 'Omniva ' . strtolower(__('Parcel terminal', 'omnivalt')),
+          'full' => 'LOGO Omniva ' . strtolower(__('Parcel terminal', 'omnivalt')),
+          'logo' => 'LOGO ' . __('Parcel terminal', 'omnivalt'),
+          'short' => __('Parcel terminal', 'omnivalt'),
+        )
       );
       $fields['hr_orders'] = array(
         'type' => 'hr',
@@ -1115,9 +1134,15 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         $amount = OmnivaLt_Shipmethod_Helper::check_amount_free($rate_key, $prices, $amount, $cart_amount);
         $amount = OmnivaLt_Shipmethod_Helper::check_coupon($rate_key, $prices, $amount, $package['applied_coupons']);
 
+        $rate_name = $method_params['title'];
+        $show_prefix_on = array('classic', 'full');
+        if ( ! isset($this->settings['label_design']) || (isset($this->settings['label_design']) && in_array($this->settings['label_design'], $show_prefix_on)) ) {
+          $rate_name = 'Omniva ' . strtolower($rate_name);
+        }
+
         $rate = array(
           'id' => 'omnivalt_' . $rate_key,
-          'label' => 'Omniva ' . strtolower($method_params['title']),
+          'label' => $rate_name,
           'cost' => $amount,
           'meta_data' => $meta_data,
         );
