@@ -122,6 +122,10 @@ class OmnivaLt_Core
   public static function check_update($current_version = '') {
     $update_params = self::get_configs('update');
     
+    if (empty($update_params['check_url'])) {
+      return false;
+    }
+
     $ch = curl_init(); 
     curl_setopt($ch, CURLOPT_URL, $update_params['check_url']);
     curl_setopt($ch, CURLOPT_USERAGENT,'Awesome-Octocat-App');
@@ -147,11 +151,16 @@ class OmnivaLt_Core
   public static function update_message($file, $plugin) {
     $check_update = self::check_update($plugin['Version']);
     $update_params = self::get_configs('update');
+
     if ($check_update) {
       echo '<tr class="plugin-update-tr installer-plugin-update-tr js-otgs-plugin-tr active">';
       echo '<td class="plugin-update" colspan="100%">';
       echo '<div class="update-message notice inline notice-warning notice-alt">';
-      echo '<p>' . sprintf(__('A newer version of the plugin (%s) has been released.', 'omnivalt'), '<a href="' . $check_update['url'] . '" target="_blank">v' . $check_update['version'] . '</a>') . ' ' . sprintf(__('You can download it by pressing %s.', 'omnivalt'), '<a href="' . $update_params['download_url'] . '">' . __('here', 'omnivalt') . '</a>') . '</p>';
+      echo '<p>' . sprintf(__('A newer version of the plugin (%s) has been released.', 'omnivalt'), '<a href="' . $check_update['url'] . '" target="_blank">v' . $check_update['version'] . '</a>');
+      if (!empty($update_params['download_url'])) {
+        echo ' ' . sprintf(__('You can download it by pressing %s.', 'omnivalt'), '<a href="' . $update_params['download_url'] . '">' . __('here', 'omnivalt') . '</a>');
+      }
+      echo '</p>';
       echo '</div>';
       echo '</td></tr>';
     }

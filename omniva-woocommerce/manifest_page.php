@@ -10,6 +10,13 @@ $configs = OmnivaLt_Core::get_configs();
 $page_params = OmnivaLt_Manifest::page_params();
 
 $orders_data = OmnivaLt_Manifest::page_get_orders();
+$selected_orders = array();
+if ( isset($_COOKIE['omniva_checked']) ) {
+  $cookie_value = json_decode(stripslashes($_COOKIE['omniva_checked']));
+  if (is_array($cookie_value)) {
+    $selected_orders = $cookie_value;
+  }
+}
 
 // Append custom css and js
 do_action('omniva_admin_manifest_head');
@@ -47,6 +54,16 @@ do_action('omniva_admin_manifest_head');
             <input type="hidden" name="action" value="omnivalt_labels" />
             <?php wp_nonce_field('omnivalt_labels', 'omnivalt_labels_nonce'); ?>
           </form>
+          <?php $desc = ''; ?>
+          <div id="selected-orders" class="selected-orders <?php echo ($desc) ? 'has-desc' : ''; ?>" style="<?php echo (empty($selected_orders)) ? 'display:none' : ''; ?>">
+            <span class="title"><?php echo __('Selected', 'omnivalt'); ?><?php echo ($desc) ? '*' : ''; ?>:</span>
+            <?php foreach ($selected_orders as $order_id) : ?>
+              <span class="item" data-id="<?php echo $order_id; ?>"><?php echo '#' . $order_id; ?><span class="dashicons dashicons-no"></span></span>
+            <?php endforeach; ?>
+            <?php if ($desc) : ?>
+              <span class="desc">*<?php echo $desc; ?></span>
+            <?php endif; ?>
+          </div>
           <button id="submit_manifest_items" title="<?php echo __('Generate manifest', 'omnivalt'); ?>" type="button" class="button action">
             <?php echo __('Generate manifest', 'omnivalt'); ?>
           </button>
@@ -134,7 +151,8 @@ do_action('omniva_admin_manifest_head');
                   </tr>
                 <?php endif; ?>
                 <tr class="data-row">
-                  <th scope="row" class="check-column"><input type="checkbox" name="items[]" class="manifest-item" value="<?php echo $order->get_id(); ?>" /></th>
+                  <?php $checked = (in_array($order->get_id(), $selected_orders)) ? 'checked' : ''; ?>
+                  <th scope="row" class="check-column"><input type="checkbox" name="items[]" class="manifest-item" value="<?php echo $order->get_id(); ?>" <?php echo $checked; ?>/></th>
                   <td class="manage-column column-order_id">
                     <a href="<?php echo $order->get_edit_order_url(); ?>">#<?php echo $order->get_order_number(); ?></a>
                   </td>
@@ -265,61 +283,6 @@ do_action('omniva_admin_manifest_head');
             $('#filter_id, #filter_customer, #filter_barcode, #datetimepicker1, #datetimepicker2').val('');
             $('#filter_status').val('-1');
             document.getElementById('filter-form').submit();
-          });
-
-          $('#omniva-courier-modal').on('click', function(e) {
-            if (e.target === this) {
-              $('#omniva-courier-modal').removeClass('open');
-            }
-          });
-
-          $('#omniva-call-btn').on('click', function(e) {
-            e.preventDefault();
-            $('#omniva-courier-modal').addClass('open');
-          });
-
-          $('#omniva-call-cancel-btn').on('click', function(e) {
-            e.preventDefault();
-            $('#omniva-courier-modal').removeClass('open');
-          });
-
-          $('#submit_manifest_items').on('click', function() {
-            var ids = "";
-            $('#manifest-print-form .post_id').remove();
-            $('.manifest-item:checked').each(function() {
-              ids += $(this).val() + ";";
-              var id = $(this).val();
-              $('#manifest-print-form').append('<input type="hidden" class = "post_id" name="post[]" value = "' + id + '" />');
-            });
-            $('#item_ids').val(ids);
-            if (ids == "") {
-              alert('<?php echo __('Select orders', 'omnivalt'); ?>');
-            } else {
-              $('#manifest-print-form').submit();
-            }
-
-          });
-
-          $('#submit_manifest_labels').on('click', function() {
-            var ids = "";
-            $('#labels-print-form .post_id').remove();
-            $('.manifest-item:checked').each(function() {
-              ids += $(this).val() + ";";
-              var id = $(this).val();
-              $('#labels-print-form').append('<input type="hidden" class = "post_id" name="post[]" value = "' + id + '" />');
-            });
-            if (ids == "") {
-              alert('<?php echo __('Select orders', 'omnivalt'); ?>');
-            } else {
-              $('#labels-print-form').submit();
-            }
-          });
-
-          $('.check-all').on('click', function() {
-            var checked = $(this).prop('checked');
-            $(this).parents('table').find('.manifest-item').each(function() {
-              $(this).prop('checked', checked);
-            });
           });
         });
       </script>

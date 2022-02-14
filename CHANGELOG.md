@@ -4,9 +4,11 @@
 ### Fixed
 - fixed and renamed manifest page
 - added separation between delivery methods and delivery countries in settings page
+- added parameter "SameSite" for cookies when creating cookie via JavaSript
 
 ### Improved
 - added option to choose label design for delivery methods
+- added orders selection from multiple pages in Omniva Shipping page
 
 ## [1.9.2.1]
 ### Fixed
