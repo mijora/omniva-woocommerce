@@ -174,28 +174,28 @@ class OmnivaLt_Api
       $errors[] = $this->get_xml_error_from_response($xmlResponse);
     }
 
+    $shippingLabelContent = '';
     if ( is_object($xml) && is_object($xml->Body->addrcardMsgResponse->successAddressCards->addressCardData->barcode) ) {
       $shippingLabelContent = (string) $xml->Body->addrcardMsgResponse->successAddressCards->addressCardData->fileData;
-      file_put_contents(OMNIVALT_DIR . "pdf/" . $order_id . '.pdf', base64_decode($shippingLabelContent));
     } else {
       $errors[] = 'No label received from webservice';
     }
 
-    if ( ! empty($errors) ) {
-      return array(
-        'status' => false,
-        'msg' => implode('. ', $errors)
-      );
-    } else {
-      if ( ! empty($barcodes) ) return array(
-        'status' => true
-      );
+    if ( empty($barcodes) && empty($errors) ) {
       $errors[] = __('No saved barcodes received', 'omnivalt');
+    }
+
+    if ( ! empty($barcodes) && empty($errors) ) {
       return array(
-        'status' => false,
-        'msg' => implode('. ', $errors)
+        'status' => true,
+        'file' => $shippingLabelContent,
       );
     }
+
+    return array(
+      'status' => false,
+      'msg' => implode('. ', $errors)
+    );
   }
 
   public function call_courier($parcels_number = 0)

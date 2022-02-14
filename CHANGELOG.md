@@ -9,6 +9,7 @@
 ### Improved
 - added option to choose label design for delivery methods
 - added orders selection from multiple pages in Omniva Shipping page
+- labels are no longer stored in the plugin folder for a long time
 
 ## [1.9.2.1]
 ### Fixed

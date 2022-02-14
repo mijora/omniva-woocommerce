@@ -1209,10 +1209,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
             if ($status['status']) {
               update_post_meta($orderId, $configs['meta_keys']['barcode'], $status['barcodes'][0]);
               $track_numer = $status['barcodes'][0];
-              
-              if (file_exists(OMNIVALT_DIR . 'pdf/' . $orderId . '.pdf')) {
-                unlink(OMNIVALT_DIR . 'pdf/' . $orderId . '.pdf');
-              }
 
               $label_status = $this->omnivalt_api->get_shipment_labels($status['barcodes'], $orderId);
               
