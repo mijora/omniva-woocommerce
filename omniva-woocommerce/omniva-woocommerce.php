@@ -362,7 +362,7 @@ function omnivalt_configs($section_name = false) {
    * delete_after (integer) - The number of days after which to delete old debug files
    */
   $params['debug'] = array(
-    'delete_after' => 7,
+    'delete_after' => 30,
   );
 
   /*

@@ -339,7 +339,7 @@ class OmnivaLt_Order
     if ( $only_in_order ) {
       echo '<br class="clear"/>';
       echo '<hr style="margin-top:20px;">';
-      echo '<h4>' . __('Omniva Shipping', 'omnivalt') . '</h4>';
+      echo '<h4>' . __('Omniva shipping', 'omnivalt') . '</h4>';
     }
     
     echo '<div class="address">';

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-29 09:53+0000\n"
-"PO-Revision-Date: 2021-12-15 15:14+0000\n"
+"PO-Revision-Date: 2022-02-14 12:40+0000\n"
 "Last-Translator: \n"
 "Language-Team: Estonian (Estonia)\n"
 "Language: et_EE\n"
@@ -17,123 +17,130 @@ msgstr ""
 "X-Loco-Api-Version: 1.0.24 20191119-1\n"
 "X-Loco-Version: 2.5.5; wp-5.8.2"
 
-#: includes/class-core.php:154
+#: includes/class-core.php:159
 #, php-format
 msgid "A newer version of the plugin (%s) has been released."
 msgstr ""
 
-#: includes/class-shipping-method.php:333
+#: includes/class-shipping-method.php:380
 msgid "A4 (4 labels)"
 msgstr ""
 
-#: manifest_page.php:115
+#: manifest_page.php:132
 msgid "Actions"
 msgstr ""
 
-#: omniva-woocommerce.php:166
+#: omniva-woocommerce.php:137
+msgid ""
+"Activate this service, when you want to send parcels to parcel terminals."
+msgstr ""
+
+#: omniva-woocommerce.php:184
+msgid "Activate this service, when you want to send parcels to post offices."
+msgstr ""
+
+#: omniva-woocommerce.php:175
 msgid ""
 "Activate this service, when you want to send parcels to private persons in "
 "Finland."
 msgstr ""
 
-#: omniva-woocommerce.php:154
+#: omniva-woocommerce.php:157
 msgid ""
-"Activate this service, when you want to send parcels between Baltic states."
+"Activate this service, when you want to send parcels within Latvia and "
+"Lithuania."
 msgstr ""
 
-#: omniva-woocommerce.php:137
-msgid ""
-"Activate this service, when you want to send parcels to parcel terminals."
-msgstr ""
-
-#: omniva-woocommerce.php:172
-msgid "Activate this service, when you want to send parcels to post offices."
-msgstr ""
-
-#: omniva-woocommerce.php:160
+#: omniva-woocommerce.php:166
 msgid ""
 "Activate this service, when your e-shop customers would like to receive "
-"parcels in Estonia. Available for Estonian customers only."
+"parcels in Estonia."
 msgstr ""
 
 #: includes/class-admin-html.php:105
 msgid "Add row"
 msgstr ""
 
-#: manifest_page.php:207
+#: manifest_page.php:227
 msgid "Address and contact information can be changed in Omniva settings."
 msgstr "Aadressi ja kontaktteavet saab Omniva seadetes muuta."
 
-#: includes/class-manifest.php:111
+#: includes/class-manifest.php:122
 msgid "All orders"
 msgstr "Kõik tellimused"
 
-#: manifest_page.php:75
+#: manifest_page.php:92
 msgctxt "All status"
 msgid "All"
 msgstr ""
 
-#: includes/class-shipping-method.php:211
-#: includes/class-shipping-method.php:217
+#: includes/class-shipping-method.php:225
+#: includes/class-shipping-method.php:231
 #, php-format
 msgid ""
 "Allowed formats: %1$s. Default time is %2$s, if incorrect value is entered "
 "or field is empty."
 msgstr ""
 
-#: includes/class-shipping-method.php:159
+#: includes/class-shipping-method.php:154
+msgid "API"
+msgstr "API"
+
+#: includes/class-shipping-method.php:172
 msgid "API account country"
 msgstr ""
 
-#: includes/class-shipping-method.php:155
+#: includes/class-shipping-method.php:168
 msgid "API password"
 msgstr ""
 
-#: includes/class-shipping-method.php:145
-#, fuzzy
+#: includes/class-shipping-method.php:157
 #| msgid "Api URL"
 msgid "API URL"
-msgstr "Api URL"
+msgstr "API URL"
 
-#: includes/class-shipping-method.php:151
-#, fuzzy
+#: includes/class-shipping-method.php:163
 #| msgid "Api user"
 msgid "API user"
-msgstr "Api kasutaja"
+msgstr "API kasutaja"
 
-#: omniva-woocommerce.php:204
+#: omniva-woocommerce.php:219
 msgid "Arrival email"
 msgstr ""
 
-#: omniva-woocommerce.php:196
+#: omniva-woocommerce.php:211
 msgid "Arrival SMS"
 msgstr ""
 
-#: includes/class-shipping-method.php:322
+#: includes/class-shipping-method.php:333
 msgid "Automatic terminal selection"
 msgstr ""
 
-#: includes/class-shipping-method.php:324
+#: includes/class-shipping-method.php:335
 msgid "Automatically select terminal by postcode."
+msgstr ""
+
+#: omniva-woocommerce.php:166 omniva-woocommerce.php:175
+msgid "Available for Estonian customers only."
 msgstr ""
 
 #: includes/class-terminals.php:175
 msgid "Back"
 msgstr ""
 
-#: includes/class-api.php:462
+#: includes/class-api.php:466
 msgid "Bad API logins"
 msgstr ""
 
-#: includes/class-shipping-method.php:176
+#: includes/class-shipping-method.php:190
 msgid "Bank account"
-msgstr "pangakonto"
+msgstr "Pangakonto"
 
-#: manifest_page.php:86 manifest_page.php:113
+#: manifest_page.php:103 manifest_page.php:130
 msgid "Barcode"
 msgstr "Vöötkood"
 
-#: includes/class-shipping-method.php:590
+#: includes/class-shipping-method.php:656
 msgid "Box size"
 msgstr ""
 
@@ -152,17 +159,17 @@ msgctxt "Box size"
 msgid "Small"
 msgstr ""
 
-#: manifest_page.php:180
+#: manifest_page.php:198
 msgctxt "button"
 msgid "Print"
 msgstr ""
 
-#: manifest_page.php:183
+#: manifest_page.php:202
 msgctxt "button"
 msgid "Regenerate"
 msgstr ""
 
-#: includes/class-shipping-method.php:649
+#: includes/class-shipping-method.php:715
 msgid "By box size"
 msgstr ""
 
@@ -174,271 +181,296 @@ msgstr ""
 msgid "By cart weight"
 msgstr ""
 
-#: manifest_page.php:22 manifest_page.php:219
+#: manifest_page.php:29 manifest_page.php:243
 msgid "Call Omniva courier"
 msgstr "Helistatakse kullerile"
 
-#: includes/class-shipping-method.php:587
+#: includes/class-shipping-method.php:653
 msgid "Cart amount"
 msgstr ""
 
-#: includes/class-shipping-method.php:148
+#: includes/class-shipping-method.php:160
 msgid "Change only if want use custom API URL."
 msgstr ""
 
-#: includes/class-order.php:380
+#: includes/class-order.php:385
 msgid "Change parcel terminal"
 msgstr ""
 
-#: includes/class-order.php:384
+#: includes/class-order.php:389
 msgid "Change post office"
 msgstr ""
 
-#: includes/class-shipping-method.php:166
+#: includes/class-shipping-method.php:179
 msgid ""
 "Choose the country of Omniva support from which you received API logins."
 msgstr ""
 
-#: includes/class-shipping-method.php:172
+#: includes/class-shipping-method.php:353
+msgid ""
+"Choose what the shipping method label will be displayed on the Cart and "
+"Checkout pages."
+msgstr ""
+
+#: includes/class-shipping-method.php:186
 msgid "Company name"
 msgstr "Firma nimi"
 
-#: includes/class-manifest.php:113
+#: includes/class-manifest.php:124
 msgid "Completed orders"
 msgstr "Täidetud tellimused"
 
-#: omniva-woocommerce.php:158
+#: omniva-woocommerce.php:164
 msgid "Courier"
 msgstr "Kuller"
 
-#: omniva-woocommerce.php:152
+#: omniva-woocommerce.php:155
 msgid "Courier Baltic"
 msgstr ""
 
-#: omniva-woocommerce.php:164
+#: omniva-woocommerce.php:173
 msgid "Courier Finland"
 msgstr ""
 
-#: includes/class-shipping-method.php:225
+#: includes/class-shipping-method.php:239
 msgid "Courrier"
 msgstr "Courrier"
 
-#: includes/class-shipping-method.php:359
+#: includes/class-shipping-method.php:406
 msgid ""
 "Custom email subject (this field value not translating into other languages)."
 msgstr ""
 
-#: manifest_page.php:71 manifest_page.php:109
+#: manifest_page.php:88 manifest_page.php:126
 msgid "Customer"
 msgstr "Klient"
 
-#: includes/class-shipping-method.php:993
+#: includes/class-shipping-method.php:1059
 msgid "Date unknown"
 msgstr ""
 
-#: includes/class-shipping-method.php:977
+#: includes/class-shipping-method.php:428
+msgid "Debug"
+msgstr ""
+
+#: includes/class-shipping-method.php:1043
 msgid "Debug files still not created"
+msgstr ""
+
+#: includes/class-shipping-method.php:160
+#, php-format
+msgid "Default Omniva API URL is %s"
+msgstr ""
+
+#: omniva-woocommerce.php:324
+msgid "Delivery confirmation e-mail to sender"
+msgstr ""
+
+#: omniva-woocommerce.php:316
+msgid "Delivery confirmation SMS to sender"
+msgstr ""
+
+#: includes/class-shipping-method.php:276
+msgid "Delivery countries and prices"
+msgstr ""
+
+#: omniva-woocommerce.php:236
+msgid "Delivery to private customer"
+msgstr ""
+
+#: includes/class-shipping-method.php:676
+msgid "Description"
+msgstr ""
+
+#: includes/class-shipping-method.php:341
+msgid "Design"
+msgstr ""
+
+#: includes/class-shipping-method.php:320
+msgid "Disable for specific categories"
 msgstr ""
 
 #: includes/class-shipping-method.php:148
 #, php-format
-msgid "Default is %s"
+msgid "Disable this setting to turn off all %s methods."
 msgstr ""
 
-#: omniva-woocommerce.php:309
-msgid "Delivery confirmation e-mail to sender"
-msgstr ""
-
-#: omniva-woocommerce.php:301
-msgid "Delivery confirmation SMS to sender"
-msgstr ""
-
-#: omniva-woocommerce.php:221
-msgid "Delivery to private customer"
-msgstr ""
-
-#: includes/class-shipping-method.php:610
-msgid "Description"
-msgstr ""
-
-#: includes/class-shipping-method.php:302
-msgid "Disable for specific categories"
-msgstr ""
-
-#: omniva-woocommerce.php:229
+#: omniva-woocommerce.php:244
 msgid "Document return"
 msgstr ""
 
-#: includes/class-shipping-method.php:136
-#: includes/class-shipping-method.php:570
+#: includes/class-shipping-method.php:146
+#: includes/class-shipping-method.php:636
 msgid "Enable"
 msgstr "Luba"
 
-#: includes/class-shipping-method.php:541
+#: includes/class-shipping-method.php:607
 #, php-format
 msgid "Enable %s"
 msgstr ""
 
-#: includes/class-shipping-method.php:382
+#: includes/class-shipping-method.php:431
 msgid "Enable debug mode"
 msgstr ""
 
-#: includes/class-shipping-method.php:384
+#: includes/class-shipping-method.php:433
 msgid "Enable request and response logging."
 msgstr ""
 
-#: includes/class-shipping-method.php:138
-msgid "Enable this shipping."
-msgstr "Luba see saatmine."
-
-#: includes/class-terminals.php:170 includes/class-core.php:182
+#: includes/class-terminals.php:170 includes/class-core.php:191
 msgid "Enter postcode"
 msgstr "Sisesta indeks"
 
-#: includes/class-core.php:184
+#: includes/class-core.php:193
 msgid "Enter postcode/address"
 msgstr ""
 
-#: manifest_page.php:169
+#: manifest_page.php:187
 msgid "Error"
 msgstr ""
 
-#: includes/class-core.php:256
+#: includes/class-core.php:278
 msgctxt "error"
 msgid "The service does not exist for the specified method"
 msgstr ""
 
-#: includes/class-core.php:254
+#: includes/class-core.php:276
 msgctxt "error"
 msgid "The service is not available to the receiver country"
 msgstr ""
 
-#: includes/class-core.php:253
+#: includes/class-core.php:275
 msgctxt "error"
 msgid "The service is not available to the sender country"
 msgstr ""
 
-#: includes/class-core.php:255
+#: includes/class-core.php:277
 msgctxt "error"
 msgid "This shipping set does not exist"
 msgstr ""
 
-#: includes/class-core.php:260
+#: includes/class-core.php:282
 msgctxt "error"
 msgid "Unknown error"
 msgstr ""
 
-#: omniva-woocommerce.php:97 includes/class-shipping-method.php:163
+#: omniva-woocommerce.php:97 includes/class-shipping-method.php:176
 msgid "Estonia"
 msgstr ""
 
-#: includes/class-shipping-method.php:194
+#: includes/class-shipping-method.php:208
 #, php-format
 msgid "Example for Latvia: %1$s. Example for other countries: %2$s."
 msgstr ""
 
-#: includes/class-shipping-method.php:987
+#: includes/class-shipping-method.php:1053
 msgid "File is empty"
 msgstr ""
 
-#: manifest_page.php:100
+#: manifest_page.php:117
 msgid "Filter"
 msgstr "Filtreeri"
 
-#: omniva-woocommerce.php:110 includes/class-shipping-method.php:163
+#: omniva-woocommerce.php:110
 msgid "Finland"
 msgstr ""
 
-#: omniva-woocommerce.php:212
+#: omniva-woocommerce.php:227
 msgid "Fragile"
 msgstr ""
 
-#: includes/class-shipping-method.php:596
+#: includes/class-shipping-method.php:662
 msgid "Free from"
 msgstr ""
 
-#: includes/class-shipping-method.php:599
+#: includes/class-shipping-method.php:665
 msgid "Free with coupon"
 msgstr ""
 
-#: manifest_page.php:91
+#: manifest_page.php:108
 msgid "From"
 msgstr "Alates"
 
-#: manifest_page.php:50 manifest_page.php:51
+#: manifest_page.php:67 manifest_page.php:68
 msgid "Generate manifest"
-msgstr ""
-"\n"
-"Loo manifest"
+msgstr "Loo manifest"
 
-#: includes/class-order.php:273
+#: includes/class-order.php:278
 msgid "Generate Omniva label"
 msgstr "Loo Omniva silt"
 
-#: includes/class-shipping-method.php:885
+#: includes/class-shipping-method.php:951
 msgid "Height"
 msgstr ""
 
-#: includes/class-core.php:154
+#: includes/class-core.php:161
 msgid "here"
 msgstr ""
 
-#: includes/class-shipping-method.php:336
+#: includes/class-shipping-method.php:383
 msgid "How many labels to print per page."
 msgstr ""
 
 #. URI of the plugin
 msgid "https://iskiepiai.omnivasiunta.lt/"
-msgstr ""
+msgstr "https://iskiepiai.omnivasiunta.lt/"
 
 #. Author URI of the plugin
 msgid "https://www.omniva.lt/"
-msgstr ""
+msgstr "https://www.omniva.lt/"
 
-#: manifest_page.php:68 manifest_page.php:108
+#: manifest_page.php:85 manifest_page.php:125
 msgid "ID"
 msgstr "ID"
 
-#: includes/class-shipping-method.php:746
+#: includes/class-shipping-method.php:812
 msgid ""
 "If at least one item in the cart does not have the specified size, then this "
 "shipping method will not be displayed"
 msgstr ""
 
-#: omniva-woocommerce.php:218
+#: omniva-woocommerce.php:233
 msgid ""
 "If this item will be added to the shipment, mark that shipment as fragile"
 msgstr ""
 
-#: manifest_page.php:206
+#: manifest_page.php:226
 msgid "Important!"
 msgstr "Tähtis!"
 
-#: omniva-woocommerce.php:245
+#: omniva-woocommerce.php:260
 msgid "Insurance"
 msgstr ""
 
-#: omniva-woocommerce.php:293
+#: omniva-woocommerce.php:308
 msgid "Issue to persons at the age of 18+"
 msgstr ""
 
-#: includes/class-shipping-method.php:329
+#: includes/class-shipping-method.php:351
+msgid "Label design"
+msgstr ""
+
+#: includes/class-shipping-method.php:373
+msgid "Labels"
+msgstr ""
+
+#: includes/class-shipping-method.php:376
 msgid "Labels print type"
 msgstr ""
 
-#: manifest_page.php:206
+#: manifest_page.php:226
 msgid "Latest call for same day pickup is until 3 pm."
 msgstr "Viimane kõne sama päeva pealevõtmiseks on kuni 15.00."
 
-#: omniva-woocommerce.php:85 includes/class-shipping-method.php:162
+#: omniva-woocommerce.php:85 includes/class-shipping-method.php:175
 msgid "Latvia"
 msgstr ""
 
-#: includes/class-shipping-method.php:875
+#: includes/class-shipping-method.php:941
 msgid "Length"
 msgstr ""
 
-#: omniva-woocommerce.php:73 includes/class-shipping-method.php:162
+#: omniva-woocommerce.php:73 includes/class-shipping-method.php:175
 msgid "Lithuania"
 msgstr ""
 
@@ -446,122 +478,130 @@ msgstr ""
 msgid "Location not found!!!"
 msgstr ""
 
-#: includes/class-shipping-method.php:384
+#: includes/class-shipping-method.php:433
 #, php-format
 msgid "Log files are stored for %s days."
 msgstr ""
 
-#: includes/class-shipping-method.php:390
+#: includes/class-shipping-method.php:439
 msgid "Logged requests"
 msgstr ""
 
-#: includes/class-shipping-method.php:397
+#: includes/class-shipping-method.php:446
 msgid "Logged responses"
 msgstr ""
 
-#: omniva-woocommerce.php:176 includes/class-shipping-method.php:227
+#: omniva-woocommerce.php:191 includes/class-shipping-method.php:241
 msgid "Logistics center"
 msgstr ""
 
-#: includes/class-shipping-method.php:1851
+#: includes/class-shipping-method.php:418
+msgid "Manifest"
+msgstr ""
+
+#: includes/class-shipping-method.php:1301
 msgctxt "Manifest"
 msgid "Courier name, surname, signature"
 msgstr ""
 
-#: includes/class-shipping-method.php:1830
+#: includes/class-shipping-method.php:1280
 msgctxt "Manifest"
 msgid "Date"
 msgstr ""
 
-#: includes/class-shipping-method.php:1828
+#: includes/class-shipping-method.php:1278
 msgctxt "Manifest"
 msgid "No."
 msgstr ""
 
-#: includes/class-shipping-method.php:1831
+#: includes/class-shipping-method.php:1281
 msgctxt "Manifest"
 msgid "Quantity"
 msgstr ""
 
-#: includes/class-shipping-method.php:1833
+#: includes/class-shipping-method.php:1283
 msgctxt "Manifest"
 msgid "Recipient's address"
 msgstr ""
 
-#: includes/class-shipping-method.php:1821
+#: includes/class-shipping-method.php:1271
 msgctxt "Manifest"
 msgid "Sender address"
 msgstr ""
 
-#: includes/class-shipping-method.php:1852
+#: includes/class-shipping-method.php:1302
 msgctxt "Manifest"
 msgid "Sender name, surname, signature"
 msgstr ""
 
-#: includes/class-shipping-method.php:1829
+#: includes/class-shipping-method.php:1279
 msgctxt "Manifest"
 msgid "Shipment number"
 msgstr ""
 
-#: includes/class-shipping-method.php:1832
+#: includes/class-shipping-method.php:1282
 msgctxt "Manifest"
 msgid "Weight (kg)"
 msgstr ""
 
-#: manifest_page.php:114
+#: manifest_page.php:131
 msgid "Manifest date"
 msgstr "Ilmne kuupäev"
 
-#: includes/class-shipping-method.php:315
+#: includes/class-shipping-method.php:344
 msgid "Map"
 msgstr ""
 
-#: includes/class-shipping-method.php:735
+#: includes/class-shipping-method.php:801
 #, php-format
 msgid "Max %s cm"
 msgstr ""
 
-#: includes/class-shipping-method.php:291
+#: includes/class-shipping-method.php:309
 #, php-format
 msgid "Max cart size (%s) for terminal"
 msgstr ""
 
-#: includes/class-shipping-method.php:279
+#: includes/class-shipping-method.php:297
 #, php-format
 msgid "Max cart weight (%1$s) for %2$s"
 msgstr ""
 
-#: includes/class-shipping-method.php:285
+#: includes/class-shipping-method.php:303
 #, php-format
 msgid "Maximum allowed all cart products weight for %s."
 msgstr ""
 
-#: includes/class-shipping-method.php:293
+#: includes/class-shipping-method.php:311
 msgid "Maximum cart size for parcel terminals. Leave all empty to disable."
 msgstr ""
 
-#: includes/class-manifest.php:112
+#: includes/class-manifest.php:123
 msgid "New orders"
 msgstr "Uued tellimused"
 
-#: includes/class-order.php:419
+#: includes/class-order.php:424
 msgid "No"
 msgstr ""
 
-#: includes/class-shipping-method.php:1842
+#: includes/class-shipping-method.php:1292
 msgid "No compatible orders for manifest"
 msgstr ""
 
-#: includes/class-api.php:193 includes/class-api.php:435
+#: includes/class-api.php:193 includes/class-api.php:439
 msgid "No saved barcodes received"
 msgstr "Saadetud salvestatud vöötkoode pole"
 
-#: includes/class-shipping-method.php:746
+#: includes/class-shipping-method.php:812
 msgid "NOTE"
 msgstr ""
 
-#: includes/class-shipping-method.php:343
+#: includes/class-shipping-method.php:390
 msgid "Note on label"
+msgstr ""
+
+#: manifest_page.php:239
+msgid "Number of parcels"
 msgstr ""
 
 #. Description of the plugin
@@ -574,32 +614,29 @@ msgstr "WooCommerce'i Omniva edastusplugin"
 msgid "Omniva"
 msgstr ""
 
-#: includes/class-labels.php:195
+#: includes/class-labels.php:199
 msgid "Omniva courier called"
 msgstr "Helistas Omniva kuller"
 
-#: includes/class-labels.php:86 includes/class-shipping-method.php:1651
+#: includes/class-labels.php:90
 msgid "Omniva label generated"
 msgstr "Omniva silt loodud"
-
-#: manifest_page.php:19 includes/class-manifest.php:16
-#: includes/class-manifest.php:17
-msgid "Omniva manifest"
-msgstr "Omniva manifest"
 
 #: includes/class-product.php:22
 msgid "Omniva options"
 msgstr ""
 
-#: includes/class-terminals.php:162 includes/class-core.php:187
+#: includes/class-terminals.php:162 includes/class-core.php:196
 msgid "Omniva parcel terminals"
 msgstr "Omniva pakiautomaadid"
 
-#: includes/class-core.php:189
+#: includes/class-core.php:198
 msgid "Omniva post offices"
 msgstr ""
 
-#: includes/class-order.php:337 includes/class-shipping-method.php:22
+#: manifest_page.php:26 includes/class-manifest.php:27
+#: includes/class-manifest.php:28 includes/class-order.php:342
+#: includes/class-shipping-method.php:22
 msgid "Omniva Shipping"
 msgstr "Omniva Shipping"
 
@@ -607,7 +644,7 @@ msgstr "Omniva Shipping"
 msgid "Omniva shipping"
 msgstr "Omniva laevandus"
 
-#: includes/class-labels.php:173 includes/class-order.php:215
+#: includes/class-labels.php:177 includes/class-order.php:220
 msgid "Omniva tracking number"
 msgstr "Omniva jälgimisnumber"
 
@@ -619,87 +656,103 @@ msgstr "Omnivalt Shipping"
 msgid "Once daily"
 msgstr ""
 
-#: manifest_page.php:111
+#: manifest_page.php:128
 msgid "Order Date"
 msgstr ""
 
-#: omniva-woocommerce.php:337 includes/class-shipping-method.php:340
+#: omniva-woocommerce.php:352 includes/class-shipping-method.php:387
 msgid "Order number"
 msgstr ""
 
-#: manifest_page.php:110
+#: manifest_page.php:127
 #, fuzzy
 #| msgid "Order status"
 msgid "Order Status"
 msgstr "Olek"
 
-#: includes/class-shipping-method.php:332
+#: includes/class-shipping-method.php:363
+msgid "Orders"
+msgstr ""
+
+#: includes/class-shipping-method.php:379
 msgid "Original (single label)"
 msgstr ""
 
-#: omniva-woocommerce.php:237
+#: omniva-woocommerce.php:252
 msgid "Paid by receiver"
 msgstr ""
 
-#: omniva-woocommerce.php:269
+#: omniva-woocommerce.php:284
 msgid "Paid parcel email"
 msgstr ""
 
-#: omniva-woocommerce.php:261
+#: omniva-woocommerce.php:276
 msgid "Paid parcel SMS"
 msgstr ""
 
-#: omniva-woocommerce.php:135 includes/class-shipping-method.php:224
+#: omniva-woocommerce.php:135 includes/class-shipping-method.php:238
+#: includes/class-shipping-method.php:355
+#: includes/class-shipping-method.php:356
+#: includes/class-shipping-method.php:357
+#: includes/class-shipping-method.php:358
 msgid "Parcel terminal"
 msgstr "Pakiautomaat"
 
-#: includes/class-terminals.php:167 includes/class-core.php:188
+#: includes/class-terminals.php:167 includes/class-core.php:197
 msgid "Parcel terminals addresses"
 msgstr "Pakiautomaatide aadressid"
 
-#: omniva-woocommerce.php:253
+#: omniva-woocommerce.php:268
 msgid "Personal delivery"
 msgstr ""
 
-#: includes/class-shipping-method.php:214
+#: includes/class-shipping-method.php:228
 msgid "Pick up time end"
 msgstr "Võta aeg lõpuni"
 
-#: includes/class-shipping-method.php:208
+#: includes/class-shipping-method.php:222
 msgid "Pick up time start"
 msgstr "Võta aeg alguseni"
 
-#: includes/class-core.php:183
+#: includes/class-core.php:192
 msgid "Place not found"
 msgstr ""
 
-#: includes/class-shipping-method.php:257
+#: includes/class-shipping-method.php:272
 msgid "Please contact Omniva about parcels returns."
 msgstr ""
 
-#: includes/class-order.php:456
+#: includes/class-shipping-method.php:165
+msgid "Please contact Omniva for API access codes."
+msgstr ""
+
+#: includes/class-manifest.php:19
+msgid "Please select orders"
+msgstr ""
+
+#: includes/class-order.php:461
 msgid "Please select parcel terminal."
 msgstr "Palun valige pakiautomaat."
 
-#: includes/class-order.php:457
+#: includes/class-order.php:462
 msgid "Please select post office."
 msgstr ""
 
-#: omniva-woocommerce.php:170 includes/class-shipping-method.php:226
+#: omniva-woocommerce.php:182 includes/class-shipping-method.php:240
 msgid "Post office"
 msgstr ""
 
-#: includes/class-core.php:190
+#: includes/class-core.php:199
 msgid "Post offices addresses"
 msgstr ""
 
-#: includes/class-shipping-method.php:293
+#: includes/class-shipping-method.php:311
 msgid ""
 "Preliminary cart size is calculated by trying to fit all products by taking "
 "their dimensions (boxes) indicated in their settings."
 msgstr ""
 
-#: includes/class-admin-html.php:44 includes/class-shipping-method.php:581
+#: includes/class-admin-html.php:44 includes/class-shipping-method.php:647
 msgid "Price"
 msgstr ""
 
@@ -711,175 +764,188 @@ msgstr ""
 msgid "Prices"
 msgstr ""
 
-#: includes/class-shipping-method.php:495
+#: includes/class-shipping-method.php:561
 msgid "prices"
 msgstr ""
 
-#: manifest_page.php:53 manifest_page.php:54
+#: manifest_page.php:70 manifest_page.php:71
 msgid "Print labels"
 msgstr "Prindi sildid"
 
-#: includes/class-order.php:222
+#: includes/class-order.php:227
 msgid "Print Omniva labels"
 msgstr "Prindi Omniva sildid"
 
-#: includes/class-order.php:223
+#: includes/class-order.php:228
 msgid "Print Omniva manifest"
 msgstr "Trükkige Omniva manifesti"
 
-#: includes/class-shipping-method.php:391
+#: includes/class-shipping-method.php:440
 msgid "Request"
 msgstr ""
 
-#: manifest_page.php:101
+#: manifest_page.php:118
 msgid "Reset"
 msgstr "Lähtesta"
 
-#: includes/class-shipping-method.php:398
+#: includes/class-shipping-method.php:447
 msgid "Response"
 msgstr ""
 
-#: includes/class-api.php:465
+#: includes/class-api.php:469
 msgid "Response is in the wrong format"
 msgstr "Vastus on vales vormis"
 
-#: omniva-woocommerce.php:285
+#: omniva-woocommerce.php:300
 msgid "Return notification email"
 msgstr ""
 
-#: omniva-woocommerce.php:277
+#: omniva-woocommerce.php:292
 msgid "Return notification SMS"
 msgstr ""
 
-#: includes/class-shipping-method.php:255
+#: includes/class-shipping-method.php:270
 msgid "Returns"
 msgstr ""
 
-#: includes/class-shipping-method.php:310
+#: includes/class-shipping-method.php:328
 msgid "Select Categories"
 msgstr ""
 
-#: includes/class-shipping-method.php:305
-msgid "Select categories you want to disable the Omniva method"
+#: includes/class-shipping-method.php:323
+msgid "Select categories for which you want to disable the Omniva method."
 msgstr ""
-
-#: manifest_page.php:290 manifest_page.php:306
-msgid "Select orders"
-msgstr "Valige tellimusi"
 
 #: includes/class-terminals.php:41
 msgid "Select parcel terminal"
 msgstr "Valige paki terminal"
 
-#: includes/class-terminals.php:47 includes/class-core.php:181
+#: includes/class-terminals.php:47 includes/class-core.php:190
 msgid "Select post office"
 msgstr ""
 
-#: includes/class-core.php:180
+#: includes/class-core.php:189
 msgid "Select terminal"
 msgstr "Vali pakiautomaat"
 
-#: includes/class-shipping-method.php:353
+#: manifest_page.php:59
+msgid "Selected"
+msgstr ""
+
+#: includes/class-shipping-method.php:400
 msgid ""
 "Send an email to customer with tracking code, when the label is generated."
 msgstr ""
 
-#: includes/class-shipping-method.php:363
+#: includes/class-shipping-method.php:410
 msgid "Send email on shipment arrive"
 msgstr ""
 
-#: includes/class-shipping-method.php:365
+#: includes/class-shipping-method.php:412
 msgid ""
 "Send email to customer from Omniva, when the shipment arrives at the "
 "terminal."
 msgstr ""
 
-#: includes/class-shipping-method.php:351
+#: includes/class-shipping-method.php:398
 msgid "Send email when a label is created"
 msgstr ""
 
-#: includes/class-shipping-method.php:222
+#: includes/class-shipping-method.php:236
 msgid "Send from store type."
 msgstr "Saatke alates poodi tüübist."
 
-#: includes/class-shipping-method.php:220
+#: includes/class-shipping-method.php:234
 msgid "Send off type"
 msgstr "Saatke tüübist välja"
 
-#: manifest_page.php:112
+#: includes/class-shipping-method.php:183
+msgid "Sender information"
+msgstr ""
+
+#: manifest_page.php:129
 msgid "Service"
 msgstr "Teenindus"
 
-#: includes/class-order.php:356
+#: includes/class-order.php:361
 msgid "Services"
 msgstr ""
 
-#: includes/class-core.php:227
+#: includes/class-core.php:239
 msgid "Settings"
 msgstr ""
 
-#: includes/class-shipping-method.php:567
+#: includes/class-shipping-method.php:633
 msgid "Shipping"
 msgstr ""
 
-#: includes/class-shipping-method.php:23
-msgid "Shipping Method for Omniva"
-msgstr "Saatmismeetod Omnivale"
-
-#: includes/class-labels.php:57 includes/class-shipping-method.php:1630
-#: includes/class-shipping-method.php:1748
+#: includes/class-labels.php:56 includes/class-shipping-method.php:1198
 msgid "Shipping method is not Omniva"
 msgstr "Saatmise viis ei ole Omniva"
+
+#: includes/class-shipping-method.php:247
+msgid "Shipping methods"
+msgstr ""
+
+#: includes/class-shipping-method.php:23
+#, fuzzy
+#| msgid "Shipping Method for Omniva"
+msgid "Shipping methods for Omniva"
+msgstr "Saatmismeetod Omnivale"
+
+#: includes/class-shipping-method.php:286
+msgid "Shipping methods settings"
+msgstr ""
 
 #: includes/class-api.php:24
 msgid "Shipping parameters for customer country not found"
 msgstr ""
 
-#: manifest_page.php:216 includes/class-shipping-method.php:188
+#: manifest_page.php:236 includes/class-shipping-method.php:202
 msgid "Shop address"
 msgstr "Poe aadress"
 
-#: includes/class-shipping-method.php:184
+#: includes/class-shipping-method.php:198
 msgid "Shop city"
 msgstr "Osta linn"
 
-#: includes/class-shipping-method.php:197
+#: includes/class-shipping-method.php:211
 msgid "Shop country code"
 msgstr "Riigi koodi pood"
 
-#: manifest_page.php:212 includes/class-shipping-method.php:180
+#: manifest_page.php:232 includes/class-shipping-method.php:194
 msgid "Shop name"
 msgstr "Pood nime"
 
-#: manifest_page.php:213 includes/class-shipping-method.php:204
+#: manifest_page.php:233 includes/class-shipping-method.php:218
 msgid "Shop phone number"
 msgstr "Osta telefoninumbrit"
 
-#: manifest_page.php:214 includes/class-shipping-method.php:192
+#: manifest_page.php:234 includes/class-shipping-method.php:206
 msgid "Shop postcode"
 msgstr "Pood postiindeks"
 
-#: includes/class-shipping-method.php:375
+#: includes/class-shipping-method.php:423
 msgid "Show barcode image in manifest"
 msgstr ""
 
-#: includes/class-shipping-method.php:373
+#: includes/class-shipping-method.php:421
 msgid "Show barcode in manifest"
 msgstr ""
 
-#: includes/class-terminals.php:98 includes/class-core.php:185
+#: includes/class-terminals.php:98 includes/class-core.php:194
 msgid "Show in map"
 msgstr "Näita kaardil"
 
-#: includes/class-shipping-method.php:317
+#: includes/class-shipping-method.php:346
 msgid "Show map of terminals."
 msgstr ""
 
-#: includes/class-core.php:186
+#: includes/class-core.php:195
 msgid "Show more"
 msgstr ""
 
-#: includes/class-shipping-method.php:345
+#: includes/class-shipping-method.php:392
 #, php-format
 msgid "Show note or other comment on label. You can use this variables: %s"
 msgstr ""
@@ -892,11 +958,19 @@ msgstr ""
 msgid "Show post offices map"
 msgstr ""
 
+#: includes/class-shipping-method.php:366
+msgid "Show tracking information in emails"
+msgstr ""
+
+#: includes/class-shipping-method.php:368
+msgid "Show tracking information in WooCommerce Order emails."
+msgstr ""
+
 #: includes/class-admin-html.php:13
 msgid "Simple"
 msgstr ""
 
-#: includes/class-shipping-method.php:1098
+#: includes/class-shipping-method-helper.php:63
 msgid "Size"
 msgstr ""
 
@@ -905,22 +979,22 @@ msgstr ""
 msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
 msgstr "Vabandust,% d kg ületab maksimaalse massi% d kg% s kohta"
 
-#: includes/class-order.php:408
+#: includes/class-order.php:413
 msgid "The delivery address is changed in the fields above"
 msgstr ""
 
-#: manifest_page.php:94
+#: manifest_page.php:111
 msgid "To"
 msgstr "Kuni"
 
-#: includes/class-shipping-method.php:353
+#: includes/class-shipping-method.php:400
 #, php-format
 msgid ""
 "To override email template, copy template file from %1$s to your theme %2$s "
 "directory."
 msgstr ""
 
-#: includes/class-order.php:275
+#: includes/class-order.php:280
 #, fuzzy
 #| msgid "VIew Omniva label"
 msgid "View Omniva label"
@@ -932,33 +1006,29 @@ msgid ""
 "your shipment."
 msgstr ""
 
-#: includes/class-shipping-method.php:584
-#: includes/class-shipping-method.php:1087
-#: includes/class-shipping-method.php:1172
-#: includes/class-shipping-method.php:1230
-#: includes/class-shipping-method.php:1285
-#: includes/class-shipping-method.php:1340
+#: includes/class-shipping-method-helper.php:55
+#: includes/class-shipping-method.php:650
 msgid "Weight"
 msgstr ""
 
-#: includes/class-shipping-method.php:880
+#: includes/class-shipping-method.php:946
 msgid "Width"
 msgstr ""
 
-#: includes/class-order.php:421
+#: includes/class-order.php:426
 msgid "Yes"
 msgstr ""
 
-#: includes/class-core.php:154
+#: includes/class-core.php:161
 #, php-format
 msgid "You can download it by pressing %s."
 msgstr ""
 
-#: includes/class-labels.php:176
+#: includes/class-labels.php:180
 msgid "You can track your parcel with this number"
 msgstr "Selle numbri abil saate oma pakki jälgida"
 
-#: includes/class-emails.php:18 includes/class-shipping-method.php:360
+#: includes/class-emails.php:18 includes/class-shipping-method.php:407
 msgid "Your order shipment has been registered"
 msgstr ""
 
