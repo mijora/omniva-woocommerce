@@ -62,10 +62,13 @@ class OmnivaLt_Labels
       }
 
       $track_number = get_post_meta($orderId, $this->omnivalt_configs['meta_keys']['barcode'], true);
-      $label_file_path = OMNIVALT_DIR . 'pdf/' . $orderId . '.pdf';
-      $label_file_url = OMNIVALT_URL . 'pdf/' . $orderId . '.pdf';
+      $barcodes = array($track_number);
+
+      $label_file_name = (!empty($track_number)) ? $track_number : rand(1, 1000);
+      $label_file_path = OMNIVALT_DIR . 'pdf/' . $label_file_name . '.pdf';
+      $label_file_content = false;
       
-      if ( $track_number == '' || ! $download || ! file_exists($label_file_path) ) {
+      if ( empty($track_number) || ! $download ) {
         if ( file_exists($label_file_path) ) {
           unlink($label_file_path);
         }
@@ -77,24 +80,15 @@ class OmnivaLt_Labels
         }
 
         if ( isset($status['status']) && $status['status'] === true ) {
-          update_post_meta($orderId, $this->omnivalt_configs['meta_keys']['barcode'], $status['barcodes'][0]);
-          
-          $label_status = $this->omnivalt_api->get_shipment_labels($status['barcodes'], $orderId);
-          if ( ! $label_status['status'] ) {
-            update_post_meta($orderId, $this->omnivalt_configs['meta_keys']['error'], $label_status['msg']);
-            OmnivaLt_Helper::add_msg($orderId . ' - ' . $label_status['msg'], 'error');
-            continue;
-          }
-
-          if ( ! $download )
-            OmnivaLt_Helper::add_msg($orderId . ' - ' . __('Omniva label generated', 'omnivalt'), 'updated');
+          $barcodes = $status['barcodes'];
+          update_post_meta($orderId, $this->omnivalt_configs['meta_keys']['barcode'], $barcodes[0]);
 
           $send_email = (isset($this->omnivalt_settings['email_created_label'])) ? $this->omnivalt_settings['email_created_label'] : 'yes';
           if ($send_email === 'yes') {
             $email_subject = (isset($this->omnivalt_settings['email_created_label_subject'])) ? $this->omnivalt_settings['email_created_label_subject'] : '';
             $email_params = array(
-              'tracking_code' => $status['barcodes'][0],
-              'tracking_link' => $this->get_tracking_link($wc_order->get_shipping_country(), $status['barcodes'][0], true),
+              'tracking_code' => $barcodes[0],
+              'tracking_link' => $this->get_tracking_link($wc_order->get_shipping_country(), $barcodes[0], true),
               'subject' => $email_subject
             );
             $this->omnivalt_emails->send_label($wc_order, $wc_order->get_billing_email(), $email_params);
@@ -106,14 +100,34 @@ class OmnivaLt_Labels
         }
       }
 
-      $label_file = (file_exists($label_file_path)) ? $label_file_path : '';
-      if ($label_file == '') {
+      $label_status = $this->omnivalt_api->get_shipment_labels($barcodes, $orderId);
+      if ( ! $label_status['status'] ) {
+        update_post_meta($orderId, $this->omnivalt_configs['meta_keys']['error'], $label_status['msg']);
+        OmnivaLt_Helper::add_msg($orderId . ' - ' . $label_status['msg'], 'error');
+        continue;
+      }
+
+      if ( ! empty($label_status['file']) ) {
+        $label_file_content = $label_status['file'];
+      }
+
+      if ( ! $download ) {
+        OmnivaLt_Helper::add_msg($orderId . ' - ' . __('Omniva label generated', 'omnivalt'), 'updated');
+      }
+
+      if ( ! $label_file_content ) {
+        continue;
+      }
+
+      file_put_contents($label_file_path, base64_decode($label_file_content));
+
+      if ( ! file_exists($label_file_path) ) {
         continue;
       }
   
       update_post_meta($orderId, $this->omnivalt_configs['meta_keys']['error'], '');
       
-      $pagecount = $pdf->setSourceFile($label_file);
+      $pagecount = $pdf->setSourceFile($label_file_path);
       for ( $i = 1; $i <= $pagecount; $i++ ) {
         $tplidx = $pdf->ImportPage($i);
         if ( $print_type == '1' ) {
@@ -135,6 +149,8 @@ class OmnivaLt_Labels
           $label_count++;
         }
       }
+
+      unlink($label_file_path);
       $count++;
     }
     
