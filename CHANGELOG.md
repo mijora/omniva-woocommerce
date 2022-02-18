@@ -5,6 +5,7 @@
 - fixed and renamed manifest page
 - added separation between delivery methods and delivery countries in settings page
 - added parameter "SameSite" for cookies when creating cookie via JavaSript
+- fixed mistake in COD code
 
 ### Improved
 - added option to choose label design for delivery methods
