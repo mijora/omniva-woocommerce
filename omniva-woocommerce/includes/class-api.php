@@ -280,7 +280,7 @@ class OmnivaLt_Api
     $bank_account = $this->omnivalt_settings['bank_account'];
     if ( $cod ) {
       return '<monetary_values>
-        <cod$service_receiver>' . $company . '</cod_receiver>
+        <cod_receiver>' . $company . '</cod_receiver>
         <values code="item_value" amount="' . $amount . '"/>
       </monetary_values>
       <account>' . $bank_account . '</account>
