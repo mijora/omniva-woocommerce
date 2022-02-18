@@ -14,6 +14,28 @@ class OmnivaLt_Shipmethod_Helper
     return $method_params;
   }
 
+  public static function get_available_shipping_methods($configs)
+  {
+    $available_methods = array();
+
+    foreach ( $configs['method_params'] as $method_name => $method_values ) {
+      if ($method_values['is_shipping_method'] === false) continue;
+
+      $available = false;
+      foreach ( $configs['shipping_params'] as $ship_params ) {
+        $method_key = ($method_name === 'terminal') ? 'pickup' : $method_name;
+        if ( in_array($method_key, $ship_params['methods']) ) {
+          $available = true;
+        }
+      }
+      if ( ! $available ) continue;
+
+      $available_methods[$method_name] = $method_values;
+    }
+
+    return $available_methods;
+  }
+
   public static function check_restrictions($settings, $key, $weight = false, $products_for_dim = false)
   {
     $pass = true;
