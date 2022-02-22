@@ -303,7 +303,7 @@ class OmnivaLt_Order
     update_post_meta($order_id, '_cart_weight', $weight);
   }
 
-  public static function print_tracking_url_action($country_code = 'LT', $barcode)
+  public static function print_tracking_url_action($barcode, $country_code = 'LT')
   {
     $omnivalt_labels = new OmnivaLt_Labels();
     echo $omnivalt_labels->get_tracking_link($country_code, $barcode);
