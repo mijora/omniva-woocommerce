@@ -24,8 +24,8 @@ class OmnivaLt_Manifest
   {
     add_submenu_page(
       'woocommerce',
-      __('Omniva Shipping', 'omnivalt'),
-      __('Omniva Shipping', 'omnivalt'),
+      __('Omniva shipping', 'omnivalt'),
+      __('Omniva shipping', 'omnivalt'),
       'manage_woocommerce',
       'omniva-manifest',
       'OmnivaLt_Manifest::manifest_page',

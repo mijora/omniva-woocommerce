@@ -19,7 +19,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     public function __construct()
     {
       $this->id = 'omnivalt';
-      $this->method_title = __('Omniva Shipping', 'omnivalt');
+      $this->method_title = __('Omniva shipping', 'omnivalt');
       $this->method_description = __('Shipping methods for Omniva', 'omnivalt');
 
       $this->omnivalt_api = new OmnivaLt_Api();
@@ -47,7 +47,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $this->init();
 
       $this->enabled = isset($this->settings['enabled']) ? $this->settings['enabled'] : 'yes';
-      $this->title = isset($this->settings['title']) ? $this->settings['title'] : __('Omnivalt Shipping', 'omnivalt');
+      $this->title = isset($this->settings['title']) ? $this->settings['title'] : __('Omniva shipping', 'omnivalt');
 
       // Default values
       if ( empty($this->settings['api_country']) ) {
@@ -236,7 +236,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'description' => __('Send from store type.', 'omnivalt'),
           'options' => array(
             'pt' => __('Parcel terminal', 'omnivalt'),
-            'c' => __('Courrier', 'omnivalt'),
+            'c' => __('Courier', 'omnivalt'),
             'po' => __('Post office', 'omnivalt'),
             'lc' => __('Logistics center', 'omnivalt'),
           )
@@ -435,7 +435,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['debug_mode'] = array(
         'title' => __('Enable debug mode', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Enable request and response logging.', 'omnivalt') . ' ' . sprintf(__('Log files are stored for %s days.', 'omnivalt'), $this->omnivalt_configs['debug']['delete_after']),
+        'description' => __('Enable request and response logging.', 'omnivalt') . ' ' . sprintf(__('Log files are stored for %d days.', 'omnivalt'), $this->omnivalt_configs['debug']['delete_after']),
         'default' => ''
       );
       $fields['debugview_request'] = array(
