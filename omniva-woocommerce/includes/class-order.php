@@ -265,7 +265,7 @@ class OmnivaLt_Order
     $omnivalt->printBulkManifests($_REQUEST['post']);
   }
 
-  public static function order_actions($order)
+  /*public static function order_actions($order) //Disabled because not found where to using (possible junk from old plugin versions)
   {
     $order_id = $order->get_id();
     $send_method = get_post_meta($order_id, '_shipping_method', true);
@@ -281,7 +281,7 @@ class OmnivaLt_Order
         }
       }
     }
-  }
+  }*/
 
   public static function generate_label()
   {

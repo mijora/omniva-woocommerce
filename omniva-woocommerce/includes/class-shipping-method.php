@@ -358,6 +358,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'short' => __('Parcel terminal', 'omnivalt'),
         )
       );
+      $fields['custom_label'] = array(
+        'title' => __('Custom label names', 'omnivalt'),
+        'type' => 'label_name',
+        'description' => __('Use custom shipping method name.', 'omnivalt') . ' ' . __('Values is not translatable.', 'omnivalt'),
+      );
       $fields['hr_orders'] = array(
         'type' => 'hr',
         'title' => __('Orders', 'omnivalt'),
@@ -966,7 +971,59 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       return $values;
     }
 
+    public function generate_label_name_html( $key, $value ) {
+      $field_key = $this->get_field_key($key);
+      $field_class = (isset($value['class'])) ? $value['class'] : '';
+      $field_values = array();
 
+      if ( $this->get_option($key) !== '' ) {
+        $field_values = $this->get_option($key);
+        if ( is_string($field_values) ) {
+          $field_values = json_decode($this->get_option($key), true);
+        }
+      }
+
+      $avalable_methods = OmnivaLt_Shipmethod_Helper::get_available_shipping_methods($this->omnivalt_configs);
+      $splited_methods = array_chunk($avalable_methods, 3, true);
+
+      ob_start();
+      ?>
+      <tr valign="top">
+        <th scope="row" class="titledesc">
+          <label><?php echo esc_html($value['title']); ?></label>
+        </th>
+        <td class="forminp">
+          <fieldset class="field-custom_label <?php echo $field_class; ?>">
+            <table>
+              <?php foreach ( $splited_methods as $methods_row) : ?>
+                <tr>
+                  <?php foreach ( $methods_row as $method_key => $method_values ) : ?>
+                    <th><?php echo $method_values['title']; ?></th>
+                  <?php endforeach; ?>
+                </tr>
+                <tr>
+                  <?php foreach ( $methods_row as $method_key => $method_values ) : ?>
+                    <?php $current_value = (isset($field_values[$method_values['key']])) ? $field_values[$method_values['key']] : ""; ?>
+                    <td>
+                      <input type="text" name="<?php echo esc_html($field_key); ?>[<?php echo esc_html($method_values['key']); ?>]" value="<?php echo esc_html($current_value); ?>">
+                    </td>
+                  <?php endforeach; ?>
+                </tr>
+              <?php endforeach; ?>
+            </table>
+            <p class="description"><?php echo $value['description']; ?></p>
+          </fieldset>
+        </td>
+      </tr>
+      <?php
+      $html = ob_get_contents();
+      ob_end_clean();
+      return $html;
+    }
+    public function validate_label_name_field( $key, $value ) {
+      $values = wp_json_encode($value);
+      return $values;
+    }
 
     /**
      * Get categories for "restricted_categories" field
@@ -1139,6 +1196,10 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         if ( ! isset($this->settings['label_design']) || (isset($this->settings['label_design']) && in_array($this->settings['label_design'], $show_prefix_on)) ) {
           $rate_name = 'Omniva ' . strtolower($rate_name);
         }
+        if ( ! empty($this->settings['custom_label']) ) {
+          $custom_labels = json_decode($this->settings['custom_label']);
+          $rate_name = (!empty($custom_labels->{$rate_key})) ? $custom_labels->{$rate_key} : $rate_name;
+        }
 
         $rate = array(
           'id' => 'omnivalt_' . $rate_key,
@@ -1209,10 +1270,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
             if ($status['status']) {
               update_post_meta($orderId, $configs['meta_keys']['barcode'], $status['barcodes'][0]);
               $track_numer = $status['barcodes'][0];
-              
-              if (file_exists(OMNIVALT_DIR . 'pdf/' . $orderId . '.pdf')) {
-                unlink(OMNIVALT_DIR . 'pdf/' . $orderId . '.pdf');
-              }
 
               $label_status = $this->omnivalt_api->get_shipment_labels($status['barcodes'], $orderId);
               

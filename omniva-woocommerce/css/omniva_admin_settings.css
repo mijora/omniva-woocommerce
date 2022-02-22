@@ -240,3 +240,14 @@
 .woocommerce table.omniva-settings .slider.round:before {
   border-radius: 50%;
 }
+.woocommerce table.omniva-settings .field-custom_label table {
+  width: 100%;
+}
+.woocommerce table.omniva-settings .field-custom_label table th,
+.woocommerce table.omniva-settings .field-custom_label table td {
+  padding: 0;
+  width: 33%;
+}
+.woocommerce table.omniva-settings .field-custom_label table input[type="text"] {
+  width: 95%;
+}
