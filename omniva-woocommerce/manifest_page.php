@@ -179,7 +179,7 @@ do_action('omniva_admin_manifest_head');
                   <td class="manage-column">
                     <div class="data-grid-cell-content">
                       <?php if ( $barcode ) : ?>
-                        <?php do_action('print_omniva_tracking_url', $omnivalt->settings['shop_countrycode'], $barcode); ?>
+                        <?php do_action('print_omniva_tracking_url', $barcode, $omnivalt->settings['shop_countrycode']); ?>
                       <?php endif; ?>
                       <?php $error = $order->get_meta($configs['meta_keys']['error']); ?>
                       <?php if ( $error ) : ?>

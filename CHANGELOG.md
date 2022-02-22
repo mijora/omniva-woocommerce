@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.10.0]
 ### Fixed
 - fixed and renamed manifest page
 - added separation between delivery methods and delivery countries in settings page
@@ -14,6 +14,7 @@
 - labels are no longer stored in the plugin folder for a long time
 - added a ability to set custom shipping method name
 - updated Estonian translations
+- improved for PHP 8.0
 
 ## [1.9.2.1]
 ### Fixed
