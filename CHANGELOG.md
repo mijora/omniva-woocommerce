@@ -5,10 +5,14 @@
 - fixed and renamed manifest page
 - added separation between delivery methods and delivery countries in settings page
 - added parameter "SameSite" for cookies when creating cookie via JavaSript
+- fixed mistake in COD code
 
 ### Improved
 - added option to choose label design for delivery methods
 - added orders selection from multiple pages in Omniva Shipping page
+- labels are no longer stored in the plugin folder for a long time
+- added a ability to set custom shipping method name
+- updated Estonian translations
 
 ## [1.9.2.1]
 ### Fixed
