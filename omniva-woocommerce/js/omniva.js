@@ -9,7 +9,7 @@ jQuery('document').ready(function($){
     });
     $('input.shipping_method:checked').trigger('click');
  
-    $(document.body).on( 'updated_wc_div', function(){
+    $(document.body).on( 'updated_wc_div wc_fragments_refreshed', function(){
         if ($(".woocommerce-shipping-calculator").length) {
             $("select.shipping_method, :input[name^=shipping_method]:checked").trigger('change'); //TODO: Need better solution for dropdown update when in cart change country
         } else {
@@ -58,6 +58,12 @@ var omniva_addrese_change = false;
         var autoSelectTerminal = false;
         var searchTimeout = null;
         var select = $(this);
+        if (select.data('omniva_selector')) {
+            // Omniva selector is already applied.
+            return this;
+        } else {
+            select.data('omniva_selector', true);
+        }
         var not_found = omnivadata.not_found;
         var terminalIcon = null;
         var homeIcon = null;
