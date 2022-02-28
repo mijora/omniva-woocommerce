@@ -41,14 +41,7 @@ class OmnivaLt_Core
 
   public static function get_settings()
   {
-    $wc_shipping = new WC_Shipping();
-    $shipping_method = new Omnivalt_Shipping_Method();
-
-    if ( ! isset($shipping_method->settings) ) {
-      return false;
-    }
-
-    return $shipping_method->settings;
+    return get_option('woocommerce_omnivalt_settings');
   }
 
   public static function get_shipping_method_info($args = '') //TODO: Not completed and still not using. Make a mapping (simple function to return required info)
@@ -381,9 +374,9 @@ class OmnivaLt_Core
 
   private static function load_conditional_hooks()
   {
-    $omnivalt_Shipping_Method = new Omnivalt_Shipping_Method();
+    $settings = self::get_settings();
 
-    $track_info_in_emails = (isset($omnivalt_Shipping_Method->settings['track_info_in_email'])) ? $omnivalt_Shipping_Method->settings['track_info_in_email'] : 'yes';
+    $track_info_in_emails = (isset($settings['track_info_in_email'])) ? $settings['track_info_in_email'] : 'yes';
     
     if ( $track_info_in_emails === 'yes' ) {
       add_action('woocommerce_email_after_order_table', 'OmnivaLt_Order::show_tracking_link', 10, 1);
