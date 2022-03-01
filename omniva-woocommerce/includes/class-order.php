@@ -21,12 +21,12 @@ class OmnivaLt_Order
       return;
     }
 
-    $omnivalt_Shipping_Method = new Omnivalt_Shipping_Method();
-    if ( ! isset($omnivalt_Shipping_Method->settings['prices_' . $customer['country']]) ) {
+    $shipping_settings = OmnivaLt_Core::get_settings();
+    if ( ! isset($shipping_settings['prices_' . $customer['country']]) ) {
       return;
     }
 
-    $rate_settings = json_decode($omnivalt_Shipping_Method->settings['prices_' . $customer['country']]);
+    $rate_settings = json_decode($shipping_settings['prices_' . $customer['country']]);
     $shipping_methods = OmnivaLt_Core::get_configs('method_params');
 
     foreach ( $shipping_methods as $ship_method => $ship_method_values ) {
@@ -136,8 +136,8 @@ class OmnivaLt_Order
           continue;
         }
 
-        $omnivalt_Shipping_Method = new Omnivalt_Shipping_Method();
-        $weightLimit = (int) $omnivalt_Shipping_Method->settings['weight'];
+        $shipping_settings = OmnivaLt_Core::get_settings();
+        $weightLimit = (int) $shipping_settings['weight'];
         $weight = 0;
         foreach ( $package['contents'] as $item_id => $values ) {
           $_product = $values['data'];
@@ -146,7 +146,7 @@ class OmnivaLt_Order
 
         $weight = wc_get_weight($weight, 'kg');
         if ( $weight > $weightLimit ) {
-          $message = sprintf(__('Sorry, %d kg exceeds the maximum weight of %d kg for %s', 'omnivalt'), $weight, $weightLimit, $omnivalt_Shipping_Method->title);
+          $message = sprintf(__('Sorry, %d kg exceeds the maximum weight of %d kg for %s', 'omnivalt'), $weight, $weightLimit, __('Omniva shipping', 'omnivalt'));
           $messageType = "error";
           if ( ! wc_has_notice($message, $messageType) ) {
             wc_add_notice($message, $messageType);
@@ -199,12 +199,11 @@ class OmnivaLt_Order
     }
 
     if ($send_method) {
-      $wc_shipping = new WC_Shipping();
-      $omnivalt_method = new Omnivalt_Shipping_Method();
+      $shipping_settings = OmnivaLt_Core::get_settings();
       $omnivalt_labels = new OmnivaLt_Labels();
 
       $barcode = $order->get_meta($configs['meta_keys']['barcode']);
-      $country_code = $omnivalt_method->settings['shop_countrycode'];
+      $country_code = $shipping_settings['shop_countrycode'];
       $data['omnivalt_tracking_link'] = $omnivalt_labels->get_tracking_link($country_code, $barcode, true);
       $data['omnivalt_barcode'] = $barcode;
     }

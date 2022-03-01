@@ -4,8 +4,7 @@ if ( ! defined('ABSPATH') ) {
 }
 
 // Prepare
-$wc_shipping = new WC_Shipping(); // Required for shipping method get
-$omnivalt = new Omnivalt_Shipping_Method();
+$shipping_settings = OmnivaLt_Core::get_settings();
 $configs = OmnivaLt_Core::get_configs();
 $page_params = OmnivaLt_Manifest::page_params();
 
@@ -179,7 +178,7 @@ do_action('omniva_admin_manifest_head');
                   <td class="manage-column">
                     <div class="data-grid-cell-content">
                       <?php if ( $barcode ) : ?>
-                        <?php do_action('print_omniva_tracking_url', $barcode, $omnivalt->settings['shop_countrycode']); ?>
+                        <?php do_action('print_omniva_tracking_url', $barcode, $shipping_settings['shop_countrycode']); ?>
                       <?php endif; ?>
                       <?php $error = $order->get_meta($configs['meta_keys']['error']); ?>
                       <?php if ( $error ) : ?>
@@ -229,11 +228,11 @@ do_action('omniva_admin_manifest_head');
           <form id="omniva-call" action="admin-post.php" method="GET">
             <input type="hidden" name="action" value="omnivalt_call_courier" />
             <?php wp_nonce_field('omnivalt_call_courier', 'omnivalt_call_courier_nonce'); ?>
-            <div><span><?php echo __("Shop name", 'omnivalt'); ?>:</span> <?php echo $omnivalt->settings['shop_name']; ?></div>
-            <div><span><?php echo __("Shop phone number", 'omnivalt'); ?>:</span> <?php echo $omnivalt->settings['shop_phone']; ?></div>
-            <div><span><?php echo __("Shop postcode", 'omnivalt'); ?>:</span> <?php echo $omnivalt->settings['shop_postcode']; ?></div>
+            <div><span><?php echo __("Shop name", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_name']; ?></div>
+            <div><span><?php echo __("Shop phone number", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_phone']; ?></div>
+            <div><span><?php echo __("Shop postcode", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_postcode']; ?></div>
             <div>
-              <span><?php echo __("Shop address", 'omnivalt'); ?>:</span> <?php echo $omnivalt->settings['shop_address'] . ', ' . $omnivalt->settings['shop_city']; ?>
+              <span><?php echo __("Shop address", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_address'] . ', ' . $shipping_settings['shop_city']; ?>
             </div>
             <div>
               <span><?php echo __("Number of parcels", 'omnivalt'); ?>:</span>

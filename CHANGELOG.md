@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed Omniva shipping class multi call
+
 ## [1.10.0]
 ### Fixed
 - fixed and renamed manifest page
