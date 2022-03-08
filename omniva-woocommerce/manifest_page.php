@@ -106,17 +106,17 @@ do_action('omniva_admin_manifest_head');
                   <input type="text" class="d-inline" name="filter_barcode" id="filter_barcode" value="<?php echo $orders_data['filters']['barcode']; ?>" placeholder="<?php echo __('Barcode', 'omnivalt'); ?>" aria-label="Order barcode filter">
                 </th>
                 <?php if ($manifest_enabled) : ?>
-                <th class="column-manifest_date">
-                  <div class='datetimepicker'>
-                    <div>
-                      <input name="filter_start_date" type='text' class="" id='datetimepicker1' data-date-format="YYYY-MM-DD" value="<?php echo $orders_data['filters']['start_date']; ?>" placeholder="<?php echo __('From', 'omnivalt'); ?>" autocomplete="off" />
+                  <th class="column-manifest_date">
+                    <div class='datetimepicker'>
+                      <div>
+                        <input name="filter_start_date" type='text' class="" id='datetimepicker1' data-date-format="YYYY-MM-DD" value="<?php echo $orders_data['filters']['start_date']; ?>" placeholder="<?php echo __('From', 'omnivalt'); ?>" autocomplete="off" />
+                      </div>
+                      <div>
+                        <input name="filter_end_date" type='text' class="" id='datetimepicker2' data-date-format="YYYY-MM-DD" value="<?php echo $orders_data['filters']['end_date']; ?>" placeholder="<?php echo __('To', 'omnivalt'); ?>" autocomplete="off" />
+                      </div>
                     </div>
-                    <div>
-                      <input name="filter_end_date" type='text' class="" id='datetimepicker2' data-date-format="YYYY-MM-DD" value="<?php echo $orders_data['filters']['end_date']; ?>" placeholder="<?php echo __('To', 'omnivalt'); ?>" autocomplete="off" />
-                    </div>
-                  </div>
-                </th>
-              <?php endif; ?>
+                  </th>
+                <?php endif; ?>
                 <th class="manage-column">
                   <div class="omniva-action-buttons-container">
                     <button class="button action" type="submit"><?php echo __('Filter', 'omnivalt'); ?></button>
