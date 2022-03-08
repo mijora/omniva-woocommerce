@@ -20,6 +20,7 @@ if (!defined('WPINC')) {
 }
 
 define('OMNIVALT_VERSION', '1.10.0');
+define('OMNIVALT_CUSTOM_VERSION', false);
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));

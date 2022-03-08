@@ -153,6 +153,9 @@ class OmnivaLt_Core
       if (!empty($update_params['download_url'])) {
         echo ' ' . sprintf(__('You can download it by pressing %s.', 'omnivalt'), '<a href="' . $update_params['download_url'] . '">' . __('here', 'omnivalt') . '</a>');
       }
+      if (defined('OMNIVALT_CUSTOM_VERSION') && OMNIVALT_CUSTOM_VERSION === true) {
+        echo '<br/><strong style="color:red;">' . __('We do not recommend update the plugin, because your plugin have  changes that is not included in the update.', 'omnivalt') . '</strong>';
+      }
       echo '</p>';
       echo '</div>';
       echo '</td></tr>';
