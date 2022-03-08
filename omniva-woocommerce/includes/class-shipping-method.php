@@ -425,7 +425,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['manifest_enable'] = array(
         'title' => __('Enable manifest print', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Allow print manifest.', 'omnivalt'),
+        'description' => __('Allow print manifest. Disable this option will hide table manifest column and manifest generation buttons.', 'omnivalt'),
         'default' => 'yes',
       );
       $fields['manifest_show_barcode'] = array(
