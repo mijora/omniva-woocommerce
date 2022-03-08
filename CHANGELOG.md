@@ -4,6 +4,9 @@
 ### Fixed
 - fixed Omniva shipping class multi call
 
+### Improved
+- added additional warning to update notification, when update is available and curent plugin have custom modification
+
 ## [1.10.0]
 ### Fixed
 - fixed and renamed manifest page
