@@ -48,9 +48,9 @@ class OmnivaLt_Api
     if ( isset($this->omnivalt_settings['send_email_on_arrive']) ) {
       $send_email_on_arrive = ($this->omnivalt_settings['send_email_on_arrive'] == 'yes') ? true : false;
     }
-    $emails = '';
+    $client_emails = '';
     if ( ! empty($client->email) && $send_email_on_arrive && $arrival_message ) {
-      $emails = '<email>' . $client->email . '</email>';
+      $client_emails .= '<email>' . $client->email . '</email>';
       $additionalService .= '<option code="SF" />';
     }
     if ( $is_cod ) $additionalService .= '<option code="BP" />';
@@ -76,8 +76,12 @@ class OmnivaLt_Api
     }
 
     $client_address = '<address postcode="' . $client->postcode . '" ' . $parcel_terminal . ' deliverypoint="' . $client->city . '" country="' . $client->country . '" street="' . $client->address_1 . '" />';
-    $phones = '';
-    if ( ! empty($client->phone) ) $phones .= '<mobile>' . $client->phone . '</mobile>';
+    $client_phones = '';
+    if ( ! empty($client->phone) ) {
+      $phone = trim($client->phone);
+      $phone = preg_replace("/[^0-9\+]/", "", $phone);
+      $client_phones .= '<mobile>' . $phone . '</mobile>';
+    }
 
     $label_comment = '';
     if ( ! empty($this->omnivalt_settings['label_note']) ) {
@@ -100,8 +104,8 @@ class OmnivaLt_Api
       ' . $label_comment . '
       <receiverAddressee>
         <person_name>' . $client->name . ' ' . $client->surname . '</person_name>
-        ' . $phones . '
-        ' . $emails . '
+        ' . $client_phones . '
+        ' . $client_emails . '
         ' . $client_address . '
       </receiverAddressee>
       <!--Optional:-->
