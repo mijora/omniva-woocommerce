@@ -6,6 +6,7 @@
 
 ### Improved
 - added additional warning to update notification, when update is available and curent plugin have custom modification
+- added additional mass action buttons after orders table in Omniva shipping page
 
 ## [1.10.0]
 ### Fixed

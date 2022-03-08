@@ -63,10 +63,10 @@ do_action('omniva_admin_manifest_head');
               <span class="desc">*<?php echo $desc; ?></span>
             <?php endif; ?>
           </div>
-          <button id="submit_manifest_items" title="<?php echo __('Generate manifest', 'omnivalt'); ?>" type="button" class="button action">
+          <button id="submit_manifest_items_1" title="<?php echo __('Generate manifest', 'omnivalt'); ?>" type="button" class="button action">
             <?php echo __('Generate manifest', 'omnivalt'); ?>
           </button>
-          <button id="submit_manifest_labels" title="<?php echo __('Print labels', 'omnivalt'); ?>" type="button" class="button action">
+          <button id="submit_manifest_labels_1" title="<?php echo __('Print labels', 'omnivalt'); ?>" type="button" class="button action">
             <?php echo __('Print labels', 'omnivalt'); ?>
           </button>
         </div>
@@ -216,6 +216,17 @@ do_action('omniva_admin_manifest_head');
           </table>
         </form>
       </div>
+
+      <?php if ( $orders_data['is_orders'] ) : ?>
+        <div class="mass-print-container">
+          <button id="submit_manifest_items_2" title="<?php echo __('Generate manifest', 'omnivalt'); ?>" type="button" class="button action">
+            <?php echo __('Generate manifest', 'omnivalt'); ?>
+          </button>
+          <button id="submit_manifest_labels_2" title="<?php echo __('Print labels', 'omnivalt'); ?>" type="button" class="button action">
+            <?php echo __('Print labels', 'omnivalt'); ?>
+          </button>
+        </div>
+      <?php endif; ?>
 
       <!-- Modal Courier call-->
       <div id="omniva-courier-modal" class="modal" role="dialog">
