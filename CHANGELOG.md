@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.10.1]
 ### Fixed
 - fixed Omniva shipping class multi call
 

@@ -7,6 +7,14 @@
 
 == Changelog ==
 
+= 1.10.1 =
+- fixed Omniva shipping class multi call
+- fixed and renamed manifest page
+- added separation between delivery methods and delivery countries in settings page
+- added parameter "SameSite" for cookies when creating cookie via JavaSript
+- fixed mistake in COD code
+- separated plugin CSS animations
+
 = 1.10.0 =
 - fixed and renamed manifest page
 - added separation between delivery methods and delivery countries in settings page
@@ -192,4 +200,3 @@
 = 1.3.2 =
 - Bugs fixed.
 - Allowed to generate manifest more than once.
- 
