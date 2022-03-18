@@ -58,6 +58,10 @@ var omniva_addrese_change = false;
         var autoSelectTerminal = false;
         var searchTimeout = null;
         var select = $(this);
+        if (select.length < 1) {
+            // Do nothing if there is no element to apply the Omnivation to.
+            return this;
+        }
         if (select.data('omniva_selector')) {
             // Omniva selector is already applied.
             return this;
