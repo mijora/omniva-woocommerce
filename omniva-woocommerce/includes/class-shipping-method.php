@@ -422,10 +422,16 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'hr',
         'title' => __('Manifest', 'omnivalt'),
       );
+      $fields['manifest_enable'] = array(
+        'title' => __('Enable manifest print', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('Allow print manifest. Disable this option will hide table manifest column and manifest generation buttons.', 'omnivalt'),
+        'default' => 'yes',
+      );
       $fields['manifest_show_barcode'] = array(
         'title' => __('Show barcode in manifest', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Show barcode image in manifest', 'omnivalt'),
+        'description' => __('Show barcode image in manifest.', 'omnivalt'),
         'default' => 'yes',
       );
       $fields['hr_debug'] = array(

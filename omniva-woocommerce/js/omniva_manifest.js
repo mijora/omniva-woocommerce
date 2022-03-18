@@ -65,11 +65,11 @@
   });
 
   /* Submit buttons */
-  $(document).on('click', '#submit_manifest_labels', function() {
+  $(document).on('click', '#submit_manifest_labels_1, #submit_manifest_labels_2', function() {
     omniva_submit_bulk_action('#labels-print-form');
   });
 
-  $('#submit_manifest_items').on('click', function() {
+  $(document).on('click', '#submit_manifest_items_1, #submit_manifest_items_2', function() {
     omniva_submit_bulk_action('#manifest-print-form');
   });
 

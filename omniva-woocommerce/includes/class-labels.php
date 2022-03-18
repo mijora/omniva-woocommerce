@@ -13,7 +13,7 @@ class OmnivaLt_Labels
     $this->omnivalt_api = new OmnivaLt_Api();
     $this->omnivalt_emails = new OmnivaLt_Emails();
     $this->omnivalt_configs = OmnivaLt_Core::get_configs();
-    $this->omnivalt_settings = get_option($this->omnivalt_configs['settings_key']);
+    $this->omnivalt_settings = OmnivaLt_Core::get_settings();
     
     foreach ( $this->omnivalt_configs['method_params'] as $method_name => $method_values ) {
       if ( ! $method_values['is_shipping_method'] ) continue;
@@ -184,12 +184,11 @@ class OmnivaLt_Labels
 
   public function print_tracking_link($order, $admin_panel = true, $print = true)
   {
-    $wc_shipping = new WC_Shipping();
-    $omnivalt = new Omnivalt_Shipping_Method();
+    $shipping_settings = OmnivaLt_Core::get_settings();
     
     $barcode = $order->get_meta($this->omnivalt_configs['meta_keys']['barcode']);
     if ( $admin_panel ) {
-      $country_code = $omnivalt->settings['shop_countrycode'];
+      $country_code = $shipping_settings['shop_countrycode'];
       $text = __('Omniva tracking number', 'omnivalt');
     } else {
       $country_code = $order->get_shipping_country();
@@ -208,7 +207,6 @@ class OmnivaLt_Labels
 
   public static function post_call_courier_actions()
   {
-    $wc_shipping = new WC_Shipping();
     $omnivalt_api = new OmnivaLt_Api();
     $callCarrierReturn = $omnivalt_api->call_courier(intval($_GET['call_quantity']));
     if ($callCarrierReturn['status'] == true)

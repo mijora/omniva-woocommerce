@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.10.1]
+### Fixed
+- fixed Omniva shipping class multi call
+
+### Improved
+- added additional warning to update notification, when update is available and curent plugin have custom modification
+- added additional mass action buttons after orders table in Omniva shipping page
+- added a option to disable manifest generation (hide manifest buttons and table column)
+- created phone number clearance
+
 ## [1.10.0]
 ### Fixed
 - fixed and renamed manifest page

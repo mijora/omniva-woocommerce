@@ -41,14 +41,7 @@ class OmnivaLt_Core
 
   public static function get_settings()
   {
-    $wc_shipping = new WC_Shipping();
-    $shipping_method = new Omnivalt_Shipping_Method();
-
-    if ( ! isset($shipping_method->settings) ) {
-      return false;
-    }
-
-    return $shipping_method->settings;
+    return get_option('woocommerce_omnivalt_settings');
   }
 
   public static function get_shipping_method_info($args = '') //TODO: Not completed and still not using. Make a mapping (simple function to return required info)
@@ -159,6 +152,9 @@ class OmnivaLt_Core
       echo '<p>' . sprintf(__('A newer version of the plugin (%s) has been released.', 'omnivalt'), '<a href="' . $check_update['url'] . '" target="_blank">v' . $check_update['version'] . '</a>');
       if (!empty($update_params['download_url'])) {
         echo ' ' . sprintf(__('You can download it by pressing %s.', 'omnivalt'), '<a href="' . $update_params['download_url'] . '">' . __('here', 'omnivalt') . '</a>');
+      }
+      if (defined('OMNIVALT_CUSTOM_VERSION') && OMNIVALT_CUSTOM_VERSION === true) {
+        echo '<br/><strong style="color:red;">' . __('We do not recommend update the plugin, because your plugin have  changes that is not included in the update.', 'omnivalt') . '</strong>';
       }
       echo '</p>';
       echo '</div>';
@@ -381,9 +377,9 @@ class OmnivaLt_Core
 
   private static function load_conditional_hooks()
   {
-    $omnivalt_Shipping_Method = new Omnivalt_Shipping_Method();
+    $settings = self::get_settings();
 
-    $track_info_in_emails = (isset($omnivalt_Shipping_Method->settings['track_info_in_email'])) ? $omnivalt_Shipping_Method->settings['track_info_in_email'] : 'yes';
+    $track_info_in_emails = (isset($settings['track_info_in_email'])) ? $settings['track_info_in_email'] : 'yes';
     
     if ( $track_info_in_emails === 'yes' ) {
       add_action('woocommerce_email_after_order_table', 'OmnivaLt_Order::show_tracking_link', 10, 1);
