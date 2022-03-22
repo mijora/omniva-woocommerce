@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed additional services, for which required phone or email params
+
 ## [1.10.1]
 ### Fixed
 - fixed Omniva shipping class multi call

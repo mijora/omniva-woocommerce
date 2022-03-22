@@ -217,6 +217,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'shop_phone' => array(
           'title' => __('Shop phone number', 'omnivalt'),
           'type' => 'text',
+          'description' => sprintf(__('Required mobile phone number if want use service "%s".', 'omnivalt'), $this->omnivalt_configs['additional_services']['delivery_confirmation_sms']['title']),
+        ),
+        'shop_email' => array(
+          'title' => __('Shop email', 'omnivalt'),
+          'type' => 'text',
         ),
         'pick_up_start' => array(
           'title' => __('Pick up time start', 'omnivalt'),
