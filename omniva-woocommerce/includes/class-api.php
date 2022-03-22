@@ -36,24 +36,25 @@ class OmnivaLt_Api
     $other_services = OmnivaLt_Product::get_order_items_services($wc_order, true);
     $other_services = OmnivaLt_Helper::override_with_order_services($id_order, $other_services);
 
-    $required_msg_services = array('PA', 'PU', 'PP', 'PO', 'PV', 'CD');
-    $arrival_message = (in_array($service, $required_msg_services)) ? true : false;
-
     $additionalService = '';
     $is_cod = false;
     if ( get_post_meta($id_order, '_payment_method', true) == "cod" ) {
       $is_cod = true;
+      $additionalService .= '<option code="BP" />';
     }
-    $send_email_on_arrive = false;
+
     if ( isset($this->omnivalt_settings['send_email_on_arrive']) ) {
-      $send_email_on_arrive = ($this->omnivalt_settings['send_email_on_arrive'] == 'yes') ? true : false;
+      $arrival_email_code = $this->omnivalt_configs['additional_services']['arrival_email']['code'];
+      if ( $this->omnivalt_settings['send_email_on_arrive'] === 'yes' && ! in_array($arrival_email_code, $other_services) ) {
+        $other_services[] = $arrival_email_code;
+      }
     }
+
+    $client_phones = '';
     $client_emails = '';
-    if ( ! empty($client->email) && $send_email_on_arrive && $arrival_message ) {
-      $client_emails .= '<email>' . $client->email . '</email>';
-      $additionalService .= '<option code="SF" />';
-    }
-    if ( $is_cod ) $additionalService .= '<option code="BP" />';
+    $sender_phones = '';
+    $sender_emails = '';
+
     foreach ( $this->omnivalt_configs['additional_services'] as $service_key => $service_values ) {
       $add_service = (in_array($service_key, $other_services)) ? true : false;
       if ( $service_values['add_always'] ) {
@@ -64,6 +65,22 @@ class OmnivaLt_Api
       }
       if ( $add_service ) {
         $additionalService .= '<option code="' . $service_values['code'] . '" />';
+        if ( ! empty($service_values['required_fields']) ) {
+          foreach ( $service_values['required_fields'] as $req_field ) {
+            if ( $req_field === 'receiver_phone' && ! empty($client->phone) ) {
+              $client_phones = $this->get_required_field('phone', $client->phone, $client_phones);
+            }
+            if ( $req_field === 'receiver_email' && ! empty($client->email) ) {
+              $client_emails = $this->get_required_field('email', $client->email, $client_emails);
+            }
+            if ( $req_field === 'sender_phone' && ! empty($shop->phone) ) {
+              $sender_phones = $this->get_required_field('phone', $shop->phone, $sender_phones);
+            }
+            if ( $req_field === 'sender_email' && ! empty($shop->email) ) {
+              $sender_emails = $this->get_required_field('email', $shop->email, $sender_emails);
+            }
+          }
+        }
       }
     }
     if ( $additionalService ) {
@@ -76,12 +93,6 @@ class OmnivaLt_Api
     }
 
     $client_address = '<address postcode="' . $client->postcode . '" ' . $parcel_terminal . ' deliverypoint="' . $client->city . '" country="' . $client->country . '" street="' . $client->address_1 . '" />';
-    $client_phones = '';
-    if ( ! empty($client->phone) ) {
-      $phone = trim($client->phone);
-      $phone = preg_replace("/[^0-9\+]/", "", $phone);
-      $client_phones .= '<mobile>' . $phone . '</mobile>';
-    }
 
     $label_comment = '';
     if ( ! empty($this->omnivalt_settings['label_note']) ) {
@@ -104,15 +115,13 @@ class OmnivaLt_Api
       ' . $label_comment . '
       <receiverAddressee>
         <person_name>' . $client->name . ' ' . $client->surname . '</person_name>
-        ' . $client_phones . '
-        ' . $client_emails . '
-        ' . $client_address . '
+        ' . $client_phones . $client_emails . $client_address . '
       </receiverAddressee>
       <!--Optional:-->
       <returnAddressee>
         <person_name>' . $shop->name . '</person_name>
         <!--Optional:-->
-        <phone>' . $shop->phone . '</phone>
+        <phone>' . $shop->phone . '</phone>' . $sender_phones . $sender_emails . '
         <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
       </returnAddressee>
     </item>';
@@ -278,6 +287,29 @@ class OmnivaLt_Api
     return ( isset($matches[$method]) ) ? $matches[$method] : '';
   }
 
+  private function get_required_field($type, $value, $current_text = false) {
+    $add_text = '';
+    $value = trim($value);
+    
+    if ( $type === 'phone' ) {
+      $phone = preg_replace("/[^0-9\+]/", "", $value);
+      $add_text = '<mobile>' . $phone . '</mobile>';
+    }
+    if ( $type === 'email' ) {
+      $add_text = '<email>' . $value . '</email>';
+    }
+
+    if ( $add_text === '' || $current_text === false ) {
+      return $add_text;
+    }
+
+    if ( strpos($current_text, $add_text) === false ) {
+      return $current_text . $add_text;
+    }
+
+    return $current_text;
+  }
+
   private function cod($order, $cod = 0, $amount = 0)
   {
     $company = $this->omnivalt_settings['company'];
@@ -303,6 +335,7 @@ class OmnivaLt_Api
       'country' => $this->clean($this->omnivalt_settings['shop_countrycode']),
       'postcode' => $this->clean($this->omnivalt_settings['shop_postcode']),
       'phone' => $this->clean($this->omnivalt_settings['shop_phone']),
+      'email' => $this->clean($this->omnivalt_settings['shop_email']),
       'pick_day' => current_time('Y-m-d'),
       'pick_from' => $this->omnivalt_settings['pick_up_start'] ? $this->clean($this->omnivalt_settings['pick_up_start']) : '8:00',
       'pick_until' => $this->omnivalt_settings['pick_up_end'] ? $this->clean($this->omnivalt_settings['pick_up_end']) : '17:00',

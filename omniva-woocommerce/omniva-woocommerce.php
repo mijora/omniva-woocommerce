@@ -203,6 +203,7 @@ function omnivalt_configs($section_name = false) {
    * in_product (string / boolean) - Service option type in Product edit page. If not use, then false.
    * in_order (string / boolean) - Service option type in Order edit page. If not use, then false.
    * add_always (boolean) - Add always this service to labels
+   * required_fields (array) - Required fields for service. Allowed values: receiver_phone, receiver_email, sender_phone, sender_email.
    * desc_product (string) - Parameter desription in Product edit page.
    *
    * Available service types: checkbox.
@@ -215,6 +216,7 @@ function omnivalt_configs($section_name = false) {
       'in_product' => false,
       'in_order' => false,
       'add_always' => true,
+      'required_fields' => array('receiver_phone'),
     ),
     'arrival_email' => array(
       'title' => __('Arrival email', 'omnivalt'),
@@ -223,6 +225,7 @@ function omnivalt_configs($section_name = false) {
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
+      'required_fields' => array('receiver_email'),
     ),
     'fragile' => array(
       'title' => __('Fragile', 'omnivalt'),
@@ -320,6 +323,7 @@ function omnivalt_configs($section_name = false) {
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
+      'required_fields' => array('sender_phone'),
     ),
     'delivery_confirmation_email' => array(
       'title' => __('Delivery confirmation e-mail to sender', 'omnivalt'),
@@ -328,6 +332,7 @@ function omnivalt_configs($section_name = false) {
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
+      'required_fields' => array('sender_email'),
     ),
   );
 
