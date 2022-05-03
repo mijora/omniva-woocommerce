@@ -260,7 +260,7 @@ do_action('omniva_admin_manifest_head');
             </div>
             <div>
               <span><?php echo __("Number of parcels", 'omnivalt'); ?>:</span>
-              <input type="number" id="call_quantity" name="call_quantity" min="0" max="29" step="1" value="0"/>
+              <input type="number" id="call_quantity" name="call_quantity" min="0" max="29" step="1" value="<?php echo count($selected_orders); ?>"/>
             </div>
             <div class="modal-footer">
               <button type="submit" id="omniva-call-confirm-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>

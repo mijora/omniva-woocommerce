@@ -219,8 +219,8 @@ class OmnivaLt_Api
     $pickStart = OmnivaLt_Helper::get_formated_time($shop->pick_from, '8:00');
     $pickFinish = OmnivaLt_Helper::get_formated_time($shop->pick_until, '17:00');
     $parcels_number = ($parcels_number > 0) ? $parcels_number : 1;
-    
-    $service = OmnivaLt_Helper::get_shipping_service_code($shop->country, 'call', 'courier_call');
+
+    $service = OmnivaLt_Helper::get_shipping_service_code($shop->api_country, 'call', 'courier_call');
     if ( isset($service['status']) && $service['status'] === 'error' ) {
       return array('status' => false, 'msg' => OmnivaLt_Core::get_error_text($service['error_code']));
     }
@@ -339,6 +339,7 @@ class OmnivaLt_Api
       'pick_day' => current_time('Y-m-d'),
       'pick_from' => $this->omnivalt_settings['pick_up_start'] ? $this->clean($this->omnivalt_settings['pick_up_start']) : '8:00',
       'pick_until' => $this->omnivalt_settings['pick_up_end'] ? $this->clean($this->omnivalt_settings['pick_up_end']) : '17:00',
+      'api_country' => $this->clean($this->omnivalt_settings['api_country']),
     );
     if ( current_time('timestamp') > strtotime($data['pick_day'] . ' ' . $data['pick_until']) ) {
       $data['pick_day'] = date('Y-m-d', strtotime($data['pick_day'] . "+1 days"));
