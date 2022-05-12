@@ -5,6 +5,9 @@
 - fixed additional services, for which required phone or email params
 - changed sender country to api country when getting services in label generation
 
+### Improved
+- rearranged files
+
 ## [1.10.1]
 ### Fixed
 - fixed Omniva shipping class multi call
