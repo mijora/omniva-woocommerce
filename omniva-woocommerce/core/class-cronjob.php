@@ -69,6 +69,6 @@ class OmnivaLt_Cronjob
     $message = ($show_date) ? current_time('Y-m-d H:i:s') . ' ' . $message : $message;
     $message = ($next_same_line) ? $message . ' ' : $message . PHP_EOL;
 
-    file_put_contents(OMNIVALT_DIR . 'logs/cronjob.log', $message, FILE_APPEND);
+    file_put_contents(OMNIVALT_DIR . 'var/logs/cronjob.log', $message, FILE_APPEND);
   }
 }

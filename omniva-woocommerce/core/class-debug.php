@@ -1,7 +1,7 @@
 <?php
 class OmnivaLt_Debug
 {
-  public static $_debug_dir = OMNIVALT_DIR . 'debug/';
+  public static $_debug_dir = OMNIVALT_DIR . 'var/debug/';
 
   public static function debug_request($request)
   {

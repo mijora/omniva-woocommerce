@@ -65,7 +65,7 @@ class OmnivaLt_Labels
       $barcodes = array($track_number);
 
       $label_file_name = (!empty($track_number)) ? $track_number : rand(1, 1000);
-      $label_file_path = OMNIVALT_DIR . 'pdf/' . $label_file_name . '.pdf';
+      $label_file_path = OMNIVALT_DIR . 'var/pdf/' . $label_file_name . '.pdf';
       $label_file_content = false;
       
       if ( empty($track_number) || ! $download ) {

@@ -256,7 +256,7 @@ class OmnivaLt_Shipmethod_Helper
     foreach ( $cart_items as $cart_item ) {
       foreach ( $cart_item as $cart_item_value ) {
         if ( empty($cart_item_value) ) {
-          file_put_contents(OMNIVALT_DIR . 'logs/boxsize.log', PHP_EOL . date('Y-m-d H:i:s') . ' BAD DIMMENSIONS ' . json_encode($cart_item) . PHP_EOL, FILE_APPEND);
+          file_put_contents(OMNIVALT_DIR . 'var/logs/boxsize.log', PHP_EOL . date('Y-m-d H:i:s') . ' BAD DIMMENSIONS ' . json_encode($cart_item) . PHP_EOL, FILE_APPEND);
           $dimensions_present = false;
           break;
         }
@@ -272,7 +272,7 @@ class OmnivaLt_Shipmethod_Helper
     $box_size = $packer->pack();
 
     if ( ! $box_size ) {
-      file_put_contents(OMNIVALT_DIR . 'logs/boxsize.log', PHP_EOL . date('Y-m-d H:i:s') . ' NO BOX TO FIT. CART ITEMS DIMMENSIONS: ' . json_encode($cart_items) . PHP_EOL, FILE_APPEND);
+      file_put_contents(OMNIVALT_DIR . 'var/logs/boxsize.log', PHP_EOL . date('Y-m-d H:i:s') . ' NO BOX TO FIT. CART ITEMS DIMMENSIONS: ' . json_encode($cart_items) . PHP_EOL, FILE_APPEND);
     }
 
     return $box_size;

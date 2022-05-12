@@ -512,7 +512,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $box_key = $this->get_field_key($key);
       $html = '';
       if ( isset($value['lang']) ) {
-        $flag_img_url = OMNIVALT_URL . 'css/images/flags/' . strtolower($value['lang']) . '.png';
+        $flag_img_url = OMNIVALT_URL . 'assets/img/flags/' . strtolower($value['lang']) . '.png';
         if ( isset($this->omnivalt_configs['shipping_params'][$value['lang']]) ) {
           $shipping_methods = $this->omnivalt_configs['shipping_params'][$value['lang']]['methods'];
           $shipping_keys = array();

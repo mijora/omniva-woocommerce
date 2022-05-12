@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.10.1
+ * Version: 1.10.1-improvements0512
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
@@ -384,6 +384,6 @@ function omnivalt_configs($section_name = false) {
 /**
  * Plugin loading
  */
-require_once OMNIVALT_DIR . 'includes/class-core.php';
+require_once OMNIVALT_DIR . 'core/class-core.php';
 $omnivalt_core = new OmnivaLt_Core();
 $omnivalt_core->init();

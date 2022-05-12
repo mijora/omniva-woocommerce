@@ -515,8 +515,8 @@ var omniva_addrese_change = false;
             });
             
           
-            terminalIcon = new Icon({iconUrl: omnivadata.omniva_plugin_url+'img/sasi.png'});
-            homeIcon = new Icon2({iconUrl: omnivadata.omniva_plugin_url+'img/locator_img.png'});
+            terminalIcon = new Icon({iconUrl: omnivadata.omniva_plugin_url+'assets/img/sasi.png'});
+            homeIcon = new Icon2({iconUrl: omnivadata.omniva_plugin_url+'assets/img/locator_img.png'});
             
           var locations = JSON.parse(omnivaTerminals);
             jQuery.each( locations, function( key, location ) {

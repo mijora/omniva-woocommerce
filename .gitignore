@@ -1,9 +1,9 @@
 .DS_Store
 /nbproject
 /*.zip
-*/pdf/*.pdf
-*/debug/*.log
-*/logs/*.log
+*/var/pdf/*.pdf
+*/var/debug/*.log
+*/var/logs/*.log
 */locations.json
 */languages/*.pot~
 */languages/*.po~

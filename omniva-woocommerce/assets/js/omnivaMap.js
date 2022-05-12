@@ -43,8 +43,8 @@ var omnivaMap = {
 			iconAnchor:   [16, 32]
 		}
 	});
-	var terminalIcon = new Icon({iconUrl: omnivadata.omniva_plugin_url+'img/sasi.png'});
-  var homeIcon = new Icon2({iconUrl: omnivadata.omniva_plugin_url+'img/locator_img.png'});
+	var terminalIcon = new Icon({iconUrl: omnivadata.omniva_plugin_url+'assets/img/sasi.png'});
+  var homeIcon = new Icon2({iconUrl: omnivadata.omniva_plugin_url+'assets/img/locator_img.png'});
   var select_terminal = omnivadata.text_select_terminal;
   var not_found = omnivadata.not_found;
   
