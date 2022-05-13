@@ -4,6 +4,7 @@
 ### Fixed
 - fixed additional services, for which required phone or email params
 - changed sender country to api country when getting services in label generation
+- added arrival SMS service to PK shipping service
 
 ### Improved
 - rearranged files
