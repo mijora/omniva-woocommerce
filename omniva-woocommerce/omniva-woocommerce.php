@@ -9,9 +9,9 @@
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
- * Tested up to: 5.9.1
+ * Tested up to: 5.9.3
  * WC requires at least: 3.0.0
- * WC tested up to: 6.3.0
+ * WC tested up to: 6.5.1
  * Requires PHP: 7.2
  */
 
@@ -212,7 +212,7 @@ function omnivalt_configs($section_name = false) {
     'arrival_sms' => array(
       'title' => __('Arrival SMS', 'omnivalt'),
       'code' => 'ST',
-      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'CD', 'CE', 'LX', 'LH'),
+      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'PK', 'CD', 'CE', 'LX', 'LH'),
       'in_product' => false,
       'in_order' => false,
       'add_always' => true,
