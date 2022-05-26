@@ -366,6 +366,10 @@ class OmnivaLt_Api
       $data['address_1'] = $this->clean($order->get_billing_address_1());
       $data['country'] = $this->clean($order->get_billing_country());
     }
+    //if none LV, leave only numbers
+    if (stripos( $data['postcode'], 'LV-') === false) {
+        $data['postcode'] = preg_replace("/[^0-9]/", "", $data['postcode'] );
+    }
     if ( empty($data['name']) ) $data['name'] = $this->clean($order->get_billing_first_name());
     if ( empty($data['surname']) ) $data['surname'] = $this->clean($order->get_billing_last_name());
     if ( empty($data['country']) ) $data['country'] = $this->clean($this->omnivalt_settings['shop_countrycode']);
