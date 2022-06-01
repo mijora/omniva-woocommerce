@@ -20,10 +20,10 @@ if (!defined('WPINC')) {
 }
 
 define('OMNIVALT_VERSION', '1.11.0-dev');
-define('OMNIVALT_CUSTOM_VERSION', false);
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));
+define('OMNIVALT_CUSTOM_CHANGES', array()); //If plugin have custom changes, add changes descriptions to this array
 
 function omnivalt_configs($section_name = false) {
   $params = array();
