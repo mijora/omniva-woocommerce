@@ -8,6 +8,7 @@
 
 ### Improved
 - rearranged files
+- added automatic post code fix by selected country
 
 ## [1.10.1]
 ### Fixed
