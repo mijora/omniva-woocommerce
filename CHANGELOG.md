@@ -9,6 +9,7 @@
 ### Improved
 - rearranged files
 - added automatic post code fix by selected country
+- improved custom changes show
 
 ## [1.10.1]
 ### Fixed
