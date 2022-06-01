@@ -360,6 +360,7 @@ class OmnivaLt_Api
       'email' => $this->clean($order->get_billing_email()),
       'phone' => get_post_meta($order->get_id(), '_shipping_phone', true),
     );
+
     if ( empty($data['postcode']) && empty($data['city']) && empty($data['address_1']) && empty($data['country']) ) {
       $data['postcode'] = $this->clean($order->get_billing_postcode());
       $data['city'] = $this->clean($order->get_billing_city());
@@ -372,6 +373,12 @@ class OmnivaLt_Api
     if ( empty($data['country']) ) $data['country'] = 'LT';
     if ( empty($data['phone']) ) $data['phone'] = $this->clean($order->get_billing_phone());
     
+    //Fix postcode
+    $data['postcode'] = preg_replace("/[^0-9]/", "", $data['postcode']);
+    if ($data['country'] == 'LV') {
+      $data['postcode'] = 'LV-' . $data['postcode'];
+    }
+
     return ($object) ? (object) $data : $data;
   }
 
