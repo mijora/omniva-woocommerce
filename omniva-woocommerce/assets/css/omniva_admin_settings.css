@@ -240,7 +240,8 @@
 .woocommerce table.omniva-settings .slider.round:before {
   border-radius: 50%;
 }
-.woocommerce table.omniva-settings .field-custom_label table {
+.woocommerce table.omniva-settings .field-custom_label table,
+.woocommerce table.omniva-settings .field-position table {
   width: 100%;
 }
 .woocommerce table.omniva-settings .field-custom_label table th,
@@ -248,6 +249,12 @@
   padding: 0;
   width: 33%;
 }
-.woocommerce table.omniva-settings .field-custom_label table input[type="text"] {
+.woocommerce table.omniva-settings .field-custom_label table input[type="text"],
+.woocommerce table.omniva-settings .field-position table input[type="number"] {
   width: 95%;
+}
+.woocommerce table.omniva-settings .field-position table th,
+.woocommerce table.omniva-settings .field-position table td {
+  padding: 0;
+  width: 20%;
 }

@@ -10,6 +10,7 @@
 - rearranged files
 - added automatic post code fix by selected country
 - improved custom changes show
+- added a option to choose shipping methods position
 
 ## [1.10.1]
 ### Fixed
