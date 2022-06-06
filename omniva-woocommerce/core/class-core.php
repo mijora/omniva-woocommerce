@@ -383,6 +383,7 @@ class OmnivaLt_Core
     add_filter('admin_post_omnivalt_manifest', 'OmnivaLt_Order::post_manifest_actions', 20, 3);
     //add_filter('woocommerce_admin_order_actions_end', 'OmnivaLt_Order::order_actions', 10, 1);
     add_filter('woocommerce_cart_shipping_method_full_label', 'OmnivaLt_Frontend::add_logo_to_method', 10, 2);
+    add_filter('woocommerce_package_rates' , 'OmnivaLt_Frontend::change_methods_position', 99, 2);
   }
 
   private static function load_conditional_hooks()

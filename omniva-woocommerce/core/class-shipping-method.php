@@ -368,6 +368,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'label_name',
         'description' => __('Use custom shipping method name.', 'omnivalt') . ' ' . __('Values is not translatable.', 'omnivalt'),
       );
+      $fields['position'] = array(
+        'title' => __('Positions', 'omnivalt'),
+        'type' => 'position',
+        'description' => __('Position of each Omniva shipping method in shipping methods list on Checkout page.', 'omnivalt') . '<br/>' . __('Leave empty to not change position. A higher number means a lower position (1 - top of the list).', 'omnivalt') . '<br/>' . __('NOTE', 'omnivalt') . ': ' . __('Positioning may be affected by other plugins or functions used in the theme.', 'omnivalt'),
+      );
       $fields['hr_orders'] = array(
         'type' => 'hr',
         'title' => __('Orders', 'omnivalt'),
@@ -907,7 +912,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
             <div class="other-description">
               <?php
               $html_params = array(
-                'label' => $params['other']['desc_title'],
+                'label' => $params['other']['desc_title'] . ':',
                 'id' => $params['other']['desc']['key'],
                 'name' => $params['box_key'] . '[' . $params['other']['desc_name'] . ']',
                 'value' => $params['other']['desc']['value'],
@@ -1032,6 +1037,60 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       return $html;
     }
     public function validate_label_name_field( $key, $value ) {
+      $values = wp_json_encode($value);
+      return $values;
+    }
+
+    public function generate_position_html( $key, $value ) {
+      $field_key = $this->get_field_key($key);
+      $field_class = (isset($value['class'])) ? $value['class'] : '';
+      $field_values = array();
+
+      if ( $this->get_option($key) !== '' ) {
+        $field_values = $this->get_option($key);
+        if ( is_string($field_values) ) {
+          $field_values = json_decode($this->get_option($key), true);
+        }
+      }
+
+      $avalable_methods = OmnivaLt_Shipmethod_Helper::get_available_shipping_methods($this->omnivalt_configs);
+      $splited_methods = array_chunk($avalable_methods, 5, true);
+
+      ob_start();
+      ?>
+      <tr valign="top">
+        <th scope="row" class="titledesc">
+          <label><?php echo esc_html($value['title']); ?></label>
+        </th>
+        <td class="forminp">
+          <fieldset class="field-position <?php echo $field_class; ?>">
+            <table>
+              <?php foreach ( $splited_methods as $methods_row) : ?>
+                <tr>
+                  <?php foreach ( $methods_row as $method_key => $method_values ) : ?>
+                    <th><?php echo $method_values['title']; ?></th>
+                  <?php endforeach; ?>
+                </tr>
+                <tr>
+                  <?php foreach ( $methods_row as $method_key => $method_values ) : ?>
+                    <?php $current_value = (isset($field_values[$method_values['key']])) ? $field_values[$method_values['key']] : ""; ?>
+                    <td>
+                      <input type="number" name="<?php echo esc_html($field_key); ?>[<?php echo esc_html($method_values['key']); ?>]" value="<?php echo esc_html($current_value); ?>" min="0" max="90" step="1">
+                    </td>
+                  <?php endforeach; ?>
+                </tr>
+              <?php endforeach; ?>
+            </table>
+            <p class="description"><?php echo $value['description']; ?></p>
+          </fieldset>
+        </td>
+      </tr>
+      <?php
+      $html = ob_get_contents();
+      ob_end_clean();
+      return $html;
+    }
+    public function validate_position_field( $key, $value ) {
       $values = wp_json_encode($value);
       return $values;
     }

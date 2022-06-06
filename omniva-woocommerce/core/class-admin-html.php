@@ -155,6 +155,7 @@ class OmnivaLt_Admin_Html
     $type = (isset($params['type'])) ? $params['type'] : 'text';
     $name = (isset($params['name'])) ? $params['name'] : '';
     $value = (isset($params['value'])) ? $params['value'] : '';
+    $placeholder = (isset($params['placeholder'])) ? $params['placeholder'] : '';
     $step = (isset($params['step'])) ? $params['step'] : 1;
     $min = (isset($params['min'])) ? $params['min'] : '';
     $max = (isset($params['max'])) ? $params['max'] : '';
@@ -167,6 +168,9 @@ class OmnivaLt_Admin_Html
     $html .= '<input class="' . $class . '" type="' . $type . '" name="' . $name . '" id="' . $id . '" value="' . $value . '"';
     if ($type === 'number') {
       $html .= ' step="' . $step . '" min="' . $min . '" max="' . $max . '"';
+    }
+    if (!empty($placeholder)) {
+      $html .= ' placeholder="' . $placeholder . '"';
     }
     $html .= '>';
 
