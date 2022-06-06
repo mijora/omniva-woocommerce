@@ -7,6 +7,15 @@
 
 == Changelog ==
 
+= 1.11.0 =
+- fixed additional services, for which required phone or email params
+- changed sender country to api country when getting services in label generation
+- added arrival SMS service to PK shipping service
+- rearranged files
+- added automatic post code fix by selected country
+- improved custom changes show
+- added a option to choose shipping methods position
+
 = 1.10.1 =
 - fixed Omniva shipping class multi call
 - fixed and renamed manifest page
