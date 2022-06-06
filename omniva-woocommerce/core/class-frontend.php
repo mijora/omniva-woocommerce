@@ -24,8 +24,8 @@ class OmnivaLt_Frontend
     $settings = OmnivaLt_Core::get_settings();
     $replaced_key = "_%02d";
 
-    if ( empty($settings['position']) ) return;
-    if ( empty(json_decode($settings['position'])) ) return;
+    if ( empty($settings['position']) ) return $rates;
+    if ( empty(json_decode($settings['position'])) ) return $rates;
 
     $new_rates = array();
     $positions = json_decode($settings['position']);
