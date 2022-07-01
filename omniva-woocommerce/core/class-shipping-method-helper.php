@@ -38,25 +38,28 @@ class OmnivaLt_Shipmethod_Helper
 
   public static function check_restrictions($settings, $key, $weight = false, $products_for_dim = false)
   {
-    $pass = true;
     $settings_keys = array(
       'weight' => ($key === 'pt') ? 'weight' : 'weight_' . $key,
       'size' => 'size_' . $key,
     );
 
-    if ( $weight && isset($settings[$settings_keys['weight']])) {
+    if ( $weight && isset($settings[$settings_keys['weight']]) ) {
       $max_weight = $settings[$settings_keys['weight']];
-      $weight_pass = self::check_weight($weight, $max_weight);
-      $pass = ($pass) ? $weight_pass : $pass; // If $pass still true, then change to $weight_pass
+      $pass = self::check_weight($weight, $max_weight);
+      if ( ! $pass ) {
+        return false;
+      }
     }
 
     if ( $products_for_dim ) {
       $max_dimension = (isset($settings[$settings_keys['size']])) ? json_decode($settings[$settings_keys['size']]) : array(999999,999999,999999);
-      $dimension_pass = self::check_dimension($products_for_dim, $max_dimension);
-      $pass = ($pass) ? $dimension_pass : $pass; // If $pass still true, then change to $dimension_pass
+      $pass = self::check_dimension($products_for_dim, $max_dimension);
+      if ( ! $pass ) {
+        return false;
+      }
     }
 
-    return $pass;
+    return true;
   }
 
   public static function get_amount($key, $prices, $weight, $cart_amount, $get_only_amount = false)
