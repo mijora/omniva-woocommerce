@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- fixed error, when cart product dont have category (product category is "Uncategorized")
+
 ### Improved
 - added support for new Omniva XML response namespace
 - improved shipping methods restrictions check

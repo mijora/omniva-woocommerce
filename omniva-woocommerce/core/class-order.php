@@ -78,6 +78,9 @@ class OmnivaLt_Order
 
     foreach( $woocommerce->cart->get_cart() as $cart_item ) {
       $cats = get_the_terms( $cart_item['product_id'], 'product_cat' );
+      if ( empty ($cats) ) {
+        continue;
+      }
       foreach ( $cats as $cat ) {
         $cart_categories_ids[] = $cat->term_id;
         if ( $cat->parent != 0 ) {
