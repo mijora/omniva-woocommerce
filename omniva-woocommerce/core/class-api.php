@@ -181,8 +181,7 @@ class OmnivaLt_Api
       $xmlResponse = '';
     }
 
-    $xmlResponse = str_ireplace(['SOAP-ENV:', 'SOAP:'], '', $xmlResponse);
-    $xml = simplexml_load_string($xmlResponse);
+    $xml = $this->makeReadableXmlResponse($xmlResponse);
     if ( ! is_object($xml) ) {
       $errors[] = $this->get_xml_error_from_response($xmlResponse);
     }
@@ -443,8 +442,7 @@ class OmnivaLt_Api
     } else {
       $errorTitle = '';
       if ( strlen(trim($xmlResponse)) > 0 ) {
-        $xmlResponse = str_ireplace(['SOAP-ENV:', 'SOAP:'], '', $xmlResponse);
-        $xml = simplexml_load_string($xmlResponse);
+        $xml = $this->makeReadableXmlResponse($xmlResponse);
         if ( ! is_object($xml) ) {
           $errors[] = $this->get_xml_error_from_response($xmlResponse);
         }
@@ -502,6 +500,18 @@ class OmnivaLt_Api
     $kontrollnr = ((ceil(($total / 10)) * 10) - $total);
     
     return $order_number . $kontrollnr;
+  }
+
+  private function makeReadableXmlResponse($xmlResponse)
+  {
+    $xmlResponse = str_ireplace(['SOAP-ENV:', 'SOAP:', 'ns3:'], '', $xmlResponse);
+    $xml = simplexml_load_string($xmlResponse);
+
+    // Another possible preparation variant
+    /*$xmlWithNamespaces = simplexml_load_string($xmlResponse);
+    $xml = str_replace(array_map(function($e) { return "$e:"; }, array_keys($xmlWithNamespaces->getNamespaces(true))), array(), $xmlResponse);*/
+
+    return $xml;
   }
 
   private function get_xml_error_from_response($response)

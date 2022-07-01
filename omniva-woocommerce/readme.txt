@@ -7,6 +7,11 @@
 
 == Changelog ==
 
+= 1.11.1 =
+- fixed error, when cart product dont have category (product category is "Uncategorized")
+- added support for new Omniva XML response namespace
+- improved shipping methods restrictions check
+
 = 1.11.0 =
 - fixed additional services, for which required phone or email params
 - changed sender country to api country when getting services in label generation
