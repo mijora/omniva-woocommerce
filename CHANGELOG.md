@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Improved
 - added support for new Omniva XML response namespace
+- improved restrictions check
 
 ## [1.11.0]
 ### Fixed
