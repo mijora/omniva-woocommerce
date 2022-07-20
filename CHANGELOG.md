@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- Corrected the Latvian translation of the phrase "Select terminal"
+
 ## [1.11.1]
 ### Fixed
 - fixed error, when cart product dont have category (product category is "Uncategorized")
