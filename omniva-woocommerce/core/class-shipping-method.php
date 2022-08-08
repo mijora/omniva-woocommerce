@@ -325,13 +325,26 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'title' => __('Disable for specific categories', 'omnivalt'),
         'type' => 'multiselect',
         'class' => 'wc-enhanced-select',
-        'description' => __('Select categories for which you want to disable the Omniva method.', 'omnivalt'),
+        'description' => __('Select categories for which you want to disable the Omniva method', 'omnivalt'),
         'options' => $this->omnivalt_get_categories(),
         //'desc_tip' => true,
         'required' => false,
         'custom_attributes' => array(
           'data-placeholder' => __('Select Categories', 'omnivalt'),
           'data-name' => 'restricted_categories'
+        ),
+      );
+      $fields['restricted_shipclass'] = array(
+        'title' => __('Disable for specific shipping classes', 'omnivalt'),
+        'type' => 'multiselect',
+        'class' => 'wc-enhanced-select',
+        'description' => __('Select shipping classes for which you want to disable the Omniva method', 'omnivalt'),
+        'options' => $this->omnivalt_get_shipping_classes(),
+        //'desc_tip' => true,
+        'required' => false,
+        'custom_attributes' => array(
+          'data-placeholder' => __('Select Shipping classes', 'omnivalt'),
+          'data-name' => 'restricted_shipclass'
         ),
       );
       $fields['auto_select'] = array(
@@ -1152,6 +1165,38 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       }
 
       return $children;
+    }
+
+    /**
+     * Get shipping classes for "restricted_shipclass" field
+     */
+    public function omnivalt_get_shipping_classes()
+    {
+      $result = [];
+      $shipping_classes = $this->get_all_shipping_classes();
+          
+      foreach ( $shipping_classes as $item ) {
+        $this->create_categories_list('', $item, $result);
+      }
+
+      return $result;
+    }
+
+    private function get_all_shipping_classes()
+    {
+      $taxonomy = 'product_shipping_class';
+      $orderby = 'name';
+      $hide_empty = 0;
+
+      $args = array(
+        'taxonomy'   => $taxonomy,
+        'orderby'    => $orderby,
+        'hide_empty' => $hide_empty,
+      );
+
+      $shipping_classes = get_terms($args);
+
+      return $shipping_classes;
     }
 
     public function generate_debug_window_html( $key, $value ) {
