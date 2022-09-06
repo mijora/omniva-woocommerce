@@ -1303,7 +1303,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         $amount = $amount_data['amount'];
         $meta_data = $amount_data['meta_data'];
 
-        if ( empty($amount) ) {
+        if ( empty($amount) && $amount !== 0 && $amount !== '0' ) {
           $show = false;
         }
         if ( ! isset($prices->{$rate_key . '_enable'}) ) {
