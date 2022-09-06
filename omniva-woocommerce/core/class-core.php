@@ -376,6 +376,7 @@ class OmnivaLt_Core
     add_filter('admin_post_omnivalt_call_courier', 'OmnivaLt_Labels::post_call_courier_actions');
     add_filter('woocommerce_order_data_store_cpt_get_orders_query', 'OmnivaLt_Manifest::handle_custom_query_var', 10, 2);
     add_filter('woocommerce_package_rates', 'OmnivaLt_Order::restrict_shipping_methods_by_cats', 10, 1);
+    add_filter('woocommerce_package_rates', 'OmnivaLt_Order::restrict_shipping_methods_by_shipclass', 10, 1);
     add_filter('woocommerce_admin_order_preview_get_order_details', 'OmnivaLt_Order::admin_order_add_custom_meta_data', 10, 2);
     add_filter('bulk_actions-edit-shop_order', 'OmnivaLt_Order::bulk_actions', 20);
     add_filter('handle_bulk_actions-edit-shop_order', 'OmnivaLt_Order::handle_bulk_actions', 20, 3);
