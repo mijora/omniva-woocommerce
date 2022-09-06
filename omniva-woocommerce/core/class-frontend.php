@@ -7,7 +7,7 @@ class OmnivaLt_Frontend
     $image = '';
 
     if ( isset($settings['show_logo']) && $settings['show_logo'] === 'yes' ) {
-      $image = '<img src="' . OMNIVALT_URL . 'assets/img/omniva_logo_s.png" alt="Omniva"/>';
+      $image = '<img src="' . OMNIVALT_URL . 'assets/img/logos/omniva_horizontal_s.png" alt="Omniva"/>';
     }
 
     if ( $method->method_id === 'omnivalt' ) {
