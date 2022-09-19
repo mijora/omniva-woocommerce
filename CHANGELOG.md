@@ -2,10 +2,12 @@
 
 ## [Unreleased]
 ### Fixed
-- Corrected the Latvian translation of the phrase "Select terminal"
+- corrected the Latvian translation of the phrase "Select terminal"
+- fixed "Arrival email" additional service
 
 ### Improved
 - added a ability to disable Omniva shipping methods for specific shipping class
+- improved additional services working
 
 ## [1.11.1]
 ### Fixed

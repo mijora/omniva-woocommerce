@@ -227,6 +227,14 @@ function omnivalt_configs($section_name = false) {
       'add_always' => false,
       'required_fields' => array('receiver_email'),
     ),
+    'cod' => array(
+      'title' => __('Cash on delivery', 'omnivalt'),
+      'code' => 'BP',
+      'only_for' => 'all',
+      'in_product' => false,
+      'in_order' => false,
+      'add_always' => false,
+    ),
     'fragile' => array(
       'title' => __('Fragile', 'omnivalt'),
       'code' => 'BC',
@@ -335,6 +343,11 @@ function omnivalt_configs($section_name = false) {
       'required_fields' => array('sender_email'),
     ),
   );
+
+  /*
+   * List of Cash of delivery payment methods key
+   */
+  $params['cod'] = array('cod');
 
   /*
    * Post offices and terminals params

@@ -27,28 +27,15 @@ class OmnivaLt_Api
 
     $send_method = $this->get_send_method($wc_order);
     $pickup_method = $this->omnivalt_settings['send_off'];
+    $is_cod = OmnivaLt_Helper::check_service_cod($id_order);
 
     $service = OmnivaLt_Helper::get_shipping_service_code($shop->country, $client->country, $pickup_method . ' ' . $send_method);
     if ( isset($service['status']) && $service['status'] === 'error' ) {
       return array('msg' => OmnivaLt_Core::get_error_text($service['error_code']));
     }
 
-    $other_services = OmnivaLt_Product::get_order_items_services($wc_order, true);
-    $other_services = OmnivaLt_Helper::override_with_order_services($id_order, $other_services);
-
-    $additionalService = '';
-    $is_cod = false;
-    if ( get_post_meta($id_order, '_payment_method', true) == "cod" ) {
-      $is_cod = true;
-      $additionalService .= '<option code="BP" />';
-    }
-
-    if ( isset($this->omnivalt_settings['send_email_on_arrive']) ) {
-      $arrival_email_code = $this->omnivalt_configs['additional_services']['arrival_email']['code'];
-      if ( $this->omnivalt_settings['send_email_on_arrive'] === 'yes' && ! in_array($arrival_email_code, $other_services) ) {
-        $other_services[] = $arrival_email_code;
-      }
-    }
+    $other_services = OmnivaLt_Helper::get_order_services($wc_order);
+    $additional_services = '';
 
     $client_phones = '';
     $client_emails = '';
@@ -57,14 +44,15 @@ class OmnivaLt_Api
 
     foreach ( $this->omnivalt_configs['additional_services'] as $service_key => $service_values ) {
       $add_service = (in_array($service_key, $other_services)) ? true : false;
-      if ( $service_values['add_always'] ) {
+      if ( ! $add_service && $service_values['add_always'] ) {
         $add_service = true;
-        if ( is_array($service_values['only_for']) && !in_array($service, $service_values['only_for']) ) {
-          $add_service = false;
-        }
       }
+      if ( is_array($service_values['only_for']) && ! in_array($service, $service_values['only_for']) ) {
+        $add_service = false;
+      }
+
       if ( $add_service ) {
-        $additionalService .= '<option code="' . $service_values['code'] . '" />';
+        $additional_services .= '<option code="' . $service_values['code'] . '" />';
         if ( ! empty($service_values['required_fields']) ) {
           foreach ( $service_values['required_fields'] as $req_field ) {
             if ( $req_field === 'receiver_phone' && ! empty($client->phone) ) {
@@ -83,8 +71,8 @@ class OmnivaLt_Api
         }
       }
     }
-    if ( $additionalService ) {
-      $additionalService = '<add_service>' . $additionalService . '</add_service>';
+    if ( $additional_services ) {
+      $additional_services = '<add_service>' . $additional_services . '</add_service>';
     }
 
     $parcel_terminal = "";
@@ -109,7 +97,7 @@ class OmnivaLt_Api
 
     $xmlRequest = $this->xml_header();
     $xmlRequest .= '<item service="' . $service . '" >
-      ' . $additionalService . '
+      ' . $additional_services . '
       <measures weight="' . $weight . '" />
       ' . $this->cod($order, $is_cod, get_post_meta($id_order, '_order_total', true)) . '
       ' . $label_comment . '
