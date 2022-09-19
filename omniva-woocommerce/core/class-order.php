@@ -396,8 +396,8 @@ class OmnivaLt_Order
       echo '<p><strong class="title">' . $ship_values['title'] . ':</strong> ' . $field_value . '</p>';
     }
 
-    $services = OmnivaLt_Product::get_order_items_services($order, true);
-    $services = OmnivaLt_Helper::override_with_order_services($order->get_id(), $services);
+    $services = OmnivaLt_Helper::get_order_services($order);
+
     if ( ! empty($services) ) {
       echo '<p><strong class="title">' . __('Services', 'omnivalt') . ':</strong> ';
       $output = '';
@@ -456,6 +456,7 @@ class OmnivaLt_Order
     
     foreach ( $configs['additional_services'] as $service_key => $service_values ) {
       if ( $service_values['add_always'] ) continue;
+      if ( ! $service_values['in_order'] ) continue;
       
       echo '<p class="form-field-wide">';
       $field_id = 'omnivalt_' . $service_key;
