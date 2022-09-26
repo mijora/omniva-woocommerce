@@ -786,7 +786,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
               'field_id' => $params['prices']['weight']['key'],
               'field_name' => $params['box_key'] . '[' . $params['prices']['weight_name'] . ']',
               'values' => $params['prices']['weight']['value'],
-              'c1_title' => $params['prices']['weight_title'] . ' (' . get_option('woocommerce_weight_unit') . ')',
+              'c1_title' => $params['prices']['weight_title'] . ' (kg)',
               'c1_step' => 0.001,
             );
             echo OmnivaLt_Admin_Html::buildPricesTable($html_params);
