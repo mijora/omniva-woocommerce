@@ -123,8 +123,15 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     function admin_options()
     {
       ?>
-      <h2><?php echo $this->method_title; ?></h2>
-      <p><?php echo $this->method_description; ?></p>
+      <div class="omniva-title">
+        <div class="title">
+          <h2><?php echo $this->method_title; ?></h2>
+          <p><?php echo $this->method_description; ?></p>
+        </div>
+        <div class="logo">
+          <img src="<?php echo OMNIVALT_URL; ?>assets/img/logos/omniva_vertical_m.png" alt="Omniva logo" />
+        </div>
+      </div>
       <table class="form-table omniva-settings">
         <?php $this->generate_settings_html(); ?>
       </table>
@@ -145,7 +152,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'enabled' => array(
           'title' => __('Enable', 'omnivalt'),
           'type' => 'checkbox',
-          'description' => sprintf(__('Disable this setting to turn off all %s methods.', 'omnivalt'), $this->method_title),
+          'description' => sprintf(__('Activate this plugin and allow to use %s methods', 'omnivalt'), $this->method_title),
           //'desc_tip' => true,
           'default' => 'yes',
         ),
@@ -779,7 +786,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
               'field_id' => $params['prices']['weight']['key'],
               'field_name' => $params['box_key'] . '[' . $params['prices']['weight_name'] . ']',
               'values' => $params['prices']['weight']['value'],
-              'c1_title' => $params['prices']['weight_title'] . ' (' . get_option('woocommerce_weight_unit') . ')',
+              'c1_title' => $params['prices']['weight_title'] . ' (kg)',
               'c1_step' => 0.001,
             );
             echo OmnivaLt_Admin_Html::buildPricesTable($html_params);
@@ -1296,7 +1303,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         $amount = $amount_data['amount'];
         $meta_data = $amount_data['meta_data'];
 
-        if ( empty($amount) ) {
+        if ( empty($amount) && $amount !== 0 && $amount !== '0' ) {
           $show = false;
         }
         if ( ! isset($prices->{$rate_key . '_enable'}) ) {

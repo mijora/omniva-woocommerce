@@ -212,7 +212,7 @@ function omnivalt_configs($section_name = false) {
     'arrival_sms' => array(
       'title' => __('Arrival SMS', 'omnivalt'),
       'code' => 'ST',
-      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'PK', 'CD', 'CE', 'LX', 'LH'),
+      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'PK', 'CD', 'CE', 'LX', 'LH', 'QH', 'CI'),
       'in_product' => false,
       'in_order' => false,
       'add_always' => true,
@@ -226,6 +226,14 @@ function omnivalt_configs($section_name = false) {
       'in_order' => 'checkbox',
       'add_always' => false,
       'required_fields' => array('receiver_email'),
+    ),
+    'cod' => array(
+      'title' => __('Cash on delivery', 'omnivalt'),
+      'code' => 'BP',
+      'only_for' => 'all',
+      'in_product' => false,
+      'in_order' => false,
+      'add_always' => false,
     ),
     'fragile' => array(
       'title' => __('Fragile', 'omnivalt'),
@@ -335,6 +343,11 @@ function omnivalt_configs($section_name = false) {
       'required_fields' => array('sender_email'),
     ),
   );
+
+  /*
+   * List of Cash of delivery payment methods key
+   */
+  $params['cod'] = array('cod');
 
   /*
    * Post offices and terminals params
