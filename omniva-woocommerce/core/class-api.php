@@ -88,7 +88,8 @@ class OmnivaLt_Api
       foreach ( $this->omnivalt_configs['text_variables'] as $key => $title ) {
         $value = '';
         
-        if ( $key === 'order_number' ) $value = $wc_order->get_id();
+        if ( $key === 'order_id' ) $value = $wc_order->get_id();
+        if ( $key === 'order_number' ) $value = $wc_order->get_order_number();
         
         $prepare_comment = str_replace('{' . $key . '}', $value, $prepare_comment);
       }
