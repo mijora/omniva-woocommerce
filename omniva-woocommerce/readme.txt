@@ -7,6 +7,17 @@
 
 == Changelog ==
 
+= 1.12.0 =
+- added a ability to disable Omniva shipping methods for specific shipping class
+- improved additional services working
+- corrected the Latvian translation of the phrase "Select terminal"
+- fixed "Arrival email" additional service
+- added store email get from WP general info when no email is specified in plugin settings
+- disabled display of the return code in the delivery SMS
+- changed weight units to fixed value used in the plugin
+- added phone number service to courier-courier shipping
+- fixed label note variables
+
 = 1.11.1 =
 - fixed error, when cart product dont have category (product category is "Uncategorized")
 - added support for new Omniva XML response namespace

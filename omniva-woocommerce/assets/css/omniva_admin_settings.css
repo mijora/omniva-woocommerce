@@ -1,3 +1,11 @@
+.woocommerce div.omniva-title {
+    position: relative;
+}
+.woocommerce div.omniva-title .logo {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
 .woocommerce table.omniva-settings .section_title {
   padding-left: 0;
 }
@@ -257,4 +265,9 @@
 .woocommerce table.omniva-settings .field-position table td {
   padding: 0;
   width: 20%;
+}
+@media only screen and (max-width: 1023px) {
+    .woocommerce div.omniva-title .logo {
+        display: none;
+    }
 }

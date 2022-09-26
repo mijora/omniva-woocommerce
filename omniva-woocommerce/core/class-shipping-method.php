@@ -123,8 +123,15 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     function admin_options()
     {
       ?>
-      <h2><?php echo $this->method_title; ?></h2>
-      <p><?php echo $this->method_description; ?></p>
+      <div class="omniva-title">
+        <div class="title">
+          <h2><?php echo $this->method_title; ?></h2>
+          <p><?php echo $this->method_description; ?></p>
+        </div>
+        <div class="logo">
+          <img src="<?php echo OMNIVALT_URL; ?>assets/img/logos/omniva_vertical_m.png" alt="Omniva logo" />
+        </div>
+      </div>
       <table class="form-table omniva-settings">
         <?php $this->generate_settings_html(); ?>
       </table>
@@ -145,7 +152,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'enabled' => array(
           'title' => __('Enable', 'omnivalt'),
           'type' => 'checkbox',
-          'description' => sprintf(__('Disable this setting to turn off all %s methods.', 'omnivalt'), $this->method_title),
+          'description' => sprintf(__('Activate this plugin and allow to use %s methods', 'omnivalt'), $this->method_title),
           //'desc_tip' => true,
           'default' => 'yes',
         ),
@@ -325,13 +332,26 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'title' => __('Disable for specific categories', 'omnivalt'),
         'type' => 'multiselect',
         'class' => 'wc-enhanced-select',
-        'description' => __('Select categories for which you want to disable the Omniva method.', 'omnivalt'),
+        'description' => __('Select categories for which you want to disable the Omniva method', 'omnivalt'),
         'options' => $this->omnivalt_get_categories(),
         //'desc_tip' => true,
         'required' => false,
         'custom_attributes' => array(
           'data-placeholder' => __('Select Categories', 'omnivalt'),
           'data-name' => 'restricted_categories'
+        ),
+      );
+      $fields['restricted_shipclass'] = array(
+        'title' => __('Disable for specific shipping classes', 'omnivalt'),
+        'type' => 'multiselect',
+        'class' => 'wc-enhanced-select',
+        'description' => __('Select shipping classes for which you want to disable the Omniva method', 'omnivalt'),
+        'options' => $this->omnivalt_get_shipping_classes(),
+        //'desc_tip' => true,
+        'required' => false,
+        'custom_attributes' => array(
+          'data-placeholder' => __('Select Shipping classes', 'omnivalt'),
+          'data-name' => 'restricted_shipclass'
         ),
       );
       $fields['auto_select'] = array(
@@ -399,7 +419,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       );
       $inline_variables = '';
       foreach ( $this->omnivalt_configs['text_variables'] as $key => $title ) {
-        $inline_variables .= '<br/><code>{' . $key . '}</code> - ' . __('Order number', 'omnivalt');
+        $inline_variables .= '<br/><code>{' . $key . '}</code> - ' . $title;
       }
       $fields['label_note'] = array(
         'title' => __('Note on label', 'omnivalt'),
@@ -766,7 +786,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
               'field_id' => $params['prices']['weight']['key'],
               'field_name' => $params['box_key'] . '[' . $params['prices']['weight_name'] . ']',
               'values' => $params['prices']['weight']['value'],
-              'c1_title' => $params['prices']['weight_title'] . ' (' . get_option('woocommerce_weight_unit') . ')',
+              'c1_title' => $params['prices']['weight_title'] . ' (kg)',
               'c1_step' => 0.001,
             );
             echo OmnivaLt_Admin_Html::buildPricesTable($html_params);
@@ -1154,6 +1174,38 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       return $children;
     }
 
+    /**
+     * Get shipping classes for "restricted_shipclass" field
+     */
+    public function omnivalt_get_shipping_classes()
+    {
+      $result = [];
+      $shipping_classes = $this->get_all_shipping_classes();
+          
+      foreach ( $shipping_classes as $item ) {
+        $this->create_categories_list('', $item, $result);
+      }
+
+      return $result;
+    }
+
+    private function get_all_shipping_classes()
+    {
+      $taxonomy = 'product_shipping_class';
+      $orderby = 'name';
+      $hide_empty = 0;
+
+      $args = array(
+        'taxonomy'   => $taxonomy,
+        'orderby'    => $orderby,
+        'hide_empty' => $hide_empty,
+      );
+
+      $shipping_classes = get_terms($args);
+
+      return $shipping_classes;
+    }
+
     public function generate_debug_window_html( $key, $value ) {
       $field_class = (isset($value['class'])) ? $value['class'] : '';
       $files = (isset($value['files'])) ? $value['files'] : array();
@@ -1251,7 +1303,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         $amount = $amount_data['amount'];
         $meta_data = $amount_data['meta_data'];
 
-        if ( empty($amount) ) {
+        if ( empty($amount) && $amount !== 0 && $amount !== '0' ) {
           $show = false;
         }
         if ( ! isset($prices->{$rate_key . '_enable'}) ) {

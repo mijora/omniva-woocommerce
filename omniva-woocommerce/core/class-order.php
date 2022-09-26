@@ -77,7 +77,7 @@ class OmnivaLt_Order
     $cart_categories_ids = array();
 
     foreach( $woocommerce->cart->get_cart() as $cart_item ) {
-      $cats = get_the_terms( $cart_item['product_id'], 'product_cat' );
+      $cats = get_the_terms($cart_item['product_id'], 'product_cat');
       if ( empty($cats) ) {
         continue;
       }
@@ -97,6 +97,45 @@ class OmnivaLt_Order
 
     foreach ( $cart_categories_ids as $cart_product_categories_id ) {
       if ( in_array($cart_product_categories_id, $restricted_categories) ) {
+        foreach ( $configs['method_params'] as $ship_method => $ship_method_values ) {
+          if ( ! $ship_method_values['is_shipping_method'] ) continue;
+          unset($rates['omnivalt_' . $ship_method_values['key']]);
+        }
+        break;
+      }
+    }
+
+    return $rates;
+  }
+
+  /**
+   * Restrict Omniva Shipping methods if cart products has restricted shipping classes
+   */
+  public static function restrict_shipping_methods_by_shipclass($rates)
+  {
+    global $woocommerce;
+    $configs = OmnivaLt_Core::get_configs();
+    $settings = get_option($configs['settings_key']);
+    $cart_classes_ids = array();
+
+    foreach( $woocommerce->cart->get_cart() as $cart_item ) {
+      $shipping_classes = get_the_terms($cart_item['product_id'], 'product_shipping_class');
+      if ( empty($shipping_classes) ) {
+        continue;
+      }
+      foreach ( $shipping_classes as $class ) {
+        $cart_classes_ids[] = $class->term_id;
+      }
+    }
+    $cart_classes_ids = array_unique($cart_classes_ids);
+
+    $restricted_shipclass = $settings['restricted_shipclass'];
+    if ( ! is_array($restricted_shipclass) ) {
+      $restricted_shipclass = array($restricted_shipclass);
+    }
+
+    foreach ( $cart_classes_ids as $cart_product_class_id ) {
+      if ( in_array($cart_product_class_id, $restricted_shipclass) ) {
         foreach ( $configs['method_params'] as $ship_method => $ship_method_values ) {
           if ( ! $ship_method_values['is_shipping_method'] ) continue;
           unset($rates['omnivalt_' . $ship_method_values['key']]);
@@ -357,8 +396,8 @@ class OmnivaLt_Order
       echo '<p><strong class="title">' . $ship_values['title'] . ':</strong> ' . $field_value . '</p>';
     }
 
-    $services = OmnivaLt_Product::get_order_items_services($order, true);
-    $services = OmnivaLt_Helper::override_with_order_services($order->get_id(), $services);
+    $services = OmnivaLt_Helper::get_order_services($order);
+
     if ( ! empty($services) ) {
       echo '<p><strong class="title">' . __('Services', 'omnivalt') . ':</strong> ';
       $output = '';
@@ -417,6 +456,7 @@ class OmnivaLt_Order
     
     foreach ( $configs['additional_services'] as $service_key => $service_values ) {
       if ( $service_values['add_always'] ) continue;
+      if ( ! $service_values['in_order'] ) continue;
       
       echo '<p class="form-field-wide">';
       $field_id = 'omnivalt_' . $service_key;

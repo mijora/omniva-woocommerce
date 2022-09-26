@@ -27,7 +27,7 @@ do_action('omniva_admin_manifest_head');
   <h1><?php _e('Omniva shipping', 'omnivalt'); ?></h1>
 
       <div class="call-courier-container">
-        <button id="omniva-call-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>
+        <button id="omniva-call-btn" class="button action">🚚 <?php _e('Call Omniva courier', 'omnivalt') ?></button>
       </div>
 
       <ul class="nav nav-tabs">
@@ -70,8 +70,8 @@ do_action('omniva_admin_manifest_head');
               <?php echo __('Generate manifest', 'omnivalt'); ?>
             </button>
           <?php endif; ?>
-          <button id="submit_manifest_labels_1" title="<?php echo __('Print labels', 'omnivalt'); ?>" type="button" class="button action">
-            <?php echo __('Print labels', 'omnivalt'); ?>
+          <button id="submit_manifest_labels_1" title="<?php echo __('Generate and print labels', 'omnivalt'); ?>" type="button" class="button action">
+            <?php echo __('Generate and print labels', 'omnivalt'); ?>
           </button>
         </div>
       <?php endif; ?>
@@ -205,7 +205,13 @@ do_action('omniva_admin_manifest_head');
                   <?php endif; ?>
                   <td class="manage-column">
                     <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order->get_id(); ?>" class="button action">
-                      <?php echo _x('Print', 'button', 'omnivalt'); ?>
+                      <?php
+                      if ( $barcode ) {
+                        echo _x('Print', 'button', 'omnivalt');
+                      } else {
+                        echo _x('Generate', 'button', 'omnivalt');
+                      }
+                      ?>
                     </a>
                     <?php if ( $barcode ) : ?>
                       <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order->get_id(); ?>&process=regenerate" class="button action">
@@ -235,8 +241,8 @@ do_action('omniva_admin_manifest_head');
               <?php echo __('Generate manifest', 'omnivalt'); ?>
             </button>
           <?php endif; ?>
-          <button id="submit_manifest_labels_2" title="<?php echo __('Print labels', 'omnivalt'); ?>" type="button" class="button action">
-            <?php echo __('Print labels', 'omnivalt'); ?>
+          <button id="submit_manifest_labels_2" title="<?php echo __('Generate and print labels', 'omnivalt'); ?>" type="button" class="button action">
+            <?php echo __('Generate and print labels', 'omnivalt'); ?>
           </button>
         </div>
       <?php endif; ?>

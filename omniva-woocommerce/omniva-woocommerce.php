@@ -5,13 +5,13 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.11.1
+ * Version: 1.12.0
  * Domain Path: /languages
  * Text Domain: omnivalt
  * Requires at least: 5.1
- * Tested up to: 6.0
+ * Tested up to: 6.0.2
  * WC requires at least: 3.0.0
- * WC tested up to: 6.6.1
+ * WC tested up to: 6.9.4
  * Requires PHP: 7.2
  */
 
@@ -19,7 +19,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVALT_VERSION', '1.11.1');
+define('OMNIVALT_VERSION', '1.12.0');
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));
@@ -212,7 +212,7 @@ function omnivalt_configs($section_name = false) {
     'arrival_sms' => array(
       'title' => __('Arrival SMS', 'omnivalt'),
       'code' => 'ST',
-      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'PK', 'CD', 'CE', 'LX', 'LH'),
+      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'PK', 'CD', 'CE', 'LX', 'LH', 'QH', 'CI'),
       'in_product' => false,
       'in_order' => false,
       'add_always' => true,
@@ -226,6 +226,14 @@ function omnivalt_configs($section_name = false) {
       'in_order' => 'checkbox',
       'add_always' => false,
       'required_fields' => array('receiver_email'),
+    ),
+    'cod' => array(
+      'title' => __('Cash on delivery', 'omnivalt'),
+      'code' => 'BP',
+      'only_for' => 'all',
+      'in_product' => false,
+      'in_order' => false,
+      'add_always' => false,
     ),
     'fragile' => array(
       'title' => __('Fragile', 'omnivalt'),
@@ -337,6 +345,11 @@ function omnivalt_configs($section_name = false) {
   );
 
   /*
+   * List of Cash of delivery payment methods key
+   */
+  $params['cod'] = array('cod');
+
+  /*
    * Post offices and terminals params
    */
   $params['locations'] = array(
@@ -355,6 +368,7 @@ function omnivalt_configs($section_name = false) {
    * Variables, which using to replace some value in string. Using like {variable_key}.
    */
   $params['text_variables'] = array(
+    'order_id' => __('Order ID', 'omnivalt'),
     'order_number' => __('Order number', 'omnivalt'),
   );
 

@@ -1,15 +1,33 @@
 <?php
 class OmnivaLt_Helper
 {
+  public static function get_order_services($order)
+  {
+    $services = OmnivaLt_Product::get_order_items_services($order, true);
+    $services = self::override_with_order_services($order->get_id(), $services);
+
+    return $services;
+  }
+
   public static function override_with_order_services($order_id, $services)
   {
     $configs_services = OmnivaLt_Core::get_configs('additional_services');
     $order_services = array();
+    
     foreach ($configs_services as $service_key => $service_values) {
-      if (!$service_values['add_always']) {
-        $order_services[$service_key] = get_post_meta($order_id, '_omnivalt_' . $service_key, true);
+      if ($service_key == 'arrival_email' && self::check_service_email_on_arrive()) {
+        $order_services[$service_key] = 'yes';
+      }
+      if ($service_key == 'cod' && self::check_service_cod($order_id)) {
+        $order_services[$service_key] = 'yes';
+      }
+
+      $current_value = get_post_meta($order_id, '_omnivalt_' . $service_key, true);
+      if (!$service_values['add_always'] && $current_value != '') {
+        $order_services[$service_key] = $current_value;
       }
     }
+
     foreach ($order_services as $service => $value) {
       if (!empty($value)) { //TODO: Upgrade when services will be other then yes/no
         if ($value === 'yes' && !in_array($service, $services)) {
@@ -24,6 +42,30 @@ class OmnivaLt_Helper
     }
 
     return $services;
+  }
+
+  public static function check_service_email_on_arrive()
+  {
+    $configs = OmnivaLt_Core::get_configs();
+    $settings = get_option($configs['settings_key']);
+
+    if ( isset($settings['send_email_on_arrive']) && $settings['send_email_on_arrive'] === 'yes' ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public static function check_service_cod($order_id)
+  {
+    $cod_payments = OmnivaLt_Core::get_configs('cod');
+    $current_payment = get_post_meta($order_id, '_payment_method', true);
+
+    if ( in_array($current_payment, $cod_payments) ) {
+      return true;
+    }
+
+    return false;
   }
 
   public static function get_methods_asociations()
