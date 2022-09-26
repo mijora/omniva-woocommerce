@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.12.0]
 ### Fixed
 - corrected the Latvian translation of the phrase "Select terminal"
 - fixed "Arrival email" additional service
