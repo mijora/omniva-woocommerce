@@ -368,6 +368,7 @@ function omnivalt_configs($section_name = false) {
    * Variables, which using to replace some value in string. Using like {variable_key}.
    */
   $params['text_variables'] = array(
+    'order_id' => __('Order ID', 'omnivalt'),
     'order_number' => __('Order number', 'omnivalt'),
   );
 

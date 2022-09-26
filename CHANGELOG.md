@@ -8,6 +8,7 @@
 - disabled display of the return code in the delivery SMS
 - changed weight units to fixed value used in the plugin
 - added phone number service to courier-courier shipping
+- fixed label note variables
 
 ### Improved
 - added a ability to disable Omniva shipping methods for specific shipping class

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: omniva\n"
-"POT-Creation-Date: 2022-09-19 15:26+0000\n"
+"POT-Creation-Date: 2022-09-26 14:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -137,7 +137,7 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: core/class-api.php:509
+#: core/class-api.php:512
 msgid "Bad API logins"
 msgstr ""
 
@@ -616,7 +616,7 @@ msgstr ""
 msgid "No compatible orders for manifest"
 msgstr ""
 
-#: core/class-api.php:185 core/class-api.php:470
+#: core/class-api.php:188 core/class-api.php:473
 msgid "No saved barcodes received"
 msgstr ""
 
@@ -679,7 +679,11 @@ msgstr ""
 msgid "Order Date"
 msgstr ""
 
-#: omniva-woocommerce.php:371 core/class-shipping-method.php:422
+#: omniva-woocommerce.php:371
+msgid "Order ID"
+msgstr ""
+
+#: omniva-woocommerce.php:372
 msgid "Order number"
 msgstr ""
 
@@ -823,7 +827,7 @@ msgstr ""
 msgid "Response"
 msgstr ""
 
-#: core/class-api.php:512
+#: core/class-api.php:515
 msgid "Response is in the wrong format"
 msgstr ""
 

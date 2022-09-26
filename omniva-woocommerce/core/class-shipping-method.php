@@ -419,7 +419,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       );
       $inline_variables = '';
       foreach ( $this->omnivalt_configs['text_variables'] as $key => $title ) {
-        $inline_variables .= '<br/><code>{' . $key . '}</code> - ' . __('Order number', 'omnivalt');
+        $inline_variables .= '<br/><code>{' . $key . '}</code> - ' . $title;
       }
       $fields['label_note'] = array(
         'title' => __('Note on label', 'omnivalt'),
