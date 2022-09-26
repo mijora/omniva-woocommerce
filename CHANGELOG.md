@@ -4,6 +4,10 @@
 ### Fixed
 - corrected the Latvian translation of the phrase "Select terminal"
 - fixed "Arrival email" additional service
+- added store email get from WP general info when no email is specified in plugin settings
+- disabled display of the return code in the delivery SMS
+- changed weight units to fixed value used in the plugin
+- added phone number service to courier-courier shipping
 
 ### Improved
 - added a ability to disable Omniva shipping methods for specific shipping class

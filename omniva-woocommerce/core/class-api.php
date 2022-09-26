@@ -101,6 +101,8 @@ class OmnivaLt_Api
       <measures weight="' . $weight . '" />
       ' . $this->cod($order, $is_cod, get_post_meta($id_order, '_order_total', true)) . '
       ' . $label_comment . '
+      <show_return_code_sms>false</show_return_code_sms>
+      <show_return_code_email>false</show_return_code_email>
       <receiverAddressee>
         <person_name>' . $client->name . ' ' . $client->surname . '</person_name>
         ' . $client_phones . $client_emails . $client_address . '
@@ -322,7 +324,7 @@ class OmnivaLt_Api
       'country' => $this->clean($this->omnivalt_settings['shop_countrycode']),
       'postcode' => $this->clean($this->omnivalt_settings['shop_postcode']),
       'phone' => $this->clean($this->omnivalt_settings['shop_phone']),
-      'email' => $this->clean($this->omnivalt_settings['shop_email']),
+      'email' => (! empty($this->omnivalt_settings['shop_email'])) ? $this->clean($this->omnivalt_settings['shop_email']) : get_bloginfo('admin_email'),
       'pick_day' => current_time('Y-m-d'),
       'pick_from' => $this->omnivalt_settings['pick_up_start'] ? $this->clean($this->omnivalt_settings['pick_up_start']) : '8:00',
       'pick_until' => $this->omnivalt_settings['pick_up_end'] ? $this->clean($this->omnivalt_settings['pick_up_end']) : '17:00',
