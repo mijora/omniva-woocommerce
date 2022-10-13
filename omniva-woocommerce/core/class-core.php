@@ -8,8 +8,9 @@ class OmnivaLt_Core
     self::load_classes();
     self::load_init_hooks();
     OmnivaLt_Cronjob::init();
-
-    if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) ) {
+    
+    // Check if WooCommerce is active
+    if ( is_plugin_active( 'woocommerce/woocommerce.php') ) {
       self::load_launch_hooks();
     }
   }
