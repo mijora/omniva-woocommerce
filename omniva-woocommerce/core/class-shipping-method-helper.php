@@ -129,7 +129,7 @@ class OmnivaLt_Shipmethod_Helper
 
     if ( isset($prices->{$keys['coupon']}) && ! empty($applied_coupons) ) {
       foreach ( $applied_coupons as $coupon ) {
-        if ( $prices->{$keys['coupon']} == $coupon ) $amount = 0.0;
+        if ( mb_strtolower($prices->{$keys['coupon']}) == mb_strtolower($coupon) ) $amount = 0.0;
       }
     }
 
