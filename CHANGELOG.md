@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed the use of coupons when they contain unicode characters
+
 ## [1.12.0]
 ### Fixed
 - corrected the Latvian translation of the phrase "Select terminal"
