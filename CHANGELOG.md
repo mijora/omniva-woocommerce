@@ -4,6 +4,9 @@
 ### Fixed
 - fixed the use of coupons when they contain unicode characters
 
+### Improved
+- made the error message more accurate when the shipping-delivery method is not allowed
+
 ## [1.12.0]
 ### Fixed
 - corrected the Latvian translation of the phrase "Select terminal"

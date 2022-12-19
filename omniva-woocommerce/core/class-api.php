@@ -31,7 +31,7 @@ class OmnivaLt_Api
 
     $service = OmnivaLt_Helper::get_shipping_service_code($shop->country, $client->country, $pickup_method . ' ' . $send_method);
     if ( isset($service['status']) && $service['status'] === 'error' ) {
-      return array('msg' => OmnivaLt_Core::get_error_text($service['error_code']));
+      return array('msg' => $service['msg']);
     }
 
     $other_services = OmnivaLt_Helper::get_order_services($wc_order);
