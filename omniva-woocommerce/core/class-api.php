@@ -212,7 +212,7 @@ class OmnivaLt_Api
 
     $service = OmnivaLt_Helper::get_shipping_service_code($shop->api_country, 'call', 'courier_call');
     if ( isset($service['status']) && $service['status'] === 'error' ) {
-      return array('status' => false, 'msg' => OmnivaLt_Core::get_error_text($service['error_code']));
+      return array('status' => false, 'msg' => $service['msg']);
     }
 
     $xmlRequest = $this->xml_header();
