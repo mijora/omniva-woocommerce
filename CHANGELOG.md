@@ -7,6 +7,7 @@
 
 ### Improved
 - made the error message more accurate when the shipping-delivery method is not allowed
+- added the option to specify if to send the return code to the receiver
 
 ## [1.12.0]
 ### Fixed

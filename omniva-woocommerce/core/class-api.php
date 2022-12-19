@@ -80,6 +80,10 @@ class OmnivaLt_Api
       $parcel_terminal = 'offloadPostcode="' . $terminal_id . '" ';
     }
 
+    $send_return_code = $this->get_return_code_sending();
+    $return_code_sms = (! $send_return_code->sms) ? '<show_return_code_sms>false</show_return_code_sms>' : '';
+    $return_code_email = (! $send_return_code->email) ? '<show_return_code_email>false</show_return_code_email>' : '';
+
     $client_address = '<address postcode="' . $client->postcode . '" ' . $parcel_terminal . ' deliverypoint="' . $client->city . '" country="' . $client->country . '" street="' . $client->address_1 . '" />';
 
     $label_comment = '';
@@ -106,9 +110,7 @@ class OmnivaLt_Api
       ' . $additional_services . '
       <measures weight="' . $weight . '" />
       ' . $this->cod($order, $is_cod, get_post_meta($id_order, '_order_total', true)) . '
-      ' . $label_comment . '
-      <show_return_code_sms>false</show_return_code_sms>
-      <show_return_code_email>false</show_return_code_email>
+      ' . $label_comment . $return_code_sms . $return_code_email . '
       <receiverAddressee>
         <person_name>' . $client->name . ' ' . $client->surname . '</person_name>
         ' . $client_mobiles . $client_emails . $client_address . '
@@ -373,6 +375,32 @@ class OmnivaLt_Api
     }
 
     return ($object) ? (object) $data : $data;
+  }
+
+  private function get_return_code_sending()
+  {
+    $add_to_sms = true;
+    $add_to_email = true;
+    
+    if ( isset($this->omnivalt_settings['send_return_code']) ) {
+      switch ($this->omnivalt_settings['send_return_code']) {
+        case 'dont':
+          $add_to_sms = false;
+          $add_to_email = false;
+          break;
+        case 'sms':
+          $add_to_email = false;
+          break;
+        case 'email':
+          $add_to_sms = false;
+          break;
+      }
+    }
+
+    return (object)array(
+      'sms' => $add_to_sms,
+      'email' => $add_to_email,
+    );
   }
 
   private function get_order_weight($id_order)
