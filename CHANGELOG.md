@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed the use of coupons when they contain unicode characters
+- removed receiver phone tag in request, when shop phone is not set
 
 ### Improved
 - made the error message more accurate when the shipping-delivery method is not allowed

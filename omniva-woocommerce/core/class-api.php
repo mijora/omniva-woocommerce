@@ -37,9 +37,9 @@ class OmnivaLt_Api
     $other_services = OmnivaLt_Helper::get_order_services($wc_order);
     $additional_services = '';
 
-    $client_phones = '';
+    $client_mobiles = '';
     $client_emails = '';
-    $sender_phones = '';
+    $sender_mobiles = '';
     $sender_emails = '';
 
     foreach ( $this->omnivalt_configs['additional_services'] as $service_key => $service_values ) {
@@ -56,13 +56,13 @@ class OmnivaLt_Api
         if ( ! empty($service_values['required_fields']) ) {
           foreach ( $service_values['required_fields'] as $req_field ) {
             if ( $req_field === 'receiver_phone' && ! empty($client->phone) ) {
-              $client_phones = $this->get_required_field('phone', $client->phone, $client_phones);
+              $client_mobiles = $this->get_required_field('mobile', $client->phone, $client_mobiles);
             }
             if ( $req_field === 'receiver_email' && ! empty($client->email) ) {
               $client_emails = $this->get_required_field('email', $client->email, $client_emails);
             }
             if ( $req_field === 'sender_phone' && ! empty($shop->phone) ) {
-              $sender_phones = $this->get_required_field('phone', $shop->phone, $sender_phones);
+              $sender_mobiles = $this->get_required_field('mobile', $shop->phone, $sender_mobiles);
             }
             if ( $req_field === 'sender_email' && ! empty($shop->email) ) {
               $sender_emails = $this->get_required_field('email', $shop->email, $sender_emails);
@@ -96,6 +96,11 @@ class OmnivaLt_Api
       $label_comment = '<comment>' . $prepare_comment . '</comment>';
     }
 
+    $sender_phone = '';
+    if ( ! empty($shop->phone) ) {
+        $sender_phone = '<phone>' . $shop->phone . '</phone>';
+    }
+
     $xmlRequest = $this->xml_header();
     $xmlRequest .= '<item service="' . $service . '" >
       ' . $additional_services . '
@@ -106,13 +111,11 @@ class OmnivaLt_Api
       <show_return_code_email>false</show_return_code_email>
       <receiverAddressee>
         <person_name>' . $client->name . ' ' . $client->surname . '</person_name>
-        ' . $client_phones . $client_emails . $client_address . '
+        ' . $client_mobiles . $client_emails . $client_address . '
       </receiverAddressee>
-      <!--Optional:-->
       <returnAddressee>
         <person_name>' . $shop->name . '</person_name>
-        <!--Optional:-->
-        <phone>' . $shop->phone . '</phone>' . $sender_phones . $sender_emails . '
+        ' . $sender_phone . $sender_mobiles . $sender_emails . '
         <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
       </returnAddressee>
     </item>';
@@ -281,7 +284,7 @@ class OmnivaLt_Api
     $add_text = '';
     $value = trim($value);
     
-    if ( $type === 'phone' ) {
+    if ( $type === 'mobile' ) {
       $phone = preg_replace("/[^0-9\+]/", "", $value);
       $add_text = '<mobile>' . $phone . '</mobile>';
     }
