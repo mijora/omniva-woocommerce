@@ -37,6 +37,11 @@ class OmnivaLt_Api
     $other_services = OmnivaLt_Helper::get_order_services($wc_order);
     $additional_services = '';
 
+    $client_fullname = $client->name . ' ' . $client->surname;
+    if ( empty(preg_replace('/\s+/', '', $client_name)) ) {
+      $client_fullname = $client->company;
+    }
+
     $client_mobiles = '';
     $client_emails = '';
     $sender_mobiles = '';
@@ -112,7 +117,7 @@ class OmnivaLt_Api
       ' . $this->cod($order, $is_cod, get_post_meta($id_order, '_order_total', true)) . '
       ' . $label_comment . $return_code_sms . $return_code_email . '
       <receiverAddressee>
-        <person_name>' . $client->name . ' ' . $client->surname . '</person_name>
+        <person_name>' . $client_fullname . '</person_name>
         ' . $client_mobiles . $client_emails . $client_address . '
       </receiverAddressee>
       <returnAddressee>
@@ -348,6 +353,7 @@ class OmnivaLt_Api
     $data = array(
       'name' => $this->clean($order->get_shipping_first_name()),
       'surname' => $this->clean($order->get_shipping_last_name()),
+      'company' => $this->clean($order->get_shipping_company()),
       'address_1' => $this->clean($order->get_shipping_address_1()),
       'postcode' => $this->clean($order->get_shipping_postcode()),
       'city' => $this->clean($order->get_shipping_city()),
@@ -362,8 +368,13 @@ class OmnivaLt_Api
       $data['address_1'] = $this->clean($order->get_billing_address_1());
       $data['country'] = $this->clean($order->get_billing_country());
     }
-    if ( empty($data['name']) ) $data['name'] = $this->clean($order->get_billing_first_name());
-    if ( empty($data['surname']) ) $data['surname'] = $this->clean($order->get_billing_last_name());
+    if ( empty($data['name']) && empty($data['surname']) ) {
+      $data['name'] = $this->clean($order->get_billing_first_name());
+      $data['surname'] = $this->clean($order->get_billing_last_name());
+    }
+    if ( empty($data['name']) && empty($data['surname']) && empty($data['company']) ) {
+      $data['company'] = $this->clean($order->get_billing_company());
+    }
     if ( empty($data['country']) ) $data['country'] = $this->clean($this->omnivalt_settings['shop_countrycode']);
     if ( empty($data['country']) ) $data['country'] = 'LT';
     if ( empty($data['phone']) ) $data['phone'] = $this->clean($order->get_billing_phone());

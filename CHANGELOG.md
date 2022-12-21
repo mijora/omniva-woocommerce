@@ -3,13 +3,14 @@
 ## [Unreleased]
 ### Fixed
 - fixed the use of coupons when they contain unicode characters
-- removed receiver phone tag in request, when shop phone is not set
+- removed customer phone tag in request, when shop phone is not set
 - in the Wordpress dashboard menu bar, the Omniva orders page menu item has been moved below the Woocommerce Orders item
 
 ### Improved
 - made the error message more accurate when the shipping-delivery method is not allowed
-- added the option to specify if to send the return code to the receiver
+- added the option to specify if to send the return code to the customer
 - added additional Omniva terminal saving if failed to save from first time
+- added the customer company name using on the labels when the customer name is empty
 
 ## [1.12.0]
 ### Fixed
