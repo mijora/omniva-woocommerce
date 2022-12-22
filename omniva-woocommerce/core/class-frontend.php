@@ -19,7 +19,7 @@ class OmnivaLt_Frontend
 
   public static function change_methods_position($rates, $package)
   {
-    if ( ! $rates )  return;
+    if ( ! $rates ) return $rates;
 
     $settings = OmnivaLt_Core::get_settings();
     $replaced_key = "_%02d";
