@@ -129,7 +129,7 @@ class OmnivaLt_Order
     }
     $cart_classes_ids = array_unique($cart_classes_ids);
 
-    $restricted_shipclass = $settings['restricted_shipclass'];
+    $restricted_shipclass = $settings['restricted_shipclass'] ?? array();
     if ( ! is_array($restricted_shipclass) ) {
       $restricted_shipclass = array($restricted_shipclass);
     }
