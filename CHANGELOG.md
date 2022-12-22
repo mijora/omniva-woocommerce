@@ -13,6 +13,7 @@
 - added the option to specify if to send the return code to the customer
 - added additional Omniva terminal saving if failed to save from first time
 - added the customer company name using on the labels when the customer name is empty
+- added some translations to Latvian
 
 ## [1.12.0]
 ### Fixed
