@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.12.1]
 ### Fixed
 - fixed the use of coupons when they contain unicode characters
 - removed customer phone tag in request, when shop phone is not set
