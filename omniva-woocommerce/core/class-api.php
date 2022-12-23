@@ -31,15 +31,20 @@ class OmnivaLt_Api
 
     $service = OmnivaLt_Helper::get_shipping_service_code($shop->country, $client->country, $pickup_method . ' ' . $send_method);
     if ( isset($service['status']) && $service['status'] === 'error' ) {
-      return array('msg' => OmnivaLt_Core::get_error_text($service['error_code']));
+      return array('msg' => $service['msg']);
     }
 
     $other_services = OmnivaLt_Helper::get_order_services($wc_order);
     $additional_services = '';
 
-    $client_phones = '';
+    $client_fullname = $client->name . ' ' . $client->surname;
+    if ( empty(preg_replace('/\s+/', '', $client_name)) ) {
+      $client_fullname = $client->company;
+    }
+
+    $client_mobiles = '';
     $client_emails = '';
-    $sender_phones = '';
+    $sender_mobiles = '';
     $sender_emails = '';
 
     foreach ( $this->omnivalt_configs['additional_services'] as $service_key => $service_values ) {
@@ -56,13 +61,13 @@ class OmnivaLt_Api
         if ( ! empty($service_values['required_fields']) ) {
           foreach ( $service_values['required_fields'] as $req_field ) {
             if ( $req_field === 'receiver_phone' && ! empty($client->phone) ) {
-              $client_phones = $this->get_required_field('phone', $client->phone, $client_phones);
+              $client_mobiles = $this->get_required_field('mobile', $client->phone, $client_mobiles);
             }
             if ( $req_field === 'receiver_email' && ! empty($client->email) ) {
               $client_emails = $this->get_required_field('email', $client->email, $client_emails);
             }
             if ( $req_field === 'sender_phone' && ! empty($shop->phone) ) {
-              $sender_phones = $this->get_required_field('phone', $shop->phone, $sender_phones);
+              $sender_mobiles = $this->get_required_field('mobile', $shop->phone, $sender_mobiles);
             }
             if ( $req_field === 'sender_email' && ! empty($shop->email) ) {
               $sender_emails = $this->get_required_field('email', $shop->email, $sender_emails);
@@ -80,6 +85,10 @@ class OmnivaLt_Api
       $parcel_terminal = 'offloadPostcode="' . $terminal_id . '" ';
     }
 
+    $send_return_code = $this->get_return_code_sending();
+    $return_code_sms = (! $send_return_code->sms) ? '<show_return_code_sms>false</show_return_code_sms>' : '';
+    $return_code_email = (! $send_return_code->email) ? '<show_return_code_email>false</show_return_code_email>' : '';
+
     $client_address = '<address postcode="' . $client->postcode . '" ' . $parcel_terminal . ' deliverypoint="' . $client->city . '" country="' . $client->country . '" street="' . $client->address_1 . '" />';
 
     $label_comment = '';
@@ -96,23 +105,24 @@ class OmnivaLt_Api
       $label_comment = '<comment>' . $prepare_comment . '</comment>';
     }
 
+    $sender_phone = '';
+    if ( ! empty($shop->phone) ) {
+        $sender_phone = '<phone>' . $shop->phone . '</phone>';
+    }
+
     $xmlRequest = $this->xml_header();
     $xmlRequest .= '<item service="' . $service . '" >
       ' . $additional_services . '
       <measures weight="' . $weight . '" />
       ' . $this->cod($order, $is_cod, get_post_meta($id_order, '_order_total', true)) . '
-      ' . $label_comment . '
-      <show_return_code_sms>false</show_return_code_sms>
-      <show_return_code_email>false</show_return_code_email>
+      ' . $label_comment . $return_code_sms . $return_code_email . '
       <receiverAddressee>
-        <person_name>' . $client->name . ' ' . $client->surname . '</person_name>
-        ' . $client_phones . $client_emails . $client_address . '
+        <person_name>' . $client_fullname . '</person_name>
+        ' . $client_mobiles . $client_emails . $client_address . '
       </receiverAddressee>
-      <!--Optional:-->
       <returnAddressee>
         <person_name>' . $shop->name . '</person_name>
-        <!--Optional:-->
-        <phone>' . $shop->phone . '</phone>' . $sender_phones . $sender_emails . '
+        ' . $sender_phone . $sender_mobiles . $sender_emails . '
         <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
       </returnAddressee>
     </item>';
@@ -212,7 +222,7 @@ class OmnivaLt_Api
 
     $service = OmnivaLt_Helper::get_shipping_service_code($shop->api_country, 'call', 'courier_call');
     if ( isset($service['status']) && $service['status'] === 'error' ) {
-      return array('status' => false, 'msg' => OmnivaLt_Core::get_error_text($service['error_code']));
+      return array('status' => false, 'msg' => $service['msg']);
     }
 
     $xmlRequest = $this->xml_header();
@@ -281,7 +291,7 @@ class OmnivaLt_Api
     $add_text = '';
     $value = trim($value);
     
-    if ( $type === 'phone' ) {
+    if ( $type === 'mobile' ) {
       $phone = preg_replace("/[^0-9\+]/", "", $value);
       $add_text = '<mobile>' . $phone . '</mobile>';
     }
@@ -343,6 +353,7 @@ class OmnivaLt_Api
     $data = array(
       'name' => $this->clean($order->get_shipping_first_name()),
       'surname' => $this->clean($order->get_shipping_last_name()),
+      'company' => $this->clean($order->get_shipping_company()),
       'address_1' => $this->clean($order->get_shipping_address_1()),
       'postcode' => $this->clean($order->get_shipping_postcode()),
       'city' => $this->clean($order->get_shipping_city()),
@@ -357,8 +368,13 @@ class OmnivaLt_Api
       $data['address_1'] = $this->clean($order->get_billing_address_1());
       $data['country'] = $this->clean($order->get_billing_country());
     }
-    if ( empty($data['name']) ) $data['name'] = $this->clean($order->get_billing_first_name());
-    if ( empty($data['surname']) ) $data['surname'] = $this->clean($order->get_billing_last_name());
+    if ( empty($data['name']) && empty($data['surname']) ) {
+      $data['name'] = $this->clean($order->get_billing_first_name());
+      $data['surname'] = $this->clean($order->get_billing_last_name());
+    }
+    if ( empty($data['name']) && empty($data['surname']) && empty($data['company']) ) {
+      $data['company'] = $this->clean($order->get_billing_company());
+    }
     if ( empty($data['country']) ) $data['country'] = $this->clean($this->omnivalt_settings['shop_countrycode']);
     if ( empty($data['country']) ) $data['country'] = 'LT';
     if ( empty($data['phone']) ) $data['phone'] = $this->clean($order->get_billing_phone());
@@ -370,6 +386,32 @@ class OmnivaLt_Api
     }
 
     return ($object) ? (object) $data : $data;
+  }
+
+  private function get_return_code_sending()
+  {
+    $add_to_sms = true;
+    $add_to_email = true;
+    
+    if ( isset($this->omnivalt_settings['send_return_code']) ) {
+      switch ($this->omnivalt_settings['send_return_code']) {
+        case 'dont':
+          $add_to_sms = false;
+          $add_to_email = false;
+          break;
+        case 'sms':
+          $add_to_email = false;
+          break;
+        case 'email':
+          $add_to_sms = false;
+          break;
+      }
+    }
+
+    return (object)array(
+      'sms' => $add_to_sms,
+      'email' => $add_to_email,
+    );
   }
 
   private function get_order_weight($id_order)

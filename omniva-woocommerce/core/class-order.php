@@ -129,7 +129,7 @@ class OmnivaLt_Order
     }
     $cart_classes_ids = array_unique($cart_classes_ids);
 
-    $restricted_shipclass = $settings['restricted_shipclass'];
+    $restricted_shipclass = $settings['restricted_shipclass'] ?? array();
     if ( ! is_array($restricted_shipclass) ) {
       $restricted_shipclass = array($restricted_shipclass);
     }
@@ -152,19 +152,11 @@ class OmnivaLt_Order
     $configs = OmnivaLt_Core::get_configs();
 
     if ( isset($_POST['omnivalt_terminal']) && $order_id ) {
-      update_post_meta($order_id, $configs['meta_keys']['terminal_id'], $_POST['omnivalt_terminal']);
+      self::set_omniva_terminal_id($order_id, $_POST['omnivalt_terminal']);
     }
 
-    if ( isset($_POST['shipping_method']) && is_array($_POST['shipping_method']) ) {
-      foreach ( $_POST['shipping_method'] as $ship_method ) {
-        foreach ( $configs['method_params'] as $method_name => $method_values ) {
-          if ( ! $method_values['is_shipping_method'] ) continue;
-          if ( $ship_method == "omnivalt_" . $method_values['key'] ) {
-            update_post_meta($order_id, $configs['meta_keys']['method'], $ship_method);
-            break;
-          }
-        }
-      }
+    if ( isset($_POST['shipping_method']) && $order_id ) {
+      self::set_omniva_method($order_id, $_POST['shipping_method']);
     }
   }
 
@@ -195,6 +187,22 @@ class OmnivaLt_Order
           }
         }
       }
+    }
+  }
+
+  public static function check_terminal_id_in_order($order)
+  {
+    $configs = OmnivaLt_Core::get_configs();
+
+    $check_terminal_id = self::get_omniva_terminal_id($order);
+    $check_method = self::get_omniva_method($order);
+
+    if ( ! empty($_POST['omnivalt_terminal']) && empty($check_terminal_id) ) {
+      self::set_omniva_terminal_id($order->get_id(), $_POST['omnivalt_terminal']);
+    }
+
+    if ( ! empty($_POST['shipping_method']) ) {
+      self::set_omniva_method($order->get_id(), $_POST['shipping_method']);
     }
   }
 
@@ -513,7 +521,30 @@ class OmnivaLt_Order
     }
   }
 
-  private static function get_omniva_method($order)
+  public static function set_omniva_method($order_id, $order_methods_list)
+  {
+    if ( empty($order_id) ) {
+      return false;
+    }
+
+    if ( ! empty($order_methods_list) && is_array($order_methods_list) ) {
+      $configs = OmnivaLt_Core::get_configs();
+
+      foreach ( $order_methods_list as $ship_method ) {
+        foreach ( $configs['method_params'] as $method_name => $method_values ) {
+          if ( ! $method_values['is_shipping_method'] ) continue;
+          if ( $ship_method == "omnivalt_" . $method_values['key'] ) {
+            update_post_meta($order_id, $configs['meta_keys']['method'], $ship_method);
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  public static function get_omniva_method($order)
   {
     $configs_meta = OmnivaLt_Core::get_configs('meta_keys');
     $wc_order = wc_get_order((int) $order->get_id());
@@ -525,5 +556,25 @@ class OmnivaLt_Order
       return get_post_meta($order->get_id(), $configs_meta['method'], true);
     }
     return false;
+  }
+
+  public static function set_omniva_terminal_id($order_id, $terminal_id)
+  {
+    if ( empty($order_id) || empty($terminal_id) ) {
+      return false;
+    }
+    
+    $configs_meta = OmnivaLt_Core::get_configs('meta_keys');
+
+    update_post_meta($order_id, $configs_meta['terminal_id'], $terminal_id);
+
+    return true;
+  }
+
+  public static function get_omniva_terminal_id($order)
+  {
+    $configs_meta = OmnivaLt_Core::get_configs('meta_keys');
+
+    return get_post_meta($order->get_id(), $configs_meta['terminal_id'], true);
   }
 }

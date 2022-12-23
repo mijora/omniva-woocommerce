@@ -32,8 +32,7 @@ class OmnivaLt_Manifest
       'manage_woocommerce',
       'omniva-manifest',
       'OmnivaLt_Manifest::manifest_page',
-      //plugins_url('omniva-woocommerce/images/icon.png'),
-      1
+      10
     );
   }
 
