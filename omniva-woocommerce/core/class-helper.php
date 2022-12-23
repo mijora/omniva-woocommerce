@@ -82,6 +82,29 @@ class OmnivaLt_Helper
     return $asociations;
   }
 
+  public static function explode_shipping_set( $shipping_set )
+  {
+    $shipping_sets = array(
+      'send' => false,
+      'receive' => false,
+    );
+
+    if ( strpos($shipping_set, ' ') === false ) {
+      return false;
+    }
+
+    $exploded = explode(' ', $shipping_set);
+
+    if ( ! empty($exploded[0]) ) {
+      $shipping_sets['send'] = $exploded[0];
+    }
+    if ( ! empty($exploded[1]) ) {
+      $shipping_sets['receive'] = $exploded[1];
+    }
+
+    return $shipping_sets;
+  }
+
   public static function get_allowed_methods($set_name)
   {
     $configs = OmnivaLt_Core::get_configs();
@@ -132,17 +155,32 @@ class OmnivaLt_Helper
     $configs = OmnivaLt_Core::get_configs();
     
     if ( ! isset($configs['shipping_params'][$sender_country]) ) {
-      return array('status' => 'error', 'error_code' => '001');
+      return array('status' => 'error', 'msg' => OmnivaLt_Core::get_error_text('001'));
     }
+
     if ( ! isset($configs['shipping_params'][$sender_country]['shipping_sets'][$receiver_country]) ) {
-      return array('status' => 'error', 'error_code' => '002');
+      return array('status' => 'error', 'msg' => OmnivaLt_Core::get_error_text('002'));
     }
+
     $service_set = $configs['shipping_params'][$sender_country]['shipping_sets'][$receiver_country];
+    
     if ( ! isset($configs['shipping_sets'][$service_set]) ) {
-      return array('status' => 'error', 'error_code' => '003');
+      return array('status' => 'error', 'msg' => OmnivaLt_Core::get_error_text('003'));
     }
+
     if ( ! isset($configs['shipping_sets'][$service_set][$get_for]) ) {
-      return array('status' => 'error', 'error_code' => '004');
+      $shipping_set = self::explode_shipping_set($get_for);
+      if ( ! $shipping_set ) {
+        $shipping_set = array('send' => $get_for, 'receive' => $get_for);
+      }
+
+      return array('status' => 'error', 'error_code' => '004', 'msg' => sprintf(
+        __('Shipping from %1$s (%2$s) to %3$s (%4$s) is not available', 'omnivalt'),
+        self::get_method_title_by_key($shipping_set['send']),
+        WC()->countries->countries[$sender_country],
+        self::get_method_title_by_key($shipping_set['receive']),
+        WC()->countries->countries[$receiver_country]
+      ));
     }
     
     return $configs['shipping_sets'][$service_set][$get_for];
@@ -179,5 +217,24 @@ class OmnivaLt_Helper
     }
 
     return $method_name;
+  }
+
+  public static function get_method_title_by_key( $find_method_key, $get_by_name = false )
+  {
+    $methods_params = OmnivaLt_Core::get_configs('method_params');
+
+    foreach ( $methods_params as $method_name => $method_params ) {
+      if ( $get_by_name ) {
+        if ( $find_method_key == $method_name ) {
+          return $method_params['title'];
+        }
+      } else {
+        if ( $find_method_key == $method_params['key'] ) {
+          return $method_params['title'];
+        }
+      }
+    }
+
+    return $find_method_key;
   }
 }

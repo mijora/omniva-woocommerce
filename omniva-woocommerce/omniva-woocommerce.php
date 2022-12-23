@@ -8,11 +8,13 @@
  * Version: 1.12.0
  * Domain Path: /languages
  * Text Domain: omnivalt
+ * 
  * Requires at least: 5.1
- * Tested up to: 6.0.2
+ * Tested up to: 6.1.1
  * WC requires at least: 3.0.0
- * WC tested up to: 6.9.4
+ * WC tested up to: 7.2.0
  * Requires PHP: 7.2
+ * PHP tested up to: 8.0.19
  */
 
 if (!defined('WPINC')) {

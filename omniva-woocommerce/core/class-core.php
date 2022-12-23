@@ -360,6 +360,7 @@ class OmnivaLt_Core
     add_action('woocommerce_checkout_update_order_meta', 'OmnivaLt_Order::add_terminal_id_to_order');
     add_action('woocommerce_review_order_before_cart_contents', 'OmnivaLt_Order::validate_order', 10);
     add_action('woocommerce_after_checkout_validation', 'OmnivaLt_Order::validate_order', 10);
+    add_action('woocommerce_checkout_order_created', 'OmnivaLt_Order::check_terminal_id_in_order');
     add_action('woocommerce_order_details_after_order_table', 'OmnivaLt_Order::show_selected_terminal', 10, 1);
     add_action('woocommerce_order_details_after_order_table', 'OmnivaLt_Order::show_tracking_link', 10, 1);
     add_action('woocommerce_email_after_order_table', 'OmnivaLt_Order::show_selected_terminal', 10, 1);
