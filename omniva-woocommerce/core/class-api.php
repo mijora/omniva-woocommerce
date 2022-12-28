@@ -38,7 +38,7 @@ class OmnivaLt_Api
     $additional_services = '';
 
     $client_fullname = $client->name . ' ' . $client->surname;
-    if ( empty(preg_replace('/\s+/', '', $client_name)) ) {
+    if ( empty(preg_replace('/\s+/', '', $client_fullname)) ) {
       $client_fullname = $client->company;
     }
 
