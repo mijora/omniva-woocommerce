@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.12.2]
+### Fixed
+- fixed incorrect variable name used for client name
+
 ## [1.12.1]
 ### Fixed
 - fixed the use of coupons when they contain unicode characters
