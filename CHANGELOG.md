@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed custom positions, when enter same value for multiple methods
+- fixed plugin loading on multistore
 
 ## [1.12.2]
 ### Fixed

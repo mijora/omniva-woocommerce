@@ -9,7 +9,10 @@ class OmnivaLt_Core
     self::load_init_hooks();
     OmnivaLt_Cronjob::init();
 
-    if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) ) {
+    if ( ! function_exists('is_plugin_active') ) {
+      include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+    }
+    if ( is_plugin_active('woocommerce/woocommerce.php') ) {
       self::load_launch_hooks();
     }
   }
