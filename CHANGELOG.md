@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed custom positions, when enter same value for multiple methods
+
 ## [1.12.2]
 ### Fixed
 - fixed incorrect variable name used for client name
