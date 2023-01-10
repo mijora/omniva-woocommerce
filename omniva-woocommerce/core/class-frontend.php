@@ -28,7 +28,8 @@ class OmnivaLt_Frontend
     if ( empty(json_decode($settings['position'])) ) return $rates;
 
     $new_rates = array();
-    $positions = json_decode($settings['position']);
+    $positions = json_decode($settings['position'], true);
+    asort($positions);
     $new_positions = array();
 
     foreach ( $positions as $position_key => $position ) {
