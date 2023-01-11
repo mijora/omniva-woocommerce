@@ -35,6 +35,11 @@ class OmnivaLt_Debug
     return '';
   }
 
+  public static function log_error($error_msg)
+  {
+    self::save_log_msg('error', $error_msg);
+  }
+
   public static function get_all_files($get_section = '')
   {
     $debug_params = OmnivaLt_Core::get_configs('debug');
@@ -99,5 +104,10 @@ class OmnivaLt_Debug
         }
       }
     }
+  }
+
+  private static function save_log_msg($type, $message)
+  {
+    // Need to create
   }
 }
