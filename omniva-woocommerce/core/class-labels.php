@@ -88,7 +88,7 @@ class OmnivaLt_Labels
             $email_subject = (isset($this->omnivalt_settings['email_created_label_subject'])) ? $this->omnivalt_settings['email_created_label_subject'] : '';
             $email_params = array(
               'tracking_code' => $barcodes[0],
-              'tracking_link' => $this->get_tracking_link($wc_order->get_shipping_country(), $barcodes[0], true),
+              'tracking_link' => $this->get_tracking_link(OmnivaLt_Order::get_customer_shipping_country($wc_order), $barcodes[0], true),
               'subject' => $email_subject
             );
             $this->omnivalt_emails->send_label($wc_order, $wc_order->get_billing_email(), $email_params);
@@ -191,7 +191,7 @@ class OmnivaLt_Labels
       $country_code = $shipping_settings['shop_countrycode'];
       $text = __('Omniva tracking number', 'omnivalt');
     } else {
-      $country_code = $order->get_shipping_country();
+      $country_code = OmnivaLt_Order::get_customer_shipping_country($order);
       $text = __('You can track your parcel with this number', 'omnivalt');
     }
 

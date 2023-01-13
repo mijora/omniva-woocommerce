@@ -5,6 +5,7 @@
 - fixed custom positions, when enter same value for multiple methods
 - fixed plugin loading on multistore
 - fixed PHP notifications, when shipping classes not exists
+- fixed tracking URL in emails when in order shipping country is not set
 
 ## [1.12.2]
 ### Fixed

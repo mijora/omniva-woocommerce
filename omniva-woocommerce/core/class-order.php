@@ -577,4 +577,14 @@ class OmnivaLt_Order
 
     return get_post_meta($order->get_id(), $configs_meta['terminal_id'], true);
   }
+
+  public static function get_customer_shipping_country($order)
+  {
+    $country = $order->get_shipping_country();
+    if ( empty($country) ) {
+      $country = $order->get_billing_country();
+    }
+
+    return (!empty($country)) ? $country : 'LT';
+  }
 }
