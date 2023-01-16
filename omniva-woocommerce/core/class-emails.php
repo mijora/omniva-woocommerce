@@ -14,6 +14,9 @@ class OmnivaLt_Emails
 	public function send_label($order, $recipient, $params=array()) {
 		$variables['tracking_code'] = (isset($params['tracking_code'])) ? $params['tracking_code'] : '';
 		$variables['tracking_link'] = (isset($params['tracking_link'])) ? $params['tracking_link'] : '';
+		$variables['name'] = OmnivaLt_Order::get_customer_name($order);
+		$variables['fullname'] = OmnivaLt_Order::get_customer_fullname($order);
+		$variables['company'] = OmnivaLt_Order::get_customer_company($order);
 
 		$subject = (isset($params['subject']) && !empty($params['subject'])) ? $params['subject'] : __('Your order shipment has been registered', 'omnivalt');
 		$content = $this->email_createdlabel( $order, $subject, $variables );
@@ -31,7 +34,7 @@ class OmnivaLt_Emails
 			'sent_to_admin' => false,
 			'plain_text'    => false,
 			'email'         => $this->WC_mailer
-		),$variables) , '', $this->get_file_template_dir($template) );
+		), $variables) , '', $this->get_file_template_dir($template) );
 	}
 
 	private function get_file_template_dir($file) {

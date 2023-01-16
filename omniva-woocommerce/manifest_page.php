@@ -164,9 +164,10 @@ do_action('omniva_admin_manifest_head');
                   <td class="manage-column column-order_id">
                     <a href="<?php echo $order->get_edit_order_url(); ?>">#<?php echo $order->get_order_number(); ?></a>
                   </td>
-                  <td class="column-order_number">
+                  <td class="column-order_customer">
                     <div class="data-grid-cell-content">
-                    	<?php echo $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(); ?>
+                      <span class="customer-name"><?php echo OmnivaLt_Order::get_customer_fullname($order); ?></span>
+                      <span class="customer-company"><?php echo OmnivaLt_Order::get_customer_company($order); ?></span>
                     </div>
                   </td>
                   <td class="column-order_status">
