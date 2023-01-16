@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 <?php /* translators: %s: Customer first name */ ?>
-<p><?php printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) ); ?></p>
+<p><?php printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( (!empty($name)) ? $name : $company ) ); ?></p>
 <p><?php esc_html_e( 'We are writing to let you know that a tracking number has been generated for your shipment.', 'omnivalt' ); ?><br/><?php printf( esc_html__( 'Your tracking number is %s.', 'omnivalt' ), '<a href="' . esc_html( $tracking_link ) . '" target="_blank">' . esc_html( $tracking_code ) . '</a>' ); ?></p>
 
 <p><?php esc_html_e( 'As a reminder, here are your order details:', 'woocommerce' ); ?></p>
