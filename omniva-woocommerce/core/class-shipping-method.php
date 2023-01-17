@@ -1178,6 +1178,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $cats = get_categories( $args );
       $children = array();
 
+      if ( is_wp_error($cats) ) {
+        OmnivaLt_Debug::log_error($cats->get_error_message());
+        $cats = array();
+      }
+
       foreach( $cats as $cat ) {
         $cat->children = $this->get_categories_hierarchy( $cat->term_id );
         $children[ $cat->term_id ] = $cat;
@@ -1214,6 +1219,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       );
 
       $shipping_classes = get_terms($args);
+
+      if ( is_wp_error($shipping_classes) ) {
+        OmnivaLt_Debug::log_error($shipping_classes->get_error_message());
+        return (object) array();
+      }
 
       return $shipping_classes;
     }

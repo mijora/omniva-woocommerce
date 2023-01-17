@@ -5,27 +5,27 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.12.2
+ * Version: 1.12.3
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 
  * Requires at least: 5.1
  * Tested up to: 6.1.1
  * WC requires at least: 3.0.0
- * WC tested up to: 7.2.0
+ * WC tested up to: 7.2.3
  * Requires PHP: 7.2
- * PHP tested up to: 8.0.19
+ * PHP tested up to: 8.1.13
  */
 
 if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVALT_VERSION', '1.12.2');
+define('OMNIVALT_VERSION', '1.12.3');
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));
-define('OMNIVALT_CUSTOM_CHANGES', array()); //If plugin have custom changes, add changes descriptions to this array
+define('OMNIVALT_CUSTOM_CHANGES', array()); //If plugin have custom changes, add changes descriptions to this array. When are values in this array, in the plugins list will display a warning message about custom changes in the plugin and will be listed the values written here
 
 function omnivalt_configs($section_name = false) {
   $params = array();

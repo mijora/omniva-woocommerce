@@ -577,4 +577,56 @@ class OmnivaLt_Order
 
     return get_post_meta($order->get_id(), $configs_meta['terminal_id'], true);
   }
+
+  public static function get_customer_shipping_country($order)
+  {
+    $country = $order->get_shipping_country();
+    if ( empty($country) ) {
+      $country = $order->get_billing_country();
+    }
+
+    return (!empty($country)) ? $country : 'LT';
+  }
+
+  public static function get_customer_name($order)
+  {
+    $name = $order->get_shipping_first_name();
+    if ( empty($name) ) {
+      $name = $order->get_billing_first_name();
+    }
+
+    return $name;
+  }
+
+  public static function get_customer_fullname($order)
+  {
+    $name = $order->get_shipping_first_name();
+    $surname = $order->get_shipping_last_name();
+    if ( empty($name) && empty($surname) ) {
+      $name = $order->get_billing_first_name();
+      $surname = $order->get_billing_last_name();
+    }
+
+    if ( ! empty($name) || ! empty($surname) ) {
+      return trim($name . ' ' . $surname);
+    }
+    return '';
+  }
+
+  public static function get_customer_company($order)
+  {
+    $company = $order->get_shipping_company();
+    if ( empty($company) ) {
+      $company = $order->get_billing_company();
+    }
+
+    return (!empty($company)) ? $company : '';
+  }
+
+  public static function get_customer_fullname_or_company($order)
+  {
+    $full_name = self::get_customer_fullname($order);
+
+    return (!empty($full_name)) ? $full_name : self::get_customer_company($order);
+  }
 }

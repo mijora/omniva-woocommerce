@@ -350,6 +350,13 @@
   display: block;
 }
 
+.page-omniva_manifest .table-container .column-order_customer span {
+  display: block;
+}
+.page-omniva_manifest .table-container .column-order_customer .customer-company {
+  font-style: italic;
+}
+
 .omniva-table {
   border-collapse: separate;
   border-spacing: 0 2px 0 0;

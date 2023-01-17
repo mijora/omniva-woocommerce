@@ -76,7 +76,27 @@ class OmnivaLt_Manifest
             'key' => '_billing_last_name',
             'value' => $query_vars['omnivalt_customer'],
             'compare' => 'LIKE'
-          )
+          ),
+          array(
+            'key' => '_billing_company',
+            'value' => $query_vars['omnivalt_customer'],
+            'compare' => 'LIKE'
+          ),
+          array(
+            'key' => '_shipping_first_name',
+            'value' => $query_vars['omnivalt_customer'],
+            'compare' => 'LIKE'
+          ),
+          array(
+            'key' => '_shipping_last_name',
+            'value' => $query_vars['omnivalt_customer'],
+            'compare' => 'LIKE'
+          ),
+          array(
+            'key' => '_shipping_company',
+            'value' => $query_vars['omnivalt_customer'],
+            'compare' => 'LIKE'
+          ),
       );
     }
 

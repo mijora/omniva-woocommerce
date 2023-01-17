@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.12.3]
+### Fixed
+- fixed custom positions, when enter same value for multiple methods
+- fixed plugin loading on multistore
+- fixed PHP notifications, when shipping classes not exists
+- fixed tracking URL in emails when in order shipping country is not set
+
+### Improved
+- in customer "Created label" email template added new variables: name, fullname, company
+- added company showing in "Omniva orders" page
+
 ## [1.12.2]
 ### Fixed
 - fixed incorrect variable name used for client name
