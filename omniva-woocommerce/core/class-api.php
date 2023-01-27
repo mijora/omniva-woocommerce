@@ -495,6 +495,8 @@ class OmnivaLt_Api
             foreach ($xml->Body->businessToClientMsgResponse->savedPacketInfo->barcodeInfo as $data) {
               $barcodes[] = (string) $data->barcode;
             }
+          } elseif ( is_object($xml->Body->businessToClientMsgResponse->prompt) ) {
+            $errors[] = __('API error', 'omnivalt') . ' - '. $xml->Body->businessToClientMsgResponse->prompt;
           }
         }
       }

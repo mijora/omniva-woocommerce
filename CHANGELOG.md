@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+### Improved
+- added display of an error message when a certain type of error message is received from the API
+- added getting of shipping classes for all languages when using the WPML plugin
+
 ## [1.12.3]
 ### Fixed
 - fixed custom positions, when enter same value for multiple methods
