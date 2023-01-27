@@ -1213,12 +1213,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $hide_empty = 0;
 
       $args = array(
-        'taxonomy'   => $taxonomy,
         'orderby'    => $orderby,
         'hide_empty' => $hide_empty,
       );
 
-      $shipping_classes = get_terms($args);
+      $shipping_classes = OmnivaLt_Compatibility::get_terms($taxonomy, $args);
 
       if ( is_wp_error($shipping_classes) ) {
         OmnivaLt_Debug::log_error($shipping_classes->get_error_message());

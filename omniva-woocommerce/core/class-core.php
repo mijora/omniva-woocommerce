@@ -298,6 +298,7 @@ class OmnivaLt_Core
     $core_dir = OMNIVALT_DIR . 'core/';
     require_once $core_dir . 'class-debug.php';
     require_once $core_dir . 'class-helper.php';
+    require_once $core_dir . 'class-compatibility.php';
     require_once $core_dir . 'class-emails.php';
     require_once $core_dir . 'class-labels.php';
     require_once $core_dir . 'class-api.php';
