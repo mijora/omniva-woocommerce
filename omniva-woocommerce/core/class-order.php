@@ -149,8 +149,6 @@ class OmnivaLt_Order
 
   public static function add_terminal_id_to_order($order_id)
   {
-    $configs = OmnivaLt_Core::get_configs();
-
     if ( isset($_POST['omnivalt_terminal']) && $order_id ) {
       self::set_omniva_terminal_id($order_id, $_POST['omnivalt_terminal']);
     }
@@ -192,8 +190,6 @@ class OmnivaLt_Order
 
   public static function check_terminal_id_in_order($order)
   {
-    $configs = OmnivaLt_Core::get_configs();
-
     $check_terminal_id = self::get_omniva_terminal_id($order);
     $check_method = self::get_omniva_method($order);
 
@@ -367,16 +363,18 @@ class OmnivaLt_Order
     $configs = OmnivaLt_Core::get_configs();
     $send_method = self::get_omniva_method($order);
     $omnivalt_labels = new OmnivaLt_Labels();
-    
+
     $is_omniva = false;
     foreach ( $configs['method_params'] as $ship_method => $ship_values ) {
       if ( ! $ship_values['is_shipping_method'] ) continue;
-
       if ( $send_method == 'omnivalt_' . $ship_values['key'] ) {
         $is_omniva = true;
       }
     }
     
+    if ( $send_method !== false && ! $is_omniva ) {
+      self::add_Omniva_manualy();
+    }
     if ( ! $is_omniva ) return;
 
     global $post_type;
@@ -483,6 +481,25 @@ class OmnivaLt_Order
     echo '<hr style="margin-top:20px;">';
   }
 
+  private static function add_Omniva_manualy()
+  {
+    $configs = OmnivaLt_Core::get_configs();
+
+    echo '<div class="edit_address">';
+    $field_id = 'omnivalt_add_manual';
+    echo '<p class="form-field-wide">';
+    echo '<label for="' . $field_id . '">' . __('Omniva shipping method', 'omnivalt') . ':</label>';
+    echo '<select id="' . $field_id . '" class="select short" name="' . $field_id . '">';
+    echo '<option>' . __('Not Omniva', 'omnivalt') . '</option>';
+    foreach ( $configs['method_params'] as $method_key => $method_values ) {
+      if ( ! $method_values['is_shipping_method'] ) continue;
+      echo '<option value="' . $method_values['key'] . '">' . $method_values['title'] . '</option>';
+    }
+    echo '</select>';
+    echo '</p>';
+    echo '</div>';
+  }
+
   public static function admin_order_save($post_id)
   {
     global $post_type;
@@ -500,6 +517,11 @@ class OmnivaLt_Order
       if ( isset($_POST['omnivalt_' . $service_key]) ) {
         update_post_meta($post_id, '_omnivalt_' . $service_key, wc_clean($_POST['omnivalt_' . $service_key]));
       }
+    }
+
+    if ( isset($_POST['omnivalt_add_manual']) ) {
+      $method = array('omnivalt_' . $_POST['omnivalt_add_manual']);
+      self::set_omniva_method($post_id, $method);
     }
 
     return $post_id;
