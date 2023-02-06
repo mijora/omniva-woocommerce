@@ -367,7 +367,6 @@ class OmnivaLt_Order
     $is_omniva = false;
     foreach ( $configs['method_params'] as $ship_method => $ship_values ) {
       if ( ! $ship_values['is_shipping_method'] ) continue;
-
       if ( $send_method == 'omnivalt_' . $ship_values['key'] ) {
         $is_omniva = true;
       }
