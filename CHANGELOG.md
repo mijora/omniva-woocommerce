@@ -4,6 +4,7 @@
 ### Improved
 - added display of an error message when a certain type of error message is received from the API
 - added getting of shipping classes for all languages when using the WPML plugin
+- added a ability to the Order add Omniva method manually, when Omniva shipping method is selected, but Omniva metadata not added
 
 ## [1.12.3]
 ### Fixed
