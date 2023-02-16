@@ -1309,13 +1309,16 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $this->add_shipping_rate('c', false, $weight, $country, $cart_amount, $prices, $package);
       $this->add_shipping_rate('cp', false, $weight, $country, $cart_amount, $prices, $package);
       $this->add_shipping_rate('pc', false, $weight, $country, $cart_amount, $prices, $package);
-      $this->add_shipping_rate('po', false, $weight, $country, $cart_amount, $prices, $package);
+      $this->add_shipping_rate('pn', false, $weight, $country, $cart_amount, $prices, $package);
     }
 
     private function add_shipping_rate($rate_key, $products_for_dim, $weight, $country, $cart_amount, $prices, $package)
     {
       $method_params = OmnivaLt_Shipmethod_Helper::get_current_method_params($this->omnivalt_configs['method_params'], $rate_key);
-      
+      if ( empty($method_params) ) {
+        return;
+      }
+    
       $check_restrictions = OmnivaLt_Shipmethod_Helper::check_restrictions($this->settings, $rate_key, $weight, $products_for_dim);
 
       if ( $this->settings['method_' . $rate_key] == 'yes' && $check_restrictions ) {

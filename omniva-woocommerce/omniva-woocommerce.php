@@ -39,25 +39,27 @@ function omnivalt_configs($section_name = false) {
       'pt c' => 'PK',
       'c pt' => 'PU',
       'c c' => 'QH',
+      'c pn' => 'DD',
       'courier_call' => 'QH',
     ),
     'estonia' => array(
       'pt pt' => 'PA',
-      'pt po' => 'PO',
+      'pt pn' => 'PO',
       'pt c' => 'PK',
       'c pt' => 'PU',
       'c c' => 'CI',
       'c cp' => 'LX', //not sure
+      'c pn' => 'DD',
       'po cp' => 'LH',
       'po pt' => 'PV',
-      'po po' => 'CD',
+      'po pn' => 'CD',
       'po c' => 'CE',
       'lc pt' => 'PP',
       'courier_call' => 'CI',
     ),
     'finland' => array(
       'c pc' => 'QB', //QB in documentation
-      'c po' => 'CD', //not sure
+      'c pn' => 'CD', //not sure
       'c cp' => 'CE', //not sure
       'courier_call' => 'CE',
     ),
@@ -67,7 +69,7 @@ function omnivalt_configs($section_name = false) {
    * Every shipping method params. Array key is sender country. All bellow array fields is required.
    *
    * title - Country name
-   * methods - Value of one of this: courier, courier_plus, pickup, post, private_customer
+   * methods - Value of one of this: courier, courier_plus, pickup, post_near, private_customer
    * shipping_sets - Array of destination countries, other services and sets for them
    * comment_lang - Identifier for terminals map
    */
@@ -98,7 +100,7 @@ function omnivalt_configs($section_name = false) {
     ),
     'EE' => array(
       'title' => __('Estonia', 'omnivalt'),
-      'methods' => array('pickup', 'courier', 'courier_plus'),
+      'methods' => array('pickup', 'courier', 'courier_plus', 'post_near'),
       'shipping_sets' => array(
         'LT' => 'estonia',
         'LV' => 'estonia',
@@ -180,11 +182,11 @@ function omnivalt_configs($section_name = false) {
         'default' => 100,
       ),
     ),
-    'post' => array(
-      'key' => 'po',
-      'title' => __('Post office', 'omnivalt'),
+    'post_near' => array(
+      'key' => 'pn',
+      'title' => __('Nearest post office', 'omnivalt'),
       'is_shipping_method' => true,
-      'description' => __('Activate this service, when you want to send parcels to post offices.', 'omnivalt'),
+      'description' => __('Activate this service, when you want to send parcels to nearest post office.', 'omnivalt'),
       'weight' => array(
         'default' => 100,
       ),

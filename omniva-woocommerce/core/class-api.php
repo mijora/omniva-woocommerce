@@ -434,11 +434,10 @@ class OmnivaLt_Api
     if ( $send_method == 'omnivalt' ) {
       $send_method = get_post_meta($order->get_id(), '_omnivalt_method', true);
     }
-    if ($send_method == 'omnivalt_pt') $send_method = 'pt'; //TODO: Make dynamicaly
-    if ($send_method == 'omnivalt_c') $send_method = 'c';
-    if ($send_method == 'omnivalt_cp') $send_method = 'cp';
-    if ($send_method == 'omnivalt_pc') $send_method = 'pc';
-    if ($send_method == 'omnivalt_po') $send_method = 'po';
+    $exploded_method = explode('_', $send_method);
+    if ( $exploded_method[0] == 'omnivalt' && ! empty($exploded_method[1]) ) {
+      $send_method = $exploded_method[1];
+    }
 
     return $send_method;
   }

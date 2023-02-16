@@ -5,13 +5,13 @@ jQuery('document').ready(function($){
 		"c":"courier",
     "cp":"courier_plus",
     "pc":"private_customer",
-		"po":"post"
+		"pn":"post_near"
 	};
 	var enable_only = { //Enable shipping method only in specified countries in array. If array empty, enable for all countries.
 		"pt":[],
 		"c":[],
     "cp":["EE"],
-		"po":["EE"],
+		"pn":["EE"],
 		"pc":["EE"]
 	};
 	for (var key in all_keys) {
