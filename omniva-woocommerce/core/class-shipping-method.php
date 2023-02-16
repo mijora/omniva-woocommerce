@@ -1305,11 +1305,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $prices_key = (array_key_exists($country, $this->omnivalt_configs['shipping_params'])) ? 'prices_' . $country : 'prices_LT';
       $prices = (isset($this->settings[$prices_key])) ? json_decode($this->settings[$prices_key]) : array();
 
-      $this->add_shipping_rate('pt', $products_for_dim, $weight, $country, $cart_amount, $prices, $package);
-      $this->add_shipping_rate('c', false, $weight, $country, $cart_amount, $prices, $package);
-      $this->add_shipping_rate('cp', false, $weight, $country, $cart_amount, $prices, $package);
-      $this->add_shipping_rate('pc', false, $weight, $country, $cart_amount, $prices, $package);
-      $this->add_shipping_rate('pn', false, $weight, $country, $cart_amount, $prices, $package);
+      $shipping_methods = OmnivaLt_Shipmethod_Helper::get_available_shipping_methods($this->omnivalt_configs);
+      foreach ( $shipping_methods as $method_key => $method_values ) {
+        $prods_dim = ($method_values['key'] == 'pt') ? $products_for_dim : false;
+        $this->add_shipping_rate($method_values['key'], $prods_dim, $weight, $country, $cart_amount, $prices, $package);
+      }
     }
 
     private function add_shipping_rate($rate_key, $products_for_dim, $weight, $country, $cart_amount, $prices, $package)
