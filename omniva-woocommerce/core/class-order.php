@@ -430,7 +430,7 @@ class OmnivaLt_Order
       $method_key = OmnivaLt_Helper::get_method_key_from_woo_method_id($send_method);
       $values = array(
         'terminal_key' => OmnivaLt_Configs::get_method_terminals_type($method_key),
-        'change_title' => sprintf(__('Change %s', 'omnivalt'), OmnivaLt_Configs::get_method_title($method_key)),
+        'change_title' => sprintf(__('Change %s', 'omnivalt'), strtolower(OmnivaLt_Configs::get_method_title($method_key))),
       );
 
       $all_terminals = OmnivaLt_Terminals::get_terminals_list('ALL', $values['terminal_key']);
