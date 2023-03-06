@@ -1325,7 +1325,10 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         $show = true;
         $amount_data = OmnivaLt_Shipmethod_Helper::get_amount($rate_key, $prices, $weight, $cart_amount);
         $amount = $amount_data['amount'];
-        $meta_data = $amount_data['meta_data'];
+        $meta_data = array(
+          __('Carrier', 'omnivalt') => 'Omniva',
+        );
+        $meta_data = array_merge($meta_data, $amount_data['meta_data']);
 
         if ( empty($amount) && $amount !== 0 && $amount !== '0' ) {
           $show = false;

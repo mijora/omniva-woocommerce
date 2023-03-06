@@ -81,7 +81,7 @@ class OmnivaLt_Api
     }
 
     $parcel_terminal = "";
-    if ( $send_method == "pt" || $send_method == "po" ) {
+    if ( OmnivaLt_Configs::get_method_terminals_type($send_method) ) {
       $parcel_terminal = 'offloadPostcode="' . $terminal_id . '" ';
     }
 
