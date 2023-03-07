@@ -273,7 +273,7 @@ class OmnivaLt_Api
         $this->clean($this->omnivalt_settings['api_user']),
         $this->clean($this->omnivalt_settings['api_pass']),
         $this->clean(preg_replace('{/$}', '', $this->omnivalt_settings['api_url'])),
-        true
+        OmnivaLt_Debug::check_debug_enabled()
       );
     }
   }
