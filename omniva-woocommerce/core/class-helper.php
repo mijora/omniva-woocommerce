@@ -150,25 +150,35 @@ class OmnivaLt_Helper
     return $value;
   }
 
+  public static function get_shipping_service($sender_country, $receiver_country)
+  {
+    $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
+
+    if ( ! isset($shipping_params[$sender_country]) ) {
+      return false;
+    }
+
+    if ( ! isset($shipping_params[$sender_country]['shipping_sets'][$receiver_country]) ) {
+      return false;
+    }
+
+    return $shipping_params[$sender_country]['shipping_sets'][$receiver_country];
+  }
+
   public static function get_shipping_service_code($sender_country, $receiver_country, $get_for)
   {
-    $configs = OmnivaLt_Core::get_configs();
-    
-    if ( ! isset($configs['shipping_params'][$sender_country]) ) {
-      return array('status' => 'error', 'msg' => OmnivaLt_Core::get_error_text('001'));
-    }
+    $shipping_sets = OmnivaLt_Core::get_configs('shipping_sets');
 
-    if ( ! isset($configs['shipping_params'][$sender_country]['shipping_sets'][$receiver_country]) ) {
-      return array('status' => 'error', 'msg' => OmnivaLt_Core::get_error_text('002'));
+    $service_set = self::get_shipping_service($sender_country, $receiver_country);
+    if ( ! $service_set ) {
+      return array('status' => 'error', 'msg' => __('Failed to get service set', 'omnivalt'));
     }
-
-    $service_set = $configs['shipping_params'][$sender_country]['shipping_sets'][$receiver_country];
     
-    if ( ! isset($configs['shipping_sets'][$service_set]) ) {
+    if ( ! isset($shipping_sets[$service_set]) ) {
       return array('status' => 'error', 'msg' => OmnivaLt_Core::get_error_text('003'));
     }
 
-    if ( ! isset($configs['shipping_sets'][$service_set][$get_for]) ) {
+    if ( ! isset($shipping_sets[$service_set][$get_for]) ) {
       $shipping_set = self::explode_shipping_set($get_for);
       if ( ! $shipping_set ) {
         $shipping_set = array('send' => $get_for, 'receive' => $get_for);
@@ -176,14 +186,14 @@ class OmnivaLt_Helper
 
       return array('status' => 'error', 'error_code' => '004', 'msg' => sprintf(
         __('Shipping from %1$s (%2$s) to %3$s (%4$s) is not available', 'omnivalt'),
-        self::get_method_title_by_key($shipping_set['send']),
+        OmnivaLt_Configs::get_method_title($shipping_set['send']),
         WC()->countries->countries[$sender_country],
-        self::get_method_title_by_key($shipping_set['receive']),
+        OmnivaLt_Configs::get_method_title($shipping_set['receive']),
         WC()->countries->countries[$receiver_country]
       ));
     }
     
-    return $configs['shipping_sets'][$service_set][$get_for];
+    return $shipping_sets[$service_set][$get_for];
   }
 
   public static function get_shipping_sets($sender_country, $exclude_additional = true)
@@ -219,22 +229,25 @@ class OmnivaLt_Helper
     return $method_name;
   }
 
-  public static function get_method_title_by_key( $find_method_key, $get_by_name = false )
+  /**
+   * Get method key from Woocommerce shipping method ID
+   * 
+   * @param string $woo_method_id - Woocommerce method ID
+   * @return string
+   */
+  public static function get_method_key_from_woo_method_id( $woo_method_id )
   {
-    $methods_params = OmnivaLt_Core::get_configs('method_params');
+    return str_replace('omnivalt_', '', $woo_method_id);
+  }
 
-    foreach ( $methods_params as $method_name => $method_params ) {
-      if ( $get_by_name ) {
-        if ( $find_method_key == $method_name ) {
-          return $method_params['title'];
-        }
-      } else {
-        if ( $find_method_key == $method_params['key'] ) {
-          return $method_params['title'];
-        }
-      }
-    }
-
-    return $find_method_key;
+  /**
+   * Get Woocommerce shipping method ID from method key
+   * 
+   * @param string $method_key - method key (short form)
+   * @return string
+   */
+  public static function get_woo_method_id_from_method_key( $method_key )
+  {
+    return 'omnivalt_' . $method_key;
   }
 }

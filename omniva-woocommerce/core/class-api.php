@@ -1,4 +1,10 @@
 <?php
+
+use \Mijora\Omniva\OmnivaException;
+use \Mijora\Omniva\Shipment\CallCourier;
+use \Mijora\Omniva\Shipment\Package\Address;
+use \Mijora\Omniva\Shipment\Package\Contact;
+
 class OmnivaLt_Api
 {
   private $omnivalt_settings;
@@ -81,7 +87,7 @@ class OmnivaLt_Api
     }
 
     $parcel_terminal = "";
-    if ( $send_method == "pt" || $send_method == "po" ) {
+    if ( OmnivaLt_Configs::get_method_terminals_type($send_method) ) {
       $parcel_terminal = 'offloadPostcode="' . $terminal_id . '" ';
     }
 
@@ -220,41 +226,56 @@ class OmnivaLt_Api
     $pickFinish = OmnivaLt_Helper::get_formated_time($shop->pick_until, '17:00');
     $parcels_number = ($parcels_number > 0) ? $parcels_number : 1;
 
-    $service = OmnivaLt_Helper::get_shipping_service_code($shop->api_country, 'call', 'courier_call');
-    if ( isset($service['status']) && $service['status'] === 'error' ) {
-      return array('status' => false, 'msg' => $service['msg']);
+    $address = new Address();
+    $address
+      ->setCountry($shop->country)
+      ->setPostcode($shop->postcode)
+      ->setDeliverypoint($shop->city)
+      ->setStreet($shop->street);
+    $sender = new Contact();
+    $sender
+      ->setAddress($address)
+      ->setMobile($shop->phone)
+      ->setPersonName($shop->name);
+
+    $call = new CallCourier();
+    $this->setAuth($call);
+    $call
+      ->setSender($sender)
+      ->setEarliestPickupTime($pickStart)
+      ->setLatestPickupTime($pickFinish)
+      ->setDestinationCountry(OmnivaLt_Helper::get_shipping_service($shop->api_country, 'call'))
+      ->setParcelsNumber($parcels_number);
+
+    try {
+      $call->callCourier();
+      $debug_data = $call->getDebugData();
+      OmnivaLt_Debug::debug_request($debug_data['request']);
+      return array(
+        'status' => true,
+        'barcodes' => '',
+        'debug' => OmnivaLt_Debug::debug_response($debug_data['response'])
+      );
+    } catch (OmnivaException $e) {
+      $debug_data = $e->getData();
+      OmnivaLt_Debug::debug_request($debug_data['request']);
+      $debug_response = (!empty($debug_data['response'])) ? $debug_data['response'] : $debug_data['url'];
+      return array('status' => false, 'msg' => $e->getMessage(), 'debug' => OmnivaLt_Debug::debug_response($debug_response));
     }
 
-    $xmlRequest = $this->xml_header();
-    for ( $i = 0; $i < $parcels_number; $i++ ) {
-      $xmlRequest .= '
-        <item service="' . $service . '" >
-          <measures weight="1" />
-          <receiverAddressee>
-            <person_name>' . $shop->name . '</person_name>
-            <!--Optional:-->
-            <phone>' . $shop->phone . '</phone>
-            <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
-          </receiverAddressee>
-          <!--Optional:-->
-          <returnAddressee>
-            <person_name>' . $shop->name . '</person_name>
-            <!--Optional:-->
-            <phone>' . $shop->phone . '</phone>
-            <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
-          </returnAddressee>
-          <onloadAddressee>
-            <person_name>' . $shop->name . '</person_name>
-            <!--Optional:-->
-            <phone>' . $shop->phone . '</phone>
-            <address postcode="' . $shop->postcode . '" deliverypoint="' . $shop->city . '" country="' . $shop->country . '" street="' . $shop->street . '" />
-            <pick_up_time start="' . date("c", strtotime($shop->pick_day . ' ' . $pickStart)) . '" finish="' . date("c", strtotime($shop->pick_day . ' ' . $pickFinish)) . '"/>
-          </onloadAddressee>
-        </item>';
-    }
-    $xmlRequest .= $this->xml_footer();
+    return array('status' => false, 'msg' => __('Failed to call courier', 'omnivalt'));
+  }
 
-    return $this->api_request($xmlRequest);
+  private function setAuth( $object )
+  {
+    if( method_exists($object, 'setAuth') ) {
+      $object->setAuth(
+        $this->clean($this->omnivalt_settings['api_user']),
+        $this->clean($this->omnivalt_settings['api_pass']),
+        $this->clean(preg_replace('{/$}', '', $this->omnivalt_settings['api_url'])),
+        OmnivaLt_Debug::check_debug_enabled()
+      );
+    }
   }
 
   private function xml_header()
@@ -341,7 +362,8 @@ class OmnivaLt_Api
       'pick_until' => $this->omnivalt_settings['pick_up_end'] ? $this->clean($this->omnivalt_settings['pick_up_end']) : '17:00',
       'api_country' => $this->clean($this->omnivalt_settings['api_country']),
     );
-    if ( current_time('timestamp') > strtotime($data['pick_day'] . ' ' . $data['pick_until']) ) {
+
+    if ( current_time('timestamp') > strtotime($data['pick_day'] . ' ' . $data['pick_from']) ) {
       $data['pick_day'] = date('Y-m-d', strtotime($data['pick_day'] . "+1 days"));
     }
 
@@ -434,11 +456,10 @@ class OmnivaLt_Api
     if ( $send_method == 'omnivalt' ) {
       $send_method = get_post_meta($order->get_id(), '_omnivalt_method', true);
     }
-    if ($send_method == 'omnivalt_pt') $send_method = 'pt'; //TODO: Make dynamicaly
-    if ($send_method == 'omnivalt_c') $send_method = 'c';
-    if ($send_method == 'omnivalt_cp') $send_method = 'cp';
-    if ($send_method == 'omnivalt_pc') $send_method = 'pc';
-    if ($send_method == 'omnivalt_po') $send_method = 'po';
+    $exploded_method = explode('_', $send_method);
+    if ( $exploded_method[0] == 'omnivalt' && ! empty($exploded_method[1]) ) {
+      $send_method = $exploded_method[1];
+    }
 
     return $send_method;
   }
@@ -495,6 +516,8 @@ class OmnivaLt_Api
             foreach ($xml->Body->businessToClientMsgResponse->savedPacketInfo->barcodeInfo as $data) {
               $barcodes[] = (string) $data->barcode;
             }
+          } elseif ( is_object($xml->Body->businessToClientMsgResponse->prompt) ) {
+            $errors[] = __('API error', 'omnivalt') . ' - '. $xml->Body->businessToClientMsgResponse->prompt;
           }
         }
       }

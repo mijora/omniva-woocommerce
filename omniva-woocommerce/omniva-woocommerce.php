@@ -5,14 +5,14 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.12.3
+ * Version: 1.13.0
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 
  * Requires at least: 5.1
  * Tested up to: 6.1.1
  * WC requires at least: 3.0.0
- * WC tested up to: 7.2.3
+ * WC tested up to: 7.4.0
  * Requires PHP: 7.2
  * PHP tested up to: 8.1.13
  */
@@ -21,7 +21,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVALT_VERSION', '1.12.3');
+define('OMNIVALT_VERSION', '1.13.0');
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));
@@ -39,25 +39,29 @@ function omnivalt_configs($section_name = false) {
       'pt c' => 'PK',
       'c pt' => 'PU',
       'c c' => 'QH',
+      'c pn' => 'DD',
+      'c ps' => 'DE',
       'courier_call' => 'QH',
     ),
     'estonia' => array(
       'pt pt' => 'PA',
-      'pt po' => 'PO',
+      'pt pn' => 'PO',
       'pt c' => 'PK',
       'c pt' => 'PU',
       'c c' => 'CI',
       'c cp' => 'LX', //not sure
+      'c pn' => 'DD',
+      'c ps' => 'DE',
       'po cp' => 'LH',
       'po pt' => 'PV',
-      'po po' => 'CD',
+      'po pn' => 'CD',
       'po c' => 'CE',
       'lc pt' => 'PP',
       'courier_call' => 'CI',
     ),
     'finland' => array(
       'c pc' => 'QB', //QB in documentation
-      'c po' => 'CD', //not sure
+      'c pn' => 'CD', //not sure
       'c cp' => 'CE', //not sure
       'courier_call' => 'CE',
     ),
@@ -67,7 +71,7 @@ function omnivalt_configs($section_name = false) {
    * Every shipping method params. Array key is sender country. All bellow array fields is required.
    *
    * title - Country name
-   * methods - Value of one of this: courier, courier_plus, pickup, post, private_customer
+   * methods - Value of one of this: courier, courier_plus, pickup, post_near, private_customer
    * shipping_sets - Array of destination countries, other services and sets for them
    * comment_lang - Identifier for terminals map
    */
@@ -98,7 +102,7 @@ function omnivalt_configs($section_name = false) {
     ),
     'EE' => array(
       'title' => __('Estonia', 'omnivalt'),
-      'methods' => array('pickup', 'courier', 'courier_plus'),
+      'methods' => array('pickup', 'courier', 'courier_plus', 'post_near', 'post_specific'),
       'shipping_sets' => array(
         'LT' => 'estonia',
         'LV' => 'estonia',
@@ -137,6 +141,7 @@ function omnivalt_configs($section_name = false) {
       'key' => 'pt',
       'title' => __('Parcel terminal', 'omnivalt'),
       'is_shipping_method' => true,
+      'terminals_type' => 'terminal',
       'description' => __('Activate this service, when you want to send parcels to parcel terminals.', 'omnivalt'),
       'sizes' => array(
         'min' => array(2, 9, 14),
@@ -166,7 +171,7 @@ function omnivalt_configs($section_name = false) {
       'key' => 'cp',
       'title' => __('Courier', 'omnivalt'),
       'is_shipping_method' => true,
-      'description' => __('Activate this service, when your e-shop customers would like to receive parcels in Estonia.', 'omnivalt') . '  ' . __('Available for Estonian customers only.', 'omnivalt'),
+      'description' => __('Activate this service, when your e-shop customers would like to receive parcels in Estonia.', 'omnivalt') . ' ' . __('Available for Estonian customers only.', 'omnivalt'),
       'weight' => array(
         'default' => 100,
       ),
@@ -175,16 +180,26 @@ function omnivalt_configs($section_name = false) {
       'key' => 'pc',
       'title' => __('Courier Finland', 'omnivalt'),
       'is_shipping_method' => true,
-      'description' => __('Activate this service, when you want to send parcels to private persons in Finland.', 'omnivalt')  . '  ' . __('Available for Estonian customers only.', 'omnivalt'),
+      'description' => __('Activate this service, when you want to send parcels to private persons in Finland.', 'omnivalt')  . ' ' . __('Available for Estonian customers only.', 'omnivalt'),
       'weight' => array(
         'default' => 100,
       ),
     ),
-    'post' => array(
-      'key' => 'po',
-      'title' => __('Post office', 'omnivalt'),
+    'post_near' => array(
+      'key' => 'pn',
+      'title' => __('Nearest post office', 'omnivalt'),
       'is_shipping_method' => true,
-      'description' => __('Activate this service, when you want to send parcels to post offices.', 'omnivalt'),
+      'description' => __('Activate this service, when you want to send parcels to nearest post office.', 'omnivalt'),
+      'weight' => array(
+        'default' => 100,
+      ),
+    ),
+    'post_specific' => array(
+      'key' => 'ps',
+      'title' => __('Specific post office', 'omnivalt'),
+      'is_shipping_method' => true,
+      'terminals_type' => 'post',
+      'description' => __('Activate this service, when you want to send parcels to specific post office.', 'omnivalt'),
       'weight' => array(
         'default' => 100,
       ),
@@ -214,7 +229,7 @@ function omnivalt_configs($section_name = false) {
     'arrival_sms' => array(
       'title' => __('Arrival SMS', 'omnivalt'),
       'code' => 'ST',
-      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'PK', 'CD', 'CE', 'LX', 'LH', 'QH', 'CI'),
+      'only_for' => 'all',
       'in_product' => false,
       'in_order' => false,
       'add_always' => true,
@@ -223,7 +238,7 @@ function omnivalt_configs($section_name = false) {
     'arrival_email' => array(
       'title' => __('Arrival email', 'omnivalt'),
       'code' => 'SF',
-      'only_for' => array('PA', 'PU', 'PP', 'PO', 'PV', 'CD', 'CE', 'LX', 'LH'),
+      'only_for' => 'all',
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,

@@ -1,0 +1,28 @@
+{
+    "name": "mijora/omniva-api",
+    "description": "Omniva API wrapper",
+    "type": "library",
+    "version": "1.0.9",
+    "authors": [
+        {
+            "name": "Modestas",
+            "email": "modestas.slivinskas@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "UAB Mijora",
+            "email": "info@mijora.lt",
+            "homepage": "https://mijora.dev"
+        }
+    ],
+    "require": {
+        "setasign/fpdi": "^2.3",
+        "tecnickcom/tcpdf": "^6.3",
+        "setasign/fpdf": "^1.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mijora\\Omniva\\": "src/"
+        }
+    }
+}
