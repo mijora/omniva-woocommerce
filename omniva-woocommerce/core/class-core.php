@@ -295,6 +295,8 @@ class OmnivaLt_Core
 
   private static function load_classes()
   {
+    include OMNIVALT_DIR . 'vendor/autoload.php';
+    
     $core_dir = OMNIVALT_DIR . 'core/';
     require_once $core_dir . 'class-debug.php';
     require_once $core_dir . 'class-configs.php';

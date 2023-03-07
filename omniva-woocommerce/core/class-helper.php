@@ -150,25 +150,35 @@ class OmnivaLt_Helper
     return $value;
   }
 
+  public static function get_shipping_service($sender_country, $receiver_country)
+  {
+    $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
+
+    if ( ! isset($shipping_params[$sender_country]) ) {
+      return false;
+    }
+
+    if ( ! isset($shipping_params[$sender_country]['shipping_sets'][$receiver_country]) ) {
+      return false;
+    }
+
+    return $shipping_params[$sender_country]['shipping_sets'][$receiver_country];
+  }
+
   public static function get_shipping_service_code($sender_country, $receiver_country, $get_for)
   {
-    $configs = OmnivaLt_Core::get_configs();
-    
-    if ( ! isset($configs['shipping_params'][$sender_country]) ) {
-      return array('status' => 'error', 'msg' => OmnivaLt_Core::get_error_text('001'));
-    }
+    $shipping_sets = OmnivaLt_Core::get_configs('shipping_sets');
 
-    if ( ! isset($configs['shipping_params'][$sender_country]['shipping_sets'][$receiver_country]) ) {
-      return array('status' => 'error', 'msg' => OmnivaLt_Core::get_error_text('002'));
+    $service_set = self::get_shipping_service($sender_country, $receiver_country);
+    if ( ! $service_set ) {
+      return array('status' => 'error', 'msg' => __('Failed to get service set', 'omnivalt'));
     }
-
-    $service_set = $configs['shipping_params'][$sender_country]['shipping_sets'][$receiver_country];
     
-    if ( ! isset($configs['shipping_sets'][$service_set]) ) {
+    if ( ! isset($shipping_sets[$service_set]) ) {
       return array('status' => 'error', 'msg' => OmnivaLt_Core::get_error_text('003'));
     }
 
-    if ( ! isset($configs['shipping_sets'][$service_set][$get_for]) ) {
+    if ( ! isset($shipping_sets[$service_set][$get_for]) ) {
       $shipping_set = self::explode_shipping_set($get_for);
       if ( ! $shipping_set ) {
         $shipping_set = array('send' => $get_for, 'receive' => $get_for);
@@ -183,7 +193,7 @@ class OmnivaLt_Helper
       ));
     }
     
-    return $configs['shipping_sets'][$service_set][$get_for];
+    return $shipping_sets[$service_set][$get_for];
   }
 
   public static function get_shipping_sets($sender_country, $exclude_additional = true)
