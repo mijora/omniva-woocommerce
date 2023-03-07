@@ -267,13 +267,13 @@ class OmnivaLt_Core
     }
   }
 
-  public static function load_vendors($vendors = array())
+  public static function load_vendors($vendors = array()) //TODO: Temporary required while API library not using instead this
   {
     if (empty($vendors) || in_array('tcpdf', $vendors)) {
-      require_once(OMNIVALT_DIR . 'vendor/tcpdf/tcpdf.php');
+      require_once(OMNIVALT_DIR . 'vendor/tecnickcom/tcpdf/tcpdf.php');
     }
     if (empty($vendors) || in_array('fpdi', $vendors)) {
-      require_once(OMNIVALT_DIR . 'vendor/fpdi/src/autoload.php');
+      require_once(OMNIVALT_DIR . 'vendor/setasign/fpdi/src/autoload.php');
     }
   }
 

@@ -148,11 +148,16 @@ class OmnivaLt_Order
 
   public static function add_terminal_id_to_order($order_id)
   {
-    if ( isset($_POST['omnivalt_terminal']) && $order_id ) {
+    if ( empty($order_id) ) {
+      OmnivaLt_Debug::log_error('Received empty Order ID when adding Order data');
+      return;
+    }
+    
+    if ( isset($_POST['omnivalt_terminal']) ) {
       self::set_omniva_terminal_id($order_id, $_POST['omnivalt_terminal']);
     }
 
-    if ( isset($_POST['shipping_method']) && $order_id ) {
+    if ( isset($_POST['shipping_method']) ) {
       self::set_omniva_method($order_id, $_POST['shipping_method']);
     }
   }
@@ -189,15 +194,22 @@ class OmnivaLt_Order
 
   public static function check_terminal_id_in_order($order)
   {
-    $check_terminal_id = self::get_omniva_terminal_id($order);
-    $check_method = self::get_omniva_method($order);
+    try {
+      $check_terminal_id = self::get_omniva_terminal_id($order);
+      $check_method = self::get_omniva_method($order);
 
-    if ( ! empty($_POST['omnivalt_terminal']) && empty($check_terminal_id) ) {
-      self::set_omniva_terminal_id($order->get_id(), $_POST['omnivalt_terminal']);
-    }
+      if ( ! empty($_POST['shipping_method']) ) {
+        $success = self::set_omniva_method($order->get_id(), $_POST['shipping_method']);
+        if ( $success && ! self::get_omniva_method($order) ) {
+          OmnivaLt_Debug::log_error('Failed to save Omniva shipping method. ' . print_r($_POST,true));
+        }
+      }
 
-    if ( ! empty($_POST['shipping_method']) ) {
-      self::set_omniva_method($order->get_id(), $_POST['shipping_method']);
+      if ( ! empty($_POST['omnivalt_terminal']) && empty($check_terminal_id) ) {
+        self::set_omniva_terminal_id($order->get_id(), $_POST['omnivalt_terminal']);
+      }
+    } catch(\Exception $e) {
+      OmnivaLt_Debug::log_error('Got error when trying add Omniva data to the Order: ' . $e->getMessage());
     }
   }
 
@@ -542,20 +554,22 @@ class OmnivaLt_Order
 
   public static function set_omniva_method($order_id, $order_methods_list)
   {
-    if ( empty($order_id) ) {
+    if ( empty($order_id) || empty($order_methods_list) ) {
       return false;
     }
 
-    if ( ! empty($order_methods_list) && is_array($order_methods_list) ) {
-      $configs = OmnivaLt_Core::get_configs();
+    if ( ! is_array($order_methods_list) ) {
+      $order_methods_list = array($order_methods_list);
+    }
+    
+    $configs = OmnivaLt_Core::get_configs();
 
-      foreach ( $order_methods_list as $ship_method ) {
-        foreach ( $configs['method_params'] as $method_name => $method_values ) {
-          if ( ! $method_values['is_shipping_method'] ) continue;
-          if ( $ship_method == "omnivalt_" . $method_values['key'] ) {
-            update_post_meta($order_id, $configs['meta_keys']['method'], $ship_method);
-            return true;
-          }
+    foreach ( $order_methods_list as $ship_method ) {
+      foreach ( $configs['method_params'] as $method_name => $method_values ) {
+        if ( ! $method_values['is_shipping_method'] ) continue;
+        if ( $ship_method == "omnivalt_" . $method_values['key'] ) {
+          update_post_meta($order_id, $configs['meta_keys']['method'], $ship_method);
+          return true;
         }
       }
     }
