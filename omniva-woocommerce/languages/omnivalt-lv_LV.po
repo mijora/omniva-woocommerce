@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-04 08:59+0000\n"
-"PO-Revision-Date: 2023-03-07 13:30+0000\n"
+"PO-Revision-Date: 2023-03-07 15:12+0000\n"
 "Last-Translator: \n"
 "Language-Team: Latvian (Latvia)\n"
 "Language: lv_LV\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: core/class-core.php:155
 #, php-format
 msgid "A newer version of the plugin (%s) has been released."
-msgstr "Ir pieejama jaunākā spraudņa (%s) versija."
+msgstr "Ir pieejama jaunāka spraudņa versija (%s)."
 
 #: core/class-shipping-method.php:415
 msgid "A4 (4 labels)"
@@ -65,14 +65,15 @@ msgid ""
 "Activate this service, when you want to send parcels within Latvia and "
 "Lithuania."
 msgstr ""
-"Aktivizējiet šo pakalpojumu, ja vēlaties veikt sūtījumus Latviju un Lietuvu."
+"Aktivizējiet šo pakalpojumu, ja vēlaties veikt sūtījumus pa Latviju un "
+"Lietuvu."
 
 #: omniva-woocommerce.php:174
 msgid ""
 "Activate this service, when your e-shop customers would like to receive "
 "parcels in Estonia."
 msgstr ""
-"Aktivizējiet šo pakalpojumu, ja vēlaties lai Jūsu e-veikala klienti var "
+"Aktivizējiet šo pakalpojumu, ja vēlaties, lai Jūsu e-veikala klienti var "
 "saņemt sūtījumus uz Igauniju. "
 
 #: core/class-admin-html.php:105
@@ -257,7 +258,7 @@ msgstr "Mainīt tikai tad, ja vēlaties izmantot pielāgotu API URL."
 
 #: core/class-shipping-method.php:461
 msgid "Choose how to send the return code to the customer"
-msgstr "Izvēlieties, atgriešanas koda nosūtīšanas veidu klientam "
+msgstr "Izvēlieties atgriešanas koda nosūtīšanas veidu klientam "
 
 #: core/class-shipping-method.php:186
 msgid ""
@@ -271,7 +272,7 @@ msgid ""
 "Choose what the shipping method label will be displayed on the Cart and "
 "Checkout pages."
 msgstr ""
-"Izvēlieties piegādes metodi, kas būs redzama pirkuma grozā un un norēķina "
+"Izvēlieties piegādes metodi, kas būs redzama pirkuma grozā un norēķina "
 "veikšanas lapās."
 
 #: core/class-shipping-method.php:193
@@ -317,7 +318,7 @@ msgstr "Kļūdu pārbaudes režīms"
 
 #: core/class-shipping-method.php:1243
 msgid "Debug files still not created"
-msgstr "Atkļūdošanas faili nav izveidoti"
+msgstr "Atkļūdošanas faili vēl nav izveidoti"
 
 #: core/class-shipping-method.php:167
 #, php-format
@@ -963,7 +964,7 @@ msgstr "Atlasīts"
 msgid ""
 "Send an email to customer with tracking code, when the label is generated."
 msgstr ""
-"Nosūtīt  izsekošanas kodu uz klienta e-pastu, līdzko izveidota adrešu karte. "
+"Nosūtīt izsekošanas kodu uz klienta e-pastu, līdzko izveidota adrešu karte."
 
 #: core/class-shipping-method.php:445
 msgid "Send email on shipment arrive"
