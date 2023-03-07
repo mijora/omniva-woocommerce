@@ -11,6 +11,7 @@
 - added possibility to send shipments to Estonian post offices
 - started using a separate API library
 - added many LV translations, missing LT translations and updated EE translations
+- added logging when unable to get Omniva data when creating an Order
 
 ## [1.12.3]
 ### Fixed

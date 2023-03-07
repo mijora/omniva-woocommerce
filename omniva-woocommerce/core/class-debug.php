@@ -2,6 +2,7 @@
 class OmnivaLt_Debug
 {
     public static $_debug_dir = OMNIVALT_DIR . 'var/debug/';
+    public static $_log_dir = OMNIVALT_DIR . 'var/logs/';
 
     public static function check_debug_enabled()
     {
@@ -118,6 +119,13 @@ class OmnivaLt_Debug
 
     private static function save_log_msg($type, $message)
     {
-        // Need to create
+        $file_name = $type . '.log';
+        error_log(self::build_log_text($message), 3, self::$_log_dir . $file_name);
+    }
+
+    private static function build_log_text( $message )
+    {
+        $log_pref = '[' . current_time("Y-m-d H:i:s") . ']: ';
+        return $log_pref . $message . PHP_EOL;
     }
 }
