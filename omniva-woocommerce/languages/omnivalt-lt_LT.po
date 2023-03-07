@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-29 09:53+0000\n"
-"PO-Revision-Date: 2023-03-07 12:08+0000\n"
+"PO-Revision-Date: 2023-03-07 13:31+0000\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -36,7 +36,7 @@ msgstr "Veiksmai"
 msgid "Activate this plugin and allow to use %s methods"
 msgstr "Aktyvuoti šį įskiepį ir leisti naudoti %s metodus"
 
-#: omniva-woocommerce.php:192 omniva-woocommerce.php:202
+#: omniva-woocommerce.php:192
 #| msgid ""
 #| "Activate this service, when you want to send parcels to post offices."
 msgid ""
@@ -59,6 +59,13 @@ msgid ""
 msgstr ""
 "Aktyvuokite šį servisą, jeigu norite siųsti siuntas privatiems asmenims "
 "Suomijoje."
+
+#: omniva-woocommerce.php:202
+msgid ""
+"Activate this service, when you want to send parcels to specific post office."
+msgstr ""
+"Aktyvuokite šį servisą, jeigu norite siųsti siuntas į pasirinktą pašto "
+"skyrių."
 
 #: omniva-woocommerce.php:165
 msgid ""
@@ -166,7 +173,6 @@ msgid "Automatically select terminal by postcode."
 msgstr "Automatiškai parinkti paštomatą pagal pašto kodą."
 
 #: omniva-woocommerce.php:174 omniva-woocommerce.php:183
-#: omniva-woocommerce.php:192 omniva-woocommerce.php:202
 msgid "Available for Estonian customers only."
 msgstr "Galima tik Estijos klientams."
 

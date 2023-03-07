@@ -189,7 +189,7 @@ function omnivalt_configs($section_name = false) {
       'key' => 'pn',
       'title' => __('Nearest post office', 'omnivalt'),
       'is_shipping_method' => true,
-      'description' => __('Activate this service, when you want to send parcels to nearest post office.', 'omnivalt') . ' ' . __('Available for Estonian customers only.', 'omnivalt'),
+      'description' => __('Activate this service, when you want to send parcels to nearest post office.', 'omnivalt'),
       'weight' => array(
         'default' => 100,
       ),
@@ -199,7 +199,7 @@ function omnivalt_configs($section_name = false) {
       'title' => __('Specific post office', 'omnivalt'),
       'is_shipping_method' => true,
       'terminals_type' => 'post',
-      'description' => __('Activate this service, when you want to send parcels to nearest post office.', 'omnivalt') . ' ' . __('Available for Estonian customers only.', 'omnivalt'),
+      'description' => __('Activate this service, when you want to send parcels to specific post office.', 'omnivalt'),
       'weight' => array(
         'default' => 100,
       ),
