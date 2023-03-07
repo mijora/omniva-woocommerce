@@ -10,6 +10,7 @@
 - added a ability to the Order add Omniva method manually, when Omniva shipping method is selected, but Omniva metadata not added
 - added possibility to send shipments to Estonian post offices
 - started using a separate API library
+- added many LV translations, missing LT translations and updated EE translations
 
 ## [1.12.3]
 ### Fixed
