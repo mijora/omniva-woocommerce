@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-04 08:59+0000\n"
-"PO-Revision-Date: 2023-03-07 13:30+0000\n"
+"PO-Revision-Date: 2023-03-07 14:23+0000\n"
 "Last-Translator: \n"
 "Language-Team: Latvian (Latvia)\n"
 "Language: lv_LV\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: core/class-core.php:155
 #, php-format
 msgid "A newer version of the plugin (%s) has been released."
-msgstr "Ir pieejama jaunākā spraudņa (%s) versija."
+msgstr "Ir pieejama jaunāka spraudņa versija (%s)."
 
 #: core/class-shipping-method.php:415
 msgid "A4 (4 labels)"
@@ -36,7 +36,7 @@ msgstr "Darbības"
 msgid "Activate this plugin and allow to use %s methods"
 msgstr ""
 
-#: omniva-woocommerce.php:192
+#: omniva-woocommerce.php:192 omniva-woocommerce.php:202
 msgid ""
 "Activate this service, when you want to send parcels to nearest post office."
 msgstr ""
@@ -55,24 +55,20 @@ msgstr ""
 "Aktivizējiet šo pakalpojumu, ja vēlaties veikt sūtījumus privātpersonām uz "
 "Somiju."
 
-#: omniva-woocommerce.php:202
-msgid ""
-"Activate this service, when you want to send parcels to specific post office."
-msgstr ""
-
 #: omniva-woocommerce.php:165
 msgid ""
 "Activate this service, when you want to send parcels within Latvia and "
 "Lithuania."
 msgstr ""
-"Aktivizējiet šo pakalpojumu, ja vēlaties veikt sūtījumus Latviju un Lietuvu."
+"Aktivizējiet šo pakalpojumu, ja vēlaties veikt sūtījumus pa Latviju un "
+"Lietuvu."
 
 #: omniva-woocommerce.php:174
 msgid ""
 "Activate this service, when your e-shop customers would like to receive "
 "parcels in Estonia."
 msgstr ""
-"Aktivizējiet šo pakalpojumu, ja vēlaties lai Jūsu e-veikala klienti var "
+"Aktivizējiet šo pakalpojumu, ja vēlaties, lai Jūsu e-veikala klienti var "
 "saņemt sūtījumus uz Igauniju. "
 
 #: core/class-admin-html.php:105
@@ -81,7 +77,7 @@ msgstr "Pievienot intervālu"
 
 #: core/class-shipping-method.php:457
 msgid "Add to email"
-msgstr "Pievienot e-pastam "
+msgstr "Pievienot e-pastam"
 
 #: core/class-shipping-method.php:456
 msgid "Add to SMS"
@@ -157,13 +153,14 @@ msgstr "Paziņojums saņēmējam ar SMS"
 
 #: core/class-shipping-method.php:358
 msgid "Automatic terminal selection"
-msgstr "Automātiska termināļu izvēle"
+msgstr "Automātiska termināļa izvēle"
 
 #: core/class-shipping-method.php:360
 msgid "Automatically select terminal by postcode."
 msgstr "Automātiski izvēlēties termināli pēc pasta indeksa."
 
 #: omniva-woocommerce.php:174 omniva-woocommerce.php:183
+#: omniva-woocommerce.php:192 omniva-woocommerce.php:202
 msgid "Available for Estonian customers only."
 msgstr "Pieejams tikai Igaunijas klientiem."
 
@@ -231,7 +228,7 @@ msgstr "Atkarīga no svara"
 
 #: manifest_page.php:30 manifest_page.php:273
 msgid "Call Omniva courier"
-msgstr "Izsaucot kurjerpakalpojums"
+msgstr "Izsaukt Omniva kurjeru"
 
 #: core/class-shipping-method.php:1329
 msgid "Carrier"
@@ -257,7 +254,7 @@ msgstr "Mainīt tikai tad, ja vēlaties izmantot pielāgotu API URL."
 
 #: core/class-shipping-method.php:461
 msgid "Choose how to send the return code to the customer"
-msgstr "Izvēlieties, atgriešanas koda nosūtīšanas veidu klientam "
+msgstr "Izvēlieties atgriešanas koda nosūtīšanas veidu klientam"
 
 #: core/class-shipping-method.php:186
 msgid ""
@@ -271,7 +268,7 @@ msgid ""
 "Choose what the shipping method label will be displayed on the Cart and "
 "Checkout pages."
 msgstr ""
-"Izvēlieties piegādes metodi, kas būs redzama pirkuma grozā un un norēķina "
+"Izvēlieties piegādes metodi, kas būs redzama pirkuma grozā un norēķina "
 "veikšanas lapās."
 
 #: core/class-shipping-method.php:193
@@ -317,7 +314,7 @@ msgstr "Kļūdu pārbaudes režīms"
 
 #: core/class-shipping-method.php:1243
 msgid "Debug files still not created"
-msgstr "Atkļūdošanas faili nav izveidoti"
+msgstr "Atkļūdošanas faili vēl nav izveidoti"
 
 #: core/class-shipping-method.php:167
 #, php-format
@@ -475,7 +472,7 @@ msgstr "Ģenerēt un drukāt adrešu kartes"
 #: manifest_page.php:69 manifest_page.php:70 manifest_page.php:241
 #: manifest_page.php:242
 msgid "Generate manifest"
-msgstr "Ģenerēt sūtījumu saraksts"
+msgstr "Ģenerēt sūtījumu sarakstu"
 
 #: core/class-shipping-method.php:1004
 msgid "Height"
@@ -517,7 +514,7 @@ msgstr ""
 
 #: manifest_page.php:256
 msgid "Important!"
-msgstr "Svarīgs!"
+msgstr "Svarīgi!"
 
 #: omniva-woocommerce.php:289
 msgid "Insurance"
@@ -541,7 +538,7 @@ msgstr "Adrešu kartes drukas dizains"
 
 #: manifest_page.php:256
 msgid "Latest call for same day pickup is until 3 pm."
-msgstr "Pēdējais izsaukums tajā pašā dienā ir līdz plkst. 15:00."
+msgstr "Pēdējais izsaukums pieņemšanai tajā pašā dienā ir līdz plkst. 15:00."
 
 #: omniva-woocommerce.php:92 core/class-shipping-method.php:182
 msgid "Latvia"
@@ -639,7 +636,7 @@ msgstr "Sūtījumu saraksta laiks"
 
 #: core/class-shipping-method.php:369
 msgid "Map"
-msgstr "Karti"
+msgstr "Karte"
 
 #: core/class-shipping-method.php:854
 #, php-format
@@ -963,7 +960,7 @@ msgstr "Atlasīts"
 msgid ""
 "Send an email to customer with tracking code, when the label is generated."
 msgstr ""
-"Nosūtīt  izsekošanas kodu uz klienta e-pastu, līdzko izveidota adrešu karte. "
+"Nosūtīt izsekošanas kodu uz klienta e-pastu, līdzko izveidota adrešu karte."
 
 #: core/class-shipping-method.php:445
 msgid "Send email on shipment arrive"
@@ -998,7 +995,7 @@ msgstr "Informācija par sūtītāju"
 
 #: manifest_page.php:134
 msgid "Service"
-msgstr "Apkalpošana"
+msgstr "Pakalpojums"
 
 #: core/class-order.php:408
 msgid "Services"
@@ -1056,7 +1053,7 @@ msgstr "Veikala e-pasts"
 
 #: manifest_page.php:262 core/class-shipping-method.php:201
 msgid "Shop name"
-msgstr "Veikalu nosaukums"
+msgstr "Veikala nosaukums"
 
 #: manifest_page.php:263 core/class-shipping-method.php:225
 msgid "Shop phone number"
@@ -1064,7 +1061,7 @@ msgstr "Veikala tālruņa numurs"
 
 #: manifest_page.php:264 core/class-shipping-method.php:213
 msgid "Shop postcode"
-msgstr "Veikala indekss"
+msgstr "Veikala pasta indekss"
 
 #: core/class-shipping-method.php:476
 msgid "Show barcode image in manifest."
@@ -1121,7 +1118,7 @@ msgstr "Izmērs"
 #: core/class-order.php:180
 #, php-format
 msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
-msgstr "Atvainojiet,% d kg pārsniedz maksimālo svaru% d kg% s"
+msgstr "Atvainojiet, %d kg pārsniedz maksimālo svaru %d kg priekš %s."
 
 #: omniva-woocommerce.php:199
 msgid "Specific post office"
