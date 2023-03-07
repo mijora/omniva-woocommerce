@@ -120,9 +120,6 @@ class OmnivaLt_Debug
     private static function save_log_msg($type, $message)
     {
         $file_name = $type . '.log';
-        /*$file = fopen(self::$_log_dir . $file_name, 'w');
-        fwrite($file, print_r($message,true));
-        fclose($file);*/
         error_log(self::build_log_text($message), 3, self::$_log_dir . $file_name);
     }
 
