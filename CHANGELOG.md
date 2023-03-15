@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed barcodes show in Manifest PDF
+
 ## [1.13.0]
 ### Fixed
 - fixed courier call
