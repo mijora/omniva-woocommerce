@@ -7,7 +7,8 @@ class OmnivaLt_Order
 
     if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
       if ( $post->post_type === 'shop_order' ) {
-        wp_enqueue_script('omniva_admin_order', plugins_url( '/assets/js/omniva_admin_order.js', OmnivaLt_Core::$main_file_path ), array('jquery'), OMNIVALT_VERSION );
+        wp_enqueue_style('omnivalt_admin_order', plugins_url('/assets/css/omniva_admin_order.css', OmnivaLt_Core::$main_file_path, array(), OMNIVALT_VERSION));
+        wp_enqueue_script('omnivalt_admin_order', plugins_url( '/assets/js/omniva_admin_order.js', OmnivaLt_Core::$main_file_path ), array('jquery'), OMNIVALT_VERSION );
       }
     }
   }
@@ -385,7 +386,7 @@ class OmnivaLt_Order
     }
     
     if ( $send_method !== false && ! $is_omniva ) {
-      self::add_Omniva_manualy();
+      self::add_Omniva_manually();
     }
     if ( ! $is_omniva ) return;
 
@@ -396,6 +397,8 @@ class OmnivaLt_Order
     }
 
     if ( $only_in_order ) {
+      $order_size = self::get_order_size($order);
+
       echo '<br class="clear"/>';
       echo '<hr style="margin-top:20px;">';
       echo '<h4>' . __('Omniva shipping', 'omnivalt') . '</h4>';
@@ -412,6 +415,10 @@ class OmnivaLt_Order
       }
       
       echo '<p><strong class="title">' . $ship_values['title'] . ':</strong> ' . $field_value . '</p>';
+    }
+
+    if ( $only_in_order ) {
+      echo self::build_shipment_size_text($order_size);
     }
 
     $services = OmnivaLt_Helper::get_order_services($order);
@@ -468,6 +475,8 @@ class OmnivaLt_Order
     } else {
       echo __('The delivery address is changed in the fields above', 'omnivalt');
     }
+
+    echo self::build_shipment_size_fields($order_size);
     
     foreach ( $configs['additional_services'] as $service_key => $service_values ) {
       if ( $service_values['add_always'] ) continue;
@@ -490,7 +499,86 @@ class OmnivaLt_Order
     echo '<hr style="margin-top:20px;">';
   }
 
-  private static function add_Omniva_manualy()
+  public static function get_dimmension_text( $current_values )
+  {
+    $output = '';
+
+    $dimm_values = array(
+      'length' => $current_values['length'] ?? 0,
+      'width' => $current_values['width'] ?? 0,
+      'height' => $current_values['height'] ?? 0,
+    );
+    $dimm_unit = get_option('woocommerce_dimension_unit');
+
+    $first = true;
+    foreach ( $dimm_values as $value ) {
+      if ( ! $first ) {
+        $output .= ' × ';
+      }
+      $output .= $value;
+      $first = false;
+    }
+    $output .= ' ' . $dimm_unit;
+
+    return $output;
+  }
+
+  public static function get_weight_text( $current_values )
+  {
+    $weight_value = $current_values['weight'] ?? 0;
+    $weight_unit = get_option('woocommerce_weight_unit');
+
+    return ($weight_value > 0) ? wc_format_weight($weight_value) : '0 ' . $weight_unit;
+  }
+
+  private static function build_shipment_size_text( $current_values )
+  {
+    $output = '<p>';
+    
+    $output .= '<strong class="title">' . __('Size', 'omnivalt') . ':</strong>';
+    $output .= self::get_dimmension_text($current_values);
+    $output .= ' ';
+    $output .= self::get_weight_text($current_values);
+
+    $output .= '</p>';
+
+    return $output;
+  }
+
+  private static function build_shipment_size_fields( $current_values )
+  {
+    $output = '';
+
+    $fields = array(
+      'length' => __('Length', 'omnivalt'),
+      'width' => __('Width', 'omnivalt'),
+      'height' => __('Height', 'omnivalt'),
+    );
+    $field_id_prefix = 'omnivalt_dimmensions';
+    $dimm_unit = get_option('woocommerce_dimension_unit');
+
+    $output .= '<p class="form-field-wide omnivalt-dimmension">';
+    $output .= '<label>' . __('Shipment size', 'omnivalt') . '</label>';
+    
+    $first = true;
+    foreach ( $fields as $field_key => $title ) {
+      if ( ! $first ) {
+        $output .= ' × ';
+      }
+      $field_id = $field_id_prefix . '_' . $field_key;
+      $field_name = $field_id_prefix . '[' . $field_key . ']';
+      $field_value = $current_values[$field_key] ?? '';
+      $output .= '<input type="number" class="short inline-number" name="' . $field_name . '" id="' . $field_id . '" value="' . $field_value . '" min="0" step="0.001" placeholder="' . $title . '">';
+      $first = false;
+    }
+    $output .= ' ' . $dimm_unit;
+    
+    $output .= '</p>';
+
+    return $output;
+  }
+
+  private static function add_Omniva_manually()
   {
     $configs = OmnivaLt_Core::get_configs();
 
@@ -520,6 +608,10 @@ class OmnivaLt_Order
 
     if ( isset($_POST['omnivalt_terminal_id']) ) {
       update_post_meta($post_id, $configs['meta_keys']['terminal_id'], wc_clean($_POST['omnivalt_terminal_id']));
+    }
+
+    if ( isset($_POST['omnivalt_dimmensions']) ) {
+      update_post_meta($post_id, $configs['meta_keys']['dimmensions'], wc_clean(json_encode($_POST['omnivalt_dimmensions'])));
     }
 
     foreach ( $configs['additional_services'] as $service_key => $service_values ) {
@@ -661,5 +753,94 @@ class OmnivaLt_Order
     $full_name = self::get_customer_fullname($order);
 
     return (!empty($full_name)) ? $full_name : self::get_customer_company($order);
+  }
+
+  public static function get_order_items_data( $order )
+  {
+    $order_items = array();
+
+    foreach ( $order->get_items() as $item_id => $product_item ) {
+      $product = $product_item->get_product();
+      
+      $item_data = array(
+        'qty' => $product_item->get_quantity(),
+        'weight' => (!empty($product->get_weight())) ? (float)$product->get_weight() : 0,
+        'length' => (!empty($product->get_length())) ? (float)$product->get_length() : 0,
+        'width' => (!empty($product->get_width())) ? (float)$product->get_width() : 0,
+        'height' => (!empty($product->get_height())) ? (float)$product->get_height() : 0,
+      );
+      
+      $order_items[$item_id] = $item_data;
+    }
+
+    return $order_items;
+  }
+
+  public static function spread_items_data( $items_data )
+  {
+    $spreaded_items = [];
+
+    foreach ($items_data as $item) {
+      if ($item['qty'] > 1) {
+        for($i = 0; $i < $item['qty']; $i++) {
+          $spreaded_items[] = [
+            'length' => $item['length'],
+            'width'  => $item['width'],
+            'height' => $item['height'],
+          ];
+        }
+      } else {
+        $spreaded_items[] = [
+          'length' => $item['length'],
+          'width'  => $item['width'],
+          'height' => $item['height'],
+        ];
+      }
+    }
+
+    return $spreaded_items;
+  }
+
+  public static function count_order_weight( $items_data )
+  {
+    $order_weight = 0;
+
+    foreach ( $items_data as $item ) {
+        $order_weight += $item['qty'] * $item['weight'];
+    }
+
+    return $order_weight;
+  }
+
+  public static function count_order_dimmension( $items_data )
+  {
+    $order_dimmension = array(
+      'weight' => 0,
+      'length' => 0,
+      'width' => 0,
+      'height' => 0,
+    );
+
+    $packer = new OmnivaLt_Packer(self::spread_items_data($items_data));
+    $packer->pack();
+    $packed_items = $packer->get_packed_boxes();
+    //TODO: Find a way how calculate order dimmensions
+  }
+
+  public static function get_order_size( $order )
+  {
+    $configs = OmnivaLt_Core::get_configs();
+
+    $saved_order_size = json_decode(get_post_meta($order->get_id(), $configs['meta_keys']['dimmensions'], true), true);
+    $order_weight = self::count_order_weight(self::get_order_items_data($order));
+    
+    $order_size = array(
+      'weight' => $order_weight ?? 0,
+      'length' => $saved_order_size['length'] ?? 0,
+      'width' => $saved_order_size['width'] ?? 0,
+      'height' => $saved_order_size['height'] ?? 0,
+    );
+
+    return $order_size;
   }
 }

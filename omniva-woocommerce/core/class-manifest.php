@@ -6,6 +6,7 @@ class OmnivaLt_Manifest
     $folder_css = '/assets/css/';
     $folder_js = '/assets/js/';
 
+    wp_enqueue_style('omnivalt_admin_woo', plugins_url($folder_css . 'omniva_admin_woo.css', OmnivaLt_Core::$main_file_path, array(), OMNIVALT_VERSION));
     wp_enqueue_style('omnivalt_admin_manifest', plugins_url($folder_css . 'omniva_admin_manifest.css', OmnivaLt_Core::$main_file_path, array(), OMNIVALT_VERSION));
     wp_enqueue_style('bootstrap-datetimepicker', plugins_url($folder_js . 'datetimepicker/bootstrap-datetimepicker.min.css', OmnivaLt_Core::$main_file_path));
 

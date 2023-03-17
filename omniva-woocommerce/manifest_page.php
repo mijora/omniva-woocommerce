@@ -7,6 +7,7 @@ if ( ! defined('ABSPATH') ) {
 $shipping_settings = OmnivaLt_Core::get_settings();
 $configs = OmnivaLt_Core::get_configs();
 $page_params = OmnivaLt_Manifest::page_params();
+$weight_unit = get_option('woocommerce_weight_unit');
 
 $orders_data = OmnivaLt_Manifest::page_get_orders();
 $selected_orders = array();
@@ -98,7 +99,7 @@ do_action('omniva_admin_manifest_head');
                     <?php endforeach; ?>
                   </select>
                 </th>
-                <th class="column-order_date">
+                <th class="column-order_info">
                 </th>
                 <th class="manage-column">
                 </th>
@@ -130,7 +131,7 @@ do_action('omniva_admin_manifest_head');
                 <th scope="col" class="column-order_id"><?php echo __('ID', 'omnivalt'); ?></th>
                 <th scope="col" class="manage-column"><?php echo __('Customer', 'omnivalt'); ?></th>
                 <th scope="col" class="column-order_status"><?php echo __('Order Status', 'omnivalt'); ?></th>
-                <th scope="col" class="column-order_date"><?php echo __('Order Date', 'omnivalt'); ?></th>
+                <th scope="col" class="column-order_info"><?php echo __('Order information', 'omnivalt'); ?></th>
                 <th scope="col" class="manage-column"><?php echo __('Service', 'omnivalt'); ?></th>
                 <th scope="col" class="manage-column"><?php echo __('Barcode', 'omnivalt'); ?></th>
                 <?php if ($manifest_enabled) : ?>
@@ -149,6 +150,7 @@ do_action('omniva_admin_manifest_head');
                 $date = date('Y-m-d H:i', strtotime($manifest_date));
                 $manifest_date_old = $order->get_meta($configs['meta_keys']['manifest_date_old']); // Compatible with old
                 $date_old = date('Y-m-d H:i', strtotime($manifest_date_old));
+                $order_size = OmnivaLt_Order::get_order_size($order);
                 ?>
                 <?php if ( $orders_data['action'] == 'completed_orders' && $date_tracker !== $date && $date_tracker !== $date_old ) : ?>
                   <tr>
@@ -172,12 +174,20 @@ do_action('omniva_admin_manifest_head');
                   </td>
                   <td class="column-order_status">
                     <div class="data-grid-cell-content">
-                      <?php echo wc_get_order_status_name($order->get_status()); ?>
+                      <mark class="order-status status-<?php echo $order->get_status(); ?>">
+                        <span><?php echo wc_get_order_status_name($order->get_status()); ?></span>
+                      </mark>
                     </div>
                   </td>
-                  <td class="column-order_date">
+                  <td class="column-order_info">
                     <div class="data-grid-cell-content">
-                      <?php echo $order->get_date_created()->format ('Y-m-d H:i:s'); ?>
+                      <b><?php echo __('Date', 'omnivalt'); ?>:</b> <?php echo $order->get_date_created()->format ('Y-m-d H:i:s'); ?>
+                    </div>
+                    <div class="data-grid-cell-content">
+                      <b><?php echo __('Weight', 'omnivalt'); ?>:</b> <?php echo OmnivaLt_Order::get_weight_text($order_size); ?>
+                    </div>
+                    <div class="data-grid-cell-content">
+                      <b><?php echo __('Size', 'omnivalt'); ?>:</b> <?php echo OmnivaLt_Order::get_dimmension_text($order_size); ?>
                     </div>
                   </td>
                   <td class="manage-column">

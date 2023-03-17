@@ -1,0 +1,8 @@
+#order_data .order_data_column .form-field-wide.omnivalt-dimmension label {
+    display: block;
+}
+#order_data .order_data_column .form-field-wide.omnivalt-dimmension input {
+    width: 85px;
+    max-width: 25%;
+    display: inline;
+}
