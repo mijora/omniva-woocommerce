@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed barcodes show in Manifest PDF
+- changed map server
 
 ### Improvement
 - Added the option to specify the size of the shipment
