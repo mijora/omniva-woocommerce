@@ -335,6 +335,7 @@ class OmnivaLt_Core
         'error' => '_omnivalt_error',
         'manifest_date' => '_omnivalt_manifest_date',
         'terminal_id' => '_omnivalt_terminal_id',
+        'dimmensions' => '_omnivalt_dimmensions',
       ),
     );
   }

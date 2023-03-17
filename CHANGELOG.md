@@ -4,6 +4,9 @@
 ### Fixed
 - fixed barcodes show in Manifest PDF
 
+### Improvement
+- Added the option to specify the size of the shipment
+
 ## [1.13.0]
 ### Fixed
 - fixed courier call

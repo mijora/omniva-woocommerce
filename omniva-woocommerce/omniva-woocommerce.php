@@ -12,7 +12,7 @@
  * Requires at least: 5.1
  * Tested up to: 6.1.1
  * WC requires at least: 3.0.0
- * WC tested up to: 7.4.0
+ * WC tested up to: 7.5.0
  * Requires PHP: 7.2
  * PHP tested up to: 8.1.13
  */
