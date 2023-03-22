@@ -5,8 +5,9 @@
 - fixed barcodes show in Manifest PDF
 - changed map server
 
-### Improvement
-- Added the option to specify the size of the shipment
+### Improved
+- added the option to specify the size of the shipment
+- added LT and LV translations for latest changes
 
 ## [1.13.0]
 ### Fixed
