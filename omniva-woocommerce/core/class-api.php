@@ -24,7 +24,7 @@ class OmnivaLt_Api
     $client = $this->get_client_data($wc_order);
     $shop = $this->get_shop_data();
   
-    $weight = $this->get_order_weight($id_order);
+    $shipment_size = $this->prepare_shipment_size($wc_order);
     
     if ( ! isset($this->omnivalt_configs['shipping_params'][$client->country]) ) {
       return array('msg' => __('Shipping parameters for customer country not found', 'omnivalt'));
@@ -119,7 +119,7 @@ class OmnivaLt_Api
     $xmlRequest = $this->xml_header();
     $xmlRequest .= '<item service="' . $service . '" >
       ' . $additional_services . '
-      <measures weight="' . $weight . '" />
+      <measures weight="' . $shipment_size['weight'] . '" length="' . $shipment_size['length'] . '" width="' . $shipment_size['width'] . '" height="' . $shipment_size['height'] . '" />
       ' . $this->cod($order, $is_cod, get_post_meta($id_order, '_order_total', true)) . '
       ' . $label_comment . $return_code_sms . $return_code_email . '
       <receiverAddressee>
@@ -135,6 +135,42 @@ class OmnivaLt_Api
     $xmlRequest .= $this->xml_footer();
 
     return $this->api_request($xmlRequest);
+  }
+
+  private function prepare_shipment_size( $wc_order )
+  {
+    $prepared_shipment_size = array(
+        'weight' => 0,
+        'length' => 0,
+        'width' => 0,
+        'height' => 0,
+    );
+
+    $weight_unit = get_option('woocommerce_weight_unit');
+    $dimm_unit = get_option('woocommerce_dimension_unit');
+    $shipment_size = OmnivaLt_Order::get_order_size($wc_order);
+
+    foreach ( $prepared_shipment_size as $size_key => $size_default_value ) {
+        if ( ! empty($shipment_size[$size_key]) ) {
+            $prepared_shipment_size[$size_key] = (float)$shipment_size[$size_key];
+        }
+
+        if ( $size_key == 'weight' ) {
+            $prepared_shipment_size[$size_key] = wc_get_weight($prepared_shipment_size[$size_key], 'kg', $weight_unit);
+        } else {
+            $prepared_shipment_size[$size_key] = wc_get_dimension($prepared_shipment_size[$size_key], 'm', $dimm_unit);
+        }
+
+        if ( empty($prepared_shipment_size[$size_key]) ) {
+            if ( $size_key == 'weight' ) {
+                $prepared_shipment_size[$size_key] = 1;
+            } else {
+                $prepared_shipment_size[$size_key] = 0.1;
+            }
+        }
+    }
+
+    return $prepared_shipment_size;
   }
 
   public function get_shipment_labels($barcodes, $order_id = 0)
@@ -436,7 +472,7 @@ class OmnivaLt_Api
     );
   }
 
-  private function get_order_weight($id_order)
+  /*private function get_order_weight($id_order) //No more using
   {
     $weight_unit = get_option('woocommerce_weight_unit');
     $weight = get_post_meta($id_order, '_cart_weight', true);
@@ -445,7 +481,7 @@ class OmnivaLt_Api
     }
 
     return $weight;
-  }
+  }*/
 
   private function get_send_method($order)
   {

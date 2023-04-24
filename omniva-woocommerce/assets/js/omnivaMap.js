@@ -22,9 +22,10 @@ var omnivaMap = {
   if (omniva_current_country == "EE"){
     var map = L.map('omnivaMap').setView([58.7952, 25.5923], 7);
   }
-  L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
-		attribution: '&copy; <a href="https://www.omniva.lt">Omniva</a>'
-	}).addTo(map);
+  L.tileLayer('https://maps.omnivasiunta.lt/tile/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.omniva.lt">Omniva</a>' +
+      ' | Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+  }).addTo(map);
 
 	var Icon = L.Icon.extend({
 		options: {
