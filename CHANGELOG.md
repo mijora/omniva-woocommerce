@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.13.1]
 ### Fixed
 - fixed barcodes show in Manifest PDF
 - changed map server
