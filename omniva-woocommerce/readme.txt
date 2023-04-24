@@ -7,6 +7,12 @@
 
 == Changelog ==
 
+= 1.13.1 =
+- fixed barcodes show in Manifest PDF
+- changed map server
+- added the option to specify the size of the shipment
+- added LT and LV translations for latest changes
+
 = 1.13.0 =
 - fixed courier call
 - added display of an error message when a certain type of error message is received from the API
