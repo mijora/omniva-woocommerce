@@ -1420,7 +1420,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
               update_post_meta($orderId, $configs['meta_keys']['barcode'], $status['barcodes'][0]);
               $track_numer = $status['barcodes'][0];
 
-              $label_status = $this->omnivalt_api->get_shipment_labels($status['barcodes'], $orderId);
+              $label_status = $this->omnivalt_api->get_shipment_labels($status['barcodes']);
               
               if ( ! $label_status['status'] ) {
                 update_post_meta($orderId, $configs['meta_keys']['error'], $label_status['msg']);

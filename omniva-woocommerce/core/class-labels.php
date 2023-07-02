@@ -100,7 +100,7 @@ class OmnivaLt_Labels
         }
       }
 
-      $label_status = $this->omnivalt_api->get_shipment_labels($barcodes, $orderId);
+      $label_status = $this->omnivalt_api->get_shipment_labels($barcodes);
       if ( ! $label_status['status'] ) {
         update_post_meta($orderId, $this->omnivalt_configs['meta_keys']['error'], $label_status['msg']);
         OmnivaLt_Helper::add_msg($orderId . ' - ' . $label_status['msg'], 'error');

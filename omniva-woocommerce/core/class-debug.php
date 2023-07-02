@@ -46,6 +46,33 @@ class OmnivaLt_Debug
         return $response;
     }
 
+    public static function log( $type, $msg, $show_backtrace = false )
+    {
+        $available_types = array('error', 'notice', 'order', 'cart', 'product', 'custom');
+        $message = '';
+        
+        if ( ! in_array($type, $available_types) ) {
+            $message = 'Got wrong log type in ';
+            $type = 'log_error';
+            $show_backtrace = true;
+            $msg = '';
+        }
+
+        if ( $show_backtrace ) {
+            $backtrace = debug_backtrace(1, 2);
+            $message .= $backtrace[0]['file'] . '::' . $backtrace[0]['line'] . ' - ' . $backtrace[1]['function'] . '()';
+            if ( $msg !== '' ) {
+                $message .= "\n";
+            }
+        }
+
+        if ( is_object($msg) || is_array($msg) ) {
+            $msg = print_r($msg, true);
+        }
+
+        self::save_log_msg($type, $message . $msg);
+    }
+
     public static function log_error( $error_msg )
     {
         self::save_log_msg('error', $error_msg);

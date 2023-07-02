@@ -184,6 +184,9 @@ do_action('omniva_admin_manifest_head');
                       <b><?php echo __('Date', 'omnivalt'); ?>:</b> <?php echo $order->get_date_created()->format ('Y-m-d H:i:s'); ?>
                     </div>
                     <div class="data-grid-cell-content">
+                      <b><?php echo __('Amount', 'omnivalt'); ?>:</b> <?php echo OmnivaLt_Order::get_price_text($order->get_total()); ?>
+                    </div>
+                    <div class="data-grid-cell-content">
                       <b><?php echo __('Weight', 'omnivalt'); ?>:</b> <?php echo OmnivaLt_Order::get_weight_text($order_size); ?>
                     </div>
                     <div class="data-grid-cell-content">
