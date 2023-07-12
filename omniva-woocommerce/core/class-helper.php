@@ -1,7 +1,7 @@
 <?php
 class OmnivaLt_Helper
 {
-  public static function get_order_services($order)
+  public static function get_order_services( $order )
   {
     $services = OmnivaLt_Product::get_order_items_services($order->items, true);
     $services = self::override_with_order_services($order, $services);
@@ -9,7 +9,7 @@ class OmnivaLt_Helper
     return $services;
   }
 
-  public static function override_with_order_services($order, $services)
+  public static function override_with_order_services( $order, $services )
   {
     $configs_services = OmnivaLt_Core::get_configs('additional_services');
     $order_services = array();
@@ -56,7 +56,7 @@ class OmnivaLt_Helper
     return false;
   }
 
-  public static function is_cod_payment($payment_key)
+  public static function is_cod_payment( $payment_key )
   {
     $cod_payments = OmnivaLt_Core::get_configs('cod');
     return (in_array($payment_key, $cod_payments));
@@ -105,7 +105,7 @@ class OmnivaLt_Helper
     return $shipping_sets;
   }
 
-  public static function get_allowed_methods($set_name)
+  public static function get_allowed_methods( $set_name )
   {
     $configs = OmnivaLt_Core::get_configs();
 
@@ -126,7 +126,7 @@ class OmnivaLt_Helper
     return $allowed_methods;
   }
 
-  public static function add_msg($msg, $type)
+  public static function add_msg( $msg, $type )
   {
     if (!session_id()) {
       session_start();
@@ -137,7 +137,7 @@ class OmnivaLt_Helper
     $_SESSION['omnivalt_notices'][] = array('msg' => $msg, 'type' => $type);
   }
 
-  public static function get_formated_time($value, $value_if_not)
+  public static function get_formated_time( $value, $value_if_not )
   {
     if (!preg_match("/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/", $value)) {
       if ((string)(int)$value === $value || is_int($value)) {
@@ -150,7 +150,12 @@ class OmnivaLt_Helper
     return $value;
   }
 
-  public static function get_shipping_service($sender_country, $receiver_country)
+  public static function clear_file_name( $file_name )
+  {
+    return preg_replace("/[^a-zA-Z0-9\.\-\_]+/", "", $file_name);
+  }
+
+  public static function get_shipping_service( $sender_country, $receiver_country )
   {
     $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
 
@@ -165,7 +170,7 @@ class OmnivaLt_Helper
     return $shipping_params[$sender_country]['shipping_sets'][$receiver_country];
   }
 
-  public static function get_shipping_service_code($sender_country, $receiver_country, $get_for)
+  public static function get_shipping_service_code( $sender_country, $receiver_country, $get_for )
   {
     $shipping_sets = OmnivaLt_Core::get_configs('shipping_sets');
 
@@ -196,7 +201,7 @@ class OmnivaLt_Helper
     return $shipping_sets[$service_set][$get_for];
   }
 
-  public static function get_shipping_sets($sender_country, $exclude_additional = true)
+  public static function get_shipping_sets( $sender_country, $exclude_additional = true )
   {
     $configs = OmnivaLt_Core::get_configs();
 
@@ -212,7 +217,7 @@ class OmnivaLt_Helper
     return $shipping_sets;
   }
 
-  public static function convert_method_name_to_short($asociations, $method_name, $reverse = false)
+  public static function convert_method_name_to_short( $asociations, $method_name, $reverse = false )
   {
     foreach ( $asociations as $key => $value ) {
       if ( ! $reverse ) {
@@ -227,28 +232,6 @@ class OmnivaLt_Helper
     }
 
     return $method_name;
-  }
-
-  /**
-   * Get method key from Woocommerce shipping method ID
-   * 
-   * @param string $woo_method_id - Woocommerce method ID
-   * @return string
-   */
-  public static function get_method_key_from_woo_method_id( $woo_method_id )
-  {
-    return str_replace('omnivalt_', '', $woo_method_id);
-  }
-
-  /**
-   * Get Woocommerce shipping method ID from method key
-   * 
-   * @param string $method_key - method key (short form)
-   * @return string
-   */
-  public static function get_woo_method_id_from_method_key( $method_key )
-  {
-    return 'omnivalt_' . $method_key;
   }
 
   public static function predict_order_size( $items_data, $max_dimension = array() )
@@ -358,5 +341,18 @@ class OmnivaLt_Helper
     }
 
     return $value;
+  }
+
+  public static function is_omniva_method( $method_id )
+  {
+    $configs = OmnivaLt_Core::get_configs();
+
+    foreach ( $configs['method_params'] as $method_key => $method_values ) {
+      if ( $method_id == 'omnivalt_' . $method_values['key'] ) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

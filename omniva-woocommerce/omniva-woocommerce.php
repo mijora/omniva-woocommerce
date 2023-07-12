@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.13.1
+ * Version: 1.13.1-newDB
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 

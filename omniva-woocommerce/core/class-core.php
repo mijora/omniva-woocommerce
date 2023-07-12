@@ -17,7 +17,7 @@ class OmnivaLt_Core
     }
   }
 
-  public static function get_configs($section_name = false)
+  public static function get_configs( $section_name = false )
   {
     $default_configs = self::default_configs();
     $configs = $default_configs;
@@ -47,7 +47,7 @@ class OmnivaLt_Core
     return get_option('woocommerce_omnivalt_settings');
   }
 
-  public static function get_shipping_method_info($args = '') //TODO: Not completed and still not using. Make a mapping (simple function to return required info)
+  public static function get_shipping_method_info( $args = '' ) //TODO: Not completed and still not using. Make a mapping (simple function to return required info)
   {
     $args['receiver_country'] = (isset($args['receiver_country'])) ? $args['receiver_country'] : '';
     $args['get_all'] = (isset($args['get_all'])) ? $args['get_all'] : false;
@@ -105,7 +105,7 @@ class OmnivaLt_Core
     }
   }
 
-  public static function get_overrides_dir($get_url = false)
+  public static function get_overrides_dir( $get_url = false )
   {
     $directory = '/omniva/';
     if ( $get_url ) {
@@ -115,7 +115,7 @@ class OmnivaLt_Core
     return get_template_directory() . $directory;
   }
 
-  public static function check_update($current_version = '') {
+  public static function check_update( $current_version = '' ) {
     $update_params = self::get_configs('update');
     
     if (empty($update_params['check_url'])) {
@@ -144,7 +144,7 @@ class OmnivaLt_Core
     return false;
   }
 
-  public static function update_message($file, $plugin) {
+  public static function update_message( $file, $plugin ) {
     $check_update = self::check_update($plugin['Version']);
     $update_params = self::get_configs('update');
 
@@ -206,7 +206,7 @@ class OmnivaLt_Core
     }
   }
 
-  public static function load_admin_settings_scripts($hook)
+  public static function load_admin_settings_scripts( $hook )
   {
     $folder_css = '/assets/css/';
     $folder_js = '/assets/js/';
@@ -217,7 +217,7 @@ class OmnivaLt_Core
     }
   }
 
-  public static function add_asyncdefer_by_handle($tag, $handle)
+  public static function add_asyncdefer_by_handle( $tag, $handle )
   {
     if (strpos($handle, 'async') !== false) {
       $tag = str_replace('<script ', '<script async ', $tag);
@@ -237,13 +237,13 @@ class OmnivaLt_Core
     OmnivaLt_Terminals::check_terminals_json_file();
   }
 
-  public static function add_shipping_method($methods)
+  public static function add_shipping_method( $methods )
   {
     $methods['omnivalt'] = 'Omnivalt_Shipping_Method';
     return $methods;
   }
 
-  public static function settings_link($links) {
+  public static function settings_link( $links ) {
     array_unshift($links, '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=shipping&section=omnivalt' ) . '">' . __('Settings', 'omnivalt') . '</a>');
     return $links;
   }
@@ -267,7 +267,7 @@ class OmnivaLt_Core
     }
   }
 
-  public static function load_vendors($vendors = array()) //TODO: Temporary required while API library not using instead this
+  public static function load_vendors( $vendors = array() ) //TODO: Temporary required while API library not using instead this
   {
     if (empty($vendors) || in_array('tcpdf', $vendors)) {
       require_once(OMNIVALT_DIR . 'vendor/tecnickcom/tcpdf/tcpdf.php');
@@ -277,7 +277,7 @@ class OmnivaLt_Core
     }
   }
 
-  public static function get_error_text($error_code)
+  public static function get_error_text( $error_code )
   {
     $errors = array(
       '001' => _x('The service is not available to the sender country', 'error', 'omnivalt'),
@@ -309,10 +309,13 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-admin-html.php';
     require_once $core_dir . 'class-packer.php';
     require_once $core_dir . 'class-product.php';
+    require_once $core_dir . 'class-product-wc.php';
     require_once $core_dir . 'class-cronjob.php';
     require_once $core_dir . 'class-terminals.php';
     require_once $core_dir . 'class-manifest.php';
     require_once $core_dir . 'class-order.php';
+    require_once $core_dir . 'class-order-wc.php';
+    require_once $core_dir . 'class-order-omniva.php';
     require_once $core_dir . 'class-frontend.php';
   }
 
@@ -332,7 +335,7 @@ class OmnivaLt_Core
       ),
       'meta_keys' => array(
         'method' => '_omnivalt_method',
-        'barcode' => '_omnivalt_barcode',
+        'barcodes' => '_omnivalt_barcode',
         'error' => '_omnivalt_error',
         'manifest_date' => '_omnivalt_manifest_date',
         'terminal_id' => '_omnivalt_terminal_id',
@@ -343,6 +346,7 @@ class OmnivaLt_Core
 
   private static function load_init_hooks()
   {
+    add_action('before_woocommerce_init', 'OmnivaLt_Compatibility::declare_wc_hpos_compatibility');
     add_action('woocommerce_shipping_init', 'OmnivaLt_Core::init_shipping_method');
     add_action('init', 'OmnivaLt_Core::textdomain');
     add_action('admin_notices', 'OmnivaLt_Core::admin_notices');

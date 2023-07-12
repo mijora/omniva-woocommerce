@@ -18,9 +18,9 @@ class OmnivaLt_Api
     $this->api_url = $this->clean(preg_replace('{/$}', '', $this->omnivalt_settings['api_url'])) . '/epmx/services/messagesService.wsdl';
   }
 
-  public function get_tracking_number($id_order)
+  public function get_tracking_number( $id_order )
   {
-    $order = OmnivaLt_Order::get_wc_order_data($id_order);
+    $order = OmnivaLt_Order_WC::get_data($id_order);
     if ( ! $order ) {
       return array('msg' => __('Failed to get WooCommerce order data', 'omnivalt'));
     }
@@ -154,7 +154,7 @@ class OmnivaLt_Api
     return $this->api_request($xmlRequest);
   }
 
-  public function get_shipment_labels($barcodes)
+  public function get_shipment_labels( $barcodes )
   {
     $errors = array();
     $barcodeXML = '';
@@ -233,7 +233,7 @@ class OmnivaLt_Api
     );
   }
 
-  public function call_courier($parcels_number = 0)
+  public function call_courier( $parcels_number = 0 )
   {
     $is_cod = false;
     $parcel_terminal = "";
@@ -316,7 +316,7 @@ class OmnivaLt_Api
       </soapenv:Envelope>';
   }
 
-  private function get_shipping_service($shipping_params, $pickup_method, $send_method)
+  private function get_shipping_service( $shipping_params, $pickup_method, $send_method )
   {
     $method = $pickup_method . ' ' . $send_method;
     $matches = $shipping_params['services'];
@@ -324,7 +324,7 @@ class OmnivaLt_Api
     return ( isset($matches[$method]) ) ? $matches[$method] : '';
   }
 
-  private function get_required_field($type, $value, $current_text = false) {
+  private function get_required_field( $type, $value, $current_text = false ) {
     $add_text = '';
     $value = trim($value);
     
@@ -347,7 +347,7 @@ class OmnivaLt_Api
     return $current_text;
   }
 
-  private function cod($order_id, $cod = 0, $amount = 0)
+  private function cod( $order_id, $cod = 0, $amount = 0 )
   {
     $company = $this->omnivalt_settings['company'];
     $bank_account = $this->omnivalt_settings['bank_account'];
@@ -363,7 +363,7 @@ class OmnivaLt_Api
     return '';
   }
 
-  private function get_shop_data($object = true)
+  private function get_shop_data( $object = true )
   {
     $data = array(
       'name' => $this->clean($this->omnivalt_settings['shop_name']),
@@ -386,7 +386,7 @@ class OmnivaLt_Api
     return ($object) ? (object) $data : $data;
   }
 
-  private function get_client_data($order, $object = true)
+  private function get_client_data( $order, $object = true )
   {
     $data = array(
       'name' => $this->clean($order->shipping->name),
@@ -452,7 +452,7 @@ class OmnivaLt_Api
     );
   }
 
-  private function api_request($request)
+  private function api_request( $request )
   {
     OmnivaLt_Debug::debug_request($request);
     $barcodes = array();
@@ -531,7 +531,7 @@ class OmnivaLt_Api
     }
   }
 
-  protected static function getReferenceNumber($order_number)
+  protected static function getReferenceNumber( $order_number )
   {
     $order_number = (string) $order_number;
     $kaal = array(7, 3, 1);
@@ -545,7 +545,7 @@ class OmnivaLt_Api
     return $order_number . $kontrollnr;
   }
 
-  private function makeReadableXmlResponse($xmlResponse)
+  private function makeReadableXmlResponse( $xmlResponse )
   {
     $xmlResponse = str_ireplace(['SOAP-ENV:', 'SOAP:', 'ns3:'], '', $xmlResponse);
     $xml = simplexml_load_string($xmlResponse);
@@ -557,7 +557,7 @@ class OmnivaLt_Api
     return $xml;
   }
 
-  private function get_xml_error_from_response($response)
+  private function get_xml_error_from_response( $response )
   {
     if ( strpos($response, 'HTTP Status 401') !== false
       && strpos($response, 'This request requires HTTP authentication.') !== false ) {
@@ -567,7 +567,7 @@ class OmnivaLt_Api
     return __('Response is in the wrong format', 'omnivalt');
   }
 
-  private function clean($string) {
+  private function clean( $string ) {
     return str_replace('"',"'",$string);
   }
 }
