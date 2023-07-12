@@ -118,7 +118,7 @@ class OmnivaLt_Order_WC
         }
 
         $data['units'] = OmnivaLt_Helper::get_units();
-culog((object) $data, 'Omniva_order_data');
+
         return (object) $data;
     }
 
