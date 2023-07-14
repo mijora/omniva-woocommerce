@@ -73,7 +73,7 @@ class OmnivaLt_Terminals
     }
 
     $nonce = wp_create_nonce("omniva_terminals_json_nonce");
-    $omniva_settings = get_option(OmnivaLt_Core::get_configs('settings_key'));
+    $omniva_settings = get_option(OmnivaLt_Core::get_configs('plugin')['settings_key']);
     $parcel_terminals = '<option value = "">' . $list_options['txt_select'] . '</option>' . $parcel_terminals;
     $set_autoselect = (isset($omniva_settings['auto_select'])) ? $omniva_settings['auto_select'] : 'yes';
     

@@ -29,7 +29,7 @@ class OmnivaLt_Emails
 		$template = 'customer-created_label.php';
 
 		return wc_get_template_html( $template, array_merge(array(
-			'order'         => OmnivaLt_Order_WC::get_order($order_id),
+			'order'         => OmnivaLt_Wc_Order::get_order($order_id),
 			'email_heading' => $heading,
 			'sent_to_admin' => false,
 			'plain_text'    => false,

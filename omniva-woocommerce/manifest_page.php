@@ -144,7 +144,7 @@ do_action('omniva_admin_manifest_head');
               <?php $date_tracker = false; ?>
               <?php foreach ( $orders_data['orders'] as $order ) : ?>
                 <?php
-                $order_data = OmnivaLt_Order_WC::get_data($order->get_id());
+                $order_data = OmnivaLt_Wc_Order::get_data($order->get_id());
                 $barcodes = $order_data->omniva->barcodes;
                 $manifest_date = $order_data->omniva->manifest_date;
                 $date = date('Y-m-d H:i', strtotime($manifest_date));

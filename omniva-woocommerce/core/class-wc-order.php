@@ -1,5 +1,5 @@
 <?php
-class OmnivaLt_Order_WC
+class OmnivaLt_Wc_Order
 {
     public static function get_order( $wc_order_id )
     {
@@ -35,7 +35,7 @@ class OmnivaLt_Order_WC
         }
 
         if ( empty($get_sections) || in_array('shipment', $get_sections) || in_array('omniva', $get_sections) ) {
-            $order_shipping_method = OmnivaLt_Order_Omniva::get_method($wc_order);
+            $order_shipping_method = OmnivaLt_Omniva_Order::get_method($wc_order);
         }
 
         $data = array(
@@ -104,10 +104,10 @@ class OmnivaLt_Order_WC
 
         if ( empty($get_sections) || in_array('omniva', $get_sections) ) {
             $data['omniva'] = (object) array(
-                'method' => OmnivaLt_Order_Omniva::get_method_key_from_id($order_shipping_method),
+                'method' => OmnivaLt_Omniva_Order::get_method_key_from_id($order_shipping_method),
                 'terminal_id' => $wc_order->get_meta($meta_keys['terminal_id'], true),
                 //'barcodes' => $wc_order->get_meta($meta_keys['barcodes'], true), //Faster way
-                'barcodes' => OmnivaLt_Order_Omniva::get_barcodes($wc_order->get_id()), //Compatibility with old
+                'barcodes' => OmnivaLt_Omniva_Order::get_barcodes($wc_order->get_id()), //Compatibility with old
                 'manifest_date' => $wc_order->get_meta($meta_keys['manifest_date'], true),
                 'error' => $wc_order->get_meta($meta_keys['error'], true),
             );

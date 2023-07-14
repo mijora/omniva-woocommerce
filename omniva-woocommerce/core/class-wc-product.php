@@ -1,5 +1,5 @@
 <?php
-class OmnivaLt_Product_WC
+class OmnivaLt_Wc_Product
 {
     public static function get_product( $wc_product_id )
     {

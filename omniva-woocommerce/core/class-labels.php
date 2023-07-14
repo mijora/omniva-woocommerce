@@ -41,7 +41,7 @@ class OmnivaLt_Labels
       $orderIds = array($orderIds);
 
     foreach ( array_unique($orderIds) as $orderId ) {
-      $order = OmnivaLt_Order_WC::get_data($orderId, array('shipment', 'shipping', 'billing'));
+      $order = OmnivaLt_Wc_Order::get_data($orderId, array('shipment', 'shipping', 'billing'));
       if ( ! $order ) {
         continue;
       }
@@ -53,10 +53,10 @@ class OmnivaLt_Labels
       }
       
       if ( $regenerate ) {
-        OmnivaLt_Order_Omniva::set_barcodes($order->id, '');
+        OmnivaLt_Omniva_Order::set_barcodes($order->id, '');
       }
 
-      $barcodes = OmnivaLt_Order_Omniva::get_barcodes($order->id);
+      $barcodes = OmnivaLt_Omniva_Order::get_barcodes($order->id);
 
       $label_file_path = OMNIVALT_DIR . 'var/pdf/' . OmnivaLt_Helper::clear_file_name($order->number) . '.pdf';
       $label_file_content = false;
@@ -74,8 +74,8 @@ class OmnivaLt_Labels
 
         if ( isset($status['status']) && $status['status'] === true ) {
           $barcodes = $status['barcodes'];
-          OmnivaLt_Order_Omniva::set_barcodes($order->id, $barcodes);
-          OmnivaLt_Order_WC::add_note($order->id, '<b>Omniva:</b> ' . __('Registered labels', 'omnivalt') . ":\n" . implode(', ', $barcodes));
+          OmnivaLt_Omniva_Order::set_barcodes($order->id, $barcodes);
+          OmnivaLt_Wc_Order::add_note($order->id, '<b>Omniva:</b> ' . __('Registered labels', 'omnivalt') . ":\n" . implode(', ', $barcodes));
 
           $send_email = (isset($this->omnivalt_settings['email_created_label'])) ? $this->omnivalt_settings['email_created_label'] : 'yes';
           if ($send_email === 'yes') {
@@ -88,7 +88,7 @@ class OmnivaLt_Labels
             $this->omnivalt_emails->send_label($order, $order->billing->email, $email_params);
           }
         } else {
-          OmnivaLt_Order_Omniva::set_error($order->id, $status['msg']);
+          OmnivaLt_Omniva_Order::set_error($order->id, $status['msg']);
           OmnivaLt_Helper::add_msg($order->number . ' - ' . $status['msg'], 'error');
           continue;
         }
@@ -96,7 +96,7 @@ class OmnivaLt_Labels
 
       $label_status = $this->omnivalt_api->get_shipment_labels($barcodes);
       if ( ! $label_status['status'] ) {
-        OmnivaLt_Order_Omniva::set_error($order->id, $label_status['msg']);
+        OmnivaLt_Omniva_Order::set_error($order->id, $label_status['msg']);
         OmnivaLt_Helper::add_msg($order->number . ' - ' . $label_status['msg'], 'error');
         continue;
       }
@@ -119,7 +119,7 @@ class OmnivaLt_Labels
         continue;
       }
   
-      OmnivaLt_Order_Omniva::set_error($order->id, '');
+      OmnivaLt_Omniva_Order::set_error($order->id, '');
       
       $pagecount = $pdf->setSourceFile($label_file_path);
       for ( $i = 1; $i <= $pagecount; $i++ ) {
@@ -152,9 +152,10 @@ class OmnivaLt_Labels
       wp_safe_redirect(wp_get_referer());
       exit;
     }
-    
-    if ( $download )
+
+    if ( $download ) {
       $pdf->Output('Omnivalt_labels.pdf', 'D');
+    }
   }
 
   public function print_manifest( $orders_ids )
@@ -177,7 +178,7 @@ class OmnivaLt_Labels
     $count = 0;
     if ( is_array($orders_ids) ) {
       foreach ( $orders_ids as $order_id ) {
-        $order = OmnivaLt_Order_WC::get_data($order_id);
+        $order = OmnivaLt_Wc_Order::get_data($order_id);
 
         if ( ! OmnivaLt_Helper::is_omniva_method($order->shipment->method) ) {
           OmnivaLt_Helper::add_msg($order->id . ' - ' . __('Shipping method is not Omniva', 'omnivalt'), 'error');
@@ -193,23 +194,23 @@ class OmnivaLt_Labels
 
           if ( isset($status['status']) && $status['status'] === true && ! empty($status['barcodes']) ) {
             $tracking_numbers = $status['barcodes'];
-            OmnivaLt_Order_Omniva::set_barcodes($order->id, $tracking_numbers);
-            OmnivaLt_Order_WC::add_note($order->id, '<b>Omniva:</b> ' .__('Registered labels', 'omnivalt') . ":\n" . implode(', ', $tracking_numbers));
+            OmnivaLt_Omniva_Order::set_barcodes($order->id, $tracking_numbers);
+            OmnivaLt_Wc_Order::add_note($order->id, '<b>Omniva:</b> ' .__('Registered labels', 'omnivalt') . ":\n" . implode(', ', $tracking_numbers));
 
             $label_status = $this->omnivalt_api->get_shipment_labels($status['barcodes']);
               
             if ( ! $label_status['status'] ) {
-              OmnivaLt_Order_Omniva::set_error($order->id, $label_status['msg']);
+              OmnivaLt_Omniva_Order::set_error($order->id, $label_status['msg']);
               OmnivaLt_Helper::add_msg($order->number . ' - ' . $label_status['msg'], 'error');
               continue;
             }
           } else {
-            OmnivaLt_Order_Omniva::set_error($order->id, $status['msg']);
+            OmnivaLt_Omniva_Order::set_error($order->id, $status['msg']);
             OmnivaLt_Helper::add_msg($order->number . ' - ' . $status['msg'], 'error');
             continue;
           }
 
-          $order = OmnivaLt_Order_WC::get_data($order->id);
+          $order = OmnivaLt_Wc_Order::get_data($order->id);
         }
           
         $client_name = OmnivaLt_Order::get_customer_fullname_or_company($order);
@@ -264,7 +265,7 @@ class OmnivaLt_Labels
       exit;
     }
 
-    OmnivaLt_Order_Omniva::set_manifest_date($order->id, current_time('Y-m-d H:i:s'));
+    OmnivaLt_Omniva_Order::set_manifest_date($order->id, current_time('Y-m-d H:i:s'));
 
     $pdf->SetFont('freeserif', '', 9);
     $pdf->writeHTML($tbl, true, false, false, false, '');

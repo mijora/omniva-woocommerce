@@ -3,13 +3,9 @@ class OmnivaLt_Order
 {
   public static function load_admin_scripts( $hook )
   {
-    global $post;
-
-    if ( $hook == 'post-new.php' || $hook == 'post.php' ) {
-      if ( $post->post_type === 'shop_order' ) {
-        wp_enqueue_style('omnivalt_admin_order', plugins_url('/assets/css/omniva_admin_order.css', OmnivaLt_Core::$main_file_path, array(), OMNIVALT_VERSION));
-        wp_enqueue_script('omnivalt_admin_order', plugins_url( '/assets/js/omniva_admin_order.js', OmnivaLt_Core::$main_file_path ), array('jquery'), OMNIVALT_VERSION );
-      }
+    if ( self::is_admin_order_edit_page() ) {
+      wp_enqueue_style('omnivalt_admin_order', plugins_url('/assets/css/omniva_admin_order.css', OmnivaLt_Core::$main_file_path, array(), OMNIVALT_VERSION));
+      wp_enqueue_script('omnivalt_admin_order', plugins_url( '/assets/js/omniva_admin_order.js', OmnivaLt_Core::$main_file_path ), array('jquery'), OMNIVALT_VERSION );
     }
   }
 
@@ -59,7 +55,7 @@ class OmnivaLt_Order
       $selected_shipping_method = array($selected_shipping_method);
     }
 
-    $method_key = OmnivaLt_Order_Omniva::get_method_key_from_id($method->id);
+    $method_key = OmnivaLt_Omniva_Order::get_method_key_from_id($method->id);
     $terminals_type = OmnivaLt_Configs::get_method_terminals_type($method_key);
     if ( $terminals_type && in_array($method->id, $selected_shipping_method) ) {
       echo OmnivaLt_Terminals::get_terminals_options($termnal_id, $country, $terminals_type);
@@ -73,7 +69,7 @@ class OmnivaLt_Order
   {
     global $woocommerce;
     $configs = OmnivaLt_Core::get_configs();
-    $settings = get_option($configs['settings_key']);
+    $settings = get_option($configs['plugin']['settings_key']);
     $cart_categories_ids = array();
 
     foreach( $woocommerce->cart->get_cart() as $cart_item ) {
@@ -115,7 +111,7 @@ class OmnivaLt_Order
   {
     global $woocommerce;
     $configs = OmnivaLt_Core::get_configs();
-    $settings = get_option($configs['settings_key']);
+    $settings = get_option($configs['plugin']['settings_key']);
     $cart_classes_ids = array();
 
     foreach( $woocommerce->cart->get_cart() as $cart_item ) {
@@ -156,12 +152,12 @@ class OmnivaLt_Order
     
     if ( isset($_POST['omnivalt_terminal']) ) {
       $terminal_id = wc_clean($_POST['omnivalt_terminal']);
-      OmnivaLt_Order_Omniva::set_terminal_id($order_id, $terminal_id);
-      OmnivaLt_Order_WC::add_note($order_id, '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+      OmnivaLt_Omniva_Order::set_terminal_id($order_id, $terminal_id);
+      OmnivaLt_Wc_Order::add_note($order_id, '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
     }
 
     if ( isset($_POST['shipping_method']) ) {
-      OmnivaLt_Order_Omniva::set_method($order_id, $_POST['shipping_method']);
+      OmnivaLt_Omniva_Order::set_method($order_id, $_POST['shipping_method']);
     }
   }
 
@@ -198,19 +194,19 @@ class OmnivaLt_Order
   public static function check_terminal_id_in_order( $wc_order )
   {
     try {
-      $check_terminal_id = OmnivaLt_Order_Omniva::get_terminal_id($wc_order->get_id());
+      $check_terminal_id = OmnivaLt_Omniva_Order::get_terminal_id($wc_order->get_id());
 
       if ( ! empty($_POST['shipping_method']) ) {
-        $success = OmnivaLt_Order_Omniva::set_method($wc_order->get_id(), $_POST['shipping_method']);
-        if ( $success && ! OmnivaLt_Order_Omniva::get_method($wc_order->get_id()) ) {
+        $success = OmnivaLt_Omniva_Order::set_method($wc_order->get_id(), $_POST['shipping_method']);
+        if ( $success && ! OmnivaLt_Omniva_Order::get_method($wc_order->get_id()) ) {
           OmnivaLt_Debug::log_error('Failed to save Omniva shipping method. ' . print_r($_POST,true));
         }
       }
 
       if ( ! empty($_POST['omnivalt_terminal']) && empty($check_terminal_id) ) {
         $terminal_id = wc_clean($_POST['omnivalt_terminal']);
-        OmnivaLt_Order_Omniva::set_terminal_id($wc_order->get_id(), $_POST['omnivalt_terminal']);
-        OmnivaLt_Order_WC::add_note($wc_order->get_id(), '<b>Omniva:</b> ' . __('Parcel terminal save repeated', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+        OmnivaLt_Omniva_Order::set_terminal_id($wc_order->get_id(), $_POST['omnivalt_terminal']);
+        OmnivaLt_Wc_Order::add_note($wc_order->get_id(), '<b>Omniva:</b> ' . __('Parcel terminal save repeated', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
       }
     } catch(\Exception $e) {
       OmnivaLt_Debug::log_error('Got error when trying add Omniva data to the Order: ' . $e->getMessage());
@@ -219,7 +215,7 @@ class OmnivaLt_Order
 
   public static function show_selected_terminal( $wc_order )
   {
-    $order = OmnivaLt_Order_WC::get_data($wc_order->get_id(), array('omniva'));
+    $order = OmnivaLt_Wc_Order::get_data($wc_order->get_id(), array('omniva'));
     $method_key = $order->omniva->method;
 
     if ( OmnivaLt_Configs::get_method_terminals_type($method_key) ) {
@@ -235,7 +231,7 @@ class OmnivaLt_Order
 
   public static function show_tracking_link( $wc_order )
   {
-    $order = OmnivaLt_Order_WC::get_data($wc_order->get_id(), array('omniva', 'shipping', 'billing'));
+    $order = OmnivaLt_Wc_Order::get_data($wc_order->get_id(), array('omniva', 'shipping', 'billing'));
 
     if ( ! empty($order->omniva->method) ) {
       $omnivalt_labels = new OmnivaLt_Labels();
@@ -249,7 +245,7 @@ class OmnivaLt_Order
   public static function admin_order_add_custom_meta_data( $data, $wc_order )
   {
     $configs = OmnivaLt_Core::get_configs();
-    $order = OmnivaLt_Order_WC::get_data($wc_order->get_id(), array('omniva'));
+    $order = OmnivaLt_Wc_Order::get_data($wc_order->get_id(), array('omniva'));
 
     foreach ( $configs['method_params'] as $method_key => $method_values ) {
       if ( ! $method_values['is_shipping_method'] ) continue;
@@ -274,7 +270,7 @@ class OmnivaLt_Order
   }
 
   public static function display_order_data_in_admin()
-  {  
+  {
     echo '<# if ( data.omnivalt_barcode ) { #>' .
       '<p><div class="wc-order-preview-addresses">' .
       '<div class="wc-order-preview-address">' .
@@ -283,25 +279,42 @@ class OmnivaLt_Order
       '<# } #>';
   }
 
-  public static function bulk_actions( $actions )
+  public static function bulk_actions( $bulk_actions )
   {
-    $actions['omnivalt_labels'] = __('Print Omniva labels', 'omnivalt');
-    $actions['omnivalt_manifest'] = __('Print Omniva manifest', 'omnivalt');
-    return $actions;
+    global $wp_version;
+
+    $plugin_info = OmnivaLt_Core::get_configs('plugin');
+    $grouped = (version_compare($wp_version, '5.6.0', '>=')) ? true : false; 
+    $actions = array(
+      'labels' => __('Print labels', 'omnivalt'),
+      'manifest' => __('Print manifest', 'omnivalt'),
+    );
+
+    foreach ( $actions as $action_key => $action_title ) {
+      if ( $grouped ) {
+        $bulk_actions[$plugin_info['title']][$plugin_info['id'] . '_' . $action_key] = $action_title;
+      } else {
+        $bulk_actions[$plugin_info['id'] . '_' . $action_key] = $plugin_info['title'] . ': ' . $action_title;
+      }
+    }
+
+    return $bulk_actions;
   }
 
   public static function handle_bulk_actions( $redirect_to, $action, $ids )
   {
-    if ( $action == "omnivalt_labels" ) {
+    $plugin_info = OmnivaLt_Core::get_configs('plugin');
+
+    if ( $action == $plugin_info['id'] . '_labels' ) {
       $omnivalt_labels = new OmnivaLt_Labels();
       $omnivalt_labels->print_labels($ids);
-      return 0;
+      die();
     }
 
-    if ( $action == "omnivalt_manifest" ) {
+    if ( $action == $plugin_info['id'] . '_manifest' ) {
       $omnivalt_labels = new OmnivaLt_Labels();
       $omnivalt_labels->print_manifest($ids);
-      return 0;
+      die();
     }
 
     return $redirect_to;
@@ -359,7 +372,7 @@ class OmnivaLt_Order
   {
     global $woocommerce;
     $weight = $woocommerce->cart->cart_contents_weight;
-    OmnivaLt_Order_WC::update_meta($wc_order_id, '_cart_weight', $weight);
+    OmnivaLt_Wc_Order::update_meta($wc_order_id, '_cart_weight', $weight);
   }
 
   public static function print_tracking_url_action( $barcode, $country_code = 'LT' )
@@ -368,13 +381,28 @@ class OmnivaLt_Order
     echo $omnivalt_labels->get_tracking_link($country_code, $barcode);
   }
 
+  public static function is_admin_order_edit_page()
+  {
+    if ( ! is_admin() ) {
+      return false;
+    }
+
+    $available_screens = OmnivaLt_Wc::get_page_recognition_ids('admin_order_edit');
+    $screen_id = OmnivaLt_Wc::get_current_screen_id();
+
+    return (in_array($screen_id, $available_screens));
+  }
+
   /**
    * Display and edit Omniva info on the order edit page
    */
   public static function admin_order_display( $wc_order_id, $print_barcode = true, $admin_panel = true )
   {
+    if ( is_object($wc_order_id) ) {
+      $wc_order_id = $wc_order_id->get_id();
+    }
     $configs = OmnivaLt_Core::get_configs();
-    $order = OmnivaLt_Order_WC::get_data($wc_order_id);
+    $order = OmnivaLt_Wc_Order::get_data($wc_order_id);
     $send_method = $order->omniva->method;
     $omnivalt_labels = new OmnivaLt_Labels();
 
@@ -391,13 +419,7 @@ class OmnivaLt_Order
     }
     if ( ! $is_omniva ) return;
 
-    global $post_type;
-    $only_in_order = true;
-    if ( 'shop_order' != $post_type ) {
-      $only_in_order = false;
-    }
-
-    if ( $only_in_order ) {
+    if ( self::is_admin_order_edit_page($order->id) ) {
       echo '<br class="clear"/>';
       echo '<hr style="margin-top:20px;">';
       echo '<h4>' . __('Omniva shipping', 'omnivalt') . '</h4>';
@@ -416,7 +438,7 @@ class OmnivaLt_Order
       echo '<p><strong class="title">' . $ship_values['title'] . ':</strong> ' . $field_value . '</p>';
     }
 
-    if ( $only_in_order ) {
+    if ( self::is_admin_order_edit_page($order->id) ) {
       echo self::build_shipment_size_text($order->shipment->size);
     }
 
@@ -439,7 +461,7 @@ class OmnivaLt_Order
     }
     echo '</div>';
     
-    if ( ! $only_in_order ) {
+    if ( ! self::is_admin_order_edit_page($order->id) ) {
       return;
     }
 
@@ -600,10 +622,9 @@ class OmnivaLt_Order
     echo '</div>';
   }
 
-  public static function admin_order_save( $post_id )
+  public static function admin_order_save( $post_id ) //Save for Woocommerce 7 or older
   {
-    global $post_type;
-    if ( 'shop_order' != $post_type ) {
+    if ( ! self::is_admin_order_edit_page($post_id) ) {
       return $post_id;
     }
 
@@ -611,24 +632,63 @@ class OmnivaLt_Order
 
     if ( isset($_POST['omnivalt_terminal_id']) ) {
       $terminal_id = wc_clean($_POST['omnivalt_terminal_id']);
-      OmnivaLt_Order_Omniva::set_terminal_id($post_id, $terminal_id);
-      OmnivaLt_Order_WC::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+      OmnivaLt_Omniva_Order::set_terminal_id($post_id, $terminal_id);
+      OmnivaLt_Wc_Order::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
     }
 
     if ( isset($_POST['omnivalt_dimmensions']) ) {
-      OmnivaLt_Order_Omniva::set_dimmensions($post_id, wc_clean(json_encode($_POST['omnivalt_dimmensions'])));
+      OmnivaLt_Omniva_Order::set_dimmensions($post_id, wc_clean(json_encode($_POST['omnivalt_dimmensions'])));
     }
 
     foreach ( $configs['additional_services'] as $service_key => $service_values ) {
       if ( isset($_POST['omnivalt_' . $service_key]) ) {
-        OmnivaLt_Order_WC::update_meta($post_id, '_omnivalt_' . $service_key, wc_clean($_POST['omnivalt_' . $service_key]));
+        OmnivaLt_Wc_Order::update_meta($post_id, '_omnivalt_' . $service_key, wc_clean($_POST['omnivalt_' . $service_key]));
       }
     }
 
     if ( isset($_POST['omnivalt_add_manual']) ) {
       $method = array('omnivalt_' . $_POST['omnivalt_add_manual']);
-      OmnivaLt_Order_Omniva::set_method($post_id, $method);
+      OmnivaLt_Omniva_Order::set_method($post_id, $method);
     }
+
+    return $post_id;
+  }
+
+  public static function admin_order_save_hpos( $post_id ) //Save for Woocommerce 8 or newer
+  {
+    if ( ! self::is_admin_order_edit_page($post_id) ) {
+      return $post_id;
+    }
+
+    remove_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Temporary fix to avoid infinity loop
+
+    $configs = OmnivaLt_Core::get_configs();
+
+    if ( isset($_POST['omnivalt_terminal_id']) ) {
+      $terminal_id = wc_clean($_POST['omnivalt_terminal_id']);
+      $old_terminal_id = OmnivaLt_Omniva_Order::get_terminal_id($post_id);
+      if ( $terminal_id != $old_terminal_id ) {
+        OmnivaLt_Omniva_Order::set_terminal_id($post_id, $terminal_id);
+        OmnivaLt_Wc_Order::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+      }
+    }
+
+    if ( isset($_POST['omnivalt_dimmensions']) ) {
+      OmnivaLt_Omniva_Order::set_dimmensions($post_id, wc_clean(json_encode($_POST['omnivalt_dimmensions'])));
+    }
+
+    foreach ( $configs['additional_services'] as $service_key => $service_values ) {
+      if ( isset($_POST['omnivalt_' . $service_key]) ) {
+        OmnivaLt_Wc_Order::update_meta($post_id, '_omnivalt_' . $service_key, wc_clean($_POST['omnivalt_' . $service_key]));
+      }
+    }
+
+    if ( isset($_POST['omnivalt_add_manual']) ) {
+      $method = array('omnivalt_' . $_POST['omnivalt_add_manual']);
+      OmnivaLt_Omniva_Order::set_method($post_id, $method);
+    }
+
+    add_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Restore hook
 
     return $post_id;
   }

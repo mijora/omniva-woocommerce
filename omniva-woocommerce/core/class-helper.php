@@ -47,7 +47,7 @@ class OmnivaLt_Helper
   public static function check_service_email_on_arrive()
   {
     $configs = OmnivaLt_Core::get_configs();
-    $settings = get_option($configs['settings_key']);
+    $settings = get_option($configs['plugin']['settings_key']);
 
     if ( isset($settings['send_email_on_arrive']) && $settings['send_email_on_arrive'] === 'yes' ) {
       return true;

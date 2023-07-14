@@ -14,13 +14,13 @@ class OmnivaLt_Api
   public function __construct()
   {
     $this->omnivalt_configs = OmnivaLt_Core::get_configs();
-    $this->omnivalt_settings = get_option($this->omnivalt_configs['settings_key']);
+    $this->omnivalt_settings = get_option($this->omnivalt_configs['plugin']['settings_key']);
     $this->api_url = $this->clean(preg_replace('{/$}', '', $this->omnivalt_settings['api_url'])) . '/epmx/services/messagesService.wsdl';
   }
 
   public function get_tracking_number( $id_order )
   {
-    $order = OmnivaLt_Order_WC::get_data($id_order);
+    $order = OmnivaLt_Wc_Order::get_data($id_order);
     if ( ! $order ) {
       return array('msg' => __('Failed to get WooCommerce order data', 'omnivalt'));
     }

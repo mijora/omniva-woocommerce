@@ -111,7 +111,7 @@ class OmnivaLt_Product
         $value = isset($_POST['_omnivalt_' . $service_key]) ? absint($_POST['_omnivalt_' . $service_key]) : '';
       }
 
-      OmnivaLt_Product_WC::update_meta($post_id, '_omnivalt_' . $service_key, $value);
+      OmnivaLt_Wc_Product::update_meta($post_id, '_omnivalt_' . $service_key, $value);
     }
   }
 

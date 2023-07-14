@@ -6,7 +6,7 @@ class OmnivaLt_Debug
 
     public static function check_debug_enabled()
     {
-        $settings = get_option(OmnivaLt_Core::get_configs('settings_key'));
+        $settings = get_option(OmnivaLt_Core::get_configs('plugin')['settings_key']);
         if ( isset($settings['debug_mode']) && $settings['debug_mode'] === 'yes' ) {
             return true;
         }

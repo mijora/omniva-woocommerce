@@ -301,6 +301,9 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-debug.php';
     require_once $core_dir . 'class-configs.php';
     require_once $core_dir . 'class-helper.php';
+    require_once $core_dir . 'class-wc.php';
+    require_once $core_dir . 'class-wc-order.php';
+    require_once $core_dir . 'class-wc-product.php';
     require_once $core_dir . 'class-calc-size.php';
     require_once $core_dir . 'class-compatibility.php';
     require_once $core_dir . 'class-emails.php';
@@ -309,20 +312,22 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-admin-html.php';
     require_once $core_dir . 'class-packer.php';
     require_once $core_dir . 'class-product.php';
-    require_once $core_dir . 'class-product-wc.php';
     require_once $core_dir . 'class-cronjob.php';
     require_once $core_dir . 'class-terminals.php';
     require_once $core_dir . 'class-manifest.php';
     require_once $core_dir . 'class-order.php';
-    require_once $core_dir . 'class-order-wc.php';
-    require_once $core_dir . 'class-order-omniva.php';
+    require_once $core_dir . 'class-omniva-order.php';
     require_once $core_dir . 'class-frontend.php';
   }
 
   private static function default_configs()
   {
     return array(
-      'settings_key' => 'woocommerce_omnivalt_settings',
+      'plugin' => array(
+        'id' => 'omnivalt',
+        'title' => 'Omniva',
+        'settings_key' => 'woocommerce_omnivalt_settings',
+      ),
       'shipping_sets' => array(),
       'shipping_params' => array(),
       'method_params' => array(),
@@ -383,6 +388,7 @@ class OmnivaLt_Core
     add_action('print_omniva_tracking_url', 'OmnivaLt_Order::print_tracking_url_action', 10, 2);
     add_action('woocommerce_admin_order_data_after_shipping_address', 'OmnivaLt_Order::admin_order_display', 10, 2);
     add_action('save_post', 'OmnivaLt_Order::admin_order_save');
+    add_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos');
     add_action('woocommerce_checkout_process', 'OmnivaLt_Order::checkout_validate_terminal');
 
     add_filter('script_loader_tag', 'OmnivaLt_Core::add_asyncdefer_by_handle', 10, 2);
@@ -394,6 +400,8 @@ class OmnivaLt_Core
     add_filter('woocommerce_admin_order_preview_get_order_details', 'OmnivaLt_Order::admin_order_add_custom_meta_data', 10, 2);
     add_filter('bulk_actions-edit-shop_order', 'OmnivaLt_Order::bulk_actions', 20);
     add_filter('handle_bulk_actions-edit-shop_order', 'OmnivaLt_Order::handle_bulk_actions', 20, 3);
+    add_filter('bulk_actions-woocommerce_page_wc-orders', 'OmnivaLt_Order::bulk_actions', 20); //HPOS
+    add_filter('handle_bulk_actions-woocommerce_page_wc-orders', 'OmnivaLt_Order::handle_bulk_actions', 20, 3); //HPOS
     add_filter('admin_post_omnivalt_labels', 'OmnivaLt_Order::post_label_actions', 20, 3);
     add_filter('admin_post_omnivalt_manifest', 'OmnivaLt_Order::post_manifest_actions', 20, 3);
     //add_filter('woocommerce_admin_order_actions_end', 'OmnivaLt_Order::order_actions', 10, 1);
