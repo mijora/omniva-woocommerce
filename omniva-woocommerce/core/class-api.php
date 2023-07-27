@@ -9,38 +9,55 @@ class OmnivaLt_Api
 {
   private $omnivalt_settings;
   private $omnivalt_configs;
+  private $api_url;
 
   public function __construct()
   {
     $this->omnivalt_configs = OmnivaLt_Core::get_configs();
-    $this->omnivalt_settings = get_option($this->omnivalt_configs['settings_key']);
+    $this->omnivalt_settings = get_option($this->omnivalt_configs['plugin']['settings_key']);
+    $this->api_url = $this->clean(preg_replace('{/$}', '', $this->omnivalt_settings['api_url'])) . '/epmx/services/messagesService.wsdl';
   }
 
-  public function get_tracking_number($id_order)
+  public function get_tracking_number( $id_order )
   {
-    $order = get_post($id_order);
-    $terminal_id = get_post_meta($id_order, $this->omnivalt_configs['meta_keys']['terminal_id'], true);
-    $wc_order = wc_get_order((int) $id_order);
-    $client = $this->get_client_data($wc_order);
+    $order = OmnivaLt_Wc_Order::get_data($id_order);
+    if ( ! $order ) {
+      return array('msg' => __('Failed to get WooCommerce order data', 'omnivalt'));
+    }
+
+    $client = $this->get_client_data($order);
     $shop = $this->get_shop_data();
   
-    $shipment_size = $this->prepare_shipment_size($wc_order);
-    
+    $shipment_size = $order->shipment->size;
+    foreach ( $shipment_size as $size_key => $size_value ) {
+      if ( $size_key == 'weight' ) {
+        $shipment_size[$size_key] = OmnivaLt_Helper::convert_unit($size_value, 'kg', $order->units->weight, 'weight');
+        if ( empty($shipment_size[$size_key]) ) { // Value cant be zero
+          $shipment_size[$size_key] = 1;
+        }
+      } else {
+        $shipment_size[$size_key] = OmnivaLt_Helper::convert_unit($size_value, 'm', $order->units->dimension, 'dimension');
+        if ( empty($shipment_size[$size_key]) ) { // Value cant be zero
+          $shipment_size[$size_key] = 0.1;
+        }
+      }
+    }
+   
     if ( ! isset($this->omnivalt_configs['shipping_params'][$client->country]) ) {
       return array('msg' => __('Shipping parameters for customer country not found', 'omnivalt'));
     }
     $shipping_params = $this->omnivalt_configs['shipping_params'][$client->country];
 
-    $send_method = $this->get_send_method($wc_order);
+    $send_method = $order->omniva->method;
     $pickup_method = $this->omnivalt_settings['send_off'];
-    $is_cod = OmnivaLt_Helper::check_service_cod($id_order);
+    $is_cod = OmnivaLt_Helper::is_cod_payment($order->payment->method);
 
     $service = OmnivaLt_Helper::get_shipping_service_code($shop->country, $client->country, $pickup_method . ' ' . $send_method);
     if ( isset($service['status']) && $service['status'] === 'error' ) {
       return array('msg' => $service['msg']);
     }
 
-    $other_services = OmnivaLt_Helper::get_order_services($wc_order);
+    $other_services = OmnivaLt_Helper::get_order_services($order);
     $additional_services = '';
 
     $client_fullname = $client->name . ' ' . $client->surname;
@@ -88,7 +105,7 @@ class OmnivaLt_Api
 
     $parcel_terminal = "";
     if ( OmnivaLt_Configs::get_method_terminals_type($send_method) ) {
-      $parcel_terminal = 'offloadPostcode="' . $terminal_id . '" ';
+      $parcel_terminal = 'offloadPostcode="' . $order->omniva->terminal_id . '" ';
     }
 
     $send_return_code = $this->get_return_code_sending();
@@ -103,8 +120,8 @@ class OmnivaLt_Api
       foreach ( $this->omnivalt_configs['text_variables'] as $key => $title ) {
         $value = '';
         
-        if ( $key === 'order_id' ) $value = $wc_order->get_id();
-        if ( $key === 'order_number' ) $value = $wc_order->get_order_number();
+        if ( $key === 'order_id' ) $value = $order->id;
+        if ( $key === 'order_number' ) $value = $order->number;
         
         $prepare_comment = str_replace('{' . $key . '}', $value, $prepare_comment);
       }
@@ -120,7 +137,7 @@ class OmnivaLt_Api
     $xmlRequest .= '<item service="' . $service . '" >
       ' . $additional_services . '
       <measures weight="' . $shipment_size['weight'] . '" length="' . $shipment_size['length'] . '" width="' . $shipment_size['width'] . '" height="' . $shipment_size['height'] . '" />
-      ' . $this->cod($order, $is_cod, get_post_meta($id_order, '_order_total', true)) . '
+      ' . $this->cod($order->id, $is_cod, $order->payment->total) . '
       ' . $label_comment . $return_code_sms . $return_code_email . '
       <receiverAddressee>
         <person_name>' . $client_fullname . '</person_name>
@@ -137,43 +154,7 @@ class OmnivaLt_Api
     return $this->api_request($xmlRequest);
   }
 
-  private function prepare_shipment_size( $wc_order )
-  {
-    $prepared_shipment_size = array(
-        'weight' => 0,
-        'length' => 0,
-        'width' => 0,
-        'height' => 0,
-    );
-
-    $weight_unit = get_option('woocommerce_weight_unit');
-    $dimm_unit = get_option('woocommerce_dimension_unit');
-    $shipment_size = OmnivaLt_Order::get_order_size($wc_order);
-
-    foreach ( $prepared_shipment_size as $size_key => $size_default_value ) {
-        if ( ! empty($shipment_size[$size_key]) ) {
-            $prepared_shipment_size[$size_key] = (float)$shipment_size[$size_key];
-        }
-
-        if ( $size_key == 'weight' ) {
-            $prepared_shipment_size[$size_key] = wc_get_weight($prepared_shipment_size[$size_key], 'kg', $weight_unit);
-        } else {
-            $prepared_shipment_size[$size_key] = wc_get_dimension($prepared_shipment_size[$size_key], 'm', $dimm_unit);
-        }
-
-        if ( empty($prepared_shipment_size[$size_key]) ) {
-            if ( $size_key == 'weight' ) {
-                $prepared_shipment_size[$size_key] = 1;
-            } else {
-                $prepared_shipment_size[$size_key] = 0.1;
-            }
-        }
-    }
-
-    return $prepared_shipment_size;
-  }
-
-  public function get_shipment_labels($barcodes, $order_id = 0)
+  public function get_shipment_labels( $barcodes )
   {
     $errors = array();
     $barcodeXML = '';
@@ -198,7 +179,6 @@ class OmnivaLt_Api
 
     OmnivaLt_Debug::debug_request($xmlRequest);
     try {
-      $url = $this->clean(preg_replace('{/$}', '', $this->omnivalt_settings['api_url'])) . '/epmx/services/messagesService.wsdl';
       $headers = array(
         "Content-type: text/xml;charset=\"utf-8\"",
         "Accept: text/xml",
@@ -207,7 +187,7 @@ class OmnivaLt_Api
         "Content-length: " . strlen($xmlRequest),
       );
       $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_URL, $this->api_url);
       curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -253,7 +233,7 @@ class OmnivaLt_Api
     );
   }
 
-  public function call_courier($parcels_number = 0)
+  public function call_courier( $parcels_number = 0 )
   {
     $is_cod = false;
     $parcel_terminal = "";
@@ -336,7 +316,7 @@ class OmnivaLt_Api
       </soapenv:Envelope>';
   }
 
-  private function get_shipping_service($shipping_params, $pickup_method, $send_method)
+  private function get_shipping_service( $shipping_params, $pickup_method, $send_method )
   {
     $method = $pickup_method . ' ' . $send_method;
     $matches = $shipping_params['services'];
@@ -344,7 +324,7 @@ class OmnivaLt_Api
     return ( isset($matches[$method]) ) ? $matches[$method] : '';
   }
 
-  private function get_required_field($type, $value, $current_text = false) {
+  private function get_required_field( $type, $value, $current_text = false ) {
     $add_text = '';
     $value = trim($value);
     
@@ -367,7 +347,7 @@ class OmnivaLt_Api
     return $current_text;
   }
 
-  private function cod($order, $cod = 0, $amount = 0)
+  private function cod( $order_id, $cod = 0, $amount = 0 )
   {
     $company = $this->omnivalt_settings['company'];
     $bank_account = $this->omnivalt_settings['bank_account'];
@@ -377,13 +357,13 @@ class OmnivaLt_Api
         <values code="item_value" amount="' . $amount . '"/>
       </monetary_values>
       <account>' . $bank_account . '</account>
-      <reference_number>' . $this->getReferenceNumber($order->ID) . '</reference_number>';
+      <reference_number>' . $this->getReferenceNumber($order_id) . '</reference_number>';
     }
     
     return '';
   }
 
-  private function get_shop_data($object = true)
+  private function get_shop_data( $object = true )
   {
     $data = array(
       'name' => $this->clean($this->omnivalt_settings['shop_name']),
@@ -406,36 +386,36 @@ class OmnivaLt_Api
     return ($object) ? (object) $data : $data;
   }
 
-  private function get_client_data($order, $object = true)
+  private function get_client_data( $order, $object = true )
   {
     $data = array(
-      'name' => $this->clean($order->get_shipping_first_name()),
-      'surname' => $this->clean($order->get_shipping_last_name()),
-      'company' => $this->clean($order->get_shipping_company()),
-      'address_1' => $this->clean($order->get_shipping_address_1()),
-      'postcode' => $this->clean($order->get_shipping_postcode()),
-      'city' => $this->clean($order->get_shipping_city()),
-      'country' => $this->clean($order->get_shipping_country()),
-      'email' => $this->clean($order->get_billing_email()),
-      'phone' => get_post_meta($order->get_id(), '_shipping_phone', true),
+      'name' => $this->clean($order->shipping->name),
+      'surname' => $this->clean($order->shipping->surname),
+      'company' => $this->clean($order->shipping->company),
+      'address_1' => $this->clean($order->shipping->address_1),
+      'postcode' => $this->clean($order->shipping->postcode),
+      'city' => $this->clean($order->shipping->city),
+      'country' => $this->clean($order->shipping->country),
+      'email' => $this->clean($order->shipping->email),
+      'phone' => $this->clean($order->shipping->phone),
     );
 
     if ( empty($data['postcode']) && empty($data['city']) && empty($data['address_1']) && empty($data['country']) ) {
-      $data['postcode'] = $this->clean($order->get_billing_postcode());
-      $data['city'] = $this->clean($order->get_billing_city());
-      $data['address_1'] = $this->clean($order->get_billing_address_1());
-      $data['country'] = $this->clean($order->get_billing_country());
+      $data['postcode'] = $this->clean($order->billing->postcode);
+      $data['city'] = $this->clean($order->billing->city);
+      $data['address_1'] = $this->clean($order->billing->address_1);
+      $data['country'] = $this->clean($order->billing->country);
     }
     if ( empty($data['name']) && empty($data['surname']) ) {
-      $data['name'] = $this->clean($order->get_billing_first_name());
-      $data['surname'] = $this->clean($order->get_billing_last_name());
+      $data['name'] = $this->clean($order->billing->name);
+      $data['surname'] = $this->clean($order->billing->surname);
     }
     if ( empty($data['name']) && empty($data['surname']) && empty($data['company']) ) {
-      $data['company'] = $this->clean($order->get_billing_company());
+      $data['company'] = $this->clean($order->billing->company);
     }
     if ( empty($data['country']) ) $data['country'] = $this->clean($this->omnivalt_settings['shop_countrycode']);
     if ( empty($data['country']) ) $data['country'] = 'LT';
-    if ( empty($data['phone']) ) $data['phone'] = $this->clean($order->get_billing_phone());
+    if ( empty($data['phone']) ) $data['phone'] = $this->clean($order->billing->phone);
     
     //Fix postcode
     $data['postcode'] = preg_replace("/[^0-9]/", "", $data['postcode']);
@@ -472,40 +452,11 @@ class OmnivaLt_Api
     );
   }
 
-  /*private function get_order_weight($id_order) //No more using
-  {
-    $weight_unit = get_option('woocommerce_weight_unit');
-    $weight = get_post_meta($id_order, '_cart_weight', true);
-    if ( $weight_unit != 'kg' ) {
-      $weight = wc_get_weight($weight, 'kg', $weight_unit);
-    }
-
-    return $weight;
-  }*/
-
-  private function get_send_method($order)
-  {
-    $send_method = '';
-    foreach ( $order->get_items('shipping') as $item_id => $shipping_item_obj ) {
-      $send_method = $shipping_item_obj->get_method_id();
-    }
-    if ( $send_method == 'omnivalt' ) {
-      $send_method = get_post_meta($order->get_id(), '_omnivalt_method', true);
-    }
-    $exploded_method = explode('_', $send_method);
-    if ( $exploded_method[0] == 'omnivalt' && ! empty($exploded_method[1]) ) {
-      $send_method = $exploded_method[1];
-    }
-
-    return $send_method;
-  }
-
-  private function api_request($request)
+  private function api_request( $request )
   {
     OmnivaLt_Debug::debug_request($request);
     $barcodes = array();
     $errors = array();
-    $url = $this->clean(preg_replace('{/$}', '', $this->omnivalt_settings['api_url'])) . '/epmx/services/messagesService.wsdl';
     $headers = array(
       "Content-type: text/xml;charset=\"utf-8\"",
       "Accept: text/xml",
@@ -514,7 +465,7 @@ class OmnivaLt_Api
       "Content-length: " . strlen($request),
     );
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_URL, $this->api_url);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -580,7 +531,7 @@ class OmnivaLt_Api
     }
   }
 
-  protected static function getReferenceNumber($order_number)
+  protected static function getReferenceNumber( $order_number )
   {
     $order_number = (string) $order_number;
     $kaal = array(7, 3, 1);
@@ -594,7 +545,7 @@ class OmnivaLt_Api
     return $order_number . $kontrollnr;
   }
 
-  private function makeReadableXmlResponse($xmlResponse)
+  private function makeReadableXmlResponse( $xmlResponse )
   {
     $xmlResponse = str_ireplace(['SOAP-ENV:', 'SOAP:', 'ns3:'], '', $xmlResponse);
     $xml = simplexml_load_string($xmlResponse);
@@ -606,7 +557,7 @@ class OmnivaLt_Api
     return $xml;
   }
 
-  private function get_xml_error_from_response($response)
+  private function get_xml_error_from_response( $response )
   {
     if ( strpos($response, 'HTTP Status 401') !== false
       && strpos($response, 'This request requires HTTP authentication.') !== false ) {
@@ -616,7 +567,7 @@ class OmnivaLt_Api
     return __('Response is in the wrong format', 'omnivalt');
   }
 
-  private function clean($string) {
+  private function clean( $string ) {
     return str_replace('"',"'",$string);
   }
 }

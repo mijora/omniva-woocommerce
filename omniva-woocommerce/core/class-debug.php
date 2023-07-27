@@ -6,7 +6,7 @@ class OmnivaLt_Debug
 
     public static function check_debug_enabled()
     {
-        $settings = get_option(OmnivaLt_Core::get_configs('settings_key'));
+        $settings = get_option(OmnivaLt_Core::get_configs('plugin')['settings_key']);
         if ( isset($settings['debug_mode']) && $settings['debug_mode'] === 'yes' ) {
             return true;
         }
@@ -44,6 +44,33 @@ class OmnivaLt_Debug
         fclose($file);
 
         return $response;
+    }
+
+    public static function log( $type, $msg, $show_backtrace = false )
+    {
+        $available_types = array('error', 'notice', 'order', 'cart', 'product', 'custom');
+        $message = '';
+        
+        if ( ! in_array($type, $available_types) ) {
+            $message = 'Got wrong log type in ';
+            $type = 'log_error';
+            $show_backtrace = true;
+            $msg = '';
+        }
+
+        if ( $show_backtrace ) {
+            $backtrace = debug_backtrace(1, 2);
+            $message .= $backtrace[0]['file'] . '::' . $backtrace[0]['line'] . ' - ' . $backtrace[1]['function'] . '()';
+            if ( $msg !== '' ) {
+                $message .= "\n";
+            }
+        }
+
+        if ( is_object($msg) || is_array($msg) ) {
+            $msg = print_r($msg, true);
+        }
+
+        self::save_log_msg($type, $message . $msg);
     }
 
     public static function log_error( $error_msg )

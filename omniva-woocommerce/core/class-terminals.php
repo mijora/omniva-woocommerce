@@ -9,7 +9,7 @@ class OmnivaLt_Terminals
     wp_die();
   }
 
-  public static function get_terminals_list($country = "ALL", $get_list = 'terminal') {
+  public static function get_terminals_list( $country = "ALL", $get_list = 'terminal' ) {
     $terminals = self::read_terminals_file();
     $grouped_options = array();
     if ( is_array($terminals) ) {
@@ -30,7 +30,7 @@ class OmnivaLt_Terminals
     return ($country != "ALL" && isset($grouped_options[$country])) ? $grouped_options[$country] : $grouped_options;
   }
 
-  public static function get_terminals_options($selected = '', $country = "ALL", $get_list = 'terminal')
+  public static function get_terminals_options( $selected = '', $country = "ALL", $get_list = 'terminal' )
   {
     $terminals = self::read_terminals_file();
     $parcel_terminals = '';
@@ -73,7 +73,7 @@ class OmnivaLt_Terminals
     }
 
     $nonce = wp_create_nonce("omniva_terminals_json_nonce");
-    $omniva_settings = get_option(OmnivaLt_Core::get_configs('settings_key'));
+    $omniva_settings = get_option(OmnivaLt_Core::get_configs('plugin')['settings_key']);
     $parcel_terminals = '<option value = "">' . $list_options['txt_select'] . '</option>' . $parcel_terminals;
     $set_autoselect = (isset($omniva_settings['auto_select'])) ? $omniva_settings['auto_select'] : 'yes';
     
@@ -101,7 +101,7 @@ class OmnivaLt_Terminals
       ' . $button . ' </div>' . $script;
   }
 
-  public static function get_terminals_for_map($selected = '', $country = "LT", $get_list = 'terminal')
+  public static function get_terminals_for_map( $selected = '', $country = "LT", $get_list = 'terminal' )
   {
     $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
     $terminals = self::read_terminals_file();
@@ -127,24 +127,27 @@ class OmnivaLt_Terminals
     return $terminalsList;
   }
 
-  public static function get_terminal_name($terminal_code)
+  public static function get_terminal_name( $terminal_code, $get_with_country = false )
   {
     $terminals = self::read_terminals_file();
     $parcel_terminals = '';
     if ( is_array($terminals) ) {
       foreach ( $terminals as $terminal ) {
-        if ( (string) $terminal['ZIP'] == $terminal_code )
-          return (string) $terminal['NAME'] . ', ' . $terminal['A1_NAME'];
+        if ( (string) $terminal['ZIP'] == $terminal_code ) {
+          $terminal_name = (string) $terminal['NAME'] . ', ' . $terminal['A1_NAME'];
+          if ( $get_with_country ) {
+            $terminal_name .= ', ' . $terminal['A0_NAME'];
+          }
+          return $terminal_name;
+        }
       }
     }
     return false;
   }
 
-  public static function get_terminal_address($order)
+  public static function get_terminal_address( $terminal_id, $get_with_country = false )
   {
-    $configs_meta = OmnivaLt_Core::get_configs('meta_keys');
-    $terminal_id = get_post_meta($order->get_id(), $configs_meta['terminal_id'], true);
-    $terminal_name = self::get_terminal_name($terminal_id);
+    $terminal_name = self::get_terminal_name($terminal_id, $get_with_country);
     if ( ! $terminal_name ) {
       $terminal_name  = __('Location not found!!!', 'omnivalt');
     }
@@ -212,7 +215,7 @@ class OmnivaLt_Terminals
     return json_decode($terminals, true);
   }
 
-  private static function generate_terminals_json($term = "", $country = "ALL", $get_list = 'terminal')
+  private static function generate_terminals_json( $term = "", $country = "ALL", $get_list = 'terminal' )
   {
     $c_p = false;
     if ( strlen($term) >= 4 && strlen($term) ) {
@@ -268,7 +271,7 @@ class OmnivaLt_Terminals
     return $parcel_terminals;
   }
 
-  private static function search_postcode($postcode, $country)
+  private static function search_postcode( $postcode, $country )
   {
     if ( $postcode == "" ) return false;
     $postcode = urlencode($postcode);
@@ -286,7 +289,7 @@ class OmnivaLt_Terminals
     return false;
   }
 
-  private static function calc_distance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000)
+  private static function calc_distance( $latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000 )
   {
     // convert from degrees to radians
     $latFrom = deg2rad($latitudeFrom);
@@ -303,7 +306,7 @@ class OmnivaLt_Terminals
     return round($angle * $earthRadius / 1000, 2);
   }
 
-  private static function sort_terminals_list($list) 
+  private static function sort_terminals_list( $list ) 
   {
     $sorted_list = array();
     foreach ( $list as $key => $elem ) {

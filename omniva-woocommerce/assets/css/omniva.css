@@ -109,6 +109,9 @@ padding:0px; margin:0px;
 .omniva-modal-body {
     padding: 10px;
     height:92%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    box-sizing: border-box;
 }
 
 .omniva-modal-footer {
@@ -173,7 +176,7 @@ padding:0px; margin:0px;
 }
 
 .omniva-modal-content .omniva-terminals-listing {margin: 0px; padding: 0px; color: black;}
-.omniva-modal-content .omniva-terminals-listing li {padding: 5px; border-radius: 4px; list-style-type: none;width: 100% !important;}
+.omniva-modal-content .omniva-terminals-listing li {padding: 5px; border-radius: 4px; list-style-type: none;width: 100% !important; box-sizing: border-box;}
 .omniva-modal-content .omniva-terminals-listing li:nth-child(even) {background: #f2f2f2;}
 
 .omniva-search {
@@ -216,7 +219,10 @@ padding:0px; margin:0px;
 }
 
 #omnivaMapContainer {
- width: 59%; height: 100%; border: 1px solid black; background-color: lightgray !important; float:left;
+    height: 100%;
+    border: 1px solid black;
+    background-color: lightgray !important;
+    float:left;
 }
 #omnivaMap {
   width: 100%;
@@ -224,7 +230,6 @@ padding:0px; margin:0px;
 }
 
 .omniva-search-bar {
-    width: 40%;
     min-height: 400px;
     padding: 0px 10px; 
     float:left;
@@ -542,7 +547,7 @@ ol li {
         background-color: #fefefe;
         border-radius: 5px;
         width: 65%;
-        height:60%;
+        height: 80%;
         -webkit-animation-name: omnivaSlideIn;
         -webkit-animation-duration: 0.4s;
         animation-name: omnivaSlideIn;
@@ -550,7 +555,7 @@ ol li {
     }
 
     .scrollbar{
-        max-height:40vh;
+        max-height: 50vh;
     }
 }
 

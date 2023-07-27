@@ -1,15 +1,15 @@
 <?php
 class OmnivaLt_Helper
 {
-  public static function get_order_services($order)
+  public static function get_order_services( $order )
   {
-    $services = OmnivaLt_Product::get_order_items_services($order, true);
-    $services = self::override_with_order_services($order->get_id(), $services);
+    $services = OmnivaLt_Product::get_order_items_services($order->items, true);
+    $services = self::override_with_order_services($order, $services);
 
     return $services;
   }
 
-  public static function override_with_order_services($order_id, $services)
+  public static function override_with_order_services( $order, $services )
   {
     $configs_services = OmnivaLt_Core::get_configs('additional_services');
     $order_services = array();
@@ -18,11 +18,11 @@ class OmnivaLt_Helper
       if ($service_key == 'arrival_email' && self::check_service_email_on_arrive()) {
         $order_services[$service_key] = 'yes';
       }
-      if ($service_key == 'cod' && self::check_service_cod($order_id)) {
+      if ($service_key == 'cod' && self::is_cod_payment($order->payment->method)) {
         $order_services[$service_key] = 'yes';
       }
 
-      $current_value = get_post_meta($order_id, '_omnivalt_' . $service_key, true);
+      $current_value = self::get_value_from_array($order->meta_data, '_omnivalt_' . $service_key, '');
       if (!$service_values['add_always'] && $current_value != '') {
         $order_services[$service_key] = $current_value;
       }
@@ -47,7 +47,7 @@ class OmnivaLt_Helper
   public static function check_service_email_on_arrive()
   {
     $configs = OmnivaLt_Core::get_configs();
-    $settings = get_option($configs['settings_key']);
+    $settings = get_option($configs['plugin']['settings_key']);
 
     if ( isset($settings['send_email_on_arrive']) && $settings['send_email_on_arrive'] === 'yes' ) {
       return true;
@@ -56,12 +56,12 @@ class OmnivaLt_Helper
     return false;
   }
 
-  public static function check_service_cod($order_id)
+  public static function is_cod_payment( $payment_key )
   {
     $cod_payments = OmnivaLt_Core::get_configs('cod');
-    $current_payment = get_post_meta($order_id, '_payment_method', true);
+    return (in_array($payment_key, $cod_payments));
 
-    if ( in_array($current_payment, $cod_payments) ) {
+    if ( in_array($payment_key, $cod_payments) ) {
       return true;
     }
 
@@ -105,7 +105,7 @@ class OmnivaLt_Helper
     return $shipping_sets;
   }
 
-  public static function get_allowed_methods($set_name)
+  public static function get_allowed_methods( $set_name )
   {
     $configs = OmnivaLt_Core::get_configs();
 
@@ -126,7 +126,7 @@ class OmnivaLt_Helper
     return $allowed_methods;
   }
 
-  public static function add_msg($msg, $type)
+  public static function add_msg( $msg, $type )
   {
     if (!session_id()) {
       session_start();
@@ -137,7 +137,7 @@ class OmnivaLt_Helper
     $_SESSION['omnivalt_notices'][] = array('msg' => $msg, 'type' => $type);
   }
 
-  public static function get_formated_time($value, $value_if_not)
+  public static function get_formated_time( $value, $value_if_not )
   {
     if (!preg_match("/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/", $value)) {
       if ((string)(int)$value === $value || is_int($value)) {
@@ -150,7 +150,12 @@ class OmnivaLt_Helper
     return $value;
   }
 
-  public static function get_shipping_service($sender_country, $receiver_country)
+  public static function clear_file_name( $file_name )
+  {
+    return preg_replace("/[^a-zA-Z0-9\.\-\_]+/", "", $file_name);
+  }
+
+  public static function get_shipping_service( $sender_country, $receiver_country )
   {
     $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
 
@@ -165,7 +170,7 @@ class OmnivaLt_Helper
     return $shipping_params[$sender_country]['shipping_sets'][$receiver_country];
   }
 
-  public static function get_shipping_service_code($sender_country, $receiver_country, $get_for)
+  public static function get_shipping_service_code( $sender_country, $receiver_country, $get_for )
   {
     $shipping_sets = OmnivaLt_Core::get_configs('shipping_sets');
 
@@ -196,7 +201,7 @@ class OmnivaLt_Helper
     return $shipping_sets[$service_set][$get_for];
   }
 
-  public static function get_shipping_sets($sender_country, $exclude_additional = true)
+  public static function get_shipping_sets( $sender_country, $exclude_additional = true )
   {
     $configs = OmnivaLt_Core::get_configs();
 
@@ -212,7 +217,7 @@ class OmnivaLt_Helper
     return $shipping_sets;
   }
 
-  public static function convert_method_name_to_short($asociations, $method_name, $reverse = false)
+  public static function convert_method_name_to_short( $asociations, $method_name, $reverse = false )
   {
     foreach ( $asociations as $key => $value ) {
       if ( ! $reverse ) {
@@ -229,25 +234,125 @@ class OmnivaLt_Helper
     return $method_name;
   }
 
-  /**
-   * Get method key from Woocommerce shipping method ID
-   * 
-   * @param string $woo_method_id - Woocommerce method ID
-   * @return string
-   */
-  public static function get_method_key_from_woo_method_id( $woo_method_id )
+  public static function predict_order_size( $items_data, $max_dimension = array() )
   {
-    return str_replace('omnivalt_', '', $woo_method_id);
+    $all_order_dim_length = 0;
+    $all_order_dim_width = 0;
+    $all_order_dim_height = 0;
+    $max_dim_length = (!empty($max_dimension['length'])) ? $max_dimension['length'] : 999999;
+    $max_dim_width = (!empty($max_dimension['width'])) ? $max_dimension['width'] : 999999;
+    $max_dim_height = (!empty($max_dimension['height'])) ? $max_dimension['height'] : 999999;
+
+    foreach ( $items_data as $item ) {
+      $item_dim_length = (!empty($item['length'])) ? $item['length'] : 0;
+      $item_dim_width = (!empty($item['width'])) ? $item['width'] : 0;
+      $item_dim_height = (!empty($item['height'])) ? $item['height'] : 0;
+
+      //Add to length
+      if ( ($item_dim_length + $all_order_dim_length) <= $max_dim_length 
+        && $item_dim_width <= $max_dim_width && $item_dim_height <= $max_dim_height )
+      {
+        $all_order_dim_length = $all_order_dim_length + $item_dim_length;
+        $all_order_dim_width = ($item_dim_width > $all_order_dim_width) ? $item_dim_width : $all_order_dim_width;
+        $all_order_dim_height = ($item_dim_height > $all_order_dim_height) ? $item_dim_height : $all_order_dim_height;
+      }
+      //Add to width
+      else if ( ($item_dim_width + $all_order_dim_width) <= $max_dim_width 
+        && $item_dim_length <= $max_dim_length && $item_dim_height <= $max_dim_height )
+      {
+        $all_order_dim_length = ($item_dim_length > $all_order_dim_length) ? $item_dim_length : $all_order_dim_length;
+        $all_order_dim_width = $all_order_dim_width + $item_dim_width;
+        $all_order_dim_height = ($item_dim_height > $all_order_dim_height) ? $item_dim_height : $all_order_dim_height;
+      }
+      //Add to height
+      else if ( ($item_dim_height + $all_order_dim_height) <= $max_dim_height 
+        && $item_dim_length <= $max_dim_length && $item_dim_width <= $max_dim_width )
+      {
+        $all_order_dim_length = ($item_dim_length > $all_order_dim_length) ? $item_dim_length : $all_order_dim_length;
+        $all_order_dim_width = ($item_dim_width > $all_order_dim_width) ? $item_dim_width : $all_order_dim_width;
+        $all_order_dim_height = $all_order_dim_height + $item_dim_height;
+      }
+      //If all fails
+      else {
+        return false;
+      }
+    }
+
+    return array(
+      'length' => $all_order_dim_length,
+      'width' => $all_order_dim_width,
+      'height' => $all_order_dim_height,
+    );
   }
 
-  /**
-   * Get Woocommerce shipping method ID from method key
-   * 
-   * @param string $method_key - method key (short form)
-   * @return string
-   */
-  public static function get_woo_method_id_from_method_key( $method_key )
+  public static function purge_meta_data( $meta_data )
   {
-    return 'omnivalt_' . $method_key;
+    $purged_meta_data = array();
+
+    foreach ($meta_data as $meta_item) {
+      $data = $meta_item->get_data();
+      if ( ! isset($data['key']) || ! isset($data['value']) ) {
+        OmnivaLt_Debug::log('notice', "Meta data is incorrect:\n" . print_r($data, true));
+        continue;
+      }
+      $purged_meta_data[$data['key']] = $data['value'];
+    }
+
+    return $purged_meta_data;
+  }
+
+  public static function get_value_from_array( $array, $key, $value_if_not = null )
+  {
+    return $array[$key] ?? $value_if_not;
+  }
+
+  public static function get_units( $get_as_object = true )
+  {
+    $units = array(
+      'weight' => get_option('woocommerce_weight_unit'),
+      'dimension' => get_option('woocommerce_dimension_unit'),
+      'currency' => get_option('woocommerce_currency'),
+      'currency_symbol' => get_woocommerce_currency_symbol(),
+    );
+
+    return ($get_as_object) ? (object) $units : $units;
+  }
+
+  public static function convert_unit( $value, $new_unit, $current_unit = false, $unit_type = 'weight' )
+  {
+    $woo_units = self::get_units(false);
+    if ( ! isset($woo_units[$unit_type]) ) {
+      return $value;
+    }
+
+    switch ($unit_type) {
+      case 'weight':
+        if ( ! $current_unit ) {
+          $current_unit = $woo_units['weight'];
+        }
+        return wc_get_weight($value, $new_unit, $current_unit);
+        break;
+      case 'dimension':
+        if ( ! $current_unit ) {
+          $current_unit = $woo_units['dimension'];
+        }
+        return wc_get_dimension($value, $new_unit, $current_unit);
+        break;
+    }
+
+    return $value;
+  }
+
+  public static function is_omniva_method( $method_id )
+  {
+    $configs = OmnivaLt_Core::get_configs();
+
+    foreach ( $configs['method_params'] as $method_key => $method_values ) {
+      if ( $method_id == 'omnivalt_' . $method_values['key'] ) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

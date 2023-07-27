@@ -1,6 +1,13 @@
 <?php
 class OmnivaLt_Compatibility
 {
+    public static function declare_wc_hpos_compatibility()
+    {
+        if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', OmnivaLt_Core::$main_file_path, true);
+        }
+    }
+
     public static function get_terms( $taxonomy, $args = array() )
     {
         if ( defined('ICL_SITEPRESS_VERSION') ) {
