@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.14.0]
+### Improved
+- the plugin is adapted to work with Woocommerce HPOS (prepared for Woocommerce 8)
+
 ## [1.13.1]
 ### Fixed
 - fixed barcodes show in Manifest PDF

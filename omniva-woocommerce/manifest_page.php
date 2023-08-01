@@ -7,7 +7,6 @@ if ( ! defined('ABSPATH') ) {
 $shipping_settings = OmnivaLt_Core::get_settings();
 $configs = OmnivaLt_Core::get_configs();
 $page_params = OmnivaLt_Manifest::page_params();
-$weight_unit = get_option('woocommerce_weight_unit');
 
 $orders_data = OmnivaLt_Manifest::page_get_orders();
 $selected_orders = array();
@@ -145,43 +144,45 @@ do_action('omniva_admin_manifest_head');
               <?php $date_tracker = false; ?>
               <?php foreach ( $orders_data['orders'] as $order ) : ?>
                 <?php
-                $barcode = $order->get_meta($configs['meta_keys']['barcode']);
-                $manifest_date = $order->get_meta($configs['meta_keys']['manifest_date']);
+                $order_data = OmnivaLt_Wc_Order::get_data($order->get_id());
+                $barcodes = $order_data->omniva->barcodes;
+                $manifest_date = $order_data->omniva->manifest_date;
                 $date = date('Y-m-d H:i', strtotime($manifest_date));
-                $manifest_date_old = $order->get_meta($configs['meta_keys']['manifest_date_old']); // Compatible with old
-                $date_old = date('Y-m-d H:i', strtotime($manifest_date_old));
-                $order_size = OmnivaLt_Order::get_order_size($order);
+                $order_size = $order_data->shipment->size;
                 ?>
-                <?php if ( $orders_data['action'] == 'completed_orders' && $date_tracker !== $date && $date_tracker !== $date_old ) : ?>
+                <?php if ( $orders_data['action'] == 'completed_orders' && $date_tracker !== $date ) : ?>
                   <tr>
                     <?php $colspan = ($manifest_enabled) ? 9 : 8; ?>
                     <td colspan="<?php echo $colspan; ?>" class="manifest-date-title">
-                      <?php echo $date_tracker = $date; ?>
+                      <?php echo $date_tracker = $manifest_date; ?>
                     </td>
                   </tr>
                 <?php endif; ?>
                 <tr class="data-row">
-                  <?php $checked = (in_array($order->get_id(), $selected_orders)) ? 'checked' : ''; ?>
-                  <th scope="row" class="check-column"><input type="checkbox" name="items[]" class="manifest-item" value="<?php echo $order->get_id(); ?>" <?php echo $checked; ?>/></th>
+                  <?php $checked = (in_array($order_data->id, $selected_orders)) ? 'checked' : ''; ?>
+                  <th scope="row" class="check-column"><input type="checkbox" name="items[]" class="manifest-item" value="<?php echo $order_data->id; ?>" <?php echo $checked; ?>/></th>
                   <td class="manage-column column-order_id">
-                    <a href="<?php echo $order->get_edit_order_url(); ?>">#<?php echo $order->get_order_number(); ?></a>
+                    <a href="<?php echo $order_data->admin->url_edit; ?>">#<?php echo $order_data->number; ?></a>
                   </td>
                   <td class="column-order_customer">
                     <div class="data-grid-cell-content">
-                      <span class="customer-name"><?php echo OmnivaLt_Order::get_customer_fullname($order); ?></span>
-                      <span class="customer-company"><?php echo OmnivaLt_Order::get_customer_company($order); ?></span>
+                      <span class="customer-name"><?php echo OmnivaLt_Order::get_customer_fullname($order_data); ?></span>
+                      <span class="customer-company"><?php echo OmnivaLt_Order::get_customer_company($order_data); ?></span>
                     </div>
                   </td>
                   <td class="column-order_status">
                     <div class="data-grid-cell-content">
-                      <mark class="order-status status-<?php echo $order->get_status(); ?>">
-                        <span><?php echo wc_get_order_status_name($order->get_status()); ?></span>
+                      <mark class="order-status status-<?php echo $order_data->status; ?>">
+                        <span><?php echo wc_get_order_status_name($order_data->status); ?></span>
                       </mark>
                     </div>
                   </td>
                   <td class="column-order_info">
                     <div class="data-grid-cell-content">
-                      <b><?php echo __('Date', 'omnivalt'); ?>:</b> <?php echo $order->get_date_created()->format ('Y-m-d H:i:s'); ?>
+                      <b><?php echo __('Date', 'omnivalt'); ?>:</b> <?php echo $order_data->created; ?>
+                    </div>
+                    <div class="data-grid-cell-content">
+                      <b><?php echo __('Amount', 'omnivalt'); ?>:</b> <?php echo OmnivaLt_Order::get_price_text($order_data->payment->total); ?>
                     </div>
                     <div class="data-grid-cell-content">
                       <b><?php echo __('Weight', 'omnivalt'); ?>:</b> <?php echo OmnivaLt_Order::get_weight_text($order_size); ?>
@@ -192,17 +193,19 @@ do_action('omniva_admin_manifest_head');
                   </td>
                   <td class="manage-column">
                     <div class="data-grid-cell-content">
-                      <?php OmnivaLt_Order::admin_order_display($order, false); ?>
+                      <?php OmnivaLt_Order::admin_order_display($order_data->id, false); ?>
                     </div>
                   </td>
                   <td class="manage-column">
                     <div class="data-grid-cell-content">
-                      <?php if ( $barcode ) : ?>
-                        <?php do_action('print_omniva_tracking_url', $barcode, $shipping_settings['shop_countrycode']); ?>
+                      <?php if ( ! empty($barcodes) ) : ?>
+                        <?php foreach ( $barcodes as $barcode ) : ?>
+                          <?php do_action('print_omniva_tracking_url', $barcode, $shipping_settings['shop_countrycode']); ?>
+                        <?php endforeach; ?>
                       <?php endif; ?>
-                      <?php $error = $order->get_meta($configs['meta_keys']['error']); ?>
+                      <?php $error = $order_data->omniva->error; ?>
                       <?php if ( $error ) : ?>
-                        <?php if ( $barcode ) : ?><br /><?php endif; ?>
+                        <?php if ( ! empty($barcodes) ) : ?><br /><?php endif; ?>
                         <span><?php echo '<b>' . __('Error', 'omnivalt') . ':</b> ' . $error; ?></span>
                       <?php endif; ?>
                     </div>
@@ -210,22 +213,22 @@ do_action('omniva_admin_manifest_head');
                   <?php if ($manifest_enabled) : ?>
                     <td class="column-manifest_date">
                       <div class="data-grid-cell-content">
-                        <?php echo $manifest_date . $manifest_date_old; ?>
+                        <?php echo $manifest_date; ?>
                       </div>
                     </td>
                   <?php endif; ?>
                   <td class="manage-column">
-                    <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order->get_id(); ?>" class="button action">
+                    <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order_data->id; ?>" class="button action">
                       <?php
-                      if ( $barcode ) {
+                      if ( ! empty($barcodes) ) {
                         echo _x('Print', 'button', 'omnivalt');
                       } else {
                         echo _x('Generate', 'button', 'omnivalt');
                       }
                       ?>
                     </a>
-                    <?php if ( $barcode ) : ?>
-                      <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order->get_id(); ?>&process=regenerate" class="button action">
+                    <?php if ( ! empty($barcodes) ) : ?>
+                      <a href="admin-post.php?action=omnivalt_labels&post=<?php echo $order_data->id; ?>&process=regenerate" class="button action">
                         <?php echo _x('Regenerate', 'button', 'omnivalt'); ?>
                       </a>
                     <?php endif; ?>

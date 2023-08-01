@@ -111,7 +111,7 @@ class OmnivaLt_Product
         $value = isset($_POST['_omnivalt_' . $service_key]) ? absint($_POST['_omnivalt_' . $service_key]) : '';
       }
 
-      update_post_meta($post_id, '_omnivalt_' . $service_key, $value);
+      OmnivaLt_Wc_Product::update_meta($post_id, '_omnivalt_' . $service_key, $value);
     }
   }
 
@@ -121,16 +121,16 @@ class OmnivaLt_Product
    * @param object $order - WC order
    * @param boolean $merged - If true, then function will return merged all products services to one level array
    */
-  public static function get_order_items_services($order, $merged = false)
+  public static function get_order_items_services($order_items, $merged = false)
   {
     $configs_services = OmnivaLt_Core::get_configs('additional_services');
     $services = array();
     
-    foreach ($order->get_items() as $item_id => $item) {
+    foreach ($order_items as $item_id => $item) {
       foreach ($configs_services as $service_key => $service_values) {
         if (!$service_values['in_product']) continue;
 
-        $meta_value = get_post_meta($item['product_id'], '_omnivalt_' . $service_key, true);
+        $meta_value = OmnivaLt_Helper::get_value_from_array($item['product_meta_data'], '_omnivalt_' . $service_key, '');
         $add_service = false;
 
         if ($service_values['in_product'] === 'checkbox' && $meta_value === 'yes') {

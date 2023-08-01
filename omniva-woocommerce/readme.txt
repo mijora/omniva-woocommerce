@@ -7,6 +7,9 @@
 
 == Changelog ==
 
+= 1.14.0 =
+- the plugin is adapted to work with Woocommerce HPOS (prepared for Woocommerce 8)
+
 = 1.13.1 =
 - fixed barcodes show in Manifest PDF
 - changed map server

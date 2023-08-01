@@ -62,23 +62,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $this->shipping_sets = OmnivaLt_Helper::get_shipping_sets($this->settings['api_country']);
     }
 
-    private function convert_method_name_to_short($method_name, $reverse = false)
-    {
-      foreach ( $this->methods_asociations as $key => $value ) {
-        if ( ! $reverse ) {
-          if ( $method_name === $value ) {
-            return $key;
-          }
-        } else {
-          if ( $method_name === $key ) {
-            return $value;
-          }
-        }
-      }
-
-      return $method_name;
-    }
-
     /**
      * Init your settings
      *
@@ -97,24 +80,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       
       // Save settings in admin if you have any defined
       add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
-      //$this->update_locations_file();
-    }
-
-    public function update_locations_file()
-    {
-      $locations = $this->omnivalt_configs['locations'];
-      $fp = fopen(OMNIVALT_DIR . '/' . "locations.json", "w");
-      $curl = curl_init();
-      curl_setopt($curl, CURLOPT_URL, $locations['source_url']);
-      curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($curl, CURLOPT_HEADER, false);
-      curl_setopt($curl, CURLOPT_FILE, $fp);
-      curl_setopt($curl, CURLOPT_TIMEOUT, 60);
-      curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
-      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-      $data = curl_exec($curl);
-      curl_close($curl);
-      fclose($fp);
     }
 
     /**
@@ -554,7 +519,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           $shipping_methods = $this->omnivalt_configs['shipping_params'][$value['lang']]['methods'];
           $shipping_keys = array();
           foreach ( $shipping_methods as $ship_method ) {
-            $shipping_keys[] = $this->convert_method_name_to_short($ship_method);
+            $shipping_keys[] = OmnivaLt_Helper::convert_method_name_to_short($this->methods_asociations, $ship_method);
           }
         } else {
           $shipping_keys = array_keys($this->methods_asociations);
@@ -1145,7 +1110,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     /**
      * Makes a list of categories to select from in settings page. array(lowest cat id => full cat path name)
      */
-    private function create_categories_list($prefix, $data, &$results)
+    private function create_categories_list( $prefix, $data, &$results )
     {
       if ( $prefix ) {
         $prefix = $prefix . ' &gt; ';
@@ -1280,7 +1245,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
      * @param mixed $package
      * @return void
      */
-    public function calculate_shipping($package = array())
+    public function calculate_shipping( $package = array() )
     {
       $weight = 0;
       $cost = 0;
@@ -1312,7 +1277,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       }
     }
 
-    private function add_shipping_rate($rate_key, $products_for_dim, $weight, $country, $cart_amount, $prices, $package)
+    private function add_shipping_rate( $rate_key, $products_for_dim, $weight, $country, $cart_amount, $prices, $package )
     {
       $method_params = OmnivaLt_Shipmethod_Helper::get_current_method_params($this->omnivalt_configs['method_params'], $rate_key);
       if ( empty($method_params) ) {
@@ -1365,167 +1330,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           $this->add_rate($rate);
         }
       }
-    }
-
-    function printBulkManifests($orderIds = false)
-    {
-      OmnivaLt_Core::load_vendors(array('tcpdf'));
-
-      if ( ! is_array($orderIds) ) {
-        $orderIds = array($orderIds);
-      }
-
-      $object = '';
-      $configs = OmnivaLt_Core::get_configs();
-
-      $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-      $pdf->setPrintHeader(false);
-      $pdf->setPrintFooter(false);
-      $pdf->AddPage();
-      $order_table = '';
-      $count = 0;
-      if ( is_array($orderIds) ) {
-        foreach ( $orderIds as $orderId ) {
-          $order = get_post((int) $orderId);
-          $wc_order = wc_get_order((int) $orderId);
-          $send_method = "";
-          
-          foreach ( $wc_order->get_items('shipping') as $item_id => $shipping_item_obj ) {
-            $send_method = $shipping_item_obj->get_method_id();
-          }
-          if ($send_method == 'omnivalt') {
-            $send_method = get_post_meta($orderId, $configs['meta_keys']['method'], true);
-          }
-
-          $is_omniva = false;
-          foreach ( $configs['method_params'] as $method_key => $method_values ) {
-            if ( $send_method == 'omnivalt_' . $method_values['key'] ) {
-              $is_omniva = true;
-            }
-          }
-          if ( ! $is_omniva ) {
-            OmnivaLt_Helper::add_msg($orderId . ' - ' . __('Shipping method is not Omniva', 'omnivalt'), 'error');
-            continue;
-          }
-
-          $track_numer = get_post_meta($orderId, $configs['meta_keys']['barcode'], true);
-          if ( $track_numer == '' ) {
-            $status = $this->omnivalt_api->get_tracking_number($orderId);
-            if ( ! empty($status['debug']) ) {
-              OmnivaLt_Helper::add_msg('<b>OMNIVA RESPONSE DEBUG:</b><br/><pre style="white-space:pre-wrap;">' . htmlspecialchars($status['debug']) . '</pre>', 'notice');
-            }
-
-            if ($status['status']) {
-              update_post_meta($orderId, $configs['meta_keys']['barcode'], $status['barcodes'][0]);
-              $track_numer = $status['barcodes'][0];
-
-              $label_status = $this->omnivalt_api->get_shipment_labels($status['barcodes'], $orderId);
-              
-              if ( ! $label_status['status'] ) {
-                update_post_meta($orderId, $configs['meta_keys']['error'], $label_status['msg']);
-                OmnivaLt_Helper::add_msg($orderId . ' - ' . $label_status['msg'], 'error');
-                continue;
-              }
-            } else {
-              OmnivaLt_Helper::add_msg($orderId . ' - ' . $status['msg'], 'error');
-              continue;
-            }
-          }
-
-          /*if (get_post_meta($orderId, $configs['meta_keys']['manifest_date'],true)) {
-            OmnivaLt_Helper::add_msg($orderId . ' - ' . __('Manifest already generated','omnivalt'), 'error');
-            continue;
-          }*/
-
-          update_post_meta($orderId, $configs['meta_keys']['manifest_date'], current_time('Y-m-d H:i:s'));
-          
-          $pt_address = '';
-          if ( $send_method == 'omnivalt_pt' || $send_method == 'omnivalt_po' ) {
-            $pt_address = $this->get_terminal_address($terminal_id = get_post_meta($orderId, $configs['meta_keys']['terminal_id'], true));
-          }
-
-          $client_address = get_post_meta($orderId, '_shipping_address_index', true);
-          if ($pt_address != '') {
-            $client_address = '';
-          }
-
-          $count++;
-          $cart_weight = get_post_meta($orderId, '_cart_weight', true);
-          $weight_unit = get_option('woocommerce_weight_unit');
-          if ( $weight_unit != 'kg' ) {
-            $cart_weight = wc_get_weight($cart_weight, 'kg', $weight_unit);
-          }
-          $cell_shipment_number = '<td width="110">' . $track_numer . '</td>';
-          if ( $this->settings['manifest_show_barcode'] === 'yes' ) {
-            $barcode_params = $pdf->serializeTCPDFtagParameters(array($track_numer, 'C128', '', '', 25, 6, 0.4, array('position'=>'C', 'border'=>false, 'padding'=>0, 'fgcolor'=>array(0,0,0), 'bgcolor'=>array(255,255,255), 'text'=>true, 'font'=>'helvetica', 'fontsize'=>8, 'stretchtext'=>4), 'N'));
-            $cell_shipment_number = '<td width="110" style="line-height: 50%;"><tcpdf method="write1DBarcode" params="' . $barcode_params . '" /></td>';
-          }
-          $order_table .= '<tr><td width = "30" align="right">' . $count . '.</td>' . $cell_shipment_number . '<td width = "60">' . current_time('Y-m-d') . '</td><td width = "40">1</td><td width = "60">' . $cart_weight . '</td><td width = "">' . $client_address . $pt_address . '</td></tr>';
-
-          //make order shipped after creating manifest
-          /*
-            $history = new OrderHistory();
-            $history->id_order = (int)$orderId;
-            $history->id_employee = (int)$cookie->id_employee;
-            $history->changeIdOrderState((int)Configuration::get('PS_OS_SHIPPING'), $order);
-            $history->addWithEmail(true);*/
-        }
-      }
-
-      $pdf->SetFont('freeserif', '', 14);
-      $shop_addr = '<table cellspacing="0" cellpadding="1" border="0"><tr><td>' . current_time('Y-m-d H:i:s') . '</td><td>' . _x('Sender address', 'Manifest', 'omnivalt') . ':<br/>' . $this->settings['shop_name'] . '<br/>' . $this->settings['shop_address'] . ', ' . $this->settings['shop_postcode'] . '<br/>' . $this->settings['shop_city'] . ', ' . $this->settings['shop_countrycode'] . '<br/></td></tr></table>';
-
-      $pdf->writeHTML($shop_addr, true, false, false, false, '');
-      $tbl = '
-        <table cellspacing="0" cellpadding="4" border="1" width="100%">
-          <thead>
-            <tr>
-              <th width="30" align="right">' . _x('No.', 'Manifest', 'omnivalt') . '</th>
-              <th width="110">' . _x('Shipment number', 'Manifest', 'omnivalt') . '</th>
-              <th width="60">' . _x('Date', 'Manifest', 'omnivalt') . '</th>
-              <th width="40">' . _x('Quantity', 'Manifest', 'omnivalt') . '</th>
-              <th width="60">' . _x('Weight (kg)', 'Manifest', 'omnivalt') . '</th>
-              <th width="">' . _x("Recipient's address", 'Manifest', 'omnivalt') . '</th>
-            </tr>
-          </thead>
-          <tbody>
-            ' . $order_table . '
-          </tbody>
-        </table><br/><br/>
-        ';
-      if ($count == 0) {
-        OmnivaLt_Helper::add_msg(__('No compatible orders for manifest', 'omnivalt'), 'error');
-        wp_safe_redirect(wp_get_referer());
-        exit;
-      } else {
-        // $this->call_omniva();
-      }
-      $pdf->SetFont('freeserif', '', 9);
-      $pdf->writeHTML($tbl, true, false, false, false, '');
-      $pdf->SetFont('freeserif', '', 14);
-      $sign = _x("Courier name, surname, signature", 'Manifest', 'omnivalt') . ' ________________________________________________<br/><br/>';
-      $sign .= _x("Sender name, surname, signature", 'Manifest', 'omnivalt') . ' ________________________________________________';
-      $pdf->writeHTML($sign, true, false, false, false, '');
-      $pdf->Output('Omnivalt_manifest.pdf', 'D');
-    }
-
-    function get_terminal_address($terminal_id)
-    {
-      $terminals_json_file_dir = OMNIVALT_DIR . '/' . "locations.json";
-      $terminals_file = fopen($terminals_json_file_dir, "r");
-      $terminals = fread($terminals_file, filesize($terminals_json_file_dir) + 10);
-      fclose($terminals_file);
-      $terminals = json_decode($terminals, true);
-      $parcel_terminals = '';
-      if ( is_array($terminals) && $terminal_id ) {
-        foreach ( $terminals as $terminal ) {
-          if ( $terminal['ZIP'] == $terminal_id ) {
-            return $terminal['NAME'] . ', ' . $terminal['A1_NAME'] . ', ' . $terminal['A0_NAME'];
-          }
-        }
-      }
-      return '';
     }
   }
 }
