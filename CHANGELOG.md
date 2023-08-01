@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased]
+## [1.14.0]
 ### Improved
-- the plugin is adapted to work with Woocommerce HPOS
+- the plugin is adapted to work with Woocommerce HPOS (prepared for Woocommerce 8)
 
 ## [1.13.1]
 ### Fixed
