@@ -5,6 +5,9 @@
 - moved cronjobs operation to Woocommerce cronjobs
 - created a stop of plugin activation if the website does not have permission to create files in the plugin folder
 
+### Fixed
+- fixed error when product in Order is permanently deleted
+
 ## [1.14.0]
 ### Improved
 - the plugin is adapted to work with Woocommerce HPOS (prepared for Woocommerce 8)
