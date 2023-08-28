@@ -1,6 +1,16 @@
 <?php
 class OmnivaLt_Wc_Order
 {
+    public static function get_orders( $args )
+    {
+        if ( empty($args) ) {
+            return false;
+        }
+        
+        $results = wc_get_orders($args);
+        return $results->orders;
+    }
+
     public static function get_order( $wc_order_id )
     {
         if ( empty($wc_order_id) ) {
@@ -200,5 +210,10 @@ class OmnivaLt_Wc_Order
         }
 
         $wc_order->add_order_note($note);
+    }
+
+    public static function get_all_statuses()
+    {
+        return wc_get_order_statuses();
     }
 }

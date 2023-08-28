@@ -355,4 +355,27 @@ class OmnivaLt_Helper
 
     return false;
   }
+
+  public static function convert_array_to_meta_query_param( $meta_key, $array, $compare = 'LIKE' ) //TODO: The function is not used, but maybe it can be used
+  {
+    $meta_query_params = array();
+
+    if ( ! is_array($array) ) {
+      $array = array($array);
+    }
+
+    foreach ( $array as $array_value ) {
+      $build = array(
+        'key' => $meta_key,
+        'compare' => $compare,
+      );
+      if ( $compare != 'NOT EXISTS' ) {
+        $build['value'] = $array_value;
+      }
+
+      $meta_query_params[] = $build;
+    }
+
+    return $meta_query_params;
+  }
 }

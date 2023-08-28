@@ -7,6 +7,7 @@
 
 ### Fixed
 - fixed error when product in Order is permanently deleted
+- fixed Orders display in manifest page
 
 ## [1.14.0]
 ### Improved
