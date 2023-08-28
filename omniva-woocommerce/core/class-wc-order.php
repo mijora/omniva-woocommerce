@@ -1,6 +1,16 @@
 <?php
 class OmnivaLt_Wc_Order
 {
+    public static function get_orders( $args )
+    {
+        if ( empty($args) ) {
+            return false;
+        }
+        
+        $results = wc_get_orders($args);
+        return $results->orders;
+    }
+
     public static function get_order( $wc_order_id )
     {
         if ( empty($wc_order_id) ) {
@@ -127,18 +137,25 @@ class OmnivaLt_Wc_Order
         $order_items = array();
 
         foreach ( $wc_order->get_items() as $item_id => $product_item ) {
-            $product = $product_item->get_product();
-
             $item_data = array(
                 'product_id' => $product_item->get_product_id(),
                 'quantity' => $product_item->get_quantity(),
-                'weight' => (!empty($product->get_weight())) ? (float)$product->get_weight() : 0,
-                'length' => (!empty($product->get_length())) ? (float)$product->get_length() : 0,
-                'width' => (!empty($product->get_width())) ? (float)$product->get_width() : 0,
-                'height' => (!empty($product->get_height())) ? (float)$product->get_height() : 0,
+                'weight' => 0,
+                'length' => 0,
+                'width' => 0,
+                'height' => 0,
                 'meta_data' => OmnivaLt_Helper::purge_meta_data($product_item->get_meta_data()),
-                'product_meta_data' => OmnivaLt_Helper::purge_meta_data($product->get_meta_data()),
+                'product_meta_data' => array(),
             );
+
+            $product = $product_item->get_product();
+            if ( $product ) {
+                if ( ! empty($product->get_weight()) ) $item_data['weight'] = (float) $product->get_weight();
+                if ( ! empty($product->get_length()) ) $item_data['length'] = (float) $product->get_length();
+                if ( ! empty($product->get_width()) ) $item_data['width'] = (float) $product->get_width();
+                if ( ! empty($product->get_height()) ) $item_data['height'] = (float) $product->get_height();
+                $item_data['product_meta_data'] = OmnivaLt_Helper::purge_meta_data($product->get_meta_data());
+            }
 
             $order_items[$item_id] = $item_data;
         }
@@ -193,5 +210,10 @@ class OmnivaLt_Wc_Order
         }
 
         $wc_order->add_order_note($note);
+    }
+
+    public static function get_all_statuses()
+    {
+        return wc_get_order_statuses();
     }
 }

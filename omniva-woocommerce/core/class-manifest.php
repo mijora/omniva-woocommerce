@@ -175,37 +175,68 @@ class OmnivaLt_Manifest
       }
     }
 
+    $shipping_methods = array('omnivalt');
+    foreach ( $configs['method_params'] as $method ) {
+      if ( ! $method['is_shipping_method'] ) continue;
+
+      $shipping_methods[] = 'omnivalt_' . $method['key'];
+    }
+
+    $args = array(
+      'paginate' => true,
+      'limit' => $page_params['per_page'],
+      'paged' => $paged,
+      'omnivalt_method' => $shipping_methods, // Compatible with old
+      'meta_query' => array(
+        'relation' => 'AND',
+        array(
+          'key' => '_omnivalt_method',
+          'value' => $shipping_methods,
+          'compare' => 'IN',
+        ),
+      ),
+    );
+
     // Handle query variables depending on selected tab
     switch ( $action ) {
       case 'new_orders':
         $page_title = $page_params['strings'][$action];
-        $args = array(
-          'omnivalt_manifest' => false,
+        $args[$configs['meta_keys']['manifest_date']] = false; // Compatible with old
+        $args['meta_query'][] = array(
+          'relation' => 'OR',
+          array(
+            'key' => $configs['meta_keys']['manifest_date'],
+            'compare' => 'NOT EXISTS',
+          ),
+          array(
+            'key' => $configs['meta_keys']['manifest_date'],
+            'compare' => '=',
+            'value' => '',
+          ),
         );
         break;
       case 'completed_orders':
         $page_title = $page_params['strings'][$action];
-        $args = array(
-          'omnivalt_manifest' => true,
-          // Latest manifest at the top
-          'meta_query' => array(
-            'relation' => 'OR',
-            array(
-              'key' => $configs['meta_keys']['manifest_date'],
-            ),
-            array( // Compatible for older
-              'key' => $configs['meta_keys']['manifest_date_old'],
-            ),
+        $args[$configs['meta_keys']['manifest_date']] = true; // Compatible with old
+        $args['meta_query'][] = array(
+          'relation' => 'AND',
+          array(
+            'key' => $configs['meta_keys']['manifest_date'],
+            'compare' => 'EXISTS',
           ),
-          'orderby' => 'meta_value',
-          'order' => 'DESC'
+          array(
+            'key' => $configs['meta_keys']['manifest_date'],
+            'compare' => '!=',
+            'value' => '',
+          ),
         );
+        $args['orderby'] = 'meta_value';
+        $args['order'] = 'DESC';
         break;
       case 'all_orders':
       default:
         $action = 'all_orders';
         $page_title = $page_params['strings']['all_orders'];
-        $args = array();
         break;
     }
 
@@ -213,55 +244,48 @@ class OmnivaLt_Manifest
       if ( $filter ) {
         switch ($key) {
           case 'status':
-            $args = array_merge(
-              $args,
-              array('status' => $filter)
-            );
+            $args['status'] = $filter;
             break;
           case 'barcode':
-            $args = array_merge(
-              $args,
-              array('omnivalt_barcode' => $filter)
+            $args['meta_query'][] = array(
+              'key' => $configs['meta_keys']['barcodes'],
+              'value' => $filter,
+              'compare' => 'LIKE',
             );
             break;
           case 'customer':
-            $args = array_merge(
-              $args,
-              array('omnivalt_customer' => $filter)
+            $args['field_query'][] = array(
+              'relation' => 'OR',
+              array(
+                'field' => 'billing_first_name',
+                'value' => $filter,
+                'compare' => 'LIKE'
+              ),
+              array(
+                'field' => 'billing_last_name',
+                'value' => $filter,
+                'compare' => 'LIKE'
+              ),
             );
+            $args['omnivalt_customer'] = $filter; // Compatible with old
             break;
         }
       }
     }
     // Date filter is a special case
     if ( $filters['start_date'] || $filters['end_date'] ) {
-      $args = array_merge(
-        $args,
-        array('omnivalt_manifest_date' => array($filters['start_date'], $filters['end_date']))
+      $args[$configs['meta_keys']['manifest_date']] = array($filters['start_date'], $filters['end_date']); // Compatible with old
+      $args['meta_query'][] = array(
+        'key' => $configs['meta_keys']['manifest_date'],
+        'value' => array($filters['start_date'], $filters['end_date']),
+        'compare' => 'BETWEEN',
       );
     }
-
-    // Get orders with extra info about the results.
-    $shipping_methods = array('omnivalt');
-    foreach ( $configs['method_params'] as $method ) {
-      if ( ! $method['is_shipping_method'] ) continue;
-
-      $shipping_methods[] = 'omnivalt_' . $method['key'];
-    }
-    $args = array_merge(
-      $args,
-      array(
-        'omnivalt_method' => $shipping_methods,
-        'paginate' => true,
-        'limit' => $page_params['per_page'],
-        'paged' => $paged,
-      )
-    );
 
     // Searching by ID takes priority
     $single_order = false;
     if ( $filters['id'] ) {
-      $single_order = wc_get_order($filters['id']);
+      $single_order = OmnivaLt_Wc_Order::get_order($filters['id']);
       if ( $single_order ) {
         $orders = array($single_order); // Table printer expects array
         $paged = 1;
@@ -271,8 +295,7 @@ class OmnivaLt_Manifest
     // If there is no search by ID use to custom query
     $results = false;
     if ( ! $single_order ) {
-      $results = wc_get_orders($args);
-      $orders = $results->orders;
+      $orders = OmnivaLt_Wc_Order::get_orders($args);
     }
 
     $there_is_orders = ($single_order || ($results && $results->total > 0));
@@ -291,7 +314,7 @@ class OmnivaLt_Manifest
       ));
     }
 
-    $order_statuses = wc_get_order_statuses();
+    $order_statuses = OmnivaLt_Wc_Order::get_all_statuses();
 
     return array(
       'orders' => $orders,
