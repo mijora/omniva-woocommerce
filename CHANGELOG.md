@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.14.1]
 ### Improved
 - moved cronjobs operation to Woocommerce cronjobs
 - created a stop of plugin activation if the website does not have permission to create files in the plugin folder
