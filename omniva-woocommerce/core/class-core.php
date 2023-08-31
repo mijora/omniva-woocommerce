@@ -2,19 +2,34 @@
 class OmnivaLt_Core
 {
   public static $main_file_path = WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME;
+  public static $var_directories = array('logs', 'pdf', 'debug');
 
   public static function init()
   {
     self::load_classes();
+    register_activation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'plugin_activation'));
+    register_deactivation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'plugin_deactivation'));
     self::load_init_hooks();
-    OmnivaLt_Cronjob::init();
 
     if ( ! function_exists('is_plugin_active') ) {
       include_once(ABSPATH . 'wp-admin/includes/plugin.php');
     }
     if ( is_plugin_active('woocommerce/woocommerce.php') ) {
       self::load_launch_hooks();
+      OmnivaLt_Cronjob::init();
     }
+  }
+
+  public static function plugin_activation()
+  {
+    if ( ! self::is_directory_writable(OMNIVALT_DIR) ) {
+      throw new \Exception(__('Cannot create files in plugin folder', 'omnivalt'));
+    }
+  }
+
+  public static function plugin_deactivation()
+  {
+    // Do nothing
   }
 
   public static function get_configs( $section_name = false )
@@ -96,13 +111,19 @@ class OmnivaLt_Core
 
   public static function add_required_directories()
   {
-    $directories = array('logs', 'pdf', 'debug');
-
-    foreach ( $directories as $dir ) {
+    if ( ! self::is_directory_writable(OMNIVALT_DIR) ) {
+      throw new \Exception(__('Cannot create files in plugin folder', 'omnivalt'));
+    }
+    foreach ( self::$var_directories as $dir ) {
       if ( ! file_exists(OMNIVALT_DIR . 'var/' . $dir) ) {
         mkdir(OMNIVALT_DIR . $dir, 0755, true);
       }
     }
+  }
+
+  public static function is_directory_writable( $directory )
+  {
+    return (is_writable($directory));
   }
 
   public static function get_overrides_dir( $get_url = false )

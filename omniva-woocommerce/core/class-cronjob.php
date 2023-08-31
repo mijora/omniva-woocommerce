@@ -3,33 +3,44 @@ class OmnivaLt_Cronjob
 {
   public static function init()
   {
-    add_filter('cron_schedules', array(__CLASS__, 'add_weekly'));
+    add_filter('cron_schedules', __CLASS__ . '::add_frequency');
 
-    add_action('omnivalt_location_update', array(__CLASS__, 'generate_locations_file'));
+    add_action('omnivalt_location_update', __CLASS__ . '::generate_locations_file');
 
-    register_activation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'activation'));
-    register_deactivation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'deactivation'));
+    register_activation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, __CLASS__ . '::activation');
+    register_deactivation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, __CLASS__ . '::deactivation');
   }
 
   public static function activation()
   {
-    if ( ! wp_next_scheduled('omnivalt_location_update')) {
-      wp_schedule_event(time(), 'daily', 'omnivalt_location_update');
+    if ( ! as_next_scheduled_action('omnivalt_location_update') ) {
+      as_schedule_recurring_action(current_time('timestamp'), self::get_interval_time('daily'), 'omnivalt_location_update');
     }
   }
 
   public static function deactivation()
   {
-    wp_clear_scheduled_hook('omnivalt_location_update');
+    as_unschedule_action('omnivalt_location_update');
   }
 
-  public static function add_weekly($schedules)
+  public static function add_frequency($schedules)
   {
     $schedules['daily'] = array(
       'interval' => 86400,
       'display' => __('Once daily', 'omnivalt'),
     );
     return $schedules;
+  }
+
+  public static function get_interval_time( $interval_key )
+  {
+    $all_intervals = apply_filters('cron_schedules', array());
+
+    if ( isset($all_intervals[$interval_key]) ) {
+      return $all_intervals[$interval_key]['interval'];
+    }
+
+    return 2592000;
   }
 
   public static function generate_locations_file()
