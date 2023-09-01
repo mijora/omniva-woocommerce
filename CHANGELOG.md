@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed error when Order create manualy from admin area
+
 ## [1.14.1]
 ### Improved
 - moved cronjobs operation to Woocommerce cronjobs
