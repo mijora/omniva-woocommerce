@@ -3,6 +3,10 @@
 ## [Unreleased]
 ### Fixed
 - fixed error when Order create manualy from admin area
+- fixed pagination in Omniva Orders list
+
+### Improved
+- added the ability to specify via URL how many orders will be displayed on one page in the Omniva order list
 
 ## [1.14.1]
 ### Improved

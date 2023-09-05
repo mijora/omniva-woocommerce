@@ -163,6 +163,7 @@ class OmnivaLt_Manifest
     $configs = OmnivaLt_Core::get_configs();
     $page_params = self::page_params();
 
+    $per_page = (isset($_GET['perpage'])) ? filter_input(INPUT_GET, 'perpage') : $page_params['per_page'];
     $paged = (isset($_GET['paged'])) ? filter_input(INPUT_GET, 'paged') : 1;
     $action = (isset($_GET['action'])) ? filter_input(INPUT_GET, 'action') : 'all_orders';
 
@@ -184,7 +185,7 @@ class OmnivaLt_Manifest
 
     $args = array(
       'paginate' => true,
-      'limit' => $page_params['per_page'],
+      'limit' => $per_page,
       'paged' => $paged,
       'omnivalt_method' => $shipping_methods, // Compatible with old
       'meta_query' => array(
@@ -295,7 +296,8 @@ class OmnivaLt_Manifest
     // If there is no search by ID use to custom query
     $results = false;
     if ( ! $single_order ) {
-      $orders = OmnivaLt_Wc_Order::get_orders($args);
+      $results = OmnivaLt_Wc_Order::get_orders($args, true);
+      $orders = $results->orders;
     }
 
     $there_is_orders = ($single_order || ($results && $results->total > 0));
