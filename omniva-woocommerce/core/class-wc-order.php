@@ -1,14 +1,14 @@
 <?php
 class OmnivaLt_Wc_Order
 {
-    public static function get_orders( $args )
+    public static function get_orders( $args, $get_result_object = false )
     {
         if ( empty($args) ) {
             return false;
         }
         
         $results = wc_get_orders($args);
-        return $results->orders;
+        return ($get_result_object) ? $results : $results->orders;
     }
 
     public static function get_order( $wc_order_id )
