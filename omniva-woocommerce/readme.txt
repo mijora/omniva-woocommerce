@@ -7,6 +7,11 @@
 
 == Changelog ==
 
+= 1.14.2 =
+- fixed error when Order create manualy from admin area
+- fixed pagination in Omniva Orders list
+- added the ability to specify via URL how many orders will be displayed on one page in the Omniva order list
+
 = 1.14.1 =
 - moved cronjobs operation to Woocommerce cronjobs
 - created a stop of plugin activation if the website does not have permission to create files in the plugin folder

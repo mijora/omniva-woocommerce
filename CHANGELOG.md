@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.14.2]
 ### Fixed
 - fixed error when Order create manualy from admin area
 - fixed pagination in Omniva Orders list
