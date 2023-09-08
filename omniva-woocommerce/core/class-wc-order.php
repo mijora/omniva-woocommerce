@@ -1,14 +1,14 @@
 <?php
 class OmnivaLt_Wc_Order
 {
-    public static function get_orders( $args )
+    public static function get_orders( $args, $get_result_object = false )
     {
         if ( empty($args) ) {
             return false;
         }
         
         $results = wc_get_orders($args);
-        return $results->orders;
+        return ($get_result_object) ? $results : $results->orders;
     }
 
     public static function get_order( $wc_order_id )
@@ -48,11 +48,13 @@ class OmnivaLt_Wc_Order
             $order_shipping_method = OmnivaLt_Omniva_Order::get_method($wc_order);
         }
 
+        $order_date = $wc_order->get_date_created();
+
         $data = array(
             'id' => $wc_order->get_id(),
             'number' => $wc_order->get_order_number(),
             'status' => $wc_order->get_status(),
-            'created' => $wc_order->get_date_created()->format('Y-m-d H:i:s'),
+            'created' => (! empty($order_date)) ? $order_date->format('Y-m-d H:i:s') : '2000-01-01 00:00:00',
         );
 
         if ( empty($get_sections) || in_array('admin', $get_sections) ) {
