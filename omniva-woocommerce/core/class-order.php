@@ -632,12 +632,17 @@ class OmnivaLt_Order
 
     if ( isset($_POST['omnivalt_terminal_id']) ) {
       $terminal_id = wc_clean($_POST['omnivalt_terminal_id']);
-      OmnivaLt_Omniva_Order::set_terminal_id($post_id, $terminal_id);
-      OmnivaLt_Wc_Order::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+      if ( $terminal_id != OmnivaLt_Omniva_Order::get_terminal_id($post_id) ) {
+        OmnivaLt_Omniva_Order::set_terminal_id($post_id, $terminal_id);
+        OmnivaLt_Wc_Order::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+      }
     }
 
     if ( isset($_POST['omnivalt_dimmensions']) ) {
-      OmnivaLt_Omniva_Order::set_dimmensions($post_id, wc_clean(json_encode($_POST['omnivalt_dimmensions'])));
+      $dimmensions = wc_clean(json_encode($_POST['omnivalt_dimmensions']));
+      if ( $dimmensions != OmnivaLt_Omniva_Order::get_dimmensions($post_id) ) {
+        OmnivaLt_Omniva_Order::set_dimmensions($post_id, wc_clean(json_encode($_POST['omnivalt_dimmensions'])));
+      }
     }
 
     foreach ( $configs['additional_services'] as $service_key => $service_values ) {

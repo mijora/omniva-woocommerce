@@ -14,7 +14,7 @@ class OmnivaLt_Debug
         return false;
     }
 
-    public static function debug_request( $request )
+    public static function debug_request( $request , $method = 'print_r' )
     {
         if ( ! self::check_debug_enabled() ) {
             return '';
@@ -23,27 +23,29 @@ class OmnivaLt_Debug
         OmnivaLt_Core::add_required_directories();
 
         $file_name = 'request_' . current_time('Ymd_His_'.substr((string)microtime(), 2, 4)) . '.log';
+        $file_name = current_time('Ymd_His_'.substr((string)microtime(), 2, 4)) . '_request.log';
         $file = fopen(self::$_debug_dir . $file_name, 'w');
-        fwrite($file, print_r($request,true));
+        fwrite($file, self::echo_single($request, 'print_r'));
         fclose($file);
 
-        return $request;
+        return self::echo_single($request, $method);
     }
 
-    public static function debug_response( $response )
+    public static function debug_response( $response, $method = 'print_r' )
     {
         if ( ! self::check_debug_enabled() ) {
             return '';
         }
 
+
         OmnivaLt_Core::add_required_directories();
 
         $file_name = 'response_' . current_time('Ymd_His_'.substr((string)microtime(), 2, 4)) . '.log';
         $file = fopen(self::$_debug_dir . $file_name, 'w');
-        fwrite($file, print_r($response,true));
+        fwrite($file, self::echo_single($response, 'print_r'));
         fclose($file);
 
-        return $response;
+        return self::echo_single($response, $method);
     }
 
     public static function log( $type, $msg, $show_backtrace = false )
@@ -83,16 +85,22 @@ class OmnivaLt_Debug
         $debug_params = OmnivaLt_Core::get_configs('debug');
         self::delete_old_files($debug_params['delete_after']);
         $files = array_diff(scandir(self::$_debug_dir), array('.', '..'));
+        $all_files = array();
         $request_files = array();
         $response_files = array();
 
         foreach ( $files as $file ) {
             preg_match_all('/\d+/', $file, $matches);
+            $file_ext = pathinfo($file, PATHINFO_EXTENSION);
+            if ( $file_ext != 'log' ) {
+                continue;
+            }
             $file_data = array(
                 'name' => $file,
                 'day' => (isset($matches[0][0])) ? $matches[0][0] : '',
                 'time' => (isset($matches[0][1])) ? $matches[0][1] : '',
             );
+            $all_files[] = $file_data;
             if ( strpos($file, 'request') !== false ) {
                 $request_files[] = $file_data;
             }
@@ -101,6 +109,12 @@ class OmnivaLt_Debug
             }
         }
 
+        usort($all_files, function ($a, $b) {
+            if ( $b['day'] === $a['day'] ) {
+                return $b['time'] <=> $a['time'];
+            }
+            return $b['day'] <=> $a['day'];
+        });
         usort($request_files, function ($a, $b) {
             if ( $b['day'] === $a['day'] ) {
                 return $b['time'] <=> $a['time'];
@@ -123,7 +137,7 @@ class OmnivaLt_Debug
             return $output[$get_section];
         }
 
-        return $output;
+        return $all_files;
     }
 
     private static function delete_old_files( $older_than )
@@ -154,5 +168,44 @@ class OmnivaLt_Debug
     {
         $log_pref = '[' . current_time("Y-m-d H:i:s") . ']: ';
         return $log_pref . $message . PHP_EOL;
+    }
+
+    public static function echo_single( $variable, $method = 'print_r' )
+    {
+        if ( $method == 'print_r' ) {
+            if ( is_array($variable) || is_object($variable) ) {
+                return print_r($variable, true);
+            }
+        }
+        if ( $method == 'var_dump' ) {
+            ini_set("xdebug.overload_var_dump", "off");
+            ob_start();
+            var_dump($variable);
+            return ob_get_clean();
+        }
+        if ( $method == 'json' ) {
+            return json_encode($variable, JSON_PRETTY_PRINT);
+        }
+        
+        return $variable;
+    }
+
+    public static function echo_multi( $variables_array, $display_type = 'pre' )
+    {
+        $debug_string = '';
+        foreach ( $variables_array as $title => $variable ) {
+            switch ($display_type) {
+                case 'line':
+                    $d_start = "\n";
+                    $d_end = "\n\n";
+                    break;
+                default:
+                    $d_start = '<pre>';
+                    $d_end = '</pre>';
+            }
+            $debug_string .= '**' . $title . '**' . $d_start . print_r($variable, true) . $d_end;
+        }
+
+        return $debug_string;
     }
 }

@@ -27,19 +27,10 @@ class OmnivaLt_Labels
       return;
     }
 
-    OmnivaLt_Core::load_vendors(array('tcpdf', 'fpdi'));
-
-    $print_type = (isset($this->omnivalt_settings['print_type'])) ? $this->omnivalt_settings['print_type'] : '4';
-    $count = 0;
-    $label_count = 0;
-
-    $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('P');
-    $pdf->setPrintHeader(false);
-    $pdf->setPrintFooter(false);
-    
     if ( ! is_array($orderIds) )
       $orderIds = array($orderIds);
 
+    $all_barcodes = array();
     foreach ( array_unique($orderIds) as $orderId ) {
       $order = OmnivaLt_Wc_Order::get_data($orderId, array('shipment', 'shipping', 'billing'));
       if ( ! $order ) {
@@ -58,14 +49,8 @@ class OmnivaLt_Labels
 
       $barcodes = OmnivaLt_Omniva_Order::get_barcodes($order->id);
 
-      $label_file_path = OMNIVALT_DIR . 'var/pdf/' . OmnivaLt_Helper::clear_file_name($order->number) . '.pdf';
-      $label_file_content = false;
-      
-      if ( empty($barcodes) || ! $download ) {
-        if ( file_exists($label_file_path) ) {
-          unlink($label_file_path);
-        }
-        
+      if ( empty($barcodes) ) {
+        OmnivaLt_Omniva_Order::set_error($order->id, '');
         $status = $this->omnivalt_api->get_tracking_number($order->id);
 
         if ( ! empty($status['debug']) ) {
@@ -94,72 +79,43 @@ class OmnivaLt_Labels
         }
       }
 
-      $label_status = $this->omnivalt_api->get_shipment_labels($barcodes);
-      if ( ! $label_status['status'] ) {
-        OmnivaLt_Omniva_Order::set_error($order->id, $label_status['msg']);
-        OmnivaLt_Helper::add_msg($order->number . ' - ' . $label_status['msg'], 'error');
+      if ( ! is_array($barcodes) ) {
         continue;
       }
 
-      if ( ! empty($label_status['file']) ) {
-        $label_file_content = $label_status['file'];
+      foreach ( $barcodes as $barcode ) {
+        $all_barcodes[] = $barcode;
       }
-
-      if ( ! $download ) {
-        OmnivaLt_Helper::add_msg($order->number . ' - ' . __('Omniva label generated', 'omnivalt'), 'updated');
-      }
-
-      if ( ! $label_file_content ) {
-        continue;
-      }
-
-      file_put_contents($label_file_path, base64_decode($label_file_content));
-
-      if ( ! file_exists($label_file_path) ) {
-        continue;
-      }
-  
-      OmnivaLt_Omniva_Order::set_error($order->id, '');
-      
-      $pagecount = $pdf->setSourceFile($label_file_path);
-      for ( $i = 1; $i <= $pagecount; $i++ ) {
-        $tplidx = $pdf->ImportPage($i);
-        if ( $print_type == '1' ) {
-          $s = $pdf->getTemplatesize($tplidx);
-          $pdf->AddPage('P', array($s['width'], $s['height']));
-          $pdf->useTemplate($tplidx);
-        } else if ( $print_type == '4' ) {
-          if ( $label_count == 0 || $label_count == 4 ) {
-            $pdf->AddPage('P');
-            $label_count = 0;
-            $pdf->useTemplate($tplidx, 5, 15, 94.5, 108, false);
-          } else if ( $label_count == 1 ) {
-            $pdf->useTemplate($tplidx, 110, 15, 94.5, 108, false);
-          } else if ( $label_count == 2 ) {
-            $pdf->useTemplate($tplidx, 5, 160, 94.5, 108, false);
-          } else if ( $label_count == 3 ) {
-            $pdf->useTemplate($tplidx, 110, 160, 94.5, 108, false);
-          }
-          $label_count++;
-        }
-      }
-
-      unlink($label_file_path);
-      $count++;
     }
-    
-    if ( $count == 0 ) {
+
+    $labels_status = $this->omnivalt_api->download_shipment_labels($all_barcodes);
+    if ( ! $labels_status['status'] ) {
+      OmnivaLt_Helper::add_msg($labels_status['msg'], 'error');
       wp_safe_redirect(wp_get_referer());
-      exit;
     }
 
-    if ( $download ) {
-      $pdf->Output('Omnivalt_labels.pdf', 'D');
-    }
+    exit;
   }
 
   public function print_manifest( $orders_ids )
   {
+    $result = $this->omnivalt_api->get_manifest($orders_ids);
+
+    if ( ! $result['status'] ) {
+      OmnivaLt_Helper::add_msg(__('Failed to get manifest', 'omnivalt') . '. ' . __('Error', 'omnivalt') . ': ' . $result['msg'], 'error');
+      wp_safe_redirect(wp_get_referer());
+      exit;
+    }
+    if ( empty($result['success']) ) {
+      OmnivaLt_Helper::add_msg(__('No compatible orders for manifest', 'omnivalt'), 'error');
+      wp_safe_redirect(wp_get_referer());
+      exit;
+    }
+
+    foreach ( $result['success'] as $order_id ) {
+      OmnivaLt_Omniva_Order::set_manifest_date($order_id, current_time('Y-m-d H:i:s'));
+    }
+    return; //TODO: Bibliotekoj padaryti bruksninio kodo pridejima ir tada istrinti nuo cia
     OmnivaLt_Core::load_vendors(array('tcpdf'));
 
     if ( ! is_array($orders_ids) ) {

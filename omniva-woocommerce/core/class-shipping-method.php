@@ -453,16 +453,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       );
       $fields['debugview_request'] = array(
         'type' => 'debug_window',
-        'files' => OmnivaLt_Debug::get_all_files('request'),
-        'title' => __('Logged requests', 'omnivalt'),
-        'subtitle' => __('Request', 'omnivalt'),
-        'class' => 'omniva_debug'
-      );
-      $fields['debugview_response'] = array(
-        'type' => 'debug_window',
-        'files' => OmnivaLt_Debug::get_all_files('response'),
-        'title' => __('Logged responses', 'omnivalt'),
-        'subtitle' => __('Response', 'omnivalt'),
+        'files' => OmnivaLt_Debug::get_all_files(),
+        'title' => __('Logged communications with API', 'omnivalt'),
         'class' => 'omniva_debug'
       );
       $fields['hr_end'] = array(
@@ -1196,6 +1188,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $field_class = (isset($value['class'])) ? $value['class'] : '';
       $files = (isset($value['files'])) ? $value['files'] : array();
       $files_dir = OmnivaLt_Debug::$_debug_dir;
+      $files_subtitle = (isset($value['subtitle'])) ? $value['subtitle'] : '';
 
       ob_start();
       ?>
@@ -1223,8 +1216,21 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
                   } else {
                     $date = __('Date unknown', 'omnivalt');
                   }
+                  $subtitle = '';
+                  if ( empty($files_subtitle) ) {
+                    $all_subtitles = array(
+                      'request' => __('Request', 'omnivalt'),
+                      'response' => __('Response', 'omnivalt'),
+                    );
+                    foreach ( $all_subtitles as $subtitle_key => $subtitle_value ) {
+                      if ( str_contains($file_data['name'], $subtitle_key) ) {
+                        if ( ! empty($subtitle) ) $subtitle .= '/';
+                        $subtitle .= $subtitle_value;
+                      }
+                    }
+                  }
                   ?>
-                  <span class="date"><?php echo esc_html($value['subtitle']) . ' ' . esc_html($date); ?></span>
+                  <span class="date"><?php echo trim(esc_html($subtitle) . ' ' . esc_html($date)); ?></span>
                   <textarea readonly rows="11" style="width:100%;display:none;"><?php echo $file_content; ?></textarea>
                 </div>
               <?php endforeach; ?>

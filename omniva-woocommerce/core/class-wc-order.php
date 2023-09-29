@@ -207,7 +207,7 @@ class OmnivaLt_Wc_Order
     public static function add_note( $wc_order_id, $note )
     {
         $wc_order = self::get_order($wc_order_id);
-        if ( ! $wc_order ) {
+        if ( ! $wc_order || ! method_exists($wc_order, 'add_order_note') ) {
             return false;
         }
 
