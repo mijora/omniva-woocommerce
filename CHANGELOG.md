@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fix error when changing Order status to "Refunded"
+- fixed Omniva data saving every time even though the data is not changed
+
+### Improved
+- created API library usage for all API functions
+
+### Updated
+- updated Omniva API library to v1.0.11
+
 ## [1.14.2]
 ### Fixed
 - fixed error when Order create manualy from admin area
