@@ -288,16 +288,6 @@ class OmnivaLt_Core
     }
   }
 
-  public static function load_vendors( $vendors = array() ) //TODO: Temporary required while API library not using instead this
-  {
-    if (empty($vendors) || in_array('tcpdf', $vendors)) {
-      require_once(OMNIVALT_DIR . 'vendor/tecnickcom/tcpdf/tcpdf.php');
-    }
-    if (empty($vendors) || in_array('fpdi', $vendors)) {
-      require_once(OMNIVALT_DIR . 'vendor/setasign/fpdi/src/autoload.php');
-    }
-  }
-
   public static function get_error_text( $error_code )
   {
     $errors = array(
@@ -439,5 +429,10 @@ class OmnivaLt_Core
     if ( $track_info_in_emails === 'yes' ) {
       add_action('woocommerce_email_after_order_table', 'OmnivaLt_Order::show_tracking_link', 10, 1);
     }
+  }
+
+  public static function load_vendors( $vendors = array() )
+  {
+    trigger_error('Method ' . __METHOD__ . ' is deprecated. All vendors are now loaded via composer.', E_USER_DEPRECATED);
   }
 }
