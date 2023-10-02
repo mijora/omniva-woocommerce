@@ -1,6 +1,6 @@
 {
     "require": {
-        "mijora/omniva-api": "^1.0.9"
+        "mijora/omniva-api": "^1.0.11"
     },
     "autoload": {
         "files": [

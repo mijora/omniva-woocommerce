@@ -57,13 +57,15 @@ class OmnivaLt_Api
       /* Get all data */
       $data_client = $this->get_client_data($order);
       $data_shop = $this->get_shop_data();
-      $data_settings = $this->get_settings_data($order);
+      $data_settings = $this->get_settings_data();
       $data_packages = $this->get_packages_data($order);
+
+      $label_comment = $this->fill_comment_variables($data_settings->label_comment, $data_settings->comment_variables, $order );
 
       /* Create shipment */
       $api_shipment = new Shipment();
       $api_shipment
-        ->setComment($data_settings->label_comment)
+        ->setComment($label_comment)
         ->setShowReturnCodeEmail($data_settings->send_return_code->email)
         ->setShowReturnCodeSms($data_settings->send_return_code->sms);
       $this->setAuth($api_shipment);
@@ -252,6 +254,7 @@ class OmnivaLt_Api
 
     try {
       $data_shop = $this->get_shop_data();
+      $data_settings = $this->get_settings_data();
 
       /* Set sender */
       $api_sender_address = new Address();
@@ -269,7 +272,19 @@ class OmnivaLt_Api
 
       /* Create manifest */
       $api_manifest = new Manifest();
-      $api_manifest->setSender($api_sender_contact);
+      $api_manifest
+        ->setSender($api_sender_contact)
+        ->showBarcode($data_settings->show_barcode)
+        ->setString('sender_address', _x('Sender address', 'Manifest', 'omnivalt'))
+        ->setString('row_number', _x('No.', 'Manifest', 'omnivalt'))
+        ->setString('shipment_number', _x('Shipment number', 'Manifest', 'omnivalt'))
+        ->setString('order_number', _x('Order No.', 'Manifest', 'omnivalt'))
+        ->setString('date', _x('Date', 'Manifest', 'omnivalt'))
+        ->setString('quantity', _x('Quantity', 'Manifest', 'omnivalt'))
+        ->setString('weight', _x('Weight', 'Manifest', 'omnivalt') . ' (kg)')
+        ->setString('recipient_address', _x("Recipient's name and address", 'Manifest', 'omnivalt'))
+        ->setString('courier_signature', _x("Courier name, surname, signature", 'Manifest', 'omnivalt'))
+        ->setString('sender_signature', _x("Sender name, surname, signature", 'Manifest', 'omnivalt'));
 
       /* Prepare orders */
       foreach ( $orders_ids as $order_id ) {
@@ -295,7 +310,8 @@ class OmnivaLt_Api
           ->setTracking($data_shipments->barcodes[0])
           ->setQuantity(count($data_shipments->barcodes))
           ->setWeight($data_shipments->weight)
-          ->setReceiver($this->get_client_fulladress($order));
+          ->setReceiver($this->get_client_fulladress($order))
+          ->setOrderNumber($order->number);
         $api_manifest->addOrder($api_order);
 
         $output['success'][] = $order_id;
@@ -461,15 +477,17 @@ class OmnivaLt_Api
     return trim(OmnivaLt_Order::get_customer_fullname_or_company($order) . ', ' . $address);
   }
 
-  private function get_settings_data( $order )
+  private function get_settings_data()
   {
     $data = array(
       'api_user' => '',
       'pickup_method' => 'c',
       'label_comment' => '',
+      'comment_variables' => array(),
       'send_return_code' => $this->get_return_code_sending(),
       'company' => '',
       'bank_account' => '',
+      'show_barcode' => true,
     );
 
     if ( ! empty($this->omnivalt_settings['api_user']) ) {
@@ -481,16 +499,8 @@ class OmnivaLt_Api
     }
 
     if ( ! empty($this->omnivalt_settings['label_note']) ) {
-      $prepare_comment = esc_html($this->omnivalt_settings['label_note']);
-      foreach ( $this->omnivalt_configs['text_variables'] as $key => $title ) {
-        $value = '';
-        
-        if ( $key === 'order_id' ) $value = $order->id;
-        if ( $key === 'order_number' ) $value = $order->number;
-        
-        $prepare_comment = str_replace('{' . $key . '}', $value, $prepare_comment);
-      }
-      $data['label_comment'] = $prepare_comment;
+      $data['label_comment'] = esc_html($this->omnivalt_settings['label_note']);
+      $data['comment_variables'] = $this->omnivalt_configs['text_variables'];
     }
 
     if ( ! empty($this->omnivalt_settings['company']) ) {
@@ -499,6 +509,10 @@ class OmnivaLt_Api
 
     if ( ! empty($this->omnivalt_settings['bank_account']) ) {
       $data['bank_account'] = $this->clean(str_replace(' ', '', $this->omnivalt_settings['bank_account']));
+    }
+
+    if ( ! empty($this->omnivalt_settings['manifest_show_barcode']) ) {
+      $data['show_barcode'] = ($this->omnivalt_settings['manifest_show_barcode'] === 'yes');
     }
 
     return (object) $data;
@@ -536,6 +550,20 @@ class OmnivaLt_Api
     );
 
     return (object) $data;
+  }
+
+  private function fill_comment_variables( $comment, $variables, $order )
+  {
+    foreach ( $variables as $key => $title ) {
+      $value = '';
+      
+      if ( $key === 'order_id' ) $value = $order->id;
+      if ( $key === 'order_number' ) $value = $order->number;
+      
+      $comment = str_replace('{' . $key . '}', $value, $comment);
+    }
+
+    return $comment;
   }
 
   private function prepare_package_size( $shipment_size, $units )
