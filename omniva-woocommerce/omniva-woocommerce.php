@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Omniva shipping
+ * Plugin Name: Omniva shipping - Use API library
  * Description: Official Omniva shipping plugin for WooCommerce
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
