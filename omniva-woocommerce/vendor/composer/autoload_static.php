@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6416281047b754d8f19971fadd6a47b5
+class ComposerStaticInit1abea3da2487522ba62908c181eaa4ed
 {
     public static $files = array (
         'cd68897ab66901821be123d6861c0d78' => __DIR__ . '/../..' . '/overrides/tcpdf/tcpdf_config.php',
@@ -53,9 +53,9 @@ class ComposerStaticInit6416281047b754d8f19971fadd6a47b5
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6416281047b754d8f19971fadd6a47b5::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6416281047b754d8f19971fadd6a47b5::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit6416281047b754d8f19971fadd6a47b5::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit1abea3da2487522ba62908c181eaa4ed::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit1abea3da2487522ba62908c181eaa4ed::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit1abea3da2487522ba62908c181eaa4ed::$classMap;
 
         }, null, ClassLoader::class);
     }

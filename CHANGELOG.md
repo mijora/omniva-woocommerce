@@ -15,7 +15,7 @@
 - added arrival time display to courier call success notification
 
 ### Updated
-- updated Omniva API library to v1.0.11
+- updated Omniva API library to v1.0.12
 
 ## [1.14.2]
 ### Fixed

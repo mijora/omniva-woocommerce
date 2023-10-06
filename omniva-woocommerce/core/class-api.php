@@ -99,8 +99,7 @@ class OmnivaLt_Api
         $additional_services = $this->get_additional_services($order, $shipment_service);
         $all_api_additional_services = array();
         foreach ( $additional_services as $additional_service_key => $additional_service_code ) {
-          $service_conditions = $this->check_additional_service_condition($shipment_service, $additional_service_code); //Temporary use while this function not exist in API
-          //$service_conditions = Shipment::getAdditionalServiceConditionsForShipment($shipment_service, $additional_service_code); //Function from API
+          $service_conditions = Shipment::getAdditionalServiceConditionsForShipment($shipment_service, $additional_service_code);
           if ( ! empty($service_conditions) ) {
             if ( isset($service_conditions->only_countries) && ! in_array($data_client->country, $service_conditions->only_countries) ) {
               continue;
@@ -637,8 +636,7 @@ class OmnivaLt_Api
   private function get_additional_services( $order, $shipment_service )
   {
     $order_services = OmnivaLt_Helper::get_order_services($order);
-    $service_additional_services = $this->get_service_all_additional_services($shipment_service); //Temporary use while this function not exist in API
-    //$service_additional_services = Shipment::getAdditionalServicesForShipment($shipment_service); //Function from API
+    $service_additional_services = Shipment::getAdditionalServicesForShipment($shipment_service);
     $additional_services = array();
 
     foreach ( $this->omnivalt_configs['additional_services'] as $service_key => $service_values ) {
@@ -657,37 +655,6 @@ class OmnivaLt_Api
     }
 
     return $additional_services;
-  }
-
-  private function get_service_all_additional_services( $shipment_service ) //Temporary while this function not exist in API
-  {
-    $all_additional_services = $this->omnivalt_configs['additional_services_map'];
-    if ( ! isset($all_additional_services[$shipment_service]) ) {
-      return array();
-    }
-
-    $service_additional_services = array();
-    foreach ( $all_additional_services[$shipment_service] as $position => $value ) {
-      if ( $value ) {
-        $service_additional_services[] = $all_additional_services['map'][$position];
-      }
-    }
-
-    return $service_additional_services;
-  }
-
-  private function check_additional_service_condition( $shipment_service, $additional_service ) //Temporary while this function not exist in API
-  {
-    $all_conditions = $this->omnivalt_configs['additional_services_conditions'];
-    
-    if ( ! isset($all_conditions[$shipment_service]) ) {
-      return (object) array();
-    }
-    if ( ! isset($all_conditions[$shipment_service][$additional_service]) ) {
-      return (object) array();
-    }
-
-    return (object) $all_conditions[$shipment_service][$additional_service];
   }
 
   private function get_return_code_sending()
