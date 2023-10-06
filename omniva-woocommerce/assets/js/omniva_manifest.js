@@ -89,7 +89,7 @@
         call_id: call_id
       },
       success: function(response) {
-        console.log(response);
+        //console.log(response);
         if ( response.status == "error" ) {
           console.log("Error", response.msg);
         }
