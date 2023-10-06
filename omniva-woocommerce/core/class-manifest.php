@@ -144,11 +144,19 @@ class OmnivaLt_Manifest
       'strings' => array(
         'all_orders' => __('All orders', 'omnivalt'),
         'new_orders' => __('New orders', 'omnivalt'),
+        'registered_orders' => __('Registered orders', 'omnivalt'),
+        'manifest_orders' => __('Orders ready to ship', 'omnivalt'),
         'completed_orders' => __('Completed orders', 'omnivalt'),
       ),
       'filter_keys' => array('customer', 'status', 'barcode', 'id', 'start_date', 'end_date'),
       'per_page' => 25,
     );
+  }
+
+  public static function is_mannifest_orders_table( $tab_key )
+  {
+    $manifest_table_tabs = array('manifest_orders', 'completed_orders');
+    return (in_array($tab_key, $manifest_table_tabs));
   }
 
   public static function page_make_link($args)
@@ -202,6 +210,7 @@ class OmnivaLt_Manifest
     switch ( $action ) {
       case 'new_orders':
         $page_title = $page_params['strings'][$action];
+        $args['status'] = array('wc-processing', 'wc-on-hold', 'wc-pending');
         $args[$configs['meta_keys']['manifest_date']] = false; // Compatible with old
         $args['meta_query'][] = array(
           'relation' => 'OR',
@@ -215,21 +224,73 @@ class OmnivaLt_Manifest
             'value' => '',
           ),
         );
+        $args['meta_query'][] = array(
+          'relation' => 'OR',
+          array(
+            'key' => $configs['meta_keys']['barcodes'],
+            'compare' => 'NOT EXISTS',
+          ),
+          array(
+            'key' => $configs['meta_keys']['barcodes'],
+            'compare' => '=',
+            'value' => '',
+          ),
+        );
+        break;
+      case 'registered_orders':
+        $page_title = $page_params['strings'][$action];
+        $args['status'] = array('wc-processing', 'wc-on-hold', 'wc-pending');
+        $args[$configs['meta_keys']['manifest_date']] = false; // Compatible with old
+        $args['meta_query'][] = array(
+          'relation' => 'OR',
+          array(
+            'key' => $configs['meta_keys']['manifest_date'],
+            'compare' => 'NOT EXISTS',
+          ),
+          array(
+            'key' => $configs['meta_keys']['manifest_date'],
+            'compare' => '=',
+            'value' => '',
+          ),
+        );
+        $args['meta_query'][] = array(
+          'key' => $configs['meta_keys']['barcodes'],
+          'compare' => 'EXISTS',
+        );
+        $args['meta_query'][] = array(
+          'key' => $configs['meta_keys']['barcodes'],
+          'compare' => '!=',
+          'value' => '',
+        );
+        break;
+      case 'manifest_orders':
+        $page_title = $page_params['strings'][$action];
+        $args['status'] = array('wc-processing', 'wc-on-hold', 'wc-pending');
+        $args[$configs['meta_keys']['manifest_date']] = true; // Compatible with old
+        $args['meta_query'][] = array(
+          'key' => $configs['meta_keys']['manifest_date'],
+          'compare' => 'EXISTS',
+        );
+        $args['meta_query'][] =  array(
+          'key' => $configs['meta_keys']['manifest_date'],
+          'compare' => '!=',
+          'value' => '',
+        );
+        $args['orderby'] = 'meta_value';
+        $args['order'] = 'DESC';
         break;
       case 'completed_orders':
         $page_title = $page_params['strings'][$action];
+        $args['status'] = array('wc-completed', 'wc-cancelled', 'wc-refunded', 'wc-failed');
         $args[$configs['meta_keys']['manifest_date']] = true; // Compatible with old
         $args['meta_query'][] = array(
-          'relation' => 'AND',
-          array(
-            'key' => $configs['meta_keys']['manifest_date'],
-            'compare' => 'EXISTS',
-          ),
-          array(
-            'key' => $configs['meta_keys']['manifest_date'],
-            'compare' => '!=',
-            'value' => '',
-          ),
+          'key' => $configs['meta_keys']['manifest_date'],
+          'compare' => 'EXISTS',
+        );
+        $args['meta_query'][] =  array(
+          'key' => $configs['meta_keys']['manifest_date'],
+          'compare' => '!=',
+          'value' => '',
         );
         $args['orderby'] = 'meta_value';
         $args['order'] = 'DESC';

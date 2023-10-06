@@ -170,13 +170,84 @@ class OmnivaLt_Labels
 
   public static function post_call_courier_actions()
   {
+    $shipping_settings = OmnivaLt_Core::get_settings();
     $omnivalt_api = new OmnivaLt_Api();
-    $callCarrierReturn = $omnivalt_api->call_courier(intval($_GET['call_quantity']));
+    $call_result = $omnivalt_api->call_courier(intval($_GET['call_quantity']));
 
-    if ($callCarrierReturn['status'] == true)
-      OmnivaLt_Helper::add_msg(__("Omniva courier called", 'omnivalt'), 'omniva-notice');
-    else
-      OmnivaLt_Helper::add_msg(__("There was an error calling Omniva courier. Error: " . $callCarrierReturn['msg'], 'omnivalt'), 'error');
+    if ( $call_result['status'] == true ) {
+      if ( isset($call_result['call_id']) ) {
+        $result = OmnivaLt_Helper::update_courier_calls(array(
+          'id' => esc_attr($call_result['call_id']),
+          'start' => esc_attr($call_result['start_time']),
+          'end' => esc_attr($call_result['end_time']),
+        ));
+        $arrival_start = date('Y-m-d H:i', strtotime($call_result['start_time']));
+        $arrival_end = date('Y-m-d H:i', strtotime($call_result['end_time']));
+      } else {
+        $pick_day = date('Y-m-d');
+        $pick_start = OmnivaLt_Helper::get_formated_time($shipping_settings['pick_up_start'], '08:00');
+        $pick_end = OmnivaLt_Helper::get_formated_time($shipping_settings['pick_up_end'], '08:00');
+        if ( time() > strtotime($pick_day . ' ' . $pick_start) ) {
+          $pick_day = date('Y-m-d', strtotime($pick_day . "+1 days"));
+        }
+        $arrival_start = date('Y-m-d H:i', strtotime($pick_day . ' ' . $pick_start));
+        $arrival_end = date('Y-m-d H:i', strtotime($pick_day . ' ' . $pick_end));
+      }
+
+      OmnivaLt_Helper::add_msg(sprintf(__('Omniva courier called. Arrival time between %s.', 'omnivalt'), $arrival_start . ' - ' . $arrival_end), 'success');
+    } else {
+      OmnivaLt_Helper::add_msg(__("There was an error calling Omniva courier. Error: " . $call_result['msg'], 'omnivalt'), 'error');
+    }
     wp_safe_redirect(wp_get_referer());
+  }
+
+  public static function post_cancel_courier_actions()
+  {
+    if ( ! isset($_GET['omnivalt_cancel_courier_nonce']) || ! wp_verify_nonce($_GET['omnivalt_cancel_courier_nonce'], 'omnivalt_cancel_courier') ) {
+      OmnivaLt_Helper::add_msg(__('Request security check failed', 'omnivalt'), 'error');
+      wp_safe_redirect(wp_get_referer());
+      return;
+    }
+
+    if ( empty(esc_attr($_GET['call_id'])) ) {
+      OmnivaLt_Helper::add_msg(__('Failed to get courier invitation number', 'omnivalt'), 'error');
+      wp_safe_redirect(wp_get_referer());
+      return;
+    }
+    $call_id = esc_attr($_GET['call_id']);
+
+    $omnivalt_api = new OmnivaLt_Api();
+    $result = $omnivalt_api->cancel_courier_call($call_id);
+    if ( ! $result['status'] ) {
+      OmnivaLt_Helper::add_msg($result['msg'], 'error');
+      wp_safe_redirect(wp_get_referer());
+      return;
+    }
+
+    OmnivaLt_Helper::remove_courier_calls($call_id);
+
+    OmnivaLt_Helper::add_msg('Courier call canceled successfully', 'success');
+    wp_safe_redirect(wp_get_referer());
+  }
+
+  public static function ajax_remove_courier_call()
+  {
+    $result = array(
+      'status' => 'error',
+      'msg' => '',
+    );
+    
+    if ( empty(esc_attr($_POST['call_id'])) ) {
+      $result['msg'] = __('Failed to get courier invitation number', 'omnivalt');
+      echo json_encode($result);
+      wp_die();
+    }
+
+    $call_id = esc_attr($_POST['call_id']);
+    OmnivaLt_Helper::remove_courier_calls($call_id);
+    $result['status'] = 'OK';
+
+    echo json_encode($result);
+    wp_die();
   }
 }

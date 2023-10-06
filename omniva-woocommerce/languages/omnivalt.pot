@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: omniva\n"
-"POT-Creation-Date: 2023-09-29 15:27+0000\n"
+"POT-Creation-Date: 2023-10-05 08:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -27,7 +27,7 @@ msgstr ""
 msgid "A4 (4 labels)"
 msgstr ""
 
-#: manifest_page.php:139
+#: manifest_page.php:172
 msgid "Actions"
 msgstr ""
 
@@ -85,7 +85,7 @@ msgstr ""
 msgid "Add to SMS and email"
 msgstr ""
 
-#: manifest_page.php:270
+#: manifest_page.php:303
 msgid "Address and contact information can be changed in Omniva settings."
 msgstr ""
 
@@ -93,11 +93,15 @@ msgstr ""
 msgid "Admin changed parcel terminal"
 msgstr ""
 
+#: manifest_page.php:37
+msgid "After arrival time expires, the record is automatically removed"
+msgstr ""
+
 #: core/class-manifest.php:145
 msgid "All orders"
 msgstr ""
 
-#: manifest_page.php:95
+#: manifest_page.php:128
 msgctxt "All status"
 msgid "All"
 msgstr ""
@@ -115,7 +119,7 @@ msgid ""
 "or field is empty."
 msgstr ""
 
-#: manifest_page.php:185
+#: manifest_page.php:218
 msgid "Amount"
 msgstr ""
 
@@ -137,6 +141,10 @@ msgstr ""
 
 #: core/class-shipping-method.php:135
 msgid "API user"
+msgstr ""
+
+#: manifest_page.php:330
+msgid "Are you sure you want to cancel the courier arrival?"
 msgstr ""
 
 #: omniva-woocommerce.php:239
@@ -167,7 +175,7 @@ msgstr ""
 msgid "Bank account"
 msgstr ""
 
-#: manifest_page.php:106 manifest_page.php:135
+#: manifest_page.php:139 manifest_page.php:168
 msgid "Barcode"
 msgstr ""
 
@@ -190,17 +198,17 @@ msgctxt "Box size"
 msgid "Small"
 msgstr ""
 
-#: manifest_page.php:226
+#: manifest_page.php:259
 msgctxt "button"
 msgid "Generate"
 msgstr ""
 
-#: manifest_page.php:224
+#: manifest_page.php:257
 msgctxt "button"
 msgid "Print"
 msgstr ""
 
-#: manifest_page.php:232
+#: manifest_page.php:265
 msgctxt "button"
 msgid "Regenerate"
 msgstr ""
@@ -217,8 +225,16 @@ msgstr ""
 msgid "By cart weight"
 msgstr ""
 
-#: manifest_page.php:30 manifest_page.php:286
+#: manifest_page.php:31 manifest_page.php:319
 msgid "Call Omniva courier"
+msgstr ""
+
+#: manifest_page.php:332
+msgid "Cancel Omniva courier"
+msgstr ""
+
+#: manifest_page.php:56
+msgid "Cancel this call"
 msgstr ""
 
 #: core/class-core.php:26 core/class-core.php:115
@@ -265,12 +281,16 @@ msgstr ""
 msgid "Company name"
 msgstr ""
 
-#: core/class-manifest.php:147
+#: core/class-manifest.php:148
 msgid "Completed orders"
 msgstr ""
 
 #: omniva-woocommerce.php:172 core/class-shipping-method.php:216
 msgid "Courier"
+msgstr ""
+
+#: manifest_page.php:57
+msgid "Courier arrived and this can be removed"
 msgstr ""
 
 #: omniva-woocommerce.php:163
@@ -290,7 +310,7 @@ msgstr ""
 msgid "Custom label names"
 msgstr ""
 
-#: manifest_page.php:91 manifest_page.php:131
+#: manifest_page.php:124 manifest_page.php:164
 msgid "Customer"
 msgstr ""
 
@@ -298,7 +318,7 @@ msgstr ""
 msgid "Customer choose parcel terminal"
 msgstr ""
 
-#: manifest_page.php:182
+#: manifest_page.php:215
 msgid "Date"
 msgstr ""
 
@@ -388,31 +408,31 @@ msgstr ""
 msgid "Enter postcode/address"
 msgstr ""
 
-#: manifest_page.php:209 core/class-labels.php:105
+#: manifest_page.php:242 core/class-labels.php:105
 msgid "Error"
 msgstr ""
 
-#: core/class-core.php:307
+#: core/class-core.php:297
 msgctxt "error"
 msgid "The service does not exist for the specified method"
 msgstr ""
 
-#: core/class-core.php:305
+#: core/class-core.php:295
 msgctxt "error"
 msgid "The service is not available to the receiver country"
 msgstr ""
 
-#: core/class-core.php:304
+#: core/class-core.php:294
 msgctxt "error"
 msgid "The service is not available to the sender country"
 msgstr ""
 
-#: core/class-core.php:306
+#: core/class-core.php:296
 msgctxt "error"
 msgid "This shipping set does not exist"
 msgstr ""
 
-#: core/class-core.php:311
+#: core/class-core.php:301
 msgctxt "error"
 msgid "Unknown error"
 msgstr ""
@@ -426,11 +446,19 @@ msgstr ""
 msgid "Example for Latvia: %1$s. Example for other countries: %2$s."
 msgstr ""
 
-#: core/class-api.php:374
+#: core/class-api.php:382 core/class-api.php:400
 msgid "Failed to call courier"
 msgstr ""
 
-#: core/class-api.php:202
+#: core/class-api.php:418
+msgid "Failed to cancel courier"
+msgstr ""
+
+#: core/class-labels.php:213 core/class-labels.php:241
+msgid "Failed to get courier invitation number"
+msgstr ""
+
+#: core/class-api.php:205
 msgid "Failed to get labels"
 msgstr ""
 
@@ -438,23 +466,23 @@ msgstr ""
 msgid "Failed to get manifest"
 msgstr ""
 
-#: core/class-api.php:161
+#: core/class-api.php:164
 msgid "Failed to get packages"
 msgstr ""
 
-#: core/class-helper.php:179
+#: core/class-helper.php:237
 msgid "Failed to get service set"
 msgstr ""
 
-#: core/class-api.php:87
+#: core/class-api.php:90
 msgid "Failed to get shipment service"
 msgstr ""
 
-#: core/class-api.php:52
+#: core/class-api.php:53
 msgid "Failed to get WooCommerce order data"
 msgstr ""
 
-#: core/class-api.php:177
+#: core/class-api.php:180
 msgid "Failed to register shipments"
 msgstr ""
 
@@ -462,7 +490,7 @@ msgstr ""
 msgid "File is empty"
 msgstr ""
 
-#: manifest_page.php:122
+#: manifest_page.php:155
 msgid "Filter"
 msgstr ""
 
@@ -482,17 +510,17 @@ msgstr ""
 msgid "Free with coupon"
 msgstr ""
 
-#: manifest_page.php:112
+#: manifest_page.php:145
 msgid "From"
 msgstr ""
 
-#: manifest_page.php:73 manifest_page.php:74 manifest_page.php:258
-#: manifest_page.php:259
+#: manifest_page.php:106 manifest_page.php:107 manifest_page.php:291
+#: manifest_page.php:292
 msgid "Generate and print labels"
 msgstr ""
 
-#: manifest_page.php:69 manifest_page.php:70 manifest_page.php:254
-#: manifest_page.php:255
+#: manifest_page.php:102 manifest_page.php:103 manifest_page.php:287
+#: manifest_page.php:288
 msgid "Generate manifest"
 msgstr ""
 
@@ -516,7 +544,7 @@ msgstr ""
 msgid "https://www.omniva.lt/"
 msgstr ""
 
-#: manifest_page.php:88 manifest_page.php:130
+#: manifest_page.php:121 manifest_page.php:163
 msgid "ID"
 msgstr ""
 
@@ -531,7 +559,7 @@ msgid ""
 "If this item will be added to the shipment, mark that shipment as fragile"
 msgstr ""
 
-#: manifest_page.php:269
+#: manifest_page.php:302
 msgid "Important!"
 msgstr ""
 
@@ -555,7 +583,7 @@ msgstr ""
 msgid "Labels print type"
 msgstr ""
 
-#: manifest_page.php:269
+#: manifest_page.php:302
 msgid "Latest call for same day pickup is until 3 pm."
 msgstr ""
 
@@ -597,57 +625,57 @@ msgstr ""
 msgid "Manifest"
 msgstr ""
 
-#: core/class-labels.php:229 core/class-api.php:284
+#: core/class-api.php:287
 msgctxt "Manifest"
 msgid "Courier name, surname, signature"
 msgstr ""
 
-#: core/class-labels.php:206 core/class-api.php:280
+#: core/class-api.php:283
 msgctxt "Manifest"
 msgid "Date"
 msgstr ""
 
-#: core/class-labels.php:204 core/class-api.php:277
+#: core/class-api.php:280
 msgctxt "Manifest"
 msgid "No."
 msgstr ""
 
-#: core/class-api.php:279
+#: core/class-api.php:282
 msgctxt "Manifest"
 msgid "Order No."
 msgstr ""
 
-#: core/class-labels.php:207 core/class-api.php:281
+#: core/class-api.php:284
 msgctxt "Manifest"
 msgid "Quantity"
 msgstr ""
 
-#: core/class-labels.php:209 core/class-api.php:283
+#: core/class-api.php:286
 msgctxt "Manifest"
 msgid "Recipient's name and address"
 msgstr ""
 
-#: core/class-labels.php:197 core/class-api.php:276
+#: core/class-api.php:279
 msgctxt "Manifest"
 msgid "Sender address"
 msgstr ""
 
-#: core/class-labels.php:230 core/class-api.php:285
+#: core/class-api.php:288
 msgctxt "Manifest"
 msgid "Sender name, surname, signature"
 msgstr ""
 
-#: core/class-labels.php:205 core/class-api.php:278
+#: core/class-api.php:281
 msgctxt "Manifest"
 msgid "Shipment number"
 msgstr ""
 
-#: core/class-labels.php:208 core/class-api.php:282
+#: core/class-api.php:285
 msgctxt "Manifest"
 msgid "Weight"
 msgstr ""
 
-#: manifest_page.php:137
+#: manifest_page.php:170
 msgid "Manifest date"
 msgstr ""
 
@@ -687,11 +715,11 @@ msgstr ""
 msgid "New orders"
 msgstr ""
 
-#: core/class-order.php:510
+#: manifest_page.php:333 core/class-order.php:510
 msgid "No"
 msgstr ""
 
-#: core/class-labels.php:110 core/class-labels.php:219
+#: core/class-labels.php:110
 msgid "No compatible orders for manifest"
 msgstr ""
 
@@ -707,7 +735,7 @@ msgstr ""
 msgid "Note on label"
 msgstr ""
 
-#: manifest_page.php:282
+#: manifest_page.php:315
 msgid "Number of parcels"
 msgstr ""
 
@@ -719,8 +747,9 @@ msgstr ""
 msgid "Omniva"
 msgstr ""
 
-#: core/class-labels.php:290
-msgid "Omniva courier called"
+#: core/class-labels.php:197
+#, php-format
+msgid "Omniva courier called. Arrival time between %s."
 msgstr ""
 
 #: core/class-product.php:22
@@ -735,21 +764,18 @@ msgstr ""
 msgid "Omniva post offices"
 msgstr ""
 
-#: manifest_page.php:27 core/class-manifest.php:31 core/class-manifest.php:32
+#. Name of the plugin
+#: manifest_page.php:28 core/class-manifest.php:31 core/class-manifest.php:32
 #: core/class-shipping-method.php:22 core/class-shipping-method.php:50
 #: core/class-order.php:184 core/class-order.php:425
 msgid "Omniva shipping"
-msgstr ""
-
-#. Name of the plugin
-msgid "Omniva shipping - Use Omniva API library"
 msgstr ""
 
 #: core/class-order.php:613
 msgid "Omniva shipping method"
 msgstr ""
 
-#: core/class-labels.php:261 core/class-order.php:277
+#: core/class-labels.php:148 core/class-order.php:277
 msgid "Omniva tracking number"
 msgstr ""
 
@@ -761,7 +787,7 @@ msgstr ""
 msgid "Order ID"
 msgstr ""
 
-#: manifest_page.php:133
+#: manifest_page.php:166
 msgid "Order information"
 msgstr ""
 
@@ -769,12 +795,16 @@ msgstr ""
 msgid "Order number"
 msgstr ""
 
-#: manifest_page.php:132
+#: manifest_page.php:165
 msgid "Order Status"
 msgstr ""
 
 #: core/class-shipping-method.php:363
 msgid "Orders"
+msgstr ""
+
+#: core/class-manifest.php:147
+msgid "Orders ready to ship"
 msgstr ""
 
 #: core/class-shipping-method.php:379
@@ -896,7 +926,7 @@ msgstr ""
 msgid "Print manifest"
 msgstr ""
 
-#: core/class-labels.php:63 core/class-labels.php:154
+#: core/class-labels.php:63
 msgid "Registered labels"
 msgstr ""
 
@@ -904,12 +934,16 @@ msgstr ""
 msgid "Request"
 msgstr ""
 
+#: core/class-labels.php:207
+msgid "Request security check failed"
+msgstr ""
+
 #: core/class-shipping-method.php:192
 #, php-format
 msgid "Required mobile phone number if want use service \"%s\"."
 msgstr ""
 
-#: manifest_page.php:123
+#: manifest_page.php:156
 msgid "Reset"
 msgstr ""
 
@@ -927,6 +961,10 @@ msgstr ""
 
 #: core/class-shipping-method.php:247
 msgid "Returns"
+msgstr ""
+
+#: manifest_page.php:37
+msgid "Scheduled courier arrivals"
 msgstr ""
 
 #: core/class-shipping-method.php:305
@@ -957,7 +995,7 @@ msgstr ""
 msgid "Select terminal"
 msgstr ""
 
-#: manifest_page.php:60
+#: manifest_page.php:93
 msgid "Selected"
 msgstr ""
 
@@ -996,7 +1034,7 @@ msgstr ""
 msgid "Sender information"
 msgstr ""
 
-#: manifest_page.php:134
+#: manifest_page.php:167
 msgid "Service"
 msgstr ""
 
@@ -1004,7 +1042,7 @@ msgstr ""
 msgid "Services"
 msgstr ""
 
-#: core/class-core.php:268
+#: core/class-core.php:276
 msgid "Settings"
 msgstr ""
 
@@ -1016,12 +1054,12 @@ msgstr ""
 msgid "Shipping"
 msgstr ""
 
-#: core/class-helper.php:193
+#: core/class-helper.php:251
 #, php-format
 msgid "Shipping from %1$s (%2$s) to %3$s (%4$s) is not available"
 msgstr ""
 
-#: core/class-labels.php:42 core/class-labels.php:140
+#: core/class-labels.php:42
 msgid "Shipping method is not Omniva"
 msgstr ""
 
@@ -1037,7 +1075,7 @@ msgstr ""
 msgid "Shipping methods settings"
 msgstr ""
 
-#: manifest_page.php:279 core/class-shipping-method.php:174
+#: manifest_page.php:312 core/class-shipping-method.php:174
 msgid "Shop address"
 msgstr ""
 
@@ -1053,15 +1091,15 @@ msgstr ""
 msgid "Shop email"
 msgstr ""
 
-#: manifest_page.php:275 core/class-shipping-method.php:166
+#: manifest_page.php:308 core/class-shipping-method.php:166
 msgid "Shop name"
 msgstr ""
 
-#: manifest_page.php:276 core/class-shipping-method.php:190
+#: manifest_page.php:309 core/class-shipping-method.php:190
 msgid "Shop phone number"
 msgstr ""
 
-#: manifest_page.php:277 core/class-shipping-method.php:178
+#: manifest_page.php:310 core/class-shipping-method.php:178
 msgid "Shop postcode"
 msgstr ""
 
@@ -1110,7 +1148,7 @@ msgstr ""
 msgid "Simple"
 msgstr ""
 
-#: manifest_page.php:191 core/class-shipping-method-helper.php:88
+#: manifest_page.php:224 core/class-shipping-method-helper.php:88
 #: core/class-order.php:563
 msgid "Size"
 msgstr ""
@@ -1128,7 +1166,11 @@ msgstr ""
 msgid "The delivery address is changed in the fields above"
 msgstr ""
 
-#: manifest_page.php:115
+#: core/class-api.php:406
+msgid "The old API does not have a courier cancel option"
+msgstr ""
+
+#: manifest_page.php:148
 msgid "To"
 msgstr ""
 
@@ -1159,7 +1201,7 @@ msgid ""
 "is not included in the update"
 msgstr ""
 
-#: manifest_page.php:188 core/class-shipping-method-helper.php:80
+#: manifest_page.php:221 core/class-shipping-method-helper.php:80
 #: core/class-shipping-method.php:660
 msgid "Weight"
 msgstr ""
@@ -1177,7 +1219,7 @@ msgstr ""
 msgid "You can download it by pressing %s."
 msgstr ""
 
-#: core/class-labels.php:264
+#: core/class-labels.php:151
 msgid "You can track your parcel with this number"
 msgstr ""
 

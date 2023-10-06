@@ -3,6 +3,17 @@
   margin: 1em 0;
 }
 
+.call-courier-container .current_calls .omnivalt-tip .tip-text {
+  right: -5px;
+  left: unset;
+  transform: unset;
+}
+.call-courier-container .current_calls .omnivalt-tip .tip-text:before {
+  right: 7px;
+  left: unset;
+  margin-left: 0;
+}
+
 .omniva-notice {
   color: green;
   border: 1px green solid;
@@ -407,6 +418,44 @@
   display: none;
   background-color: #fff;
   border: 1px solid grey;
+}
+
+.call-courier-container .current_calls {
+  margin: 5px 0;
+}
+
+.call-courier-container .current_calls table {
+  margin: 0 0 0 auto;
+  text-align: left;
+}
+
+.call-courier-container .current_calls button {
+  cursor: pointer;
+}
+
+.call-courier-container .current_calls .date {
+  font-size: 70%;
+}
+
+.call-courier-container .current_calls .icon-btn {
+  padding: 0;
+  border: 1px solid transparent;
+  background: unset;
+}
+
+.call-courier-container .current_calls .icon-btn:hover,
+.call-courier-container .current_calls .icon-btn:focus {
+  color: #7fb8d4;
+}
+
+.call-courier-container .current_calls .icon-btn.action-cancel:hover,
+.call-courier-container .current_calls .icon-btn.action-cancel:focus {
+  color: #dc4747;
+}
+
+.call-courier-container .current_calls .icon-btn.action-remove:hover,
+.call-courier-container .current_calls .icon-btn.action-remove:focus {
+  color: #aaa;
 }
 
 #omniva-call input[type=number] {
