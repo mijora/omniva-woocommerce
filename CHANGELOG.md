@@ -13,6 +13,7 @@
 - added new tabs "Registered orders" and "Orders ready to ship" on the "Omniva shipping" page
 - changed to display the courier call success message using the default Wordpress message
 - added arrival time display to courier call success notification
+- added the option in product to mark an additional service "Issue to persons at the age of 18+"
 
 ### Updated
 - updated Omniva API library to v1.0.12
