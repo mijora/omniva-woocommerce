@@ -4,9 +4,15 @@
 ### Fixed
 - fix error when changing Order status to "Refunded"
 - fixed Omniva data saving every time even though the data is not changed
+- fixed Omniva additional services adding to the shipment
 
 ### Improved
 - created API library usage for all API functions
+- created the ability to see and cancel courier invitations (works only on OMX system)
+- improved division of orders in the tabs on the "Omniva shipping" page
+- added new tabs "Registered orders" and "Orders ready to ship" on the "Omniva shipping" page
+- changed to display the courier call success message using the default Wordpress message
+- added arrival time display to courier call success notification
 
 ### Updated
 - updated Omniva API library to v1.0.11

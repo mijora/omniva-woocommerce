@@ -19,6 +19,7 @@ class OmnivaLt_Api
   private $omnivalt_settings;
   private $omnivalt_configs;
   private $api_url;
+  private $use_old_api = true;
 
   public function __construct()
   {
@@ -98,6 +99,13 @@ class OmnivaLt_Api
         $additional_services = $this->get_additional_services($order, $shipment_service);
         $all_api_additional_services = array();
         foreach ( $additional_services as $additional_service_key => $additional_service_code ) {
+          $service_conditions = $this->check_additional_service_condition($shipment_service, $additional_service_code); //Temporary use while this function not exist in API
+          //$service_conditions = Shipment::getAdditionalServiceConditionsForShipment($shipment_service, $additional_service_code); //Function from API
+          if ( ! empty($service_conditions) ) {
+            if ( isset($service_conditions->only_countries) && ! in_array($data_client->country, $service_conditions->only_countries) ) {
+              continue;
+            }
+          }
           $api_additional_service = new AdditionalService();
           $api_additional_service
             ->setServiceCode($additional_service_code);
@@ -329,6 +337,11 @@ class OmnivaLt_Api
 
   public function call_courier( $parcels_number = 0 )
   {
+    return ($this->use_old_api) ? $this->call_courier_old($parcels_number) : $this->call_courier_omx($parcels_number);
+  }
+
+  public function call_courier_old( $parcels_number = 0 )
+  {
     $is_cod = false;
     $parcel_terminal = "";
     $shop = $this->get_shop_data();
@@ -336,30 +349,30 @@ class OmnivaLt_Api
     $pickFinish = OmnivaLt_Helper::get_formated_time($shop->pick_until, '17:00');
     $parcels_number = ($parcels_number > 0) ? $parcels_number : 1;
 
-    $address = new Address();
-    $address
-      ->setCountry($shop->country)
-      ->setPostcode($shop->postcode)
-      ->setDeliverypoint($shop->city)
-      ->setStreet($shop->street);
-    $sender = new Contact();
-    $sender
-      ->setAddress($address)
-      ->setMobile($shop->phone)
-      ->setPersonName($shop->name);
-
-    $call = new CallCourier();
-    $this->setAuth($call);
-    $call
-      ->setSender($sender)
-      ->setEarliestPickupTime($pickStart)
-      ->setLatestPickupTime($pickFinish)
-      ->setDestinationCountry(OmnivaLt_Helper::get_shipping_service($shop->api_country, 'call'))
-      ->setParcelsNumber($parcels_number);
-
     try {
-      $call->callCourier();
-      $debug_data = $call->getDebugData();
+      $api_address = new Address();
+      $api_address
+        ->setCountry($shop->country)
+        ->setPostcode($shop->postcode)
+        ->setDeliverypoint($shop->city)
+        ->setStreet($shop->street);
+      $api_sender = new Contact();
+      $api_sender
+        ->setAddress($api_address)
+        ->setMobile($shop->phone)
+        ->setPersonName($shop->name);
+
+      $api_call = new CallCourier();
+      $this->setAuth($api_call);
+      $api_call
+        ->setSender($api_sender)
+        ->setEarliestPickupTime($pickStart)
+        ->setLatestPickupTime($pickFinish)
+        ->setDestinationCountry(OmnivaLt_Helper::get_shipping_service($shop->api_country, 'call'))
+        ->setParcelsNumber($parcels_number);
+
+      $api_call->callCourier();
+      $debug_data = $api_call->getDebugData();
       OmnivaLt_Debug::debug_request($debug_data['request']);
       return array(
         'status' => true,
@@ -374,6 +387,42 @@ class OmnivaLt_Api
     }
 
     return array('status' => false, 'msg' => __('Failed to call courier', 'omnivalt'));
+  }
+
+  public function call_courier_omx( $parcels_number = 0 ) //The OMX courier invitation is not working yet.
+  {
+    $shop = $this->get_shop_data();
+
+    try {
+      return array(
+        'status' => true,
+        'call_id' => rand(1000000,9999999),
+        'start_time' => date('Y-m-d H:i:s', strtotime('2023-10-05T08:00:00')),
+        'end_time' => date('Y-m-d H:i:s', strtotime('2023-10-05T17:00:00')),
+      );
+    } catch (OmnivaException $e) {
+      return array('status' => false, 'msg' => $e->getMessage());
+    }
+
+    return array('status' => false, 'msg' => __('Failed to call courier', 'omnivalt'));
+  }
+
+  public function cancel_courier_call( $call_id )
+  {
+    if ( $this->use_old_api ) {
+      return array('status' => false, 'call_id' => $call_id, 'msg' => __('The old API does not have a courier cancel option', 'omnivalt'));
+    }
+
+    try {
+      return array(
+        'status' => true,
+        'call_id' => $call_id,
+      );
+    } catch (OmnivaException $e) {
+      return array('status' => false, 'call_id' => $call_id, 'msg' => $e->getMessage());
+    }
+
+    return array('status' => false, 'call_id' => $call_id, 'msg' => __('Failed to cancel courier', 'omnivalt'));
   }
 
   private function setAuth( $object )
@@ -588,14 +637,17 @@ class OmnivaLt_Api
   private function get_additional_services( $order, $shipment_service )
   {
     $order_services = OmnivaLt_Helper::get_order_services($order);
+    $service_additional_services = $this->get_service_all_additional_services($shipment_service); //Temporary use while this function not exist in API
+    //$service_additional_services = Shipment::getAdditionalServicesForShipment($shipment_service); //Function from API
     $additional_services = array();
 
     foreach ( $this->omnivalt_configs['additional_services'] as $service_key => $service_values ) {
       $add_service = (in_array($service_key, $order_services)) ? true : false;
+
       if ( ! $add_service && $service_values['add_always'] ) {
         $add_service = true;
       }
-      if ( is_array($service_values['only_for']) && ! in_array($shipment_service, $service_values['only_for']) ) {
+      if ( ! in_array($service_values['code'], $service_additional_services) ) {
         $add_service = false;
       }
 
@@ -605,6 +657,37 @@ class OmnivaLt_Api
     }
 
     return $additional_services;
+  }
+
+  private function get_service_all_additional_services( $shipment_service ) //Temporary while this function not exist in API
+  {
+    $all_additional_services = $this->omnivalt_configs['additional_services_map'];
+    if ( ! isset($all_additional_services[$shipment_service]) ) {
+      return array();
+    }
+
+    $service_additional_services = array();
+    foreach ( $all_additional_services[$shipment_service] as $position => $value ) {
+      if ( $value ) {
+        $service_additional_services[] = $all_additional_services['map'][$position];
+      }
+    }
+
+    return $service_additional_services;
+  }
+
+  private function check_additional_service_condition( $shipment_service, $additional_service ) //Temporary while this function not exist in API
+  {
+    $all_conditions = $this->omnivalt_configs['additional_services_conditions'];
+    
+    if ( ! isset($all_conditions[$shipment_service]) ) {
+      return (object) array();
+    }
+    if ( ! isset($all_conditions[$shipment_service][$additional_service]) ) {
+      return (object) array();
+    }
+
+    return (object) $all_conditions[$shipment_service][$additional_service];
   }
 
   private function get_return_code_sending()
