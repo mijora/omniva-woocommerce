@@ -1,3 +1,7 @@
+## [1.0.13] - Improvements
+- to services map added QH and QL services
+- services CD and CE are marked as having terminals
+
 ## [1.0.12] - Improvements
 - added additional services map for each shipping service
 - added the email adding to sender
