@@ -1289,7 +1289,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       if ( empty($method_params) ) {
         return;
       }
-    
+
       $check_restrictions = OmnivaLt_Shipmethod_Helper::check_restrictions($this->settings, $rate_key, $weight, $products_for_dim);
 
       if ( $this->settings['method_' . $rate_key] == 'yes' && $check_restrictions ) {

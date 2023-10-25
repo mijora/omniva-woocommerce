@@ -2,7 +2,7 @@
 class OmnivaLt_Core
 {
   public static $main_file_path = WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME;
-  public static $var_directories = array('logs', 'pdf', 'debug');
+  public static $var_directories = array('logs', 'pdf', 'debug', 'locations');
 
   public static function init()
   {
@@ -116,7 +116,8 @@ class OmnivaLt_Core
     }
     foreach ( self::$var_directories as $dir ) {
       if ( ! file_exists(OMNIVALT_DIR . 'var/' . $dir) ) {
-        mkdir(OMNIVALT_DIR . $dir, 0755, true);
+
+        mkdir(OMNIVALT_DIR . 'var/' . $dir, 0755, true);
       }
     }
   }

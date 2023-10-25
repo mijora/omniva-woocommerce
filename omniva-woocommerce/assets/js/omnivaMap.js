@@ -15,12 +15,12 @@ var omnivaMap = {
   jQuery('#omnivaMapContainer').html('<div id="omnivaMap"></div>');
   if (omniva_current_country == "LT"){
     var map = L.map('omnivaMap').setView([54.999921, 23.96472], 8);
-  }
-  if (omniva_current_country == "LV"){
+  } else if (omniva_current_country == "LV"){
     var map = L.map('omnivaMap').setView([56.8796, 24.6032], 8);
-  }
-  if (omniva_current_country == "EE"){
+  } else if (omniva_current_country == "EE"){
     var map = L.map('omnivaMap').setView([58.7952, 25.5923], 7);
+  } else {
+    var map = L.map('omnivaMap').setView([54.999921, 23.96472], 8);
   }
   L.tileLayer('https://maps.omnivasiunta.lt/tile/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.omniva.lt">Omniva</a>' +
