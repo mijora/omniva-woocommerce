@@ -16,7 +16,7 @@
 - added the option in product to mark an additional service "Issue to persons at the age of 18+"
 
 ### Updated
-- updated Omniva API library to v1.0.12
+- updated Omniva API library to v1.0.13
 
 ## [1.14.2]
 ### Fixed

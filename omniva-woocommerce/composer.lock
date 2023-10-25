@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "mijora/omniva-api",
-            "version": "1.0.12",
+            "version": "1.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/omniva-baltic/omniva-api-lib.git",
-                "reference": "cf0a7d3eb3a454df018448b600050237164a92d4"
+                "reference": "807b50232472009c368ec89dfea05ca65133c63c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/cf0a7d3eb3a454df018448b600050237164a92d4",
-                "reference": "cf0a7d3eb3a454df018448b600050237164a92d4",
+                "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/807b50232472009c368ec89dfea05ca65133c63c",
+                "reference": "807b50232472009c368ec89dfea05ca65133c63c",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
                 }
             ],
             "description": "Omniva API wrapper",
-            "time": "2023-10-06T10:49:49+00:00"
+            "time": "2023-10-25T07:39:05+00:00"
         },
         {
             "name": "setasign/fpdf",
