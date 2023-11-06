@@ -41,6 +41,8 @@
 
   $(document).on('click', '#omniva-call-btn', function(e) {
     e.preventDefault();
+    $('#omniva-courier-modal .modal-content').hide();
+    $('#modal-content-call').show();
     $('#omniva-courier-modal').addClass('open');
     $("#call_quantity").trigger("change");
   });
@@ -62,6 +64,52 @@
     } else {
       $('#omniva-call-confirm-btn').prop('disabled', false);
     }
+  });
+
+  /* Cancel courier */
+  $(document).on('click', '.current_calls .action-cancel', function(e) {
+    e.preventDefault();
+    $('#omniva-courier-modal .modal-content').hide();
+    $('#modal-content-cancel').show();
+    var call_id = $(this).siblings('input[name="call_id"]')[0].value;
+    $('#omniva-cancel-id').val(call_id);
+    $('#omniva-courier-modal').addClass('open');
+  });
+
+  /* Remove courier arrival time */
+  $(document).on('click', '.current_calls .action-remove', function(e) {
+    e.preventDefault();
+    var call_id = $(this).siblings('input[name="call_id"]')[0].value;
+    $.ajax({
+      type: "post",
+      dataType: "json",
+      url: "/wp-admin/admin-ajax.php",
+      data: {
+        action: 'remove_courier_call',
+        call_id: call_id
+      },
+      success: function(response) {
+        //console.log(response);
+        if ( response.status == "error" ) {
+          console.log("Error", response.msg);
+        }
+        if ( response.status == "OK" ) {
+          var all_calls = $('.current_calls input[name="call_id"]');
+          for ( var i = 0; i < all_calls.length; i++ ) {
+            if ( all_calls[i].value == call_id ) {
+              var row = $(all_calls[i]).closest("tr");
+              $(row).css("color", "#ccc");
+              setTimeout(function() {
+                $(row).remove();
+              }, 1000);
+            }
+          }
+        }
+      },
+      error: function (jqXHR, exception) {
+        console.log("Critical error", jqXHR);
+      }
+    });
   });
 
   /* Submit buttons */

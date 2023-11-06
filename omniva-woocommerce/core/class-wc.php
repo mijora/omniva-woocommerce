@@ -18,8 +18,11 @@ class OmnivaLt_Wc
 
     public static function get_current_screen_id()
     {
-        $screen = get_current_screen();
+        if ( ! function_exists('get_current_screen') ) { 
+            return false;
+        }
 
+        $screen = get_current_screen();
         return $screen->id ?? false;
     }
 }

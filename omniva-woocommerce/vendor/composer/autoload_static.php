@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit57dfd7cb34ac1281e0b784b169d9c330
+class ComposerStaticInitc3bb4a9386de2d5c4dd1cb50b4ee7844
 {
     public static $files = array (
         'cd68897ab66901821be123d6861c0d78' => __DIR__ . '/../..' . '/overrides/tcpdf/tcpdf_config.php',
@@ -33,7 +33,6 @@ class ComposerStaticInit57dfd7cb34ac1281e0b784b169d9c330
     );
 
     public static $classMap = array (
-        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'FPDF' => __DIR__ . '/..' . '/setasign/fpdf/fpdf.php',
         'PDF417' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',
@@ -54,9 +53,9 @@ class ComposerStaticInit57dfd7cb34ac1281e0b784b169d9c330
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit57dfd7cb34ac1281e0b784b169d9c330::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit57dfd7cb34ac1281e0b784b169d9c330::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit57dfd7cb34ac1281e0b784b169d9c330::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc3bb4a9386de2d5c4dd1cb50b4ee7844::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc3bb4a9386de2d5c4dd1cb50b4ee7844::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitc3bb4a9386de2d5c4dd1cb50b4ee7844::$classMap;
 
         }, null, ClassLoader::class);
     }

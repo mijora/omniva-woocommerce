@@ -18,6 +18,7 @@ if ( isset($_COOKIE['omniva_checked']) ) {
 }
 
 $manifest_enabled = (!isset($shipping_settings['manifest_enable']) || $shipping_settings['manifest_enable'] === 'yes') ? true : false;
+$current_courier_calls = OmnivaLt_Helper::get_courier_calls();
 
 // Append custom css and js
 do_action('omniva_admin_manifest_head');
@@ -28,6 +29,38 @@ do_action('omniva_admin_manifest_head');
 
       <div class="call-courier-container">
         <button id="omniva-call-btn" class="button action">🚚 <?php _e('Call Omniva courier', 'omnivalt') ?></button>
+        <?php if ( ! empty($current_courier_calls) ) : ?>
+          <div class="current_calls">
+            <table>
+              <tr>
+                <th colspan="2">
+                  <?php echo __('Scheduled courier arrivals', 'omnivalt') . OmnivaLt_Helper::custom_tip(__('After arrival time expires, the record is automatically removed', 'omnivalt')); ?>
+                </th>
+              </tr>
+              <?php foreach( $current_courier_calls as $call ) : ?>
+                <?php
+                $call_start_date = date('Y-m-d', strtotime($call['start']));
+                $call_start_time = date('H:i', strtotime($call['start']));
+                $call_end_date = date('Y-m-d', strtotime($call['end']));
+                $call_end_time = date('H:i', strtotime($call['end']));
+                $call_string = '<span class="date">' . $call_start_date . '</span> <span class="time">' . $call_start_time . '</span> - ';
+                if ( strtotime($call_start_date) != strtotime($call_end_date) ) {
+                  $call_string .= '<span class="date">' . $call_end_date . '</span> ';
+                }
+                $call_string .= '<span class="time">' . $call_end_time . '</span>';
+                ?>
+                <tr>
+                  <td><?php echo $call_string; ?></td>
+                  <td>
+                    <input type="hidden" name="call_id" value="<?php echo esc_html($call['id']); ?>" />
+                    <button class="icon-btn action-cancel" value="cancel" title="<?php _e('Cancel this call', 'omnivalt'); ?>"><span class="dashicons dashicons-no"></span></button>
+                    <button class="icon-btn action-remove" value="remove" title="<?php _e('Courier arrived and this can be removed', 'omnivalt'); ?>"><span class="dashicons dashicons-minus"></span></button>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            </table>
+          </div>
+        <?php endif; ?>
       </div>
 
       <ul class="nav nav-tabs">
@@ -150,7 +183,7 @@ do_action('omniva_admin_manifest_head');
                 $date = date('Y-m-d H:i', strtotime($manifest_date));
                 $order_size = $order_data->shipment->size;
                 ?>
-                <?php if ( $orders_data['action'] == 'completed_orders' && $date_tracker !== $date ) : ?>
+                <?php if ( OmnivaLt_Manifest::is_mannifest_orders_table($orders_data['action']) && $date_tracker !== $date ) : ?>
                   <tr>
                     <?php $colspan = ($manifest_enabled) ? 9 : 8; ?>
                     <td colspan="<?php echo $colspan; ?>" class="manifest-date-title">
@@ -263,8 +296,8 @@ do_action('omniva_admin_manifest_head');
 
       <!-- Modal Courier call-->
       <div id="omniva-courier-modal" class="modal" role="dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
+        <!-- Modal content: Call-->
+        <div id="modal-content-call" class="modal-content">
           <div class="alert-info">
             <p><span><?php _e('Important!', 'omnivalt') ?></span> <?php _e('Latest call for same day pickup is until 3 pm.', 'omnivalt') ?></p>
             <p><?php _e('Address and contact information can be changed in Omniva settings.', 'omnivalt') ?></p>
@@ -285,6 +318,19 @@ do_action('omniva_admin_manifest_head');
             <div class="modal-footer">
               <button type="submit" id="omniva-call-confirm-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>
               <button type="button" id="omniva-call-cancel-btn" class="button action"><?php _e('Cancel') ?></button>
+            </div>
+          </form>
+        </div>
+        <!-- Modal content: Cancel-->
+        <div id="modal-content-cancel" class="modal-content">
+          <form id="omniva-cancel" action="admin-post.php" method="GET">
+            <input type="hidden" name="action" value="omnivalt_cancel_courier" />
+            <?php wp_nonce_field('omnivalt_cancel_courier', 'omnivalt_cancel_courier_nonce'); ?>
+            <input id="omniva-cancel-id" type="hidden" name="call_id" value="" />
+            <div><span><?php _e('Are you sure you want to cancel the courier arrival?', 'omnivalt'); ?></span></div>
+            <div class="modal-footer">
+              <button type="submit" id="omniva-cancel-confirm-btn" class="button action"><?php _e('Cancel Omniva courier', 'omnivalt') ?></button>
+              <button type="button" id="omniva-call-cancel-btn" class="button action"><?php _e('No', 'omnivalt') ?></button>
             </div>
           </form>
         </div>

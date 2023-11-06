@@ -5,14 +5,14 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.14.2
+ * Version: 1.15.0
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 
  * Requires at least: 5.1
- * Tested up to: 6.3.1
+ * Tested up to: 6.3.2
  * WC requires at least: 6.0.0
- * WC tested up to: 8.0.3
+ * WC tested up to: 8.2.1
  * Requires PHP: 7.2
  * PHP tested up to: 8.1.13
  */
@@ -21,7 +21,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVALT_VERSION', '1.14.2');
+define('OMNIVALT_VERSION', '1.15.0');
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));
@@ -229,7 +229,6 @@ function omnivalt_configs($section_name = false) {
     'arrival_sms' => array(
       'title' => __('Arrival SMS', 'omnivalt'),
       'code' => 'ST',
-      'only_for' => 'all',
       'in_product' => false,
       'in_order' => false,
       'add_always' => true,
@@ -238,7 +237,6 @@ function omnivalt_configs($section_name = false) {
     'arrival_email' => array(
       'title' => __('Arrival email', 'omnivalt'),
       'code' => 'SF',
-      'only_for' => 'all',
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -247,7 +245,6 @@ function omnivalt_configs($section_name = false) {
     'cod' => array(
       'title' => __('Cash on delivery', 'omnivalt'),
       'code' => 'BP',
-      'only_for' => 'all',
       'in_product' => false,
       'in_order' => false,
       'add_always' => false,
@@ -255,7 +252,6 @@ function omnivalt_configs($section_name = false) {
     'fragile' => array(
       'title' => __('Fragile', 'omnivalt'),
       'code' => 'BC',
-      'only_for' => 'all',
       'in_product' => 'checkbox',
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -264,7 +260,6 @@ function omnivalt_configs($section_name = false) {
     'private_customer' => array(
       'title' => __('Delivery to private customer', 'omnivalt'),
       'code' => 'CL',
-      'only_for' => array('CI'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -272,7 +267,6 @@ function omnivalt_configs($section_name = false) {
     'doc_return' => array(
       'title' => __('Document return', 'omnivalt'),
       'code' => 'XT',
-      'only_for' => array('LA', 'LE', 'LZ', 'LG', 'LX', 'LH', 'CI', 'QK', 'QP', 'LL', 'CE', 'CD', 'CB', 'QH', 'QL'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -280,7 +274,6 @@ function omnivalt_configs($section_name = false) {
     'paid_by_receiver' => array(
       'title' => __('Paid by receiver', 'omnivalt'),
       'code' => 'BS',
-      'only_for' => array('LX', 'LH'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -288,7 +281,6 @@ function omnivalt_configs($section_name = false) {
     'insurance' => array(
       'title' => __('Insurance', 'omnivalt'),
       'code' => 'BI',
-      'only_for' => array('LX', 'LH', 'QB', 'CE', 'CD'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -296,7 +288,6 @@ function omnivalt_configs($section_name = false) {
     'personal_delivery' => array(
       'title' => __('Personal delivery', 'omnivalt'),
       'code' => 'BK',
-      'only_for' => array('LX', 'LH', 'CE', 'CD'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -304,7 +295,6 @@ function omnivalt_configs($section_name = false) {
     'paid_parcel_sms' => array(
       'title' => __('Paid parcel SMS', 'omnivalt'),
       'code' => 'GN',
-      'only_for' => array('CE', 'CD'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -312,7 +302,6 @@ function omnivalt_configs($section_name = false) {
     'paid_parcel_email' => array(
       'title' => __('Paid parcel email', 'omnivalt'),
       'code' => 'GM',
-      'only_for' => array('CE', 'CD'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -320,7 +309,6 @@ function omnivalt_configs($section_name = false) {
     'return_notification_sms' => array(
       'title' => __('Return notification SMS', 'omnivalt'),
       'code' => 'SB',
-      'only_for' => array('CE', 'CD', 'LX', 'LH'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -328,7 +316,6 @@ function omnivalt_configs($section_name = false) {
     'return_notification_email' => array(
       'title' => __('Return notification email', 'omnivalt'),
       'code' => 'SG',
-      'only_for' => array('CE', 'CD', 'LX', 'LH'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -336,15 +323,14 @@ function omnivalt_configs($section_name = false) {
     'persons_over_18' => array(
       'title' => __('Issue to persons at the age of 18+', 'omnivalt'),
       'code' => 'PC',
-      'only_for' => array('CE', 'CD'),
-      'in_product' => false,
+      'in_product' => 'checkbox',
       'in_order' => 'checkbox',
       'add_always' => false,
+      'desc_product' => __('If this item will be added to the shipment, the shipment receiver will have to show the document before picking up the shipment', 'omnivalt'),
     ),
     'delivery_confirmation_sms' => array(
       'title' => __('Delivery confirmation SMS to sender', 'omnivalt'),
       'code' => 'SS',
-      'only_for' => array('LX', 'LH'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,
@@ -353,7 +339,6 @@ function omnivalt_configs($section_name = false) {
     'delivery_confirmation_email' => array(
       'title' => __('Delivery confirmation e-mail to sender', 'omnivalt'),
       'code' => 'SE',
-      'only_for' => array('LX', 'LH'),
       'in_product' => false,
       'in_order' => 'checkbox',
       'add_always' => false,

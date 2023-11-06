@@ -1,0 +1,49 @@
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+.omnivalt-tip {
+    position: relative;
+    display: inline-block;
+    font-weight: normal;
+    font-style: normal;
+    vertical-align: top;
+    cursor: help;
+}
+.omnivalt-tip .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+.omnivalt-tip .tip-text {
+    display: none;
+    position: absolute;
+    background: #3c434a;
+    color: #fff;
+    padding: 5px;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+    border-radius: 3px;
+    transform: translateX(-50%);
+    left: 50%;
+}
+.omnivalt-tip .tip-text:before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    width: 0;
+    height: 0;
+    border-bottom: solid 5px #3c434a;
+    border-left: solid 5px transparent;
+    border-right: solid 5px transparent;
+}
+.omnivalt-tip:hover .tip-text {
+    display: block;
+}

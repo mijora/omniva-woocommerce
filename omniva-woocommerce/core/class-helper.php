@@ -126,15 +126,73 @@ class OmnivaLt_Helper
     return $allowed_methods;
   }
 
+  public static function get_courier_calls()
+  {
+    $configs = OmnivaLt_Core::get_configs();
+
+    $current_calls = get_option($configs['meta_keys']['courier_calls'], array());
+    if ( ! empty($current_calls) && is_array($current_calls) ) {
+      foreach ( $current_calls as $call_key => $call_values ) {
+        if ( strtotime(current_time('Y-m-d H:i:s')) > strtotime($call_values['end']) ) {
+          unset($current_calls[$call_key]);
+        }
+      }
+    }
+
+    return (! empty($current_calls)) ? $current_calls : array();
+  }
+
+  public static function update_courier_calls( $add_new_call = array() )
+  {
+    $configs = OmnivaLt_Core::get_configs();
+    $current_calls = self::get_courier_calls();
+
+    if ( ! empty($add_new_call) ) {
+      $current_calls[] = $add_new_call;
+      update_option($configs['meta_keys']['courier_calls'], array_values($current_calls));
+    }
+
+    return $current_calls;
+  }
+
+  public static function remove_courier_calls( $call_id )
+  {
+    $configs = OmnivaLt_Core::get_configs();
+    $current_calls = self::get_courier_calls();
+
+    foreach ( $current_calls as $call_key => $call_values ) {
+      if ( $call_values['id'] == $call_id ) {
+        unset($current_calls[$call_key]);
+      }
+    }
+
+    update_option($configs['meta_keys']['courier_calls'], array_values($current_calls));
+  }
+
   public static function add_msg( $msg, $type )
   {
-    if (!session_id()) {
+    if ( ! session_id() ) {
       session_start();
     }
-    if (!isset($_SESSION['omnivalt_notices'])) {
+    if ( ! isset($_SESSION['omnivalt_notices']) ) {
       $_SESSION['omnivalt_notices'] = array();
     }
     $_SESSION['omnivalt_notices'][] = array('msg' => $msg, 'type' => $type);
+  }
+
+  public static function show_notices()
+  {
+    if ( ! session_id() ) {
+      session_start();
+    }
+    if ( array_key_exists('omnivalt_notices', $_SESSION) ) {
+      foreach ( $_SESSION['omnivalt_notices'] as $notice ) {
+        $wp_notices = array('error', 'warning', 'success', 'info');
+        $classes = (in_array($notice['type'], $wp_notices)) ? 'notice notice-' . $notice['type'] : $notice['type'];
+        echo '<div class="' . $classes . '"><p>' . $notice['msg'] . '</p></div>';
+      }
+      unset( $_SESSION['omnivalt_notices'] );
+    }
   }
 
   public static function get_formated_time( $value, $value_if_not )
@@ -377,5 +435,20 @@ class OmnivaLt_Helper
     }
 
     return $meta_query_params;
+  }
+
+  public static function custom_tip( $text )
+  {
+    ob_start();
+    ?>
+    <div class="omnivalt-tip noselect">
+      <span class="dashicons dashicons-info"></span>
+      <span class="tip-text"><?php echo $text; ?></span>
+    </div>
+    <?php
+    $html = ob_get_contents();
+    ob_end_clean();
+
+    return $html;
   }
 }
