@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.15.0]
 ### Fixed
 - fix error when changing Order status to "Refunded"
 - fixed Omniva data saving every time even though the data is not changed
