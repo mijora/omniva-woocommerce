@@ -4,6 +4,7 @@
 */var/pdf/*.pdf
 */var/debug/*.log
 */var/logs/*.log
+*/var/locations/*.json
 */locations.json
 */languages/*.pot~
 */languages/*.po~
