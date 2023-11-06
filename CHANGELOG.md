@@ -5,6 +5,7 @@
 - fix error when changing Order status to "Refunded"
 - fixed Omniva data saving every time even though the data is not changed
 - fixed Omniva additional services adding to the shipment
+- fixed error when not exists get_current_screen() function
 
 ### Improved
 - created API library usage for all API functions
