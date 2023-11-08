@@ -1,6 +1,8 @@
 <?php
 class OmnivaLt_Terminals
 {
+  public static $_terminals_dir = OMNIVALT_DIR . 'var/locations/';
+
   public static function add_terminal_to_session()
   {
     if (isset($_POST['terminal_id']) && is_numeric($_POST['terminal_id'])) {
@@ -189,7 +191,7 @@ class OmnivaLt_Terminals
 
   public static function check_terminals_json_file()
   {
-    if ( ! file_exists(OMNIVALT_DIR . 'locations.json') ) {
+    if ( ! file_exists(self::$_terminals_dir . 'locations.json') ) {
       OmnivaLt_Cronjob::generate_locations_file();
     }
   }
@@ -208,8 +210,8 @@ class OmnivaLt_Terminals
 
   private static function read_terminals_file()
   {
-    $terminals_file = fopen(OMNIVALT_DIR . 'locations.json', "r");
-    $terminals = fread($terminals_file, filesize(OMNIVALT_DIR . 'locations.json') + 10);
+    $terminals_file = fopen($_terminals_dir . 'locations.json', "r");
+    $terminals = fread($terminals_file, filesize($_terminals_dir . 'locations.json') + 10);
     fclose($terminals_file);
 
     return json_decode($terminals, true);

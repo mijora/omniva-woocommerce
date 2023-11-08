@@ -2,7 +2,7 @@
 class OmnivaLt_Core
 {
   public static $main_file_path = WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME;
-  public static $var_directories = array('logs', 'pdf', 'debug');
+  public static $var_directories = array('logs', 'pdf', 'debug', 'locations');
 
   public static function init()
   {
@@ -114,9 +114,10 @@ class OmnivaLt_Core
     if ( ! self::is_directory_writable(OMNIVALT_DIR) ) {
       throw new \Exception(__('Cannot create files in plugin folder', 'omnivalt'));
     }
+    $var_dir = OMNIVALT_DIR . 'var/';
     foreach ( self::$var_directories as $dir ) {
-      if ( ! file_exists(OMNIVALT_DIR . 'var/' . $dir) ) {
-        mkdir(OMNIVALT_DIR . $dir, 0755, true);
+      if ( ! file_exists($var_dir . $dir) ) {
+        mkdir($var_dir . $dir, 0755, true);
       }
     }
   }

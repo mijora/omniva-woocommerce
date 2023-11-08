@@ -1,8 +1,18 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed var directory creating
+
+### Improved
+- moved locations.json file to var/locations directory
+
+### Updated
+- updated Omniva API library to v1.0.14
+
 ## [1.15.0]
 ### Fixed
-- fix error when changing Order status to "Refunded"
+- fixed error when changing Order status to "Refunded"
 - fixed Omniva data saving every time even though the data is not changed
 - fixed Omniva additional services adding to the shipment
 - fixed error when not exists get_current_screen() function

@@ -83,6 +83,7 @@ class OmnivaLt_Debug
     public static function get_all_files( $get_section = '' )
     {
         $debug_params = OmnivaLt_Core::get_configs('debug');
+        OmnivaLt_Core::add_required_directories();
         self::delete_old_files($debug_params['delete_after']);
         $files = array_diff(scandir(self::$_debug_dir), array('.', '..'));
         $all_files = array();

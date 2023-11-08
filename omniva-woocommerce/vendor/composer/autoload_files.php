@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'cd68897ab66901821be123d6861c0d78' => $baseDir . '/overrides/tcpdf/tcpdf_config.php',
+    'e1af0acb87348aa51d89cfb77fc80e82' => $vendorDir . '/mijora/omniva-api/overrides/tcpdf/tcpdf_config.php',
 );
