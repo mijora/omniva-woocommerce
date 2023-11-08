@@ -210,8 +210,8 @@ class OmnivaLt_Terminals
 
   private static function read_terminals_file()
   {
-    $terminals_file = fopen($_terminals_dir . 'locations.json', "r");
-    $terminals = fread($terminals_file, filesize($_terminals_dir . 'locations.json') + 10);
+    $terminals_file = fopen(self::$_terminals_dir . 'locations.json', "r");
+    $terminals = fread($terminals_file, filesize(self::$_terminals_dir . 'locations.json') + 10);
     fclose($terminals_file);
 
     return json_decode($terminals, true);
