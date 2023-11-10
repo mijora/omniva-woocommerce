@@ -321,6 +321,9 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-emails.php';
     require_once $core_dir . 'class-labels.php';
     require_once $core_dir . 'class-api.php';
+    require_once $core_dir . 'class-api-core.php';
+    require_once $core_dir . 'class-api-xml.php';
+    require_once $core_dir . 'class-api-omx.php';
     require_once $core_dir . 'class-admin-html.php';
     require_once $core_dir . 'class-packer.php';
     require_once $core_dir . 'class-product.php';
