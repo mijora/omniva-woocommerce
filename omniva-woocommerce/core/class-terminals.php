@@ -21,6 +21,9 @@ class OmnivaLt_Terminals
         if ( intval($terminal['TYPE']) !== $type ) {
           continue;
         }
+        /*if ( ! floatval($terminal['X_COORDINATE']) && ! floatval($terminal['Y_COORDINATE']) ) {
+          continue;
+        }*/
 
         //if ($terminal['A0_NAME'] != $country && $country != "ALL") continue;
         if ( ! isset($grouped_options[$terminal['A0_NAME']]) ) $grouped_options[(string) $terminal['A0_NAME']] = array();
@@ -54,6 +57,9 @@ class OmnivaLt_Terminals
       $grouped_options = array();
       foreach ( $terminals as $terminal ) {
         if ( intval($terminal['TYPE']) !== $list_options['type'] ) {
+          continue;
+        }
+        if ( ! floatval($terminal['X_COORDINATE']) && ! floatval($terminal['Y_COORDINATE']) ) {
           continue;
         }
 
@@ -115,6 +121,9 @@ class OmnivaLt_Terminals
       if ( $get_list === 'post' ) $type = 1;
       foreach ( $terminals as $terminal ) {
         if ( $terminal['A0_NAME'] != $country && isset($shipping_params[$country]) || intval($terminal['TYPE']) !== $type ) {
+          continue;
+        }
+        if ( ! floatval($terminal['X_COORDINATE']) && ! floatval($terminal['Y_COORDINATE']) ) {
           continue;
         }
 
@@ -191,6 +200,7 @@ class OmnivaLt_Terminals
 
   public static function check_terminals_json_file()
   {
+    OmnivaLt_Core::add_required_directories()
     if ( ! file_exists(self::$_terminals_dir . 'locations.json') ) {
       OmnivaLt_Cronjob::generate_locations_file();
     }
@@ -210,6 +220,7 @@ class OmnivaLt_Terminals
 
   private static function read_terminals_file()
   {
+    OmnivaLt_Core::add_required_directories();
     $terminals_file = fopen(self::$_terminals_dir . 'locations.json', "r");
     $terminals = fread($terminals_file, filesize(self::$_terminals_dir . 'locations.json') + 10);
     fclose($terminals_file);

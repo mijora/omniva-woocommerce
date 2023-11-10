@@ -51,9 +51,13 @@ class OmnivaLt_Cronjob
       self::log('Empty source URL.', false);
       return;
     }
+
+    OmnivaLt_Core::add_required_directories();
     
     $url = $location_params['source_url'];
+    
     $fp = fopen(OmnivaLt_Terminals::$_terminals_dir . "locations_new.json", "w");
+
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
