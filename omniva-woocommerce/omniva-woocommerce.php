@@ -60,9 +60,13 @@ function omnivalt_configs($section_name = false) {
       'courier_call' => 'CI',
     ),
     'finland' => array(
+      'pt pt' => 'CD', //Matkahulto
+      'c pt' => 'CD', //Matkahulto
       'c pc' => 'QB', //QB in documentation
       'c pn' => 'CD', //not sure
       'c cp' => 'CE', //not sure
+      'po pt' => 'CD', //Matkahulto
+      'lc pt' => 'CD', //Matkahulto
       'courier_call' => 'CE',
     ),
   );
@@ -83,6 +87,7 @@ function omnivalt_configs($section_name = false) {
         'LT' => 'baltic',
         'LV' => 'baltic',
         'EE' => 'baltic',
+        'FI' => 'finland',
         'call' => 'baltic',
       ),
       'comment_lang' => 'lit',
@@ -95,6 +100,7 @@ function omnivalt_configs($section_name = false) {
         'LT' => 'baltic',
         'LV' => 'baltic',
         'EE' => 'baltic',
+        'FI' => 'finland',
         'call' => 'baltic',
       ),
       'comment_lang' => 'lav',
@@ -115,7 +121,7 @@ function omnivalt_configs($section_name = false) {
     ),
     'FI' => array(
       'title' => __('Finland', 'omnivalt'),
-      'methods' => array('courier_plus', 'private_customer'),
+      'methods' => array('pickup', 'courier_plus', 'private_customer'),
       'shipping_sets' => array(
         'LT' => 'estonia',
         'LV' => 'estonia',
