@@ -6,6 +6,9 @@
 
 ### Improved
 - moved locations.json file to var/locations directory
+- added Matkahulto parcel terminals for Finland
+- completed the operation of the courier call for the OMX system
+- adapted so that the module could work with different API libraries
 
 ### Updated
 - updated Omniva API library to v1.0.14
