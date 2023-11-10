@@ -441,6 +441,19 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'description' => __('Show barcode image in manifest.', 'omnivalt'),
         'default' => 'yes',
       );
+      $fields['hr_pickup'] = array(
+        'type' => 'hr',
+        'title' => __('Shipment pickup', 'omnivalt'),
+      );
+      $fields['pickup_comment'] = array(
+        'title' => __('Comment to the courier', 'omnivalt'),
+        'type' => 'text',
+        'description' => __('A comment that will be sent with the courier call request', 'omnivalt') . '.<br/><b>' . __('This feature is not working yet', 'omnivalt') . '.</b>',
+        'custom_attributes' => array(
+          'maxlength' => 120,
+          'disabled' => true,
+        ),
+      );
       $fields['hr_debug'] = array(
         'type' => 'hr',
         'title' => __('Debug', 'omnivalt'),

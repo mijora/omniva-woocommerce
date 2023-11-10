@@ -305,16 +305,45 @@ do_action('omniva_admin_manifest_head');
           <form id="omniva-call" action="admin-post.php" method="GET">
             <input type="hidden" name="action" value="omnivalt_call_courier" />
             <?php wp_nonce_field('omnivalt_call_courier', 'omnivalt_call_courier_nonce'); ?>
-            <div><span><?php echo __("Shop name", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_name']; ?></div>
-            <div><span><?php echo __("Shop phone number", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_phone']; ?></div>
-            <div><span><?php echo __("Shop postcode", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_postcode']; ?></div>
+            <div><span><?php _e("Shop name", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_name']; ?></div>
+            <div><span><?php _e("Shop phone number", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_phone']; ?></div>
+            <div><span><?php _e("Shop postcode", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_postcode']; ?></div>
             <div>
-              <span><?php echo __("Shop address", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_address'] . ', ' . $shipping_settings['shop_city']; ?>
+              <span><?php _e("Shop address", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_address'] . ', ' . $shipping_settings['shop_city']; ?>
             </div>
-            <div>
-              <span><?php echo __("Number of parcels", 'omnivalt'); ?>:</span>
-              <input type="number" id="call_quantity" name="call_quantity" min="0" max="29" step="1" value="<?php echo count($selected_orders); ?>"/>
-            </div>
+            <div><span><?php _e("Comment", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['pickup_comment']; ?></div>
+            <table cellspacing="0">
+              <tr>
+                <th>
+                  <label for="call_quantity"><?php _e("Number of parcels", 'omnivalt'); ?>:</label>
+                </th>
+                <td>
+                  <input type="number" id="call_quantity" name="call_quantity" min="0" max="29" step="1" value="<?php echo count($selected_orders); ?>"/>
+                </td>
+              </tr>
+              <tr title="<?php _e('This feature is not working yet', 'omnivalt'); ?>">
+                <th>
+                  <label for="call_checkboxes_heavy"><?php _e("Shipments is heavy", 'omnivalt'); ?>:</label>
+                </th>
+                <td>
+                  <label>
+                    <input type="checkbox" id="call_checkboxes_heavy" name="call_checkboxes[]" value="heavy" disabled/>
+                    <?php _e("Shipments weight exceeds 30 kg", 'omnivalt'); ?>
+                  </label>
+                </td>
+              </tr>
+              <tr title="<?php _e('This feature is not working yet', 'omnivalt'); ?>">
+                <th>
+                  <label for="call_checkboxes_twoman"><?php _e("Need two man", 'omnivalt'); ?>:</label>
+                </th>
+                <td>
+                  <label>
+                    <input type="checkbox" id="call_checkboxes_twoman" name="call_checkboxes[]" value="twoman" disabled/>
+                    <?php _e("2 people are needed to pick up the shipments", 'omnivalt'); ?>
+                  </label>
+                </td>
+              </tr>
+            </table>
             <div class="modal-footer">
               <button type="submit" id="omniva-call-confirm-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>
               <button type="button" id="omniva-call-cancel-btn" class="button action"><?php _e('Cancel') ?></button>

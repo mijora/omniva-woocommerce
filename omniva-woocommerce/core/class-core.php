@@ -114,10 +114,10 @@ class OmnivaLt_Core
     if ( ! self::is_directory_writable(OMNIVALT_DIR) ) {
       throw new \Exception(__('Cannot create files in plugin folder', 'omnivalt'));
     }
+    $var_dir = OMNIVALT_DIR . 'var/';
     foreach ( self::$var_directories as $dir ) {
-      if ( ! file_exists(OMNIVALT_DIR . 'var/' . $dir) ) {
-
-        mkdir(OMNIVALT_DIR . 'var/' . $dir, 0755, true);
+      if ( ! file_exists($var_dir . $dir) ) {
+        mkdir($var_dir . $dir, 0755, true);
       }
     }
   }
@@ -321,6 +321,9 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-emails.php';
     require_once $core_dir . 'class-labels.php';
     require_once $core_dir . 'class-api.php';
+    require_once $core_dir . 'class-api-core.php';
+    require_once $core_dir . 'class-api-xml.php';
+    require_once $core_dir . 'class-api-omx.php';
     require_once $core_dir . 'class-admin-html.php';
     require_once $core_dir . 'class-packer.php';
     require_once $core_dir . 'class-product.php';

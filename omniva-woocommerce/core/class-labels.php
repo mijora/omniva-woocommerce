@@ -172,7 +172,13 @@ class OmnivaLt_Labels
   {
     $shipping_settings = OmnivaLt_Core::get_settings();
     $omnivalt_api = new OmnivaLt_Api();
-    $call_result = $omnivalt_api->call_courier(intval($_GET['call_quantity']));
+
+    $call_params = array();
+    $call_params['quantity'] = intval($_GET['call_quantity']);
+    $call_params['heavy'] = (isset($_GET['call_checkboxes']) && in_array('heavy', $_GET['call_checkboxes']));
+    $call_params['twoman'] = (isset($_GET['call_checkboxes']) && in_array('twoman', $_GET['call_checkboxes']));
+
+    $call_result = $omnivalt_api->call_courier($call_params);
 
     if ( $call_result['status'] == true ) {
       if ( isset($call_result['call_id']) ) {
