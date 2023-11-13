@@ -71,6 +71,20 @@ function omnivalt_configs($section_name = false) {
     ),
   );
 
+  $params['shipping_available'] = array(
+    'baltic' => array(
+      'LT' => array('pickup', 'courier'),
+      'LV' => array('pickup', 'courier'),
+      'EE' => array('pickup', 'courier'),
+    ),
+    'estonia' => array(
+      'LT' => array('pickup', 'courier'),
+      'LV' => array('pickup', 'courier'),
+      'EE' => array('pickup', 'courier', 'courier_plus', 'post_near', 'post_specific'),
+      'FI' => array('pickup', 'courier_plus', 'private_customer'),
+    ),
+  );
+
   /*
    * Every shipping method params. Array key is sender country. All bellow array fields is required.
    *
@@ -129,8 +143,8 @@ function omnivalt_configs($section_name = false) {
         'FI' => 'finland',
         'call' => 'estonia',
       ),
-      'comment_lang' => '',
-      'tracking_url' => '',
+      'comment_lang' => 'eng',
+      'tracking_url' => 'https://www.omniva.ee/business/track?barcode=',
     ),
   );
 
