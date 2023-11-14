@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.15.1]
 ### Fixed
 - fixed var directory creating
 
@@ -9,6 +9,9 @@
 - added Matkahulto parcel terminals for Finland
 - completed the operation of the courier call for the OMX system
 - adapted so that the module could work with different API libraries
+- changed terminals source URL
+- improved display of shipping methods depending on API country
+- improved part of JS code in plugin settings page
 
 ### Updated
 - updated Omniva API library to v1.0.14
