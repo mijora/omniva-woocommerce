@@ -5,14 +5,14 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.15.0
+ * Version: 1.15.1
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 
  * Requires at least: 5.1
- * Tested up to: 6.3.2
+ * Tested up to: 6.4.1
  * WC requires at least: 6.0.0
- * WC tested up to: 8.2.1
+ * WC tested up to: 8.2.2
  * Requires PHP: 7.2
  * PHP tested up to: 8.1.13
  */
@@ -21,7 +21,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVALT_VERSION', '1.15.0');
+define('OMNIVALT_VERSION', '1.15.1');
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));
@@ -60,10 +60,28 @@ function omnivalt_configs($section_name = false) {
       'courier_call' => 'CI',
     ),
     'finland' => array(
+      'pt pt' => 'CD', //Matkahulto
+      'c pt' => 'CD', //Matkahulto
       'c pc' => 'QB', //QB in documentation
       'c pn' => 'CD', //not sure
       'c cp' => 'CE', //not sure
+      'po pt' => 'CD', //Matkahulto
+      'lc pt' => 'CD', //Matkahulto
       'courier_call' => 'CE',
+    ),
+  );
+
+  $params['shipping_available'] = array(
+    'baltic' => array(
+      'LT' => array('pickup', 'courier'),
+      'LV' => array('pickup', 'courier'),
+      'EE' => array('pickup', 'courier'),
+    ),
+    'estonia' => array(
+      'LT' => array('pickup', 'courier'),
+      'LV' => array('pickup', 'courier'),
+      'EE' => array('pickup', 'courier', 'courier_plus', 'post_near', 'post_specific'),
+      'FI' => array('pickup', 'courier_plus', 'private_customer'),
     ),
   );
 
@@ -83,6 +101,7 @@ function omnivalt_configs($section_name = false) {
         'LT' => 'baltic',
         'LV' => 'baltic',
         'EE' => 'baltic',
+        'FI' => 'finland',
         'call' => 'baltic',
       ),
       'comment_lang' => 'lit',
@@ -95,6 +114,7 @@ function omnivalt_configs($section_name = false) {
         'LT' => 'baltic',
         'LV' => 'baltic',
         'EE' => 'baltic',
+        'FI' => 'finland',
         'call' => 'baltic',
       ),
       'comment_lang' => 'lav',
@@ -115,7 +135,7 @@ function omnivalt_configs($section_name = false) {
     ),
     'FI' => array(
       'title' => __('Finland', 'omnivalt'),
-      'methods' => array('courier_plus', 'private_customer'),
+      'methods' => array('pickup', 'courier_plus', 'private_customer'),
       'shipping_sets' => array(
         'LT' => 'estonia',
         'LV' => 'estonia',
@@ -123,8 +143,8 @@ function omnivalt_configs($section_name = false) {
         'FI' => 'finland',
         'call' => 'estonia',
       ),
-      'comment_lang' => '',
-      'tracking_url' => '',
+      'comment_lang' => 'eng',
+      'tracking_url' => 'https://www.omniva.ee/business/track?barcode=',
     ),
   );
 
@@ -355,7 +375,7 @@ function omnivalt_configs($section_name = false) {
    * Post offices and terminals params
    */
   $params['locations'] = array(
-    'source_url' => 'https://www.omniva.ee/locations.json',
+    'source_url' => 'https://www.omniva.ee/locationsfull.json',
   );
 
   /*

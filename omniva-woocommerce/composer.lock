@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3d8ba1563a4b99ef8236600797a0d27",
+    "content-hash": "51a4732b513bd11dacae07cdefe5aee4",
     "packages": [
         {
             "name": "mijora/omniva-api",
-            "version": "1.0.13",
+            "version": "1.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/omniva-baltic/omniva-api-lib.git",
-                "reference": "807b50232472009c368ec89dfea05ca65133c63c"
+                "reference": "3d44982c56a629de1186ea49c7f40598f6b4f6d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/807b50232472009c368ec89dfea05ca65133c63c",
-                "reference": "807b50232472009c368ec89dfea05ca65133c63c",
+                "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/3d44982c56a629de1186ea49c7f40598f6b4f6d2",
+                "reference": "3d44982c56a629de1186ea49c7f40598f6b4f6d2",
                 "shasum": ""
             },
             "require": {
@@ -27,6 +27,9 @@
             },
             "type": "library",
             "autoload": {
+                "files": [
+                    "overrides/tcpdf/tcpdf_config.php"
+                ],
                 "psr-4": {
                     "Mijora\\Omniva\\": "src/"
                 }
@@ -45,7 +48,7 @@
                 }
             ],
             "description": "Omniva API wrapper",
-            "time": "2023-10-25T07:39:05+00:00"
+            "time": "2023-10-27T08:22:28+00:00"
         },
         {
             "name": "setasign/fpdf",

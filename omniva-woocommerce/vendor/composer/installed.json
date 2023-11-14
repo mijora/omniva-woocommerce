@@ -1,17 +1,17 @@
 [
     {
         "name": "mijora/omniva-api",
-        "version": "1.0.13",
-        "version_normalized": "1.0.13.0",
+        "version": "1.0.14",
+        "version_normalized": "1.0.14.0",
         "source": {
             "type": "git",
             "url": "https://github.com/omniva-baltic/omniva-api-lib.git",
-            "reference": "807b50232472009c368ec89dfea05ca65133c63c"
+            "reference": "3d44982c56a629de1186ea49c7f40598f6b4f6d2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/807b50232472009c368ec89dfea05ca65133c63c",
-            "reference": "807b50232472009c368ec89dfea05ca65133c63c",
+            "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/3d44982c56a629de1186ea49c7f40598f6b4f6d2",
+            "reference": "3d44982c56a629de1186ea49c7f40598f6b4f6d2",
             "shasum": ""
         },
         "require": {
@@ -19,10 +19,13 @@
             "setasign/fpdi": "^2.3",
             "tecnickcom/tcpdf": "^6.3"
         },
-        "time": "2023-10-25T07:39:05+00:00",
+        "time": "2023-10-27T08:22:28+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
+            "files": [
+                "overrides/tcpdf/tcpdf_config.php"
+            ],
             "psr-4": {
                 "Mijora\\Omniva\\": "src/"
             }

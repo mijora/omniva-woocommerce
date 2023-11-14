@@ -139,6 +139,7 @@ class OmnivaLt_Shipmethod_Helper
   public static function is_rate_allowed($key, $country, $settings) {
     $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
     $asociations = OmnivaLt_Helper::get_methods_asociations();
+    $available_methods = OmnivaLt_Helper::get_available_methods();
     
     if ( ! isset($shipping_params[$settings['api_country']]) ) {
       return false;
@@ -154,7 +155,7 @@ class OmnivaLt_Shipmethod_Helper
       return false;
     }
 
-    $allowed_methods = $shipping_params[$country]['methods'];
+    $allowed_methods = $available_methods[$country]['available_methods'];
     foreach ( $allowed_methods as $method_key => $method ) {
       $allowed_methods[$method_key] = OmnivaLt_Helper::convert_method_name_to_short($asociations, $method);
     }

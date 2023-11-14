@@ -51,9 +51,13 @@ class OmnivaLt_Cronjob
       self::log('Empty source URL.', false);
       return;
     }
+
+    OmnivaLt_Core::add_required_directories();
     
     $url = $location_params['source_url'];
-    $fp = fopen(OMNIVALT_DIR . "locations_new.json", "w");
+    
+    $fp = fopen(OmnivaLt_Terminals::$_terminals_dir . "locations_new.json", "w");
+
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -66,9 +70,9 @@ class OmnivaLt_Cronjob
     curl_close($curl);
     fclose($fp);
 
-    $new_data = file_get_contents(OMNIVALT_DIR . "locations_new.json");
+    $new_data = file_get_contents(OmnivaLt_Terminals::$_terminals_dir . "locations_new.json");
     if ( json_decode($new_data) ) {
-      rename(OMNIVALT_DIR . "locations_new.json", OMNIVALT_DIR . "locations.json");
+      rename(OmnivaLt_Terminals::$_terminals_dir . "locations_new.json", OmnivaLt_Terminals::$_terminals_dir . "locations.json");
       self::log('Locations updated.', false);
     } else {
       self::log('Failed.', false);
@@ -80,6 +84,7 @@ class OmnivaLt_Cronjob
     $message = ($show_date) ? current_time('Y-m-d H:i:s') . ' ' . $message : $message;
     $message = ($next_same_line) ? $message . ' ' : $message . PHP_EOL;
 
+    OmnivaLt_Core::add_required_directories();
     file_put_contents(OMNIVALT_DIR . 'var/logs/cronjob.log', $message, FILE_APPEND);
   }
 }

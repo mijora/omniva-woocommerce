@@ -2,7 +2,7 @@
 class OmnivaLt_Core
 {
   public static $main_file_path = WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME;
-  public static $var_directories = array('logs', 'pdf', 'debug');
+  public static $var_directories = array('logs', 'pdf', 'debug', 'locations');
 
   public static function init()
   {
@@ -114,9 +114,10 @@ class OmnivaLt_Core
     if ( ! self::is_directory_writable(OMNIVALT_DIR) ) {
       throw new \Exception(__('Cannot create files in plugin folder', 'omnivalt'));
     }
+    $var_dir = OMNIVALT_DIR . 'var/';
     foreach ( self::$var_directories as $dir ) {
-      if ( ! file_exists(OMNIVALT_DIR . 'var/' . $dir) ) {
-        mkdir(OMNIVALT_DIR . $dir, 0755, true);
+      if ( ! file_exists($var_dir . $dir) ) {
+        mkdir($var_dir . $dir, 0755, true);
       }
     }
   }
@@ -195,21 +196,21 @@ class OmnivaLt_Core
     $folder_js = '/assets/js/';
 
     if (is_cart() || is_checkout()) {
-      wp_enqueue_script('omniva-helper', plugins_url($folder_js . 'omniva_helper.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
-      wp_enqueue_script('omniva', plugins_url($folder_js . 'omniva.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
-      wp_enqueue_style('omniva', plugins_url($folder_css . 'omniva.css', self::$main_file_path), array(), OMNIVALT_VERSION);
+      wp_enqueue_script('omnivalt-helper', plugins_url($folder_js . 'omniva_helper.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
+      wp_enqueue_script('omnivalt', plugins_url($folder_js . 'omniva.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
+      wp_enqueue_style('omnivalt', plugins_url($folder_css . 'omniva.css', self::$main_file_path), array(), OMNIVALT_VERSION);
       
       if ( file_exists(OMNIVALT_DIR . $folder_css . 'custom.css') ) { //Allow custom CSS file which not include in plugin by default
-        wp_enqueue_style('omniva-custom', plugins_url($folder_css . 'custom.css', self::$main_file_path), array(), OMNIVALT_VERSION);
+        wp_enqueue_style('omnivalt-custom', plugins_url($folder_css . 'custom.css', self::$main_file_path), array(), OMNIVALT_VERSION);
       }
       if ( file_exists(self::get_overrides_dir() . 'assets/css/front.css') ) { //Allow custom CSS file from theme 
-        wp_enqueue_style('omniva-theme-front', self::get_overrides_dir(true) . 'css/front.css', array(), OMNIVALT_VERSION);
+        wp_enqueue_style('omnivalt-theme-front', self::get_overrides_dir(true) . 'css/front.css', array(), OMNIVALT_VERSION);
       }
 
-      wp_enqueue_script('leaflet', plugins_url($folder_js . 'leaflet.js', self::$main_file_path), array('jquery'), null, true);
-      wp_enqueue_style('leaflet', plugins_url($folder_css . 'leaflet.css', self::$main_file_path));    
+      wp_enqueue_script('omnivalt_leaflet', plugins_url($folder_js . 'leaflet.js', self::$main_file_path), array('jquery'), null, true);
+      wp_enqueue_style('omnivalt_leaflet', plugins_url($folder_css . 'leaflet.css', self::$main_file_path));    
 
-      wp_localize_script('omniva', 'omnivadata', array(
+      wp_localize_script('omnivalt', 'omnivadata', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'omniva_plugin_url' => OMNIVALT_URL,
         'text_select_terminal' => __('Select terminal', 'omnivalt'),
@@ -242,7 +243,16 @@ class OmnivaLt_Core
 
     if ($hook == 'woocommerce_page_wc-settings' && isset($_GET['section']) && $_GET['section'] == 'omnivalt') {
       wp_enqueue_style('omnivalt_admin_settings', plugins_url($folder_css . 'omniva_admin_settings.css', self::$main_file_path), array(), OMNIVALT_VERSION);
-      wp_enqueue_script('omniva_admin_settings', plugins_url($folder_js . 'omniva_admin_settings.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
+      wp_enqueue_script('omnivalt_admin_settings', plugins_url($folder_js . 'omniva_admin_settings.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
+
+      $available_methods = self::get_configs('shipping_available');
+      $available_methods_js = array();
+      foreach ( $available_methods as $plan => $methods ) {
+        $available_methods_js[OmnivaLt_Helper::get_api_plan($plan, true)] = $methods;
+      }
+      wp_localize_script('omnivalt_admin_settings', 'omnivalt_params', array(
+        'available_methods' => $available_methods_js,
+      ));
     }
   }
 
@@ -320,6 +330,9 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-emails.php';
     require_once $core_dir . 'class-labels.php';
     require_once $core_dir . 'class-api.php';
+    require_once $core_dir . 'class-api-core.php';
+    require_once $core_dir . 'class-api-xml.php';
+    require_once $core_dir . 'class-api-omx.php';
     require_once $core_dir . 'class-admin-html.php';
     require_once $core_dir . 'class-packer.php';
     require_once $core_dir . 'class-product.php';

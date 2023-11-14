@@ -112,6 +112,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       foreach ($this->omnivalt_configs['shipping_params'] as $country_code => $ship_params) {
         $countries_options[$country_code] = $country_code . ' - ' . $ship_params['title'];
       }
+      OmnivaLt_Helper::get_available_methods();
       
       $fields = array(
         'enabled' => array(
@@ -241,6 +242,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'title' => $ship_method_values['title'],
           'type' => 'checkbox',
           'description' => $ship_method_values['description'],
+          'custom_attributes' => array(
+            'data-method' => $ship_method,
+          ),
         );
       }
       $fields['txt_returns'] = array(
@@ -441,6 +445,19 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'description' => __('Show barcode image in manifest.', 'omnivalt'),
         'default' => 'yes',
       );
+      $fields['hr_pickup'] = array(
+        'type' => 'hr',
+        'title' => __('Shipment pickup', 'omnivalt'),
+      );
+      $fields['pickup_comment'] = array(
+        'title' => __('Comment to the courier', 'omnivalt'),
+        'type' => 'text',
+        'description' => __('A comment that will be sent with the courier call request', 'omnivalt') . '.<br/><b>' . __('This feature is not working yet', 'omnivalt') . '.</b>',
+        'custom_attributes' => array(
+          'maxlength' => 120,
+          'disabled' => true,
+        ),
+      );
       $fields['hr_debug'] = array(
         'type' => 'hr',
         'title' => __('Debug', 'omnivalt'),
@@ -565,7 +582,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         ?>
         <tr class="row-prices" valign="top">
           <td colspan="2">
-            <div class="prices_box">
+            <div class="prices_box" data-country="<?php echo $value['lang']; ?>">
               <div class="pb-lang">
                 <img src="<?php echo $flag_img_url; ?>" alt="[<?php echo $value['lang']; ?>]">
                 <span><?php echo $value['lang'] . ' ' . __('prices','omnivalt'); ?></span>
@@ -693,7 +710,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
 
       ob_start();
       ?>
-      <div class="block-prices <?php echo $params['type']; ?>">
+      <div class="block-prices <?php echo $params['type']; ?> <?php echo ($params['type'] == 'terminal') ? 'pickup' : ''; ?>">
         <div class="sec-title">
           <?php
           /* -Compatibility with old data- */
@@ -1289,7 +1306,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       if ( empty($method_params) ) {
         return;
       }
-    
+
       $check_restrictions = OmnivaLt_Shipmethod_Helper::check_restrictions($this->settings, $rate_key, $weight, $products_for_dim);
 
       if ( $this->settings['method_' . $rate_key] == 'yes' && $check_restrictions ) {

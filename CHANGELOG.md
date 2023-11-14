@@ -1,8 +1,24 @@
 # Changelog
 
+## [1.15.1]
+### Fixed
+- fixed var directory creating
+
+### Improved
+- moved locations.json file to var/locations directory
+- added Matkahulto parcel terminals for Finland
+- completed the operation of the courier call for the OMX system
+- adapted so that the module could work with different API libraries
+- changed terminals source URL
+- improved display of shipping methods depending on API country
+- improved part of JS code in plugin settings page
+
+### Updated
+- updated Omniva API library to v1.0.14
+
 ## [1.15.0]
 ### Fixed
-- fix error when changing Order status to "Refunded"
+- fixed error when changing Order status to "Refunded"
 - fixed Omniva data saving every time even though the data is not changed
 - fixed Omniva additional services adding to the shipment
 - fixed error when not exists get_current_screen() function
