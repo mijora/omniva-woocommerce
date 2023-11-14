@@ -375,7 +375,7 @@ function omnivalt_configs($section_name = false) {
    * Post offices and terminals params
    */
   $params['locations'] = array(
-    'source_url' => 'https://www.omniva.ee/locations.json',
+    'source_url' => 'https://www.omniva.ee/locationsfull.json',
   );
 
   /*
