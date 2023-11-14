@@ -68,6 +68,83 @@ class OmnivaLt_Helper
     return false;
   }
 
+  public static function get_all_api_plans()
+  {
+    $available_shippings = OmnivaLt_Core::get_configs('shipping_available');
+
+    return array_keys($available_shippings);
+  }
+
+  public static function get_api_plan( $api_country = false, $get_by_plan = false )
+  {
+    $associations = array(
+      'LT' => 'baltic',
+      'EE' => 'estonia',
+    );
+    $default_country = 'LT';
+
+    if ( $get_by_plan ) {
+      foreach ( $associations as $country => $plan ) {
+        if ( $api_country == $plan ) {
+          return $country;
+        }
+      }
+
+      return $default_country;
+    }
+
+    if ( ! $api_country ) {
+      $settings = OmnivaLt_Core::get_settings();
+      $api_country = (! empty($settings['api_country'])) ? $settings['api_country'] : $default_country;
+    }
+
+    return $associations[$api_country] ?? $associations[$default_country];
+
+    switch ( $api_country ) {
+      case 'LT':
+        $api_plan = 'baltic';
+        break;
+      case 'EE':
+        $api_plan = 'estonia';
+        break;
+      default:
+        $api_plan = 'baltic';
+    }
+
+    return $api_plan;
+  }
+
+  public static function get_available_methods()
+  {
+    $configs = OmnivaLt_Core::get_configs();
+    $settings = OmnivaLt_Core::get_settings();
+
+    $api_plan = self::get_api_plan();
+    $all_countries = array_keys($configs['shipping_params']);
+
+    $available_methods = array();
+    foreach ( $all_countries as $country ) {
+      $available_methods[$country] = $configs['shipping_params'][$country];
+      unset($available_methods[$country]['methods']);
+      $available_methods[$country]['all_methods'] = $configs['shipping_params'][$country]['methods'];
+      $available_methods[$country]['available_methods'] = array();
+      if ( isset($configs['shipping_available'][$api_plan][$country]) ) {
+        $available_methods[$country]['available_methods'] = $configs['shipping_available'][$api_plan][$country];
+      }
+      
+      $shipping_sets = array();
+      foreach ( $configs['shipping_params'][$country]['shipping_sets'] as $shipping_set_country => $shipping_set_plan ) {
+        if ( $shipping_set_country == 'call' ) {
+          continue;
+        }
+        $shipping_sets[$shipping_set_country] = $configs['shipping_sets'][$shipping_set_plan];
+      }
+      $available_methods[$country]['shipping_sets'] = $shipping_sets;
+    }
+
+    return $available_methods;
+  }
+
   public static function get_methods_asociations()
   {
     $asociations = array();
