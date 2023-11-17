@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- added temporary fix for order size calculation
+
 ### Improved
 - started using terminal-mapping JS library for map
 
