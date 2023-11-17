@@ -37,6 +37,18 @@ class OmnivaLt_Terminals
 
   public static function get_terminals_options( $selected = '', $country = "ALL", $get_list = 'terminal' )
   {
+    $omniva_settings = get_option(OmnivaLt_Core::get_configs('plugin')['settings_key']);
+    $show_map = (isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == 'yes') ? true : ((! isset($omniva_settings['show_map'])) ? true : false);
+
+    if ( $show_map ) {
+      return self::get_terminals_options_new($selected, $country, $get_list);
+    }
+    
+    return self::get_terminals_options_old($selected, $country, $get_list);
+  }
+
+  public static function get_terminals_options_old( $selected = '', $country = "ALL", $get_list = 'terminal' )
+  {
     $terminals = self::read_terminals_file();
     $parcel_terminals = '';
     
@@ -86,7 +98,7 @@ class OmnivaLt_Terminals
     $set_autoselect = (isset($omniva_settings['auto_select'])) ? $omniva_settings['auto_select'] : 'yes';
     
     $script = "<script style='display:none;'>
-      var omnivaTerminals = JSON.stringify(" . json_encode(self::get_terminals_for_map('', $country, $get_list)) . ");
+      var omnivaTerminals = JSON.stringify(" . json_encode(self::get_terminals_for_map_old('', $country, $get_list)) . ");
     </script>";
     $script .= "<script style='display:none;'>
       var omniva_current_country = '" . $country . "';
@@ -109,7 +121,145 @@ class OmnivaLt_Terminals
       ' . $button . ' </div>' . $script;
   }
 
-  public static function get_terminals_for_map( $selected = '', $country = "LT", $get_list = 'terminal' )
+  public static function get_terminals_options_new( $selected = '', $country = "ALL", $get_list = 'terminal' )
+  {
+    $terminals = self::read_terminals_file();
+    $parcel_terminals = '';
+    
+    $list_options = array(
+      'list' => 'terminal',
+      'type' => 0,
+      'txt_select' => __('Select parcel terminal', 'omnivalt'),
+      'txt_show_map' => __('Show parcel terminals map', 'omnivalt'),
+    );
+    if ( $get_list === 'post' ) {
+      $list_options['list'] = 'post';
+      $list_options['type'] = 1;
+      $list_options['txt_select'] = __('Select post office', 'omnivalt');
+      $list_options['txt_show_map'] = __('Show post offices map', 'omnivalt');
+    }
+
+    if ( is_array($terminals) ) {
+      $grouped_options = array();
+      foreach ( $terminals as $terminal ) {
+        if ( intval($terminal['TYPE']) !== $list_options['type'] ) {
+          continue;
+        }
+        if ( ! floatval($terminal['X_COORDINATE']) && ! floatval($terminal['Y_COORDINATE']) ) {
+          continue;
+        }
+
+        if ( $terminal['A0_NAME'] != $country && $country != "ALL" ) continue;
+        if ( ! isset($grouped_options[$terminal['A1_NAME']]) ) $grouped_options[(string) $terminal['A1_NAME']] = array();
+        $grouped_options[(string) $terminal['A1_NAME']][(string) $terminal['ZIP']] = $terminal['NAME'];
+      }
+      $counter = 0;
+      foreach ( $grouped_options as $city => $locs ) {
+        $parcel_terminals .= '<optgroup data-id = "' . $counter . '" label = "' . $city . '">';
+        
+        foreach ( $locs as $key => $loc ) {
+          $parcel_terminals .= '<option value = "' . $key . '" ' . ($key == $selected ? 'selected' : '') . '>' . $loc . '</option>';
+        }
+
+        $parcel_terminals .= '</optgroup>';
+        $counter++;
+      }
+    }
+
+    $nonce = wp_create_nonce("omniva_terminals_json_nonce");
+    $omniva_settings = get_option(OmnivaLt_Core::get_configs('plugin')['settings_key']);
+    $parcel_terminals = '<option value = "">' . $list_options['txt_select'] . '</option>' . $parcel_terminals;
+    $set_autoselect = (isset($omniva_settings['auto_select'])) ? $omniva_settings['auto_select'] : 'yes';
+    $show_map = (isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == 'yes') ? true : ((! isset($omniva_settings['show_map'])) ? true : false);
+    
+    $map_script = "<script style='display:none;'>
+      var omnivalt_terminals = " . json_encode(self::get_terminals_for_map_new('', $country, $get_list)) . ";
+    </script>";
+    $map_script .= "<script style='display:none;'>
+      var omnivalt_current_country = '" . $country . "';
+      var omnivalt_type = '" . $get_list . "';
+      var omnivalt_current_terminal = '" . $selected . "';
+      var omnivalt_settings = {
+        auto_select:'" . $set_autoselect . "',
+        show_map: " . (($show_map) ? 'true' : 'false') . ",
+      };
+
+      jQuery('document').ready(function(){
+        omnivalt_init_map();
+      });
+      </script>";
+
+    $container = '<div class="omnivalt_terminal_container">';
+    $container .= '<select id="omnivalt-terminal-selected" class="omnivalt_terminal_select_field" name="omnivalt_terminal">' . $parcel_terminals . '</select>';
+
+    if ( $show_map ) {
+      $container .= '<div id="omnivalt-terminal-container-map" class="omnivalt_terminal_container_map"></div>' . $map_script;
+    }
+    $container .= '</div>';
+
+    return $container;
+  }
+
+  public static function get_terminals_for_map_new( $selected = '', $country = "LT", $get_list = 'terminal' )
+  {
+    $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
+    $terminals = self::read_terminals_file();
+    $parcel_terminals = '';
+    $terminalsList = array();
+    $comment_lang = (!empty($shipping_params[strtoupper($country)]['comment_lang'])) ? $shipping_params[strtoupper($country)]['comment_lang'] : 'lit';
+
+    if ( is_array($terminals) ) {
+      $type = 0;
+      if ( $get_list === 'post' ) $type = 1;
+      foreach ( $terminals as $terminal ) {
+        if ( $terminal['A0_NAME'] != $country && isset($shipping_params[$country]) || intval($terminal['TYPE']) !== $type ) {
+          continue;
+        }
+        if ( ! floatval($terminal['X_COORDINATE']) && ! floatval($terminal['Y_COORDINATE']) ) {
+          continue;
+        }
+
+        if ( ! isset($grouped_options[$terminal['A1_NAME']]) ) {
+          $grouped_options[(string) $terminal['A1_NAME']] = array();
+        }
+        $grouped_options[(string) $terminal['A1_NAME']][(string) $terminal['ZIP']] = $terminal['NAME'];
+
+        $terminalsList[] = [
+          'identifier' => 'omnivalt_icon',
+          'name' => $terminal['NAME'],
+          'coords' => array(
+            'lat' => $terminal['Y_COORDINATE'],
+            'lng' => $terminal['X_COORDINATE'],
+          ),
+          'id' => $terminal['ZIP'],
+          'city' => self::build_terminal_city($terminal),
+          'address' => self::build_terminal_address($terminal),
+          'comment' => str_ireplace('"', '\"', $terminal['comment_' . $comment_lang])
+        ];
+      }
+    }
+    return $terminalsList;
+  }
+
+  private static function build_terminal_address( $terminal )
+  {
+    $address = (! empty($terminal['A5_NAME'])) ? $terminal['A5_NAME'] : '-';
+    if ( ! empty($terminal['A7_NAME']) ) {
+      $address .= ' ' . $terminal['A7_NAME'];
+    }
+    if ( ! empty($terminal['A3_NAME']) ) {
+      $address .= ', ' . $terminal['A3_NAME'];
+    }
+
+    return $address;
+  }
+
+  private static function build_terminal_city( $terminal )
+  {
+    return trim($terminal['A2_NAME'] . ' ' . $terminal['A1_NAME']);
+  }
+
+  public static function get_terminals_for_map_old( $selected = '', $country = "LT", $get_list = 'terminal' )
   {
     $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
     $terminals = self::read_terminals_file();

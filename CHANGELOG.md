@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Improved
+- started using terminal-mapping JS library for map
+
 ## [1.15.1]
 ### Fixed
 - fixed var directory creating
