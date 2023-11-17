@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.15.2]
 ### Fixed
 - added temporary fix for order size calculation
 
