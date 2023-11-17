@@ -7,6 +7,10 @@
 
 == Changelog ==
 
+= 1.15.2 =
+- added temporary fix for order size calculation
+- started using terminal-mapping JS library for map
+
 = 1.15.1 =
 - fixed var directory creating
 - moved locations.json file to var/locations directory
