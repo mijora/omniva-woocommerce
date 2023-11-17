@@ -14,7 +14,88 @@
 }
 
 /**
- * Map 
+ * Map (NEW)
+ **/
+:root {
+    --omniva-color-main: #f60;
+}
+
+.omnivalt_terminal_select_field {
+    display: none !important;
+}
+
+.omnivalt_terminal_container_map {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.omnivalt_terminal_container_map .tmjs-selected-terminal {
+    line-height: 18px;
+    padding-bottom: 5px;
+    font-weight: normal;
+}
+
+.omnivalt_terminal_container_map .tmjs-open-modal-btn {
+    padding: 5px;
+    border-radius: 5px;
+    line-height: 20px;
+    width: 100%;
+    text-align: center;
+    background: var(--omniva-color-main);
+    border: 1px solid var(--omniva-color-main);
+}
+
+.omnivalt_terminal_container_map .tmjs-open-modal-btn:focus,
+.omnivalt_terminal_container_map .tmjs-open-modal-btn:hover {
+    background: #fff;
+    color: var(--omniva-color-main);
+}
+
+.omnivalt_terminal_container_map h2 {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.omnivalt_terminal_container_map h3 {
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.omnivalt_terminal_container_map .tmjs-search-btn {
+    background: var(--omniva-color-main);
+}
+
+.omnivalt_terminal_container_map .tmjs-geolocation-btn {
+    color: var(--omniva-color-main);
+}
+
+.omnivalt_terminal_container_map .tmjs-active {
+    background-color: #fff !important;
+    border: 1px solid var(--omniva-color-main);
+}
+
+.omnivalt_terminal_container_map .tmjs-active span,
+.omnivalt_terminal_container_map .tmjs-active p,
+.omnivalt_terminal_container_map .tmjs-active .tmjs-terminal-comment,
+.omnivalt_terminal_container_map .tmjs-active .tmjs-terminal-distance {
+    color: var(--omniva-color-main);
+}
+
+.omnivalt_terminal_container_map .tmjs-active .tmjs-select-btn {
+    background: var(--omniva-color-main);
+    border: 1px solid var(--omniva-color-main);
+    color: #fff;
+}
+
+.omnivalt_terminal_container_map .tmjs-active .tmjs-select-btn:focus,
+.omnivalt_terminal_container_map .tmjs-active .tmjs-select-btn:hover {
+    background: #fff;
+    color: var(--omniva-color-main);
+}
+
+/**
+ * Map (OLD) 
  **/
 @-webkit-keyframes omnivaSlideIn {
     from {bottom: -300px; opacity: 0} 

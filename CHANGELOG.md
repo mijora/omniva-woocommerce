@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.2]
+### Fixed
+- added temporary fix for order size calculation
+
+### Improved
+- started using terminal-mapping JS library for map
+
 ## [1.15.1]
 ### Fixed
 - fixed var directory creating
