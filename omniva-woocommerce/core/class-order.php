@@ -834,9 +834,9 @@ class OmnivaLt_Order
     );
 
     $predicted_size = OmnivaLt_Helper::predict_order_size(self::spread_items($items_data), array(
-      'length' => 1000,
-      'width' => 1000,
-      'height' => 1000
+      'length' => 39,
+      'width' => 38,
+      'height' => 64
     ));
     foreach ( $order_dimmension as $dim_key => $dim_value ) {
       $order_dimmension[$dim_key] = $predicted_size[$dim_key] ?? 0;
