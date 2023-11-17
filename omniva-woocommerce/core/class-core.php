@@ -196,6 +196,9 @@ class OmnivaLt_Core
     $folder_js = '/assets/js/';
 
     if (is_cart() || is_checkout()) {
+      wp_enqueue_script('omnivalt_mapping', plugins_url($folder_js . 'terminal-mapping.js', self::$main_file_path), array('jquery'), null, true);
+      wp_enqueue_style('omnivalt_mapping', plugins_url($folder_css . 'terminal-mapping.css', self::$main_file_path));
+
       wp_enqueue_script('omnivalt-helper', plugins_url($folder_js . 'omniva_helper.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
       wp_enqueue_script('omnivalt', plugins_url($folder_js . 'omniva.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
       wp_enqueue_style('omnivalt', plugins_url($folder_css . 'omniva.css', self::$main_file_path), array(), OMNIVALT_VERSION);
@@ -210,7 +213,29 @@ class OmnivaLt_Core
       wp_enqueue_script('omnivalt_leaflet', plugins_url($folder_js . 'leaflet.js', self::$main_file_path), array('jquery'), null, true);
       wp_enqueue_style('omnivalt_leaflet', plugins_url($folder_css . 'leaflet.css', self::$main_file_path));    
 
-      wp_localize_script('omnivalt', 'omnivadata', array(
+      wp_localize_script('omnivalt', 'omnivalt_data', array( //New method (use terminal-mapping library)
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'omniva_plugin_url' => OMNIVALT_URL,
+        'text' => array(
+          'modal_title_terminal' => __('Omniva parcel terminals', 'omnivalt'),
+          'modal_search_title_terminal' => __('Parcel terminals list', 'omnivalt'),
+          'select_terminal' => __('Select terminal', 'omnivalt'),
+          'modal_title_post' => __('Omniva post offices', 'omnivalt'),
+          'modal_search_title_post' => __('Post offices list', 'omnivalt'),
+          'select_post' => __('Select post office', 'omnivalt'),
+          'modal_open_button' => __('Select in map', 'omnivalt'),
+          'search_placeholder' => __('Enter postcode', 'omnivalt'),
+          'search_button' => __('Search', 'omnivalt'),
+          'not_found' => __('Place not found', 'omnivalt'),
+          'no_cities_found' => __('There were no cities found for your search term', 'omnivalt'),
+          'enter_address' => __('Enter postcode/address', 'omnivalt'),
+          'show_more' => __('Show more', 'omnivalt'),
+          'use_my_location' => __('Use my location', 'omnivalt'),
+          'my_position' => __('Distance calculated from this point', 'omnivalt'),
+          'geo_not_supported' => __('Geolocation is not supported', 'omnivalt'),
+        )
+      ));
+      wp_localize_script('omnivalt', 'omnivadata', array( //Old method (for dropdown)
         'ajax_url' => admin_url('admin-ajax.php'),
         'omniva_plugin_url' => OMNIVALT_URL,
         'text_select_terminal' => __('Select terminal', 'omnivalt'),
