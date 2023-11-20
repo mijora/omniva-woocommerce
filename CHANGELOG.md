@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Updated
+- updated Omniva API library to v1.0.15
+
 ## [1.15.2]
 ### Fixed
 - added temporary fix for order size calculation
