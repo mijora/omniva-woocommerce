@@ -1,17 +1,17 @@
 [
     {
         "name": "mijora/omniva-api",
-        "version": "1.0.14",
-        "version_normalized": "1.0.14.0",
+        "version": "1.0.15",
+        "version_normalized": "1.0.15.0",
         "source": {
             "type": "git",
             "url": "https://github.com/omniva-baltic/omniva-api-lib.git",
-            "reference": "3d44982c56a629de1186ea49c7f40598f6b4f6d2"
+            "reference": "784f1cb5b9bc18a03c783cf89626166ab162d34b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/3d44982c56a629de1186ea49c7f40598f6b4f6d2",
-            "reference": "3d44982c56a629de1186ea49c7f40598f6b4f6d2",
+            "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/784f1cb5b9bc18a03c783cf89626166ab162d34b",
+            "reference": "784f1cb5b9bc18a03c783cf89626166ab162d34b",
             "shasum": ""
         },
         "require": {
@@ -19,7 +19,7 @@
             "setasign/fpdi": "^2.3",
             "tecnickcom/tcpdf": "^6.3"
         },
-        "time": "2023-10-27T08:22:28+00:00",
+        "time": "2023-11-20T14:20:15+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
