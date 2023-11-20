@@ -50,33 +50,7 @@ class OmnivaLt_Labels
       $barcodes = OmnivaLt_Omniva_Order::get_barcodes($order->id);
 
       if ( empty($barcodes) ) {
-        OmnivaLt_Omniva_Order::set_error($order->id, '');
-        $status = $this->omnivalt_api->get_tracking_number($order->id);
-
-        if ( ! empty($status['debug']) ) {
-          OmnivaLt_Helper::add_msg('<b>OMNIVA RESPONSE DEBUG:</b><br/><pre style="white-space:pre-wrap;">' . htmlspecialchars($status['debug']) . '</pre>', 'notice');
-        }
-
-        if ( isset($status['status']) && $status['status'] === true ) {
-          $barcodes = $status['barcodes'];
-          OmnivaLt_Omniva_Order::set_barcodes($order->id, $barcodes);
-          OmnivaLt_Wc_Order::add_note($order->id, '<b>Omniva:</b> ' . __('Registered labels', 'omnivalt') . ":\n" . implode(', ', $barcodes));
-
-          $send_email = (isset($this->omnivalt_settings['email_created_label'])) ? $this->omnivalt_settings['email_created_label'] : 'yes';
-          if ($send_email === 'yes') {
-            $email_subject = (isset($this->omnivalt_settings['email_created_label_subject'])) ? $this->omnivalt_settings['email_created_label_subject'] : '';
-            $email_params = array(
-              'tracking_code' => $barcodes[0],
-              'tracking_link' => $this->get_tracking_link(OmnivaLt_Order::get_customer_shipping_country($order), $barcodes[0], true),
-              'subject' => $email_subject
-            );
-            $this->omnivalt_emails->send_label($order, $order->billing->email, $email_params);
-          }
-        } else {
-          OmnivaLt_Omniva_Order::set_error($order->id, $status['msg']);
-          OmnivaLt_Helper::add_msg($order->number . ' - ' . $status['msg'], 'error');
-          continue;
-        }
+        $barcodes = $this->register_label($order);
       }
 
       if ( ! is_array($barcodes) ) {
@@ -95,6 +69,44 @@ class OmnivaLt_Labels
     }
 
     exit;
+  }
+
+  private function register_label( $order )
+  {
+    OmnivaLt_Omniva_Order::set_error($order->id, '');
+    $status = $this->omnivalt_api->get_tracking_number($order->id);
+
+    if ( ! empty($status['debug']) ) {
+      OmnivaLt_Helper::add_msg('<b>OMNIVA RESPONSE DEBUG:</b><br/><pre style="white-space:pre-wrap;">' . htmlspecialchars($status['debug']) . '</pre>', 'notice');
+    }
+
+    if ( isset($status['status']) && $status['status'] === true ) {
+      $barcodes = $status['barcodes'];
+      OmnivaLt_Omniva_Order::set_barcodes($order->id, $barcodes);
+      OmnivaLt_Wc_Order::add_note($order->id, '<b>Omniva:</b> ' . __('Registered labels', 'omnivalt') . ":\n" . implode(', ', $barcodes));
+
+      $send_email = (isset($this->omnivalt_settings['email_created_label'])) ? $this->omnivalt_settings['email_created_label'] : 'yes';
+      if ($send_email === 'yes') {
+        $email_subject = (isset($this->omnivalt_settings['email_created_label_subject'])) ? $this->omnivalt_settings['email_created_label_subject'] : '';
+        $email_params = array(
+          'tracking_code' => $barcodes[0],
+          'tracking_link' => $this->get_tracking_link(OmnivaLt_Order::get_customer_shipping_country($order), $barcodes[0], true),
+          'subject' => $email_subject
+        );
+        $this->omnivalt_emails->send_label($order, $order->billing->email, $email_params);
+      }
+
+      do_action('omnivalt_label_register_successfully', $order->id);
+
+      return $barcodes;
+    }
+    
+    OmnivaLt_Omniva_Order::set_error($order->id, $status['msg']);
+    OmnivaLt_Helper::add_msg($order->number . ' - ' . $status['msg'], 'error');
+
+    do_action('omnivalt_label_register_failed', $order->id);
+
+    return array();
   }
 
   public function print_manifest( $orders_ids )
