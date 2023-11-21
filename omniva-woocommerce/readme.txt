@@ -11,6 +11,11 @@ omnivalt_label_register_failed - args: $order_id - failed to register shipment
 
 == Changelog ==
 
+= 1.15.3 =
+- added new hook omnivalt_label_register_successfully which is fired when label successfully generated
+- added new hook omnivalt_label_register_failed which is fired when failed to generate label
+- updated Omniva API library to v1.0.15
+
 = 1.15.2 =
 - added temporary fix for order size calculation
 - started using terminal-mapping JS library for map
