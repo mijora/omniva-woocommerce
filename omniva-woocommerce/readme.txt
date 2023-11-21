@@ -5,7 +5,16 @@
 003 'This shipping set does not exist' - There is no desired key in configs 'shipping_sets' section
 004 'The service does not exist for the specified method' - There is no desired key in configs 'shipping_sets' section subsection
 
+== Hooks ==
+omnivalt_label_register_successfully - args: $order_id - shipment successfully registered
+omnivalt_label_register_failed - args: $order_id - failed to register shipment
+
 == Changelog ==
+
+= 1.15.3 =
+- added new hook omnivalt_label_register_successfully which is fired when label successfully generated
+- added new hook omnivalt_label_register_failed which is fired when failed to generate label
+- updated Omniva API library to v1.0.15
 
 = 1.15.2 =
 - added temporary fix for order size calculation
