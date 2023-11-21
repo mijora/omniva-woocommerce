@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.15.3]
 ### Improved
 - added new hook omnivalt_label_register_successfully which is fired when label successfully generated
 - added new hook omnivalt_label_register_failed which is fired when failed to generate label
