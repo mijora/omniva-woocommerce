@@ -480,15 +480,30 @@ class OmnivaLt_Helper
 
   public static function is_omniva_method( $method_id )
   {
-    $configs = OmnivaLt_Core::get_configs();
+    $all_methods = OmnivaLt_Core::get_configs('method_params');
 
-    foreach ( $configs['method_params'] as $method_key => $method_values ) {
-      if ( $method_id == 'omnivalt_' . $method_values['key'] ) {
+    foreach ( $all_methods as $method_key => $method_values ) {
+      if ( $method_id == self::get_omniva_method_shipping_id($method_values['key']) ) {
         return true;
       }
     }
 
     return false;
+  }
+
+  public static function get_omniva_method_shipping_id( $key )
+  {
+    $found_key = $key;
+
+    $all_methods = OmnivaLt_Core::get_configs('method_params');
+    foreach ( $all_methods as $method_key => $method ) {
+      if ( $key == $method_key || $key == $method['key'] ) {
+        $found_key = 'omnivalt_' . $method['key'];
+        break;
+      }
+    }
+
+    return $found_key;
   }
 
   public static function convert_array_to_meta_query_param( $meta_key, $array, $compare = 'LIKE' ) //TODO: The function is not used, but maybe it can be used
