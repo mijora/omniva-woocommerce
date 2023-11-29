@@ -15,6 +15,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     private $shipping_sets;
     private $methods_asociations;
     private $destinations_countries = array();
+    private $max_coupons_per_page = 1000;
 
     public function __construct()
     {
@@ -570,7 +571,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         }
 
         $args = array(
-          'posts_per_page'   => 1000,
+          'posts_per_page'   => $this->max_coupons_per_page,
           'orderby'          => 'title',
           'order'            => 'asc',
           'post_type'        => 'shop_coupon',
@@ -910,8 +911,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
               );
               echo ' ' . OmnivaLt_Admin_Html::buildSelectField($html_params);
               ?>
-              <?php if ( count($params['data']['coupons']) >= 1000 ) : ?>
-                <p class="description"><?php echo __('NOTE', 'omnivalt') . ': ' . __('The website has too many coupons, so only the first 1000 coupons are displayed', 'omnivalt'); ?></p>
+              <?php if ( count($params['data']['coupons']) >= $this->max_coupons_per_page ) : ?>
+                <p class="description"><?php echo __('NOTE', 'omnivalt') . ': ' . sprintf(__('The website has too many coupons, so only the first %d coupons are displayed', 'omnivalt'), $this->max_coupons_per_page); ?></p>
               <?php endif; ?>
             </div>
           <?php endif; ?>
