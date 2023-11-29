@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed out of memory error when the website has too many coupons
+
 ## [1.15.3]
 ### Improved
 - added new hook omnivalt_label_register_successfully which is fired when label successfully generated
