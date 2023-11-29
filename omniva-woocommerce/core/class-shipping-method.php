@@ -570,7 +570,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         }
 
         $args = array(
-          'posts_per_page'   => -1,
+          'posts_per_page'   => 1000,
           'orderby'          => 'title',
           'order'            => 'asc',
           'post_type'        => 'shop_coupon',
@@ -910,6 +910,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
               );
               echo ' ' . OmnivaLt_Admin_Html::buildSelectField($html_params);
               ?>
+              <?php if ( count($params['data']['coupons']) >= 1000 ) : ?>
+                <p class="description"><?php echo __('NOTE', 'omnivalt') . ': ' . __('The website has too many coupons, so only the first 1000 coupons are displayed', 'omnivalt'); ?></p>
+              <?php endif; ?>
             </div>
           <?php endif; ?>
         </div>
