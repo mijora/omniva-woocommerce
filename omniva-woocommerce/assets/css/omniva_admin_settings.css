@@ -173,7 +173,8 @@
 .woocommerce table.omniva-settings .prices_box .block-prices .prices-table .column-actions {
   width: 10%;
 }
-.woocommerce table.omniva-settings .prices_box .block-prices .prices-table .description {
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-table .description,
+.woocommerce table.omniva-settings .prices_box .block-prices .prices-coupon .description {
   width: 75%;
   margin: 3px 0 10px 25%;
   color: #aeaeae;
