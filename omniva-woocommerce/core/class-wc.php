@@ -25,4 +25,19 @@ class OmnivaLt_Wc
         $screen = get_current_screen();
         return $screen->id ?? false;
     }
+
+    public static function is_endpoint_url( $endpoint )
+    {
+        return is_wc_endpoint_url($endpoint);
+    }
+
+    public static function get_session( $session_key )
+    {
+        return WC()->session->get($session_key);
+    }
+
+    public static function get_customer_from_global()
+    {
+        return WC()->customer;
+    }
 }

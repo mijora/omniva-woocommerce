@@ -64,4 +64,41 @@ class OmnivaLt_Frontend
 
     return $new_rates;
   }
+
+  public static function change_payment_list_by_shipping_method( $available_gateways )
+  {
+    /*** Initiation ***/
+    if ( is_admin() ||  OmnivaLt_Wc::is_endpoint_url('order-pay') ) {
+      return $available_gateways;
+    }
+
+    $customer_data = OmnivaLt_Wc::get_customer_from_global();
+    if ( empty($customer_data) ) {
+      return $available_gateways;
+    }
+
+    $chosen_shipping_methods = (array) OmnivaLt_Wc::get_session('chosen_shipping_methods');
+    $chosen_country = ($customer_data->get_shipping_country()) ? $customer_data->get_shipping_country() : $customer_data->get_billing_country();
+
+    if ( empty($chosen_shipping_methods) || empty($chosen_country) ) {
+      return $available_gateways;
+    }
+
+    $omniva_methods_ids = array(
+      'terminal' => OmnivaLt_Helper::get_omniva_method_shipping_id('terminal'),
+    );
+
+    /*** Payment methods changing ***/
+    /* Disable COD for FI Matkahulto */
+    if ( $chosen_country == 'FI' && in_array($omniva_methods_ids['terminal'], $chosen_shipping_methods) ) {
+      $disable_payment_methods = array('cod');
+      
+      foreach ( $disable_payment_methods as $payment_method_key ) {
+        unset($available_gateways[$payment_method_key]);
+      }
+    }
+
+    /*** Output ***/
+    return $available_gateways;
+  }
 }
