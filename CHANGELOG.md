@@ -6,6 +6,7 @@
 
 ### Improved
 - removed COD payments for Finland Matkahulto terminals: Default WooCommerce COD
+- added LT translations of texts created during the last updates
 
 ## [1.15.3]
 ### Improved
