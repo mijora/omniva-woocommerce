@@ -11,6 +11,10 @@ omnivalt_label_register_failed - args: $order_id - failed to register shipment
 
 == Changelog ==
 
+= 1.15.4 =
+- fixed "out of memory" error when the website has too many coupons
+- removed COD payments for Finland Matkahulto terminals: Default WooCommerce COD
+
 = 1.15.3 =
 - added new hook omnivalt_label_register_successfully which is fired when label successfully generated
 - added new hook omnivalt_label_register_failed which is fired when failed to generate label
