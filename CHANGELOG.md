@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - reworked getting settings to avoid an error when the required element is not among the saved settings
+- fixed error when session is null
 
 ## [1.15.4]
 ### Fixed
