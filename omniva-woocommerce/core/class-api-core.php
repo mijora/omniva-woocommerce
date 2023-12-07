@@ -196,20 +196,40 @@ class OmnivaLt_Api_Core
 
     protected function get_shop_data( $object = true )
     {
-        $data = array(
-            'name' => $this->clean($this->omnivalt_settings['shop_name']),
-            'street' => $this->clean($this->omnivalt_settings['shop_address']),
-            'city' => $this->clean($this->omnivalt_settings['shop_city']),
-            'country' => $this->clean($this->omnivalt_settings['shop_countrycode']),
-            'postcode' => $this->clean($this->omnivalt_settings['shop_postcode']),
-            'phone' => $this->clean($this->omnivalt_settings['shop_phone']),
-            'email' => (! empty($this->omnivalt_settings['shop_email'])) ? $this->clean($this->omnivalt_settings['shop_email']) : get_bloginfo('admin_email'),
-            'pick_day' => current_time('Y-m-d'),
-            'pick_from' => $this->omnivalt_settings['pick_up_start'] ? $this->clean($this->omnivalt_settings['pick_up_start']) : '8:00',
-            'pick_until' => $this->omnivalt_settings['pick_up_end'] ? $this->clean($this->omnivalt_settings['pick_up_end']) : '17:00',
-            'api_country' => $this->clean($this->omnivalt_settings['api_country']),
-            'courier_comment' => $this->clean($this->omnivalt_settings['pickup_comment']),
+        $settings_data = array(
+            'name' => $this->omnivalt_settings['shop_name'] ?? '',
+            'street' => $this->omnivalt_settings['shop_address'] ?? '',
+            'city' => $this->omnivalt_settings['shop_city'] ?? '',
+            'country' => $this->omnivalt_settings['shop_countrycode'] ?? '',
+            'postcode' => $this->omnivalt_settings['shop_postcode'] ?? '',
+            'phone' => $this->omnivalt_settings['shop_phone'] ?? '',
+            'email' => $this->omnivalt_settings['shop_email'] ?? '',
+            'pick_day' => '',
+            'pick_from' => $this->omnivalt_settings['pick_up_start'] ?? '',
+            'pick_until' => $this->omnivalt_settings['pick_up_end'] ?? '',
+            'api_country' => $this->omnivalt_settings['api_country'] ?? '',
+            'courier_comment' => $this->omnivalt_settings['pickup_comment'] ?? '',
         );
+
+        $data = array();
+        foreach ( $settings_data as $key => $value ) {
+            $value = $this->clean($value);
+            
+            if ( $key == 'email' && empty($value) ) {
+                $value = get_bloginfo('admin_email');
+            }
+            if ( $key == 'pick_day' && empty($value) ) {
+                $value = current_time('Y-m-d');
+            }
+            if ( $key == 'pick_from' && empty($value) ) {
+                $value = '8:00';
+            }
+            if ( $key == 'pick_until' && empty($value) ) {
+                $value = '17:00';
+            }
+
+            $data[$key] = $value;
+        }
 
         if ( current_time('timestamp') > strtotime($data['pick_day'] . ' ' . $data['pick_from']) ) {
             $data['pick_day'] = date('Y-m-d', strtotime($data['pick_day'] . "+1 days"));
