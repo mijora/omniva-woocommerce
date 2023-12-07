@@ -6,3 +6,4 @@
 */languages/*.pot~
 */languages/*.po~
 */languages/*.mo~
+/omniva-woocommerce/node_modules
