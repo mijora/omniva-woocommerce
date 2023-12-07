@@ -262,7 +262,7 @@ class OmnivaLt_Helper
     if ( ! session_id() ) {
       session_start();
     }
-    if ( array_key_exists('omnivalt_notices', $_SESSION) ) {
+    if ( is_array($_SESSION) && array_key_exists('omnivalt_notices', $_SESSION) ) {
       foreach ( $_SESSION['omnivalt_notices'] as $notice ) {
         $wp_notices = array('error', 'warning', 'success', 'info');
         $classes = (in_array($notice['type'], $wp_notices)) ? 'notice notice-' . $notice['type'] : $notice['type'];
