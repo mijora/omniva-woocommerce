@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- reworked getting settings to avoid an error when the required element is not among the saved settings
+
 ## [1.15.4]
 ### Fixed
 - fixed "out of memory" error when the website has too many coupons
