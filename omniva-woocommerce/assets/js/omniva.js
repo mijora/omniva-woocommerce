@@ -21,9 +21,10 @@ function omnivalt_init_map() {
 
         load_data: function () {
             this.field = document.getElementById("omnivalt-terminal-selected");
-            this.icons_URL = omnivalt_data.omniva_plugin_url + 'assets/img/terminal-mapping/',
+            this.icons_URL = omnivalt_data.omniva_plugin_url + 'assets/img/terminal-mapping/';
+            let modal_header = (omnivalt_type == 'post') ? omnivalt_data.text.modal_title_post : omnivalt_data.text.modal_title_terminal;
             this.translations = {
-                modal_header: (omnivalt_type == 'post') ? omnivalt_data.text.modal_title_post : omnivalt_data.text.modal_title_terminal,
+                modal_header: omnivalt_data.text.providers[omnivalt_provider] + " " + modal_header,
                 terminal_list_header: (omnivalt_type == 'post') ? omnivalt_data.text.modal_search_title_post : omnivalt_data.text.modal_search_title_terminal,
                 select_pickup_point: (omnivalt_type == 'post') ? omnivalt_data.text.select_post : omnivalt_data.text.select_terminal,
                 seach_header: omnivalt_data.text.search_placeholder,
@@ -59,7 +60,7 @@ function omnivalt_init_map() {
 
             this.lib.sub('tmjs-ready', function(data) {
                 omnivaltMap.load_data();
-                omnivaltMap.lib.map.createIcon('omnivalt_icon', omnivaltMap.icons_URL + 'omnivalt_icon.png');
+                omnivaltMap.lib.map.createIcon('omnivalt_icon', omnivaltMap.icons_URL + omnivalt_map_icon);
                 omnivaltMap.lib.map.refreshMarkerIcons();
 
                 let selected_location = data.map.getLocationById(omniva_getCookie('omniva_terminal'));

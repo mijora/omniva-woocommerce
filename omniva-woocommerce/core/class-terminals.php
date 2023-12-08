@@ -168,15 +168,25 @@ class OmnivaLt_Terminals
 
     $nonce = wp_create_nonce("omniva_terminals_json_nonce");
     $omniva_settings = get_option(OmnivaLt_Core::get_configs('plugin')['settings_key']);
+    $omniva_methods = OmnivaLt_Core::get_configs('method_params_new');
+    $omniva_method = ($get_list == 'post') ? $omniva_methods['post_specific'] : $omniva_methods['terminal'];
     $parcel_terminals = '<option value = "">' . $list_options['txt_select'] . '</option>' . $parcel_terminals;
     $set_autoselect = (isset($omniva_settings['auto_select'])) ? $omniva_settings['auto_select'] : 'yes';
     $show_map = (isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == 'yes') ? true : ((! isset($omniva_settings['show_map'])) ? true : false);
+    $map_icon = $omniva_method['map_marker'];
+    $provider = 'omniva';
+    if ( $country == 'FI' ) {
+      $provider = 'matkahuolto';
+      $map_icon = $omniva_method['display_by_country']['FI']['map_marker'];
+    }
     
     $map_script = "<script style='display:none;'>
       var omnivalt_terminals = " . json_encode(self::get_terminals_for_map_new('', $country, $get_list)) . ";
     </script>";
     $map_script .= "<script style='display:none;'>
       var omnivalt_current_country = '" . $country . "';
+      var omnivalt_provider = '" . $provider . "';
+      var omnivalt_map_icon = '" . $map_icon . "';
       var omnivalt_type = '" . $get_list . "';
       var omnivalt_current_terminal = '" . $selected . "';
       var omnivalt_settings = {
@@ -193,7 +203,11 @@ class OmnivaLt_Terminals
     $container .= '<select id="omnivalt-terminal-selected" class="omnivalt_terminal_select_field" name="omnivalt_terminal">' . $parcel_terminals . '</select>';
 
     if ( $show_map ) {
-      $container .= '<div id="omnivalt-terminal-container-map" class="omnivalt_terminal_container_map"></div>' . $map_script;
+      $map_class = 'omnivalt_terminal_container_map';
+      if ( $provider == 'matkahuolto' ) {
+        $map_class .= ' matkahuolto';
+      }
+      $container .= '<div id="omnivalt-terminal-container-map" class="' . $map_class . '"></div>' . $map_script;
     }
     $container .= '</div>';
 
