@@ -50,6 +50,8 @@ class OmnivaLt_Core
       }
     }
 
+    $configs['method_params_new'] = self::load_methods();
+
     if ( $section_name && isset($configs[$section_name]) ) {
       $configs = $configs[$section_name];
     }
@@ -60,6 +62,32 @@ class OmnivaLt_Core
   public static function get_settings()
   {
     return get_option('woocommerce_omnivalt_settings');
+  }
+
+  public static function load_methods()
+  {
+    $classes = array(
+      new OmnivaLt_Method_Terminal(),
+      new OmnivaLt_Method_Courier(),
+      new OmnivaLt_Method_CourierPlus(),
+      new OmnivaLt_Method_PrivateCustomer(),
+      new OmnivaLt_Method_PostNear(),
+      new OmnivaLt_Method_PostSpecific(),
+      new OmnivaLt_Method_Logistic(),
+    );
+
+    $methods = array();
+    foreach ( $classes as $class ) {
+      $class_data = $class->getData();
+      if ( ! isset($class_data['id']) ) {
+        continue;
+      }
+      $method_id = $class_data['id'];
+      unset($class_data['id']);
+      $methods[$method_id] = $class_data;
+    }
+
+    return $methods;
   }
 
   public static function get_shipping_method_info( $args = '' ) //TODO: Not completed and still not using. Make a mapping (simple function to return required info)
@@ -217,10 +245,14 @@ class OmnivaLt_Core
         'ajax_url' => admin_url('admin-ajax.php'),
         'omniva_plugin_url' => OMNIVALT_URL,
         'text' => array(
-          'modal_title_terminal' => __('Omniva parcel terminals', 'omnivalt'),
+          'providers' => array(
+            'omniva' => 'Omniva',
+            'matkahuolto' => 'Matkahuolto',
+          ),
+          'modal_title_terminal' => __('parcel terminals', 'omnivalt'),
           'modal_search_title_terminal' => __('Parcel terminals list', 'omnivalt'),
           'select_terminal' => __('Select terminal', 'omnivalt'),
-          'modal_title_post' => __('Omniva post offices', 'omnivalt'),
+          'modal_title_post' => __('post offices', 'omnivalt'),
           'modal_search_title_post' => __('Post offices list', 'omnivalt'),
           'select_post' => __('Select post office', 'omnivalt'),
           'modal_open_button' => __('Select in map', 'omnivalt'),
@@ -350,6 +382,14 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-wc.php';
     require_once $core_dir . 'class-wc-order.php';
     require_once $core_dir . 'class-wc-product.php';
+    require_once $core_dir . 'class-method-core.php';
+    require_once $core_dir . 'class-method-terminal.php';
+    require_once $core_dir . 'class-method-courier.php';
+    require_once $core_dir . 'class-method-courierplus.php';
+    require_once $core_dir . 'class-method-privatecustomer.php';
+    require_once $core_dir . 'class-method-postnear.php';
+    require_once $core_dir . 'class-method-postspecific.php';
+    require_once $core_dir . 'class-method-logistic.php';
     require_once $core_dir . 'class-calc-size.php';
     require_once $core_dir . 'class-compatibility.php';
     require_once $core_dir . 'class-emails.php';

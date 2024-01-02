@@ -506,6 +506,18 @@ class OmnivaLt_Helper
     return $found_key;
   }
 
+  public static function get_omniva_method_by_key( $key )
+  {
+    $all_methods = OmnivaLt_Core::get_configs('method_params_new');
+    foreach ( $all_methods as $method_key => $method ) {
+      if ( $key == $method['key'] ) {
+        return $method;
+      }
+    }
+
+    return false;
+  }
+
   public static function convert_array_to_meta_query_param( $meta_key, $array, $compare = 'LIKE' ) //TODO: The function is not used, but maybe it can be used
   {
     $meta_query_params = array();

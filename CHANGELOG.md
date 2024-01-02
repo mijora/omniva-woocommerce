@@ -5,6 +5,9 @@
 - reworked getting settings to avoid an error when the required element is not among the saved settings
 - fixed error when session is null
 
+### Improved
+- changed Finland terminals provider from Omniva to Matkahuolto
+
 ## [1.15.4]
 ### Fixed
 - fixed "out of memory" error when the website has too many coupons

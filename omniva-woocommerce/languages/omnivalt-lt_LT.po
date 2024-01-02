@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-29 09:53+0000\n"
-"PO-Revision-Date: 2023-12-06 09:36+0000\n"
+"PO-Revision-Date: 2023-12-08 13:15+0000\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 74461\n"
 "X-Loco-Api-Version: 1.0.24 20191119-1\n"
-"X-Loco-Version: 2.6.6; wp-6.4.1"
+"X-Loco-Version: 2.6.6; wp-6.4.2"
 
 #: manifest_page.php:342
 msgid "2 people are needed to pick up the shipments"
@@ -26,7 +26,7 @@ msgstr "Reikalingi 2 žmonės siuntų paėmimui"
 msgid "A comment that will be sent with the courier call request"
 msgstr "Komentaras, kuris bus išsiųstas kartu su kurjerio kvietimo užklausa"
 
-#: core/class-core.php:177
+#: core/class-core.php:205
 #, php-format
 msgid "A newer version of the plugin (%s) has been released."
 msgstr "Buvo išleista nauja įskiepio versija (%s)."
@@ -44,7 +44,7 @@ msgstr "Veiksmai"
 msgid "Activate this plugin and allow to use %s methods"
 msgstr "Aktyvuoti šį įskiepį ir leisti naudoti %s metodus"
 
-#: omniva-woocommerce.php:212
+#: omniva-woocommerce.php:212 core/class-method-postnear.php:9
 #| msgid ""
 #| "Activate this service, when you want to send parcels to post offices."
 msgid ""
@@ -53,14 +53,14 @@ msgstr ""
 "Aktyvuokite šį servisą, jeigu norite siųsti siuntas į artimiausią pašto "
 "skyrių."
 
-#: omniva-woocommerce.php:165
+#: omniva-woocommerce.php:165 core/class-method-terminal.php:16
 #| msgid ""
 #| "Activate this service, when you want to send parcels to parcel terminals."
 msgid ""
 "Activate this service, when you want to send parcels to parcel terminals."
 msgstr "Aktyvuokite šį servisą, jeigu norite siųsti siuntas į paštomatus."
 
-#: omniva-woocommerce.php:203
+#: omniva-woocommerce.php:203 core/class-method-privatecustomer.php:15
 msgid ""
 "Activate this service, when you want to send parcels to private persons in "
 "Finland."
@@ -68,14 +68,14 @@ msgstr ""
 "Aktyvuokite šį servisą, jeigu norite siųsti siuntas privatiems asmenims "
 "Suomijoje."
 
-#: omniva-woocommerce.php:222
+#: omniva-woocommerce.php:222 core/class-method-postspecific.php:9
 msgid ""
 "Activate this service, when you want to send parcels to specific post office."
 msgstr ""
 "Aktyvuokite šį servisą, jeigu norite siųsti siuntas į pasirinktą pašto "
 "skyrių."
 
-#: omniva-woocommerce.php:185
+#: omniva-woocommerce.php:185 core/class-method-courier.php:9
 msgid ""
 "Activate this service, when you want to send parcels within Latvia and "
 "Lithuania."
@@ -83,7 +83,7 @@ msgstr ""
 "Suaktyvinkite šią paslaugą, kai norite siųsti siuntas Latvijos ir Lietuvos "
 "ribose."
 
-#: omniva-woocommerce.php:194
+#: omniva-woocommerce.php:194 core/class-method-courierplus.php:9
 msgid ""
 "Activate this service, when your e-shop customers would like to receive "
 "parcels in Estonia."
@@ -193,10 +193,11 @@ msgid "Automatically select terminal by postcode."
 msgstr "Automatiškai parinkti paštomatą pagal pašto kodą."
 
 #: omniva-woocommerce.php:194 omniva-woocommerce.php:203
+#: core/class-method-courierplus.php:9 core/class-method-privatecustomer.php:15
 msgid "Available for Estonian customers only."
 msgstr "Galima tik Estijos klientams."
 
-#: core/class-terminals.php:339
+#: core/class-terminals.php:353
 msgid "Back"
 msgstr "Grįžti į sąrašą"
 
@@ -208,21 +209,21 @@ msgstr "Banko sąskaitos numeris"
 msgid "Barcode"
 msgstr "Barkodas"
 
-#: core/class-shipping-method.php:684
+#: core/class-shipping-method.php:687
 msgid "Box size"
 msgstr "Dėžės dydis"
 
-#: omniva-woocommerce.php:175
+#: omniva-woocommerce.php:175 core/class-method-terminal.php:30
 msgctxt "Box size"
 msgid "Large"
 msgstr "Didelė"
 
-#: omniva-woocommerce.php:174
+#: omniva-woocommerce.php:174 core/class-method-terminal.php:29
 msgctxt "Box size"
 msgid "Medium"
 msgstr "Vidutinė"
 
-#: omniva-woocommerce.php:173
+#: omniva-woocommerce.php:173 core/class-method-terminal.php:28
 msgctxt "Box size"
 msgid "Small"
 msgstr "Maža"
@@ -242,7 +243,7 @@ msgctxt "button"
 msgid "Regenerate"
 msgstr "Pergeneruoti"
 
-#: core/class-shipping-method.php:743
+#: core/class-shipping-method.php:746
 msgid "By box size"
 msgstr "Pagal dėžės dydį"
 
@@ -266,15 +267,15 @@ msgstr "Atšaukti Omniva kurjerį"
 msgid "Cancel this call"
 msgstr "Atšaukti šį kvietimą"
 
-#: core/class-core.php:26 core/class-core.php:115
+#: core/class-core.php:26 core/class-core.php:143
 msgid "Cannot create files in plugin folder"
 msgstr "Nepavyko sukurti failų įskiepio aplankale"
 
-#: core/class-shipping-method.php:1321
+#: core/class-shipping-method.php:1324
 msgid "Carrier"
 msgstr "Vežėjas"
 
-#: core/class-shipping-method.php:681
+#: core/class-shipping-method.php:684
 msgid "Cart amount"
 msgstr "Krepšelio suma"
 
@@ -325,7 +326,8 @@ msgstr "Įmonės pavadinimas"
 msgid "Completed orders"
 msgstr "Išsiųsti užsakymai"
 
-#: omniva-woocommerce.php:192 core/class-shipping-method.php:218
+#: omniva-woocommerce.php:192 core/class-method-courierplus.php:8
+#: core/class-shipping-method.php:218
 msgid "Courier"
 msgstr "Kurjeris"
 
@@ -333,11 +335,12 @@ msgstr "Kurjeris"
 msgid "Courier arrived and this can be removed"
 msgstr "Kurjeris atvyko ir šis įrašas gali būti panaikintas"
 
-#: omniva-woocommerce.php:183
+#: omniva-woocommerce.php:183 core/class-method-courier.php:8
 msgid "Courier Baltic"
 msgstr "Kurjeris (Baltijos šalys)"
 
-#: omniva-woocommerce.php:201
+#: omniva-woocommerce.php:201 core/class-method-privatecustomer.php:11
+#: core/class-method-privatecustomer.php:12
 msgid "Courier Finland"
 msgstr "Kurjeris (Suomija)"
 
@@ -364,7 +367,7 @@ msgstr "Klientas pasirinko paštomatą"
 msgid "Date"
 msgstr "Data"
 
-#: core/class-shipping-method.php:1238
+#: core/class-shipping-method.php:1241
 msgid "Date unknown"
 msgstr "Data nežinoma"
 
@@ -372,7 +375,7 @@ msgstr "Data nežinoma"
 msgid "Debug"
 msgstr "Klaidų tikrinimo režimas"
 
-#: core/class-shipping-method.php:1222
+#: core/class-shipping-method.php:1225
 #| msgid "Debug file still not created"
 msgid "Debug files still not created"
 msgstr "Testavimo failai vis dar nesukurti"
@@ -398,7 +401,7 @@ msgstr "Pristatymo šalys ir kainos"
 msgid "Delivery to private customer"
 msgstr "Pristatymas privačiam asmeniui"
 
-#: core/class-shipping-method.php:704
+#: core/class-shipping-method.php:707
 msgid "Description"
 msgstr "Aprašymas"
 
@@ -414,7 +417,7 @@ msgstr "Išjungti konkrečioms kategorijoms"
 msgid "Disable for specific shipping classes"
 msgstr "Išjungti konkrečioms pristatymo klasėms"
 
-#: core/class-core.php:234
+#: core/class-core.php:266
 msgid "Distance calculated from this point"
 msgstr "Apskaičiuota distancija nuo šio taško"
 
@@ -426,11 +429,11 @@ msgstr "Nesiųsti"
 msgid "Document return"
 msgstr "Dokumento grąžinimas"
 
-#: core/class-shipping-method.php:120 core/class-shipping-method.php:664
+#: core/class-shipping-method.php:120 core/class-shipping-method.php:667
 msgid "Enable"
 msgstr "Įjungti"
 
-#: core/class-shipping-method.php:635
+#: core/class-shipping-method.php:638
 #, php-format
 msgid "Enable %s"
 msgstr "Įjungti %s"
@@ -447,11 +450,11 @@ msgstr "Įjungti manifesto spausdinimą"
 msgid "Enable request and response logging."
 msgstr "Įgalinti užklausų ir atsakymų registravimą."
 
-#: core/class-terminals.php:334 core/class-core.php:227 core/class-core.php:243
+#: core/class-terminals.php:348 core/class-core.php:259 core/class-core.php:275
 msgid "Enter postcode"
 msgstr "Įveskite pašto kodą"
 
-#: core/class-core.php:231 core/class-core.php:245
+#: core/class-core.php:263 core/class-core.php:277
 msgid "Enter postcode/address"
 msgstr "Įveskite pašto kodą / adresą"
 
@@ -459,27 +462,27 @@ msgstr "Įveskite pašto kodą / adresą"
 msgid "Error"
 msgstr "Klaida"
 
-#: core/class-core.php:332
+#: core/class-core.php:364
 msgctxt "error"
 msgid "The service does not exist for the specified method"
 msgstr "Servisas neegzistuoja nurodytam metodui"
 
-#: core/class-core.php:330
+#: core/class-core.php:362
 msgctxt "error"
 msgid "The service is not available to the receiver country"
 msgstr "Servisas negalimas gavėjo šalyje"
 
-#: core/class-core.php:329
+#: core/class-core.php:361
 msgctxt "error"
 msgid "The service is not available to the sender country"
 msgstr "Servisas negalimas siuntėjo šalyje"
 
-#: core/class-core.php:331
+#: core/class-core.php:363
 msgctxt "error"
 msgid "This shipping set does not exist"
 msgstr "Pristatymo rinkinys neegzistuoja"
 
-#: core/class-core.php:336
+#: core/class-core.php:368
 msgctxt "error"
 msgid "Unknown error"
 msgstr "Nežinoma klaida"
@@ -533,7 +536,7 @@ msgstr "Nepavyko gauti WooCommerce užsakymo duomenų"
 msgid "Failed to register shipments"
 msgstr "Nepavyko užregistruoti siuntų"
 
-#: core/class-shipping-method.php:1232
+#: core/class-shipping-method.php:1235
 msgid "File is empty"
 msgstr "Failas yra tuščias"
 
@@ -549,11 +552,11 @@ msgstr "Suomija"
 msgid "Fragile"
 msgstr "Dūžtantis"
 
-#: core/class-shipping-method.php:690
+#: core/class-shipping-method.php:693
 msgid "Free from"
 msgstr "Nemokama nuo"
 
-#: core/class-shipping-method.php:693
+#: core/class-shipping-method.php:696
 msgid "Free with coupon"
 msgstr "Nemokama su kuponu"
 
@@ -571,15 +574,15 @@ msgstr "Generuoti ir spausdinti lipdukus"
 msgid "Generate manifest"
 msgstr "Generuoti manifestą"
 
-#: core/class-core.php:235
+#: core/class-core.php:267
 msgid "Geolocation is not supported"
 msgstr "Geolokacija nepalaikoma"
 
-#: core/class-shipping-method.php:982 core/class-order.php:580
+#: core/class-shipping-method.php:985 core/class-order.php:580
 msgid "Height"
 msgstr "Aukštis"
 
-#: core/class-core.php:179
+#: core/class-core.php:207
 msgid "here"
 msgstr "čia"
 
@@ -599,7 +602,7 @@ msgstr "https://www.omniva.lt/"
 msgid "ID"
 msgstr "ID"
 
-#: core/class-shipping-method.php:840
+#: core/class-shipping-method.php:843
 msgid ""
 "If at least one item in the cart does not have the specified size, then this "
 "shipping method will not be displayed"
@@ -663,7 +666,7 @@ msgstr ""
 "Palikite tuščią, kad nebūtų keičiama pozicija. Didesnis skaičius reiškia "
 "žemesnę poziciją (1 - sąrašo viršus)."
 
-#: core/class-shipping-method.php:972 core/class-order.php:578
+#: core/class-shipping-method.php:975 core/class-order.php:578
 msgid "Length"
 msgstr "Ilgis"
 
@@ -671,7 +674,7 @@ msgstr "Ilgis"
 msgid "Lithuania"
 msgstr "Lietuva"
 
-#: core/class-terminals.php:313
+#: core/class-terminals.php:327
 msgid "Location not found!!!"
 msgstr "Lokacija nerasta!!!"
 
@@ -684,7 +687,8 @@ msgstr "Žurnalo failai saugomi %d dienų."
 msgid "Logged communications with API"
 msgstr "Užregistruoti ryšiai su API"
 
-#: omniva-woocommerce.php:229 core/class-shipping-method.php:220
+#: omniva-woocommerce.php:229 core/class-method-logistic.php:8
+#: core/class-shipping-method.php:220
 msgid "Logistics center"
 msgstr "Logistikos centras"
 
@@ -750,7 +754,7 @@ msgstr "Manifesto data"
 msgid "Map"
 msgstr "Žemėlapis"
 
-#: core/class-shipping-method.php:829
+#: core/class-shipping-method.php:832
 #, php-format
 msgid "Max %s cm"
 msgstr "Maks. %s cm"
@@ -780,7 +784,7 @@ msgstr ""
 "Maksimalus viso krepšelio dydis paštomatams. Palikti visus tuščius, kad "
 "išjungti."
 
-#: omniva-woocommerce.php:210
+#: omniva-woocommerce.php:210 core/class-method-postnear.php:8
 msgid "Nearest post office"
 msgstr "Artimiausias pašto skyrius"
 
@@ -804,8 +808,8 @@ msgstr "Nėra su manifestu suderinamų užsakymų"
 msgid "Not Omniva"
 msgstr "Ne Omniva"
 
-#: core/class-shipping-method.php:364 core/class-shipping-method.php:840
-#: core/class-shipping-method.php:915
+#: core/class-shipping-method.php:364 core/class-shipping-method.php:843
+#: core/class-shipping-method.php:918
 msgid "NOTE"
 msgstr "PASTABA"
 
@@ -835,11 +839,11 @@ msgstr "Iškviestas Omniva kurjeris. Atvykimo laikas tarp %s."
 msgid "Omniva options"
 msgstr "Omniva nustatymai"
 
-#: core/class-terminals.php:326 core/class-core.php:220 core/class-core.php:248
+#: core/class-terminals.php:340 core/class-core.php:280
 msgid "Omniva parcel terminals"
 msgstr "Omniva paštomatai"
 
-#: core/class-core.php:223 core/class-core.php:250
+#: core/class-core.php:282
 msgid "Omniva post offices"
 msgstr "Omniva pašto skyriai"
 
@@ -902,9 +906,10 @@ msgstr "Apmokėto siuntinio email"
 msgid "Paid parcel SMS"
 msgstr "Apmokėto siuntinio SMS"
 
-#: omniva-woocommerce.php:162 core/class-shipping-method.php:217
-#: core/class-shipping-method.php:350 core/class-shipping-method.php:351
-#: core/class-shipping-method.php:352 core/class-shipping-method.php:353
+#: omniva-woocommerce.php:162 core/class-method-terminal.php:8
+#: core/class-shipping-method.php:217 core/class-shipping-method.php:350
+#: core/class-shipping-method.php:351 core/class-shipping-method.php:352
+#: core/class-shipping-method.php:353
 msgid "Parcel terminal"
 msgstr "Paštomatas"
 
@@ -912,11 +917,15 @@ msgstr "Paštomatas"
 msgid "Parcel terminal save repeated"
 msgstr "Pakartotas paštomato išsaugojimas"
 
-#: core/class-terminals.php:331 core/class-core.php:249
+#: core/class-core.php:252
+msgid "parcel terminals"
+msgstr "paštomatai"
+
+#: core/class-terminals.php:345 core/class-core.php:281
 msgid "Parcel terminals addresses"
 msgstr "Paštomatų adresai"
 
-#: core/class-core.php:221
+#: core/class-core.php:253
 msgid "Parcel terminals list"
 msgstr "Paštomatų sąrašas"
 
@@ -932,7 +941,7 @@ msgstr "Paėmimo iš parduotuvės pabaiga"
 msgid "Pick up time start"
 msgstr "Paėmimo iš parduotuvės pradžia"
 
-#: core/class-core.php:229 core/class-core.php:244
+#: core/class-core.php:261 core/class-core.php:276
 msgid "Place not found"
 msgstr "Vieta nerasta"
 
@@ -979,11 +988,15 @@ msgstr "Pozicijos"
 msgid "Post office"
 msgstr "Pašto skyrius"
 
-#: core/class-core.php:251
+#: core/class-core.php:255
+msgid "post offices"
+msgstr "pašto skyriai"
+
+#: core/class-core.php:283
 msgid "Post offices addresses"
 msgstr "Pašto skyrių adresai"
 
-#: core/class-core.php:224
+#: core/class-core.php:256
 msgid "Post offices list"
 msgstr "Pašto skyrių sąrašas"
 
@@ -995,7 +1008,7 @@ msgstr ""
 "Preliminarus krepšelio dydis apskaičiuojamas bandant sudėlioti visus "
 "produktus (jų dėžes) pagal jų nustatymuose nurodytus matmenis."
 
-#: core/class-admin-html.php:44 core/class-shipping-method.php:675
+#: core/class-admin-html.php:44 core/class-shipping-method.php:678
 msgid "Price"
 msgstr "Kaina"
 
@@ -1019,6 +1032,10 @@ msgstr "Spausdinti lipdukus"
 msgid "Print manifest"
 msgstr "Spausdinti manifestą"
 
+#: core/class-method-privatecustomer.php:8
+msgid "Private customer"
+msgstr "Privatus klientas"
+
 #: core/class-labels.php:86
 msgid "Registered labels"
 msgstr "Užregistruoti lipdukai"
@@ -1027,7 +1044,7 @@ msgstr "Užregistruoti lipdukai"
 msgid "Registered orders"
 msgstr "Užregistruoti užsakymai"
 
-#: core/class-shipping-method.php:1243
+#: core/class-shipping-method.php:1246
 msgid "Request"
 msgstr "Užklausa"
 
@@ -1044,7 +1061,7 @@ msgstr "Reikalingas telefono numeris, jeigu norima naudoti servisą \"%s\"."
 msgid "Reset"
 msgstr "Valyti"
 
-#: core/class-shipping-method.php:1244
+#: core/class-shipping-method.php:1247
 msgid "Response"
 msgstr "Atsakymas"
 
@@ -1064,7 +1081,7 @@ msgstr "Grąžinimai"
 msgid "Scheduled courier arrivals"
 msgstr "Suplanuoti kurjerio atvykimai"
 
-#: core/class-core.php:228
+#: core/class-core.php:260
 msgid "Search"
 msgstr "Ieškoti"
 
@@ -1077,7 +1094,7 @@ msgstr "Pasirinkti kategorijas"
 msgid "Select categories for which you want to disable the Omniva method"
 msgstr "Pasirinkite kategorijas, kurioms norite išjungti Omniva metodus"
 
-#: core/class-core.php:226
+#: core/class-core.php:258
 msgid "Select in map"
 msgstr "Pasirinkti žemėlapyje"
 
@@ -1086,7 +1103,7 @@ msgid "Select parcel terminal"
 msgstr "Pasirinkti paštomatą"
 
 #: core/class-terminals.php:64 core/class-terminals.php:138
-#: core/class-core.php:225 core/class-core.php:242
+#: core/class-core.php:257 core/class-core.php:274
 msgid "Select post office"
 msgstr "Pasirinkti pašto skyrių"
 
@@ -1099,7 +1116,7 @@ msgstr "Pasirinkti pristatymo klases"
 msgid "Select shipping classes for which you want to disable the Omniva method"
 msgstr "Pasirinkite pristatymo klases, kurioms norite išjungti Omniva metodus"
 
-#: core/class-core.php:222 core/class-core.php:241
+#: core/class-core.php:254 core/class-core.php:273
 msgid "Select terminal"
 msgstr "Pasirinkti paštomatą"
 
@@ -1153,7 +1170,7 @@ msgstr "Servisas"
 msgid "Services"
 msgstr "Servisai"
 
-#: core/class-core.php:311
+#: core/class-core.php:343
 msgid "Settings"
 msgstr "Nustatymai"
 
@@ -1173,7 +1190,7 @@ msgstr "Siuntos yra sunkios"
 msgid "Shipments weight exceeds 30 kg"
 msgstr "Siuntų svoris viršyja 30 kg"
 
-#: core/class-shipping-method.php:661
+#: core/class-shipping-method.php:664
 msgid "Shipping"
 msgstr "Pristatymas"
 
@@ -1236,7 +1253,7 @@ msgstr "Rodyti barkodo paveikslėlį manifeste."
 msgid "Show barcode in manifest"
 msgstr "Rodyti barkodą manifeste"
 
-#: core/class-terminals.php:118 core/class-core.php:246
+#: core/class-terminals.php:118 core/class-core.php:278
 msgid "Show in map"
 msgstr "Žiūrėti žemėlapyje"
 
@@ -1244,7 +1261,7 @@ msgstr "Žiūrėti žemėlapyje"
 msgid "Show map of terminals."
 msgstr "Rodyti paštomatų žemėlapį"
 
-#: core/class-core.php:232 core/class-core.php:247
+#: core/class-core.php:264 core/class-core.php:279
 msgid "Show more"
 msgstr "Rodyti daugiau"
 
@@ -1286,7 +1303,7 @@ msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
 msgstr ""
 "Apgailestaiujame, tačiau %d kg viršija nustaytą maksimalų svorį %d kg %s"
 
-#: omniva-woocommerce.php:219
+#: omniva-woocommerce.php:219 core/class-method-postspecific.php:8
 msgid "Specific post office"
 msgstr "Konkretus pašto skyrius"
 
@@ -1307,12 +1324,12 @@ msgstr "Naudojamas API neturi kurjerio iškvietimo funkcijos"
 msgid "The used API does not have a courier cancel option"
 msgstr "Naudojamas API neturi kurjerio atšaukimo galimybės"
 
-#: core/class-shipping-method.php:915
+#: core/class-shipping-method.php:918
 msgid ""
 "The website has too many coupons, so only the first %d coupons are displayed"
 msgstr "Tinklapis turi per daug kuponų, todėl yra rodomi tik pirmi %d kuponų"
 
-#: core/class-core.php:230
+#: core/class-core.php:262
 msgid "There were no cities found for your search term"
 msgstr "Nepavyko surasti miestų pagal Jūsų paieškos frazę"
 
@@ -1338,7 +1355,7 @@ msgstr ""
 msgid "Use custom shipping method name."
 msgstr "Naudoti pasirinktinį pristatymo būdo pavadinimą."
 
-#: core/class-core.php:233
+#: core/class-core.php:265
 msgid "Use my location"
 msgstr "Naudoti mano lokaciją"
 
@@ -1352,7 +1369,7 @@ msgid ""
 "your shipment."
 msgstr "Pranešame, jog buvo sukurtas siuntos sekimo numeris Jūsų užsakymui."
 
-#: core/class-core.php:182
+#: core/class-core.php:210
 msgid ""
 "We do not recommend update the plugin, because your plugin have changes that "
 "is not included in the update"
@@ -1361,11 +1378,11 @@ msgstr ""
 "pakeitimų, kurie nėra įtraukti į atnaujinimą."
 
 #: manifest_page.php:221 core/class-shipping-method-helper.php:80
-#: core/class-shipping-method.php:678
+#: core/class-shipping-method.php:681
 msgid "Weight"
 msgstr "Svoris"
 
-#: core/class-shipping-method.php:977 core/class-order.php:579
+#: core/class-shipping-method.php:980 core/class-order.php:579
 msgid "Width"
 msgstr "Plotis"
 
@@ -1373,7 +1390,7 @@ msgstr "Plotis"
 msgid "Yes"
 msgstr "Taip"
 
-#: core/class-core.php:179
+#: core/class-core.php:207
 #, php-format
 msgid "You can download it by pressing %s."
 msgstr "Jūs galite parsisiųsti jį paspausdami %s."

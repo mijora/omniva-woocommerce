@@ -3,18 +3,29 @@ class OmnivaLt_Frontend
 {
   public static function add_logo_to_method($label, $method)
   {
+    if ( $method->method_id != 'omnivalt' ) {
+      return $label;
+    }
+
     $settings = OmnivaLt_Core::get_settings();
     $image = '';
 
-    if ( isset($settings['show_logo']) && $settings['show_logo'] === 'yes' ) {
-      $image = '<img src="' . OMNIVALT_URL . 'assets/img/logos/omniva_horizontal_s.png" alt="Omniva"/>';
-    }
-
-    if ( $method->method_id === 'omnivalt' ) {
-      $label = $image . $label;
+    $label_design = $settings['label_design'] ?? 'classic';
+    if ( $label_design == 'full' || $label_design == 'logo' ) {
+      $method_key = OmnivaLt_Omniva_Order::get_method_key_from_id($method->id);
+      $method_params = OmnivaLt_Helper::get_omniva_method_by_key($method_key);
+      if ( ! $method_params ) {
+        return $label;
+      }
+      $image_file = $method_params['title_logo'];
+      $country = OmnivaLt_Wc::get_customer_from_global()->get_shipping_country();
+      if ( isset($method_params['display_by_country'][$country]) ) {
+        $image_file = $method_params['display_by_country'][$country]['title_logo'];
+      }
+      $image = '<img class="omnivalt-logo" src="' . OMNIVALT_URL . 'assets/img/logos/' . $image_file . '" alt="Omniva"/>';
     }
     
-    return $label;
+    return $label = $image . $label;;
   }
 
   public static function change_methods_position($rates, $package)
