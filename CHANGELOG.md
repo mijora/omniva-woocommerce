@@ -427,28 +427,28 @@
 - map functionality
 
 ## [1.4.11]
-- changes are not registered
+*changes are not registered*
 
 ## [1.4.10]
-- changes are not registered
+*changes are not registered*
 
 ## [1.4.9]
-- changes are not registered
+*changes are not registered*
 
 ## [1.4.8]
-- changes are not registered
+*changes are not registered*
 
 ## [1.4.7]
-- changes are not registered
+*changes are not registered*
 
 ## [1.4.6]
-- changes are not registered
+*changes are not registered*
 
 ## [1.4.5]
-- changes are not registered
+*changes are not registered*
 
 ## [1.4.4]
-- changes are not registered
+*changes are not registered*
 
 ## [1.4.3]
 ### Fixed
@@ -463,7 +463,7 @@
 - added WooCommerce 3.4.1 support
 
 ## [1.4.0]
-- changes are not registered
+*changes are not registered*
 
 ## [1.3.3]
 ### Improved
