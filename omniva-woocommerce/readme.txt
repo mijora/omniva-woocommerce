@@ -11,6 +11,11 @@ omnivalt_label_register_failed - args: $order_id - failed to register shipment
 
 == Changelog ==
 
+= 1.15.5 =
+- reworked getting settings to avoid an error when the required element is not among the saved settings
+- fixed error when session is null
+- changed Finland terminals provider from Omniva to Matkahuolto
+
 = 1.15.4 =
 - fixed "out of memory" error when the website has too many coupons
 - removed COD payments for Finland Matkahulto terminals: Default WooCommerce COD
@@ -259,6 +264,7 @@ omnivalt_label_register_failed - args: $order_id - failed to register shipment
 
 = 1.5.9 =
 - Fixed terminal select field working in Cart page
+- Fixed terminal name generation based on updated omniva locations file
 
 = 1.5.8 =
 - Updated PDF libraries
