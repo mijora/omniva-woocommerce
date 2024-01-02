@@ -13,11 +13,16 @@
     color: #999;
 }
 
+.omnivalt-logo {
+    max-height: 50px;
+}
+
 /**
  * Map (NEW)
  **/
 :root {
     --omniva-color-main: #f60;
+    --matkahuolto-color-main: #001e60;
 }
 
 .omnivalt_terminal_select_field {
@@ -92,6 +97,46 @@
 .omnivalt_terminal_container_map .tmjs-active .tmjs-select-btn:hover {
     background: #fff;
     color: var(--omniva-color-main);
+}
+
+.omnivalt_terminal_container_map.matkahuolto .tmjs-open-modal-btn {
+    background-color: var(--matkahuolto-color-main);
+    border-color: var(--matkahuolto-color-main);
+}
+
+.omnivalt_terminal_container_map.matkahuolto .tmjs-open-modal-btn:focus,
+.omnivalt_terminal_container_map.matkahuolto .tmjs-open-modal-btn:hover {
+    background: #fff;
+    color: var(--matkahuolto-color-main);
+}
+
+.omnivalt_terminal_container_map.matkahuolto .tmjs-search-btn {
+    background: var(--matkahuolto-color-main);
+}
+
+.omnivalt_terminal_container_map.matkahuolto .tmjs-geolocation-btn {
+    color: var(--matkahuolto-color-main);
+}
+
+.omnivalt_terminal_container_map.matkahuolto .tmjs-active {
+    border: 1px solid var(--matkahuolto-color-main);
+}
+
+.omnivalt_terminal_container_map .tmjs-active span,
+.omnivalt_terminal_container_map .tmjs-active p,
+.omnivalt_terminal_container_map .tmjs-active .tmjs-terminal-comment,
+.omnivalt_terminal_container_map .tmjs-active .tmjs-terminal-distance {
+    color: var(--matkahuolto-color-main);
+}
+
+.omnivalt_terminal_container_map .tmjs-active .tmjs-select-btn {
+    background: var(--matkahuolto-color-main);
+    border-color: var(--matkahuolto-color-main);
+}
+
+.omnivalt_terminal_container_map .tmjs-active .tmjs-select-btn:focus,
+.omnivalt_terminal_container_map .tmjs-active .tmjs-select-btn:hover {
+    color: var(--matkahuolto-color-main);
 }
 
 /**

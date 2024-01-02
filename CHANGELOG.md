@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.5]
+### Fixed
+- reworked getting settings to avoid an error when the required element is not among the saved settings
+- fixed error when session is null
+
+### Improved
+- changed Finland terminals provider from Omniva to Matkahuolto
+
 ## [1.15.4]
 ### Fixed
 - fixed "out of memory" error when the website has too many coupons
@@ -346,3 +354,125 @@
 ### Fixed
 - fixed terminal select field working in Cart page
 - fixed terminal name generation based on updated omniva locations file
+
+## [1.5.8]
+### Improved
+- Omniva manifest page now requires manage_woocommerce permission to be shown
+
+### Updated
+- updated PDF libraries
+
+## [1.5.7]
+### Fixed
+- fixes label error display bug in manifest page
+
+## [1.5.6]
+### Fixed
+- fixes to support Woocommerce 4.0.0
+
+### Improved
+- workaround to how terminals stringification is done - as in rare cases PHP stringified json becomes invalid after reaching client
+
+## [1.5.5]
+### Fixed
+- adds moment.min.js as not all woocommerce installations has it
+
+## [1.5.4]
+### Fixed
+- fixed tracking number display in various places (no longer printed if there is no number)
+- weight limit settings works again, to disable leave empty or 0
+
+## [1.5.3]
+### Updated
+- updated map tile server url
+
+## [1.5.2]
+### Fixed
+- locations update checks that its valid JSON and only then approves old file replace
+
+### Improved
+- tracking number display in emails, order details (both admin and user)
+
+## [1.5.1]
+### Fixed
+- fixed persisting pagination between Omniva Manifest page tabs
+
+### Improved
+- improved order number display in Omniva Manifest page
+
+### Updated
+- updated TCPDF to 6.3.2
+
+## [1.5.0]
+### Improved
+- fully reworked Omniva Manifest page
+- improved detection of changed postcode in checkout
+- localization update
+
+### Updated
+- updated TCPDF and FPDI libraries
+
+## [1.4.13]
+### Improved
+- parcel terminal address in email and order details view
+- call courier functionality (in Omniva Manifest), no more automatically called courier
+- localization update
+- Omniva manifest page improvements
+
+## [1.4.12]
+### Fixed
+- bug fixes
+
+### Improved
+- map functionality
+
+## [1.4.11]
+*changes are not registered*
+
+## [1.4.10]
+*changes are not registered*
+
+## [1.4.9]
+*changes are not registered*
+
+## [1.4.8]
+*changes are not registered*
+
+## [1.4.7]
+*changes are not registered*
+
+## [1.4.6]
+*changes are not registered*
+
+## [1.4.5]
+*changes are not registered*
+
+## [1.4.4]
+*changes are not registered*
+
+## [1.4.3]
+### Fixed
+- filtered post offices from list
+
+## [1.4.2]
+### Fixed
+- bug fix in debug
+
+## [1.4.1]
+### Improved
+- added WooCommerce 3.4.1 support
+
+## [1.4.0]
+*changes are not registered*
+
+## [1.3.3]
+### Improved
+- added selected parcel terminal in admin order view
+- add parcel terminal validation on checkout
+
+## [1.3.2]
+### Fixed
+- bugs fixed
+
+### Improved
+- allowed to generate manifest more than once

@@ -262,7 +262,7 @@ class OmnivaLt_Helper
     if ( ! session_id() ) {
       session_start();
     }
-    if ( array_key_exists('omnivalt_notices', $_SESSION) ) {
+    if ( is_array($_SESSION) && array_key_exists('omnivalt_notices', $_SESSION) ) {
       foreach ( $_SESSION['omnivalt_notices'] as $notice ) {
         $wp_notices = array('error', 'warning', 'success', 'info');
         $classes = (in_array($notice['type'], $wp_notices)) ? 'notice notice-' . $notice['type'] : $notice['type'];
@@ -504,6 +504,18 @@ class OmnivaLt_Helper
     }
 
     return $found_key;
+  }
+
+  public static function get_omniva_method_by_key( $key )
+  {
+    $all_methods = OmnivaLt_Core::get_configs('method_params_new');
+    foreach ( $all_methods as $method_key => $method ) {
+      if ( $key == $method['key'] ) {
+        return $method;
+      }
+    }
+
+    return false;
   }
 
   public static function convert_array_to_meta_query_param( $meta_key, $array, $compare = 'LIKE' ) //TODO: The function is not used, but maybe it can be used

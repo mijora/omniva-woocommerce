@@ -628,11 +628,14 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
                         'desc_name' => $ship_key . '_description',
                       ),
                     );
-                    foreach ( $this->omnivalt_configs['method_params'] as $method_name => $method_values ) {
+                    foreach ( $this->omnivalt_configs['method_params_new'] as $method_name => $method_values ) {
                       if ($ship_key === $method_values['key']) {
                         $params['type'] = $method_name;
                         $params['title'] = $method_values['title'];
-                        $params['enable']['title'] = sprintf(__('Enable %s','omnivalt'), strtolower($method_values['title']));
+                        if ( ! empty($method_values['display_by_country'][$value['lang']]) ) {
+                          $params['title'] = $method_values['display_by_country'][$value['lang']]['title'];
+                        }
+                        $params['enable']['title'] = sprintf(__('Enable %s','omnivalt'), strtolower($params['title']));
                         break;
                       }
                     }
@@ -1306,7 +1309,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
 
     private function add_shipping_rate( $rate_key, $products_for_dim, $weight, $country, $cart_amount, $prices, $package )
     {
-      $method_params = OmnivaLt_Shipmethod_Helper::get_current_method_params($this->omnivalt_configs['method_params'], $rate_key);
+      $method_params = OmnivaLt_Shipmethod_Helper::get_current_method_params($this->omnivalt_configs['method_params_new'], $rate_key);
       if ( empty($method_params) ) {
         return;
       }
@@ -1332,10 +1335,15 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         $amount = OmnivaLt_Shipmethod_Helper::check_amount_free($rate_key, $prices, $amount, $cart_amount);
         $amount = OmnivaLt_Shipmethod_Helper::check_coupon($rate_key, $prices, $amount, $package['applied_coupons']);
 
-        $rate_name = $method_params['title'];
+        $rate_name = $method_params['front_title'];
+        $prefix = $method_params['prefix'];
+        if ( isset($method_params['display_by_country'][$country]) ) {
+          $rate_name = $method_params['display_by_country'][$country]['front_title'];
+          $prefix = $method_params['display_by_country'][$country]['prefix'];
+        }
         $show_prefix_on = array('classic', 'full');
         if ( ! isset($this->settings['label_design']) || (isset($this->settings['label_design']) && in_array($this->settings['label_design'], $show_prefix_on)) ) {
-          $rate_name = 'Omniva ' . strtolower($rate_name);
+          $rate_name = $prefix . ' ' . strtolower($rate_name);
         }
         if ( ! empty($this->settings['custom_label']) ) {
           $custom_labels = json_decode($this->settings['custom_label']);
