@@ -1,0 +1,9 @@
+# used to remove files from release build using `git archive`
+# git files
+.gitattributes export-ignore
+.gitignore export-ignore
+#readme, etc
+nbproject export-ignore
+README.md export-ignore
+CHANGELOG.md export-ignore
+build_release.sh export-ignore
