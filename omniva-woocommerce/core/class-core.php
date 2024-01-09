@@ -258,6 +258,7 @@ class OmnivaLt_Core
           'modal_open_button' => __('Select in map', 'omnivalt'),
           'search_placeholder' => __('Enter postcode', 'omnivalt'),
           'search_button' => __('Search', 'omnivalt'),
+          'select_button' => __('Select', 'omnivalt'),
           'not_found' => __('Place not found', 'omnivalt'),
           'no_cities_found' => __('There were no cities found for your search term', 'omnivalt'),
           'enter_address' => __('Enter postcode/address', 'omnivalt'),
