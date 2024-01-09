@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed set of API type
+
 ## [1.15.5]
 ### Fixed
 - reworked getting settings to avoid an error when the required element is not among the saved settings
