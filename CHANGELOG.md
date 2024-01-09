@@ -4,6 +4,9 @@
 ### Fixed
 - fixed set of API type
 
+### Improved
+- added the ability to translate the text of the "Select" button displayed on the map
+
 ## [1.15.5]
 ### Fixed
 - reworked getting settings to avoid an error when the required element is not among the saved settings
