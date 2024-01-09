@@ -29,6 +29,7 @@ function omnivalt_init_map() {
                 select_pickup_point: (omnivalt_type == 'post') ? omnivalt_data.text.select_post : omnivalt_data.text.select_terminal,
                 seach_header: omnivalt_data.text.search_placeholder,
                 search_btn: omnivalt_data.text.search_button,
+                select_btn: omnivalt_data.text.select_button,
                 modal_open_btn: omnivalt_data.text.modal_open_button,
                 geolocation_btn: omnivalt_data.text.use_my_location,
                 your_position: omnivalt_data.text.my_position,
