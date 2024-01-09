@@ -7,14 +7,12 @@ class OmnivaLt_Api
 
     public function __construct()
     {
-        $this->load_api('xml');
+        $this->set_api_type('xml')->load_api();
     }
 
-    private function load_api( $api_type )
+    private function load_api()
     {
-        $this->$api_type = $api_type;
-
-        switch ($api_type) {
+        switch ($this->get_api_type()) {
             case 'xml':
                 $this->api = new OmnivaLt_Api_Xml();
                 break;
@@ -25,6 +23,19 @@ class OmnivaLt_Api
                 $this->api = new OmnivaLt_Api_Xml();
                 break;
         }
+    }
+
+    public function set_api_type( $api_type )
+    {
+        $allowed_types = array('xml', 'omx');
+        $this->api_type = (in_array($api_type, $allowed_types)) ? $api_type : 'xml';
+
+        return $this;
+    }
+
+    public function get_api_type()
+    {
+        return $this->api_type;
     }
 
     public function get_tracking_number( $id_order )
