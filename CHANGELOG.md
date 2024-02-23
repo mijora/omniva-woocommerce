@@ -6,6 +6,7 @@
 
 ### Improved
 - added the ability to translate the text of the "Select" button displayed on the map
+- added an option to activate the format validation of the entered phone number on the Checkout page
 
 ## [1.15.5]
 ### Fixed

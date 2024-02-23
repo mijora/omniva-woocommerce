@@ -331,6 +331,12 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'default' => 'yes',
         'class' => 'omniva_terminal'
       );
+      $fields['verify_phone'] = array(
+        'title' => __('Check phone format', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('On the checkout page, check if the entered mobile phone number format is correct.', 'omnivalt'),
+        'default' => '',
+      );
       $fields['hr_design'] = array(
         'type' => 'hr',
         'title' => __('Design', 'omnivalt'),

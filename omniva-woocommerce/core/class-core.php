@@ -484,6 +484,8 @@ class OmnivaLt_Core
     add_action('woocommerce_checkout_process', 'OmnivaLt_Order::checkout_validate_terminal');
     add_action('wp_ajax_nopriv_remove_courier_call', 'OmnivaLt_Labels::ajax_remove_courier_call');
     add_action('wp_ajax_remove_courier_call', 'OmnivaLt_Labels::ajax_remove_courier_call');
+    add_action('woocommerce_after_save_address_validation','OmnivaLt_Frontend::validate_phone_number', 1, 2);
+    add_action('woocommerce_checkout_process', 'OmnivaLt_Frontend::validate_phone_number');
 
     add_filter('script_loader_tag', 'OmnivaLt_Core::add_asyncdefer_by_handle', 10, 2);
     add_filter('woocommerce_shipping_methods', 'OmnivaLt_Core::add_shipping_method');
@@ -503,6 +505,7 @@ class OmnivaLt_Core
     add_filter('woocommerce_cart_shipping_method_full_label', 'OmnivaLt_Frontend::add_logo_to_method', 10, 2);
     add_filter('woocommerce_package_rates' , 'OmnivaLt_Frontend::change_methods_position', 99, 2);
     add_filter('woocommerce_available_payment_gateways', 'OmnivaLt_Frontend::change_payment_list_by_shipping_method');
+    add_filter('woocommerce_process_registration_errors', 'OmnivaLt_Frontend::validate_phone_number', 10, 4);
   }
 
   private static function load_conditional_hooks()
