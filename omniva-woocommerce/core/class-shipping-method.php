@@ -31,19 +31,15 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       foreach ( $this->omnivalt_configs['shipping_params'] as $ship_params ) {
         foreach ( $ship_params['shipping_sets'] as $country => $set ) {
           if ( $country === 'call' ) continue;
-          if ( ! isset($this->destinations_countries[$country]) ) {
-            $country_name = $country;
-            if ( isset($this->omnivalt_configs['shipping_params'][$country]['title']) ) {
-              $country_name = $this->omnivalt_configs['shipping_params'][$country]['title'];
-            }
-            $this->destinations_countries[$country] = $country_name;
+          if ( ! in_array($country, $this->destinations_countries) ) {
+            $this->destinations_countries[] = $country;
           }
         }
       }
 
       // Availability, Countries and other required Woocommerce functions
       $this->availability = 'including';
-      $this->countries = array_keys($this->destinations_countries);
+      $this->countries = $this->destinations_countries;
 
       $this->init();
 
@@ -111,7 +107,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     {
       $countries_options = array();
       foreach ($this->omnivalt_configs['shipping_params'] as $country_code => $ship_params) {
-        $countries_options[$country_code] = $country_code . ' - ' . $ship_params['title'];
+        $countries_options[$country_code] = $country_code . ' - ' . OmnivaLt_Wc::get_country_name($country_code);
       }
       OmnivaLt_Helper::get_available_methods();
       
@@ -146,8 +142,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'title' => __('API account country', 'omnivalt'),
           'type'    => 'select',
           'options' => array(
-            'LT' => __('Lithuania', 'omnivalt') . ' / ' . __('Latvia', 'omnivalt'),
-            'EE' => __('Estonia', 'omnivalt'),
+            'LT' => OmnivaLt_Wc::get_country_name('LT'),
+            'LV' => OmnivaLt_Wc::get_country_name('LV'),
+            'EE' => OmnivaLt_Wc::get_country_name('EE'),
           ),
           'default' => 'LT',
           'description' => __('Choose the country of Omniva support from which you received API logins.', 'omnivalt'),
@@ -257,7 +254,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'hr',
         'title' => __('Delivery countries and prices', 'omnivalt'),
       );
-      foreach ( $this->destinations_countries as $country_code => $country_name ) {
+      foreach ( $this->destinations_countries as $country_code ) {
         $fields['prices_'.$country_code] = array(
           'type' => 'prices_box',
           'lang' => $country_code,
@@ -592,7 +589,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
             <div class="prices_box" data-country="<?php echo $value['lang']; ?>">
               <div class="pb-lang">
                 <img src="<?php echo $flag_img_url; ?>" alt="[<?php echo $value['lang']; ?>]">
-                <span><?php echo $value['lang'] . ' ' . __('prices','omnivalt'); ?></span>
+                <span><?php echo OmnivaLt_Wc::get_country_name($value['lang']) . ' ' . __('prices','omnivalt'); ?></span>
               </div>
               <div class="pb-content">
                 <?php foreach ($shipping_keys as $ship_key) : ?>

@@ -40,4 +40,10 @@ class OmnivaLt_Wc
     {
         return WC()->customer;
     }
+
+    public static function get_country_name( $country_code )
+    {
+        $countries = WC()->countries->countries;
+        return $countries[$country_code] ?? $country_code;
+    }
 }
