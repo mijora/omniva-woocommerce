@@ -432,7 +432,10 @@ class OmnivaLt_Order
 
       $field_value = $order->shipment->formated_shipping_address;
       if ( $ship_values['key'] == 'pt' || $ship_values['key'] == 'ps' ) {
-        $field_value = OmnivaLt_Terminals::get_terminal_address($order->omniva->terminal_id);
+        $with_country = (! self::is_admin_order_edit_page($order->id));
+        $field_value = OmnivaLt_Terminals::get_terminal_address($order->omniva->terminal_id, $with_country);
+      } else {
+        $field_value .= '<br/>' . OmnivaLt_Wc::get_country_name($order->shipping->country);
       }
       
       echo '<p><strong class="title">' . $ship_values['title'] . ':</strong> ' . $field_value . '</p>';

@@ -79,6 +79,7 @@ class OmnivaLt_Helper
   {
     $associations = array(
       'LT' => 'baltic',
+      'LV' => 'latvia',
       'EE' => 'estonia',
     );
     $default_country = 'LT';

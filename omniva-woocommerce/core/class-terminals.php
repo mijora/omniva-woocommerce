@@ -309,7 +309,10 @@ class OmnivaLt_Terminals
     if ( is_array($terminals) ) {
       foreach ( $terminals as $terminal ) {
         if ( (string) $terminal['ZIP'] == $terminal_code ) {
-          $terminal_name = (string) $terminal['NAME'] . ', ' . $terminal['A1_NAME'];
+          $terminal_name = (string) $terminal['NAME'];
+          if ( ! empty($terminal['A1_NAME']) ) {
+            $terminal_name .= ', ' . $terminal['A1_NAME'];
+          }
           if ( $get_with_country ) {
             $terminal_name .= ', ' . $terminal['A0_NAME'];
           }
