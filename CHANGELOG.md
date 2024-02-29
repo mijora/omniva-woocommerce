@@ -8,6 +8,7 @@
 - added the ability to translate the text of the "Select" button displayed on the map
 - added an option to activate the format validation of the entered phone number on the Checkout page
 - added possibility for Latvian Omniva clients to send parcels to Finland parcel terminals
+- added a new WP filter that allows you to change the number of orders displayed on the Omniva Orders page
 
 ## [1.15.5]
 ### Fixed
