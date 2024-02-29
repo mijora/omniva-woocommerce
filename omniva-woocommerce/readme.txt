@@ -9,6 +9,9 @@
 omnivalt_label_register_successfully - args: $order_id - shipment successfully registered
 omnivalt_label_register_failed - args: $order_id - failed to register shipment
 
+== Filters ==
+omnivalt_orders_list_per_page - args: $per_page - allows to change the number of orders displayed on the Omniva Orders page. Default value: 25.
+
 == Changelog ==
 
 = 1.15.5 =
