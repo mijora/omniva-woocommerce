@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed set of API type
+- fixed adding the tracking link to the email when the order status is changed outside of the order edit page
 
 ### Improved
 - added the ability to translate the text of the "Select" button displayed on the map
