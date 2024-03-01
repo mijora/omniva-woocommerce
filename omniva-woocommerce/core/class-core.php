@@ -16,6 +16,7 @@ class OmnivaLt_Core
     }
     if ( is_plugin_active('woocommerce/woocommerce.php') ) {
       self::load_launch_hooks();
+      self::load_conditional_hooks();
       OmnivaLt_Cronjob::init();
     }
   }
@@ -330,7 +331,7 @@ class OmnivaLt_Core
   {
     require_once OMNIVALT_DIR . 'core/class-shipping-method-helper.php';
     include OMNIVALT_DIR . 'core/class-shipping-method.php';
-    self::load_conditional_hooks();
+    
     OmnivaLt_Terminals::check_terminals_json_file();
   }
 
