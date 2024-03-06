@@ -9,7 +9,18 @@
 omnivalt_label_register_successfully - args: $order_id - shipment successfully registered
 omnivalt_label_register_failed - args: $order_id - failed to register shipment
 
+== Filters ==
+omnivalt_orders_list_per_page - args: $per_page - allows to change the number of orders displayed on the Omniva Orders page. Default value: 25.
+
 == Changelog ==
+
+= 1.15.6 =
+- fixed set of API type
+- fixed adding the tracking link to the email when the order status is changed outside of the order edit page
+- added the ability to translate the text of the "Select" button displayed on the map
+- added an option to activate the format validation of the entered phone number on the Checkout page
+- added possibility for Latvian Omniva clients to send parcels to Finland parcel terminals
+- added a new WP filter that allows to change the number of orders displayed on the Omniva Orders page
 
 = 1.15.5 =
 - reworked getting settings to avoid an error when the required element is not among the saved settings

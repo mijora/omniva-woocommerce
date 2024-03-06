@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.15.6]
+### Fixed
+- fixed set of API type
+- fixed adding the tracking link to the email when the order status is changed outside of the order edit page
+
+### Improved
+- added the ability to translate the text of the "Select" button displayed on the map
+- added an option to activate the format validation of the entered phone number on the Checkout page
+- added possibility for Latvian Omniva clients to send parcels to Finland parcel terminals
+- added a new WP filter that allows to change the number of orders displayed on the Omniva Orders page
+
 ## [1.15.5]
 ### Fixed
 - reworked getting settings to avoid an error when the required element is not among the saved settings

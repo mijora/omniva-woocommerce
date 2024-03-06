@@ -79,6 +79,7 @@ class OmnivaLt_Helper
   {
     $associations = array(
       'LT' => 'baltic',
+      'LV' => 'latvia',
       'EE' => 'estonia',
     );
     $default_country = 'LT';
@@ -554,5 +555,17 @@ class OmnivaLt_Helper
     ob_end_clean();
 
     return $html;
+  }
+
+  public static function get_mobile_regex( $country )
+  {
+    $all_regex = array(
+      'LT' => '/^(8|0|\+370)6\d{7}$/',
+      'LV' => '/^\+3712\d{7}$/',
+      'EE' => '/^\+372(5|8)\d{6,7}$/',
+      'FI' => '/^(0|\+358)(4|5)\d{8}$/',
+    );
+
+    return $all_regex[$country] ?? '';
   }
 }
