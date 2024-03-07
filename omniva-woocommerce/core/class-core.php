@@ -373,17 +373,23 @@ class OmnivaLt_Core
     return $errors[$error_code];
   }
 
+  public static function get_core_dir()
+  {
+    return OMNIVALT_DIR . 'core/';
+  }
+
   private static function load_classes()
   {
     include OMNIVALT_DIR . 'vendor/autoload.php';
     
-    $core_dir = OMNIVALT_DIR . 'core/';
+    $core_dir = self::get_core_dir();
     require_once $core_dir . 'class-debug.php';
     require_once $core_dir . 'class-configs.php';
     require_once $core_dir . 'class-helper.php';
     require_once $core_dir . 'class-wc.php';
     require_once $core_dir . 'class-wc-order.php';
     require_once $core_dir . 'class-wc-product.php';
+    require_once $core_dir . 'class-wc-blocks.php';
     require_once $core_dir . 'class-method-core.php';
     require_once $core_dir . 'class-method-terminal.php';
     require_once $core_dir . 'class-method-courier.php';
@@ -487,6 +493,8 @@ class OmnivaLt_Core
     add_action('wp_ajax_remove_courier_call', 'OmnivaLt_Labels::ajax_remove_courier_call');
     add_action('woocommerce_after_save_address_validation','OmnivaLt_Frontend::validate_phone_number', 1, 2);
     add_action('woocommerce_checkout_process', 'OmnivaLt_Frontend::validate_phone_number');
+    add_action('woocommerce_blocks_loaded', 'OmnivaLt_Wc_Blocks::init');
+    add_action('block_categories_all', 'OmnivaLt_Wc_Blocks::register_block_categories', 10, 2 );
 
     add_filter('script_loader_tag', 'OmnivaLt_Core::add_asyncdefer_by_handle', 10, 2);
     add_filter('woocommerce_shipping_methods', 'OmnivaLt_Core::add_shipping_method');
