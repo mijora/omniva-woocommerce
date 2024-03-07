@@ -1,0 +1,28 @@
+{
+  "name": "omnivalt-woocommerce",
+  "version": "0.0.1",
+  "description": "Extending the functionality of the Omniva plugin to work with Woocommerce blocks",
+  "main": "index.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "format": "wp-scripts format",
+    "lint:css": "wp-scripts lint-style",
+    "lint:js": "wp-scripts lint-js",
+    "packages-update": "wp-scripts packages-update",
+    "plugin-zip": "wp-scripts plugin-zip",
+    "start": "wp-scripts start"
+  },
+  "keywords": [
+    "omniva"
+  ],
+  "author": "mijora.lt",
+  "license": "ISC",
+  "devDependencies": {
+    "@woocommerce/block-library": "^2.0.1",
+    "@woocommerce/dependency-extraction-webpack-plugin": "^2.2.0",
+    "@woocommerce/eslint-plugin": "^2.2.0",
+    "@wordpress/blocks": "^12.6.0",
+    "@wordpress/components": "^23.9.0",
+    "@wordpress/scripts": "^26.19.0"
+  }
+}
