@@ -99,6 +99,9 @@ function omnivalt_init_map() {
 
         update_list: function() {
             var selected_postcode = this.get_postcode();
+            if ( selected_postcode == "") {
+                return;
+            }
 
             this.lib.dom.searchNearest(selected_postcode);
             this.lib.dom.UI.modal.querySelector('.tmjs-search-input').value = selected_postcode;
@@ -107,6 +110,10 @@ function omnivalt_init_map() {
         get_postcode: function() {
             var postcode = "";
             var ship_to_dif_checkbox = document.getElementById("ship-to-different-address-checkbox");
+
+            if ( document.getElementById("shipping_postcode") === null && document.getElementById("billing_postcode") === null ) {
+                return postcode;
+            }
             
             if ( typeof(ship_to_dif_checkbox) != "undefined" && ship_to_dif_checkbox != null && ship_to_dif_checkbox.checked ) {
                 postcode = document.getElementById("shipping_postcode").value;
