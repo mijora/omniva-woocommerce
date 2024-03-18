@@ -188,6 +188,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'shop_phone' => array(
           'title' => __('Shop phone number', 'omnivalt'),
           'type' => 'text',
+          'description' => __('The value of this field is used only if the mobile number is not entered.', 'omnivalt'),
+        ),
+        'shop_mobile' => array(
+          'title' => __('Shop mobile number', 'omnivalt'),
+          'type' => 'text',
           'description' => sprintf(__('Required mobile phone number if want use service "%s".', 'omnivalt'), $this->omnivalt_configs['additional_services']['delivery_confirmation_sms']['title']),
         ),
         'shop_email' => array(

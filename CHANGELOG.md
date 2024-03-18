@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed JS error on Cart page (due to the missing postcode field)
+- Fixed JS error on Checkout page (due to a empty line in the script code)
+
+### Improved
+- added the option to specify a landline phone number in the sender (shop) settings, if no mobile phone number is entered
+
 ## [1.15.6]
 ### Fixed
 - fixed set of API type
