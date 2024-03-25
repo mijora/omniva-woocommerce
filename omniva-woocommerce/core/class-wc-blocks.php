@@ -36,7 +36,7 @@ class OmnivaLt_Wc_Blocks
     public static function cb_data_callback()
     {
         return array(
-            'abc' => '',
+            'ajax_url' => admin_url('admin-ajax.php'),
         );
     }
 
