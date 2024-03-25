@@ -23,7 +23,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _options__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./options */ "./src/terminal-selection-block/options.js");
-/* harmony import */ var _text__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./text */ "./src/terminal-selection-block/text.js");
+/* harmony import */ var _wc_cart__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./wc-cart */ "./src/terminal-selection-block/wc-cart.js");
+/* harmony import */ var _omniva__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./omniva */ "./src/terminal-selection-block/omniva.js");
+/* harmony import */ var _terminals__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./terminals */ "./src/terminal-selection-block/terminals.js");
+/* harmony import */ var _text__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./text */ "./src/terminal-selection-block/text.js");
 
 /**
  * External dependencies
@@ -38,6 +41,9 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
+
+
 const Block = ({
   checkoutExtensionData,
   extensions
@@ -45,6 +51,11 @@ const Block = ({
   const {
     setExtensionData
   } = checkoutExtensionData;
+  const [terminals, setTerminals] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)([{
+    label: _text__WEBPACK_IMPORTED_MODULE_9__.txt.select_terminal,
+    value: ''
+  }]);
+  const [showBlock, setShowBlock] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
   const debouncedSetExtensionData = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useCallback)((0,lodash__WEBPACK_IMPORTED_MODULE_4__.debounce)((namespace, key, value) => {
     setExtensionData(namespace, key, value);
   }, 1000), [setExtensionData]);
@@ -57,6 +68,31 @@ const Block = ({
     const store = select('wc/store/validation');
     return store.getValidationError(terminalValidationErrorId);
   });
+  const shippingRates = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
+    const store = select('wc/store/cart');
+    return store.getCartData().shippingRates;
+  });
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    setShowBlock(false);
+    if (shippingRates.length) {
+      const activeRates = (0,_wc_cart__WEBPACK_IMPORTED_MODULE_6__.getActiveShippingRates)(shippingRates);
+      for (let i = 0; i < activeRates.length; i++) {
+        if (!activeRates[i].rate_id) {
+          continue;
+        }
+        if ((0,_omniva__WEBPACK_IMPORTED_MODULE_7__.isOmnivaTerminalMethod)(activeRates[i].rate_id) && activeRates[i].selected) {
+          setShowBlock(true);
+        }
+      }
+    }
+    if (showBlock) {
+      (0,_terminals__WEBPACK_IMPORTED_MODULE_8__.getTerminalsByCountry)((0,_wc_cart__WEBPACK_IMPORTED_MODULE_6__.getDestinationCountry)(shippingRates)).then(terminals => {
+        if (terminals.data) {
+          setTerminals(terminals.data);
+        }
+      });
+    }
+  }, [shippingRates]);
   const [selectedOmnivaTerminal, setSelectedOmnivaTerminal] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
 
   /* Handle changing the select's value */
@@ -69,22 +105,56 @@ const Block = ({
     if (selectedOmnivaTerminal === '') {
       setValidationErrors({
         [terminalValidationErrorId]: {
-          message: _text__WEBPACK_IMPORTED_MODULE_6__.txt.error_terminal,
+          message: _text__WEBPACK_IMPORTED_MODULE_9__.txt.error_terminal,
           hidden: false
         }
       });
     }
   }, [setExtensionData, selectedOmnivaTerminal, setValidationErrors, clearValidationError]);
+  if (!showBlock) {
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null);
+  }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "omnivalt_terminal_select_container"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
-    label: _text__WEBPACK_IMPORTED_MODULE_6__.txt.title_terminal,
+    label: _text__WEBPACK_IMPORTED_MODULE_9__.txt.title_terminal,
     value: selectedOmnivaTerminal,
-    options: _options__WEBPACK_IMPORTED_MODULE_5__.options,
+    options: terminals,
     onChange: setSelectedOmnivaTerminal
   }), validationError?.hidden || selectedOmnivaTerminal !== '' ? null : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "wc-block-components-validation-error omnivalt-terminal-error"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, validationError?.message)));
+};
+
+/***/ }),
+
+/***/ "./src/terminal-selection-block/omniva.js":
+/*!************************************************!*\
+  !*** ./src/terminal-selection-block/omniva.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getOmnivaData: () => (/* binding */ getOmnivaData),
+/* harmony export */   isOmnivaTerminalMethod: () => (/* binding */ isOmnivaTerminalMethod)
+/* harmony export */ });
+/**
+ * Export functions
+ */
+const getOmnivaData = () => {
+  if (!wcSettings || !wcSettings["omnivalt-blocks_data"]) {
+    return [];
+  }
+  return wcSettings["omnivalt-blocks_data"];
+};
+const isOmnivaTerminalMethod = methodKey => {
+  for (let [key, value] of Object.entries(getOmnivaData().methods)) {
+    if (methodKey == value) {
+      return true;
+    }
+  }
+  return false;
 };
 
 /***/ }),
@@ -117,6 +187,42 @@ const options = [{
 
 /***/ }),
 
+/***/ "./src/terminal-selection-block/terminals.js":
+/*!***************************************************!*\
+  !*** ./src/terminal-selection-block/terminals.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getTerminalsByCountry: () => (/* binding */ getTerminalsByCountry)
+/* harmony export */ });
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _text__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./text */ "./src/terminal-selection-block/text.js");
+/**
+ * External dependencies
+ */
+
+
+const {
+  omnivalt
+} = wcSettings.checkoutData.extensions;
+const getTerminalsByCountry = country => {
+  return fetch(`${omnivalt.ajax_url}?action=omnivalt_get_terminals&country=${country}`, {
+    method: 'GET',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(response => response.json()).catch(error => {
+    console.error('Error fetching terminals:', error);
+    return [];
+  });
+};
+
+/***/ }),
+
 /***/ "./src/terminal-selection-block/text.js":
 /*!**********************************************!*\
   !*** ./src/terminal-selection-block/text.js ***!
@@ -138,6 +244,58 @@ const txt = {
   title_terminal: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Parcel terminal', 'omnivalt'),
   select_terminal: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select parcel terminal', 'omnivalt'),
   error_terminal: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Please select parcel terminal', 'omnivalt')
+};
+
+/***/ }),
+
+/***/ "./src/terminal-selection-block/wc-cart.js":
+/*!*************************************************!*\
+  !*** ./src/terminal-selection-block/wc-cart.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getActiveShippingRates: () => (/* binding */ getActiveShippingRates),
+/* harmony export */   getDestinationCountry: () => (/* binding */ getDestinationCountry),
+/* harmony export */   getShippingCountry: () => (/* binding */ getShippingCountry)
+/* harmony export */ });
+/**
+ * Export functions
+ */
+const getShippingCountry = shippingAddress => {
+  if (shippingAddress.country.trim() == "") {
+    return 'LT';
+  }
+  return shippingAddress.country;
+};
+const getDestinationCountry = shippingRates => {
+  if (!shippingRates.length) {
+    return 'LT';
+  }
+  let country = '';
+  for (let i = 0; i < shippingRates.length; i++) {
+    if (!shippingRates[i].destination.country || shippingRates[i].destination.country.trim() == "") {
+      continue;
+    }
+    country = shippingRates[i].destination.country.trim();
+  }
+  return country;
+};
+const getActiveShippingRates = shippingRates => {
+  if (!shippingRates.length) {
+    return [];
+  }
+  let activeRates = [];
+  for (let i = 0; i < shippingRates.length; i++) {
+    if (!shippingRates[i].shipping_rates) {
+      continue;
+    }
+    for (let j = 0; j < shippingRates[i].shipping_rates.length; j++) {
+      activeRates.push(shippingRates[i].shipping_rates[j]);
+    }
+  }
+  return activeRates;
 };
 
 /***/ }),
