@@ -16,6 +16,7 @@ import { getTerminalsByCountry } from './terminals';
 import { txt } from './text';
 
 export const Block = ({ checkoutExtensionData, extensions }) => {
+    const terminalValidationErrorId = 'omnivalt_terminal';
     const { setExtensionData } = checkoutExtensionData;
     const [terminals, setTerminals] = useState([
         {
@@ -24,7 +25,8 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         }
     ]);
     const [showBlock, setShowBlock] = useState(false);
-
+    const [selectedOmnivaTerminal, setSelectedOmnivaTerminal,] = useState('');
+    const [selectedRateId, setSelectedRateId] = useState('');
 
     const debouncedSetExtensionData = useCallback(
         debounce((namespace, key, value) => {
@@ -33,15 +35,12 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         [setExtensionData]
     );
 
-    const terminalValidationErrorId = 'omnivalt_terminal';
-
     const { setValidationErrors, clearValidationError } = useDispatch(
         'wc/store/validation'
     );
 
     const validationError = useSelect((select) => {
         const store = select('wc/store/validation');
-
         return store.getValidationError(terminalValidationErrorId);
     });
 
@@ -61,9 +60,16 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
                 if ( isOmnivaTerminalMethod(activeRates[i].rate_id) && activeRates[i].selected ) {
                     setShowBlock(true);
                 }
+                if ( activeRates[i].selected ) {
+                    setSelectedRateId(activeRates[i].rate_id);
+                }
             }
         }
+    }, [
+        shippingRates
+    ]);
 
+    useEffect(() => {
         if ( showBlock ) {
             getTerminalsByCountry(getDestinationCountry(shippingRates)).then(terminals => {
                 if ( terminals.data ) {
@@ -72,19 +78,14 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             });
         }
     }, [
-        shippingRates
+        showBlock
     ]);
-
-    const [
-        selectedOmnivaTerminal,
-        setSelectedOmnivaTerminal,
-    ] = useState('');
 
     /* Handle changing the select's value */
     useEffect(() => {
         setExtensionData(
             'omnivalt',
-            'alternateShippingInstruction',
+            'selected_terminal',
             selectedOmnivaTerminal
         );
 
@@ -107,6 +108,21 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         setValidationErrors,
         clearValidationError,
     ]);
+
+    useEffect(() => {
+        setExtensionData(
+            'omnivalt',
+            'selected_rate_id',
+            selectedRateId
+        );
+    }, [
+        setExtensionData,
+        selectedRateId
+    ]);
+
+    useEffect(()=>{ //TODO: laikinai
+       console.log('Terminalas', selectedOmnivaTerminal);
+    },[selectedOmnivaTerminal]);
 
     if ( ! showBlock ) {
         return <></>

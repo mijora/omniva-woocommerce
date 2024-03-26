@@ -18,6 +18,19 @@ class OmnivaLt_Wc_Blocks
                 'schema_type' => ARRAY_A,
             ));
         }
+        add_action('woocommerce_store_api_checkout_update_order_from_request', 'OmnivaLt_Wc_Blocks::update_block_order_meta', 10, 2);
+    }
+
+    public static function update_block_order_meta($order, $request)
+    {
+        $data = $request['extensions']['omnivalt'] ?? array();
+
+        $selected_method = wc_clean($data['selected_rate_id'] ?? '');
+        $selected_terminal_id = wc_clean($data['selected_terminal'] ?? '');
+
+        OmnivaLt_Omniva_Order::set_method($order->get_id(), $selected_method);
+        OmnivaLt_Omniva_Order::set_terminal_id($order->get_id(), $selected_terminal_id);
+        OmnivaLt_Wc_Order::add_note($order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($selected_terminal_id,true) . ' <i>(ID: ' . $selected_terminal_id . ')</i>');
     }
 
     public static function register_block_categories( $categories )
@@ -37,19 +50,24 @@ class OmnivaLt_Wc_Blocks
     {
         return array(
             'ajax_url' => admin_url('admin-ajax.php'),
+            'selected_terminal' => '',
+            'selected_rate_id' => '',
         );
     }
 
     public static function cb_schema_callback()
     {
         return array(
-            'properties' => array(
-                'abc'  => array(
-                    'description' => __( 'Gift Message', 'omnivalt' ),
-                    'type'        => array( 'string', 'null' ),
-                    'readonly'    => true,
-                ),
-            )
+            'selected_terminal'  => array(
+                'description' => __('Selected terminal', 'omnivalt'),
+                'type'        => array('string', 'null'),
+                'readonly'    => true,
+            ),
+            'selected_rate_id'  => array(
+                'description' => __('Selected rate ID', 'omnivalt'),
+                'type'        => array('string', 'null'),
+                'readonly'    => true,
+            ),
         );
     }
 }
