@@ -137,7 +137,8 @@ class OmnivaLt_Api_Xml extends OmnivaLt_Api_Core
                 $api_sender_contact
                     ->setAddress($api_sender_address)
                     ->setEmail($data_shop->email)
-                    ->setMobile($data_shop->phone)
+                    ->setPhone($data_shop->phone)
+                    ->setMobile($data_shop->mobile)
                     ->setPersonName($data_shop->name);
                 $api_package->setSenderContact($api_sender_contact);
 
@@ -186,7 +187,8 @@ class OmnivaLt_Api_Xml extends OmnivaLt_Api_Core
             $api_sender = new Contact();
             $api_sender
                 ->setAddress($api_address)
-                ->setMobile($shop->phone)
+                ->setMobile($shop->mobile)
+                ->setPhone($shop->phone)
                 ->setPersonName($shop->name);
 
             $api_call = new CallCourier();

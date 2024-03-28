@@ -306,12 +306,12 @@ do_action('omniva_admin_manifest_head');
             <input type="hidden" name="action" value="omnivalt_call_courier" />
             <?php wp_nonce_field('omnivalt_call_courier', 'omnivalt_call_courier_nonce'); ?>
             <div><span><?php _e("Shop name", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_name']; ?></div>
-            <div><span><?php _e("Shop phone number", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_phone']; ?></div>
+            <div><span><?php _e("Shop phone number", 'omnivalt'); ?>:</span> <?php echo (empty($shipping_settings['shop_mobile'])) ? $shipping_settings['shop_phone'] : $shipping_settings['shop_mobile']; ?></div>
             <div><span><?php _e("Shop postcode", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_postcode']; ?></div>
             <div>
               <span><?php _e("Shop address", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_address'] . ', ' . $shipping_settings['shop_city']; ?>
             </div>
-            <div><span><?php _e("Comment", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['pickup_comment']; ?></div>
+            <div><span><?php _e("Comment", 'omnivalt'); ?>:</span> <?php echo (! empty($shipping_settings['pickup_comment'])) ? $shipping_settings['pickup_comment'] : '-'; ?></div>
             <table cellspacing="0">
               <tr>
                 <th>

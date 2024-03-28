@@ -7,8 +7,10 @@ class OmnivaLt_Core
   public static function init()
   {
     self::load_classes();
-    register_activation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'plugin_activation'));
-    register_deactivation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'plugin_deactivation'));
+    if ( ! self::allow_activate_plugin() ) {
+      OmnivaLt_Helper::show_notices();
+      return;
+    }
     self::load_init_hooks();
 
     if ( ! function_exists('is_plugin_active') ) {
@@ -21,16 +23,20 @@ class OmnivaLt_Core
     }
   }
 
-  public static function plugin_activation()
+  public static function allow_activate_plugin()
   {
-    if ( ! self::is_directory_writable(OMNIVALT_DIR) ) {
-      throw new \Exception(__('Cannot create files in plugin folder', 'omnivalt'));
+    $error_prefix = __('Omniva plugin not working', 'omnivalt');
+    if ( version_compare(PHP_VERSION, '7.0.0', '<') ) {
+      OmnivaLt_Helper::add_msg(__('The website is using too low a PHP version', 'omnivalt'), 'error', $error_prefix);
+      return false;
     }
-  }
 
-  public static function plugin_deactivation()
-  {
-    // Do nothing
+    if ( ! self::is_directory_writable(OMNIVALT_DIR) ) {
+      OmnivaLt_Helper::add_msg(__('Cannot create files in plugin folder. Please check the plugin folder permissions.', 'omnivalt'), 'error', $error_prefix);
+      return false;
+    }
+
+    return true;
   }
 
   public static function get_configs( $section_name = false )

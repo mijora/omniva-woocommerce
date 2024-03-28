@@ -193,7 +193,6 @@ class OmnivaLt_Terminals
         auto_select:'" . $set_autoselect . "',
         show_map: " . (($show_map) ? 'true' : 'false') . ",
       };
-
       jQuery('document').ready(function(){
         omnivalt_init_map();
       });

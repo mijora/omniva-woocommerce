@@ -122,7 +122,8 @@ class OmnivaLt_Api_Core
             $api_sender_contact
                 ->setAddress($api_sender_address)
                 ->setEmail($data_shop->email)
-                ->setMobile($data_shop->phone)
+                ->setPhone($data_shop->phone)
+                ->setMobile($data_shop->mobile)
                 ->setPersonName($data_shop->name);
 
             /* Create manifest */
@@ -203,6 +204,7 @@ class OmnivaLt_Api_Core
             'country' => $this->omnivalt_settings['shop_countrycode'] ?? '',
             'postcode' => $this->omnivalt_settings['shop_postcode'] ?? '',
             'phone' => $this->omnivalt_settings['shop_phone'] ?? '',
+            'mobile' => $this->omnivalt_settings['shop_mobile'] ?? '',
             'email' => $this->omnivalt_settings['shop_email'] ?? '',
             'pick_day' => '',
             'pick_from' => $this->omnivalt_settings['pick_up_start'] ?? '',
