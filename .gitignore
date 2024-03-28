@@ -6,3 +6,5 @@
 */languages/*.pot~
 */languages/*.po~
 */languages/*.mo~
+/omniva-blocks-builder/node_modules/
+/omniva-blocks-builder/build/

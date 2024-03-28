@@ -1,0 +1,31 @@
+{
+  "apiVersion": 2,
+  "name": "omnivalt/terminal-selection",
+  "version": "0.0.2",
+  "title": "Omniva terminal selection",
+  "category": "woocommerce",
+  "description": "Allow to add components for Omniva shipping method",
+  "parent": [
+    "woocommerce/checkout-shipping-methods-block"
+  ],
+  "supports": {
+    "html": false,
+    "align": false,
+    "multiple": false,
+    "reusable": false
+  },
+  "attributes": {
+    "lock": {
+      "type": "object",
+      "default": {
+        "remove": true,
+        "move": true
+      }
+    },
+    "text": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "omnivalt"
+}
