@@ -113,11 +113,15 @@ class OmnivaLt_Frontend
     return $available_gateways;
   }
 
-  public static function validate_phone_number()
+  public static function validate_phone_number( $validation_error )
   {
+    if ( ! is_checkout() ) {
+      return $validation_error;
+    }
+
     $settings = OmnivaLt_Core::get_settings();
     if ( ! isset($settings['verify_phone']) || $settings['verify_phone'] !== 'yes' ) {
-      return;
+      return $validation_error;
     }
 
     $country = (! empty($_POST['ship_to_different_address'])) ? $_POST['shipping_country'] : $_POST['billing_country'];
@@ -125,11 +129,13 @@ class OmnivaLt_Frontend
     $phone = $_POST['billing_phone'];
 
     if ( empty($regex) || empty($phone) ) {
-      return;
+      return $validation_error;
     }
 
     if ( ! preg_match($regex, $phone) ) {
       wc_add_notice(sprintf(__( 'Invalid %s format', 'omnivalt') . '.', '<b>' . _x( 'phone number', 'whose', 'omnivalt') . '</b>'), 'error');
     }
+
+    return $validation_error;
   }
 }
