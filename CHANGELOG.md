@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.15.7]
 ### Fixed
 - fixed JS error on Cart page (due to the missing postcode field)
 - fixed JS error on Checkout page (due to a empty line in the script code)
