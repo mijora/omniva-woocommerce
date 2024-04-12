@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.15.7]
+### Fixed
+- fixed JS error on Cart page (due to the missing postcode field)
+- fixed JS error on Checkout page (due to a empty line in the script code)
+- fixed an error occurring during customer registration
+
+### Improved
+- added the option to specify a landline phone number in the sender (shop) settings, if no mobile phone number is entered
+- created an error display in the admin area when the plugin cannot work
+
 ## [1.15.6]
 ### Fixed
 - fixed set of API type
