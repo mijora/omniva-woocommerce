@@ -1,15 +1,26 @@
 /**
+ * Internal dependencies
+ */
+import { debug } from './debug';
+
+/**
  * Export functions
  */
 export const getShippingCountry = (shippingAddress) => {
+    debug('Getting shipping country...');
     if ( shippingAddress.country.trim() == "" ) {
+        debug('Shipping country LT');
         return 'LT';
     }
+
+    debug('Shipping country', shippingAddress.country);
     return shippingAddress.country;
 };
 
 export const getDestinationCountry = (shippingRates) => {
+    debug('Getting destination country...');
     if ( ! shippingRates.length ) {
+        debug('Destination country LT');
         return 'LT';
     }
 
@@ -21,6 +32,7 @@ export const getDestinationCountry = (shippingRates) => {
         country = shippingRates[i].destination.country.trim();
     }
     
+    debug('Destination country', country);
     return country;
 };
 

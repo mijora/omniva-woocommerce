@@ -1,84 +1,6 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
-
-/***/ "./src/terminal-selection-block/cart/edit.js":
-/*!***************************************************!*\
-  !*** ./src/terminal-selection-block/cart/edit.js ***!
-  \***************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Edit: () => (/* binding */ Edit),
-/* harmony export */   Save: () => (/* binding */ Save)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
-/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _global_text__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../global/text */ "./src/terminal-selection-block/global/text.js");
-
-
-
-const Edit = ({
-  attributes,
-  setAttributes
-}) => {
-  const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps)();
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    ...blockProps,
-    style: {
-      display: 'block'
-    }
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: 'wc-block-components-totals-wrapper'
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    className: 'wc-block-components-totals-item'
-  }, _global_text__WEBPACK_IMPORTED_MODULE_2__.txt.cart_terminal_info)));
-};
-const Save = () => {
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    ..._wordpress_block_editor__WEBPACK_IMPORTED_MODULE_1__.useBlockProps.save()
-  });
-};
-
-/***/ }),
-
-/***/ "./src/terminal-selection-block/cart/index.js":
-/*!****************************************************!*\
-  !*** ./src/terminal-selection-block/cart/index.js ***!
-  \****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/terminal-selection-block/cart/edit.js");
-/* harmony import */ var _global_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../global/icons */ "./src/terminal-selection-block/global/icons.js");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./block.json */ "./src/terminal-selection-block/cart/block.json");
-/**
- * External dependencies
- */
-
-
-
-/**
- * Internal dependencies
- */
-
-
-
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__, {
-  icon: _global_icons__WEBPACK_IMPORTED_MODULE_3__.omnivaVertical,
-  edit: _edit__WEBPACK_IMPORTED_MODULE_2__.Edit,
-  save: _edit__WEBPACK_IMPORTED_MODULE_2__.Save
-});
-
-/***/ }),
 
 /***/ "./src/terminal-selection-block/checkout/edit.js":
 /*!*******************************************************!*\
@@ -86,7 +8,6 @@ __webpack_require__.r(__webpack_exports__);
   \*******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Edit: () => (/* binding */ Edit),
@@ -158,51 +79,12 @@ const Save = ({
 
 /***/ }),
 
-/***/ "./src/terminal-selection-block/checkout/index.js":
-/*!********************************************************!*\
-  !*** ./src/terminal-selection-block/checkout/index.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./edit */ "./src/terminal-selection-block/checkout/edit.js");
-/* harmony import */ var _global_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../global/icons */ "./src/terminal-selection-block/global/icons.js");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/terminal-selection-block/checkout/block.json");
-/**
- * External dependencies
- */
-
-
-/**
- * Internal dependencies
- */
-
-
-
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_3__, {
-  icon: _global_icons__WEBPACK_IMPORTED_MODULE_2__.omnivaVertical,
-  edit: _edit__WEBPACK_IMPORTED_MODULE_1__.Edit,
-  attributes: {
-    terminal: {
-      type: 'string',
-      default: '',
-      source: 'attribute'
-    }
-  }
-});
-
-/***/ }),
-
 /***/ "./src/terminal-selection-block/checkout/options.js":
 /*!**********************************************************!*\
   !*** ./src/terminal-selection-block/checkout/options.js ***!
   \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   options: () => (/* binding */ options)
@@ -231,7 +113,6 @@ const options = [{
   \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   omnivaVertical: () => (/* binding */ omnivaVertical)
@@ -257,23 +138,12 @@ const omnivaVertical = (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg
 
 /***/ }),
 
-/***/ "./src/terminal-selection-block/global/index.js":
-/*!******************************************************!*\
-  !*** ./src/terminal-selection-block/global/index.js ***!
-  \******************************************************/
-/***/ (() => {
-
-
-
-/***/ }),
-
 /***/ "./src/terminal-selection-block/global/text.js":
 /*!*****************************************************!*\
   !*** ./src/terminal-selection-block/global/text.js ***!
   \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   txt: () => (/* binding */ txt)
@@ -325,7 +195,6 @@ const txt = {
   \************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = window["React"];
 
 /***/ }),
@@ -336,7 +205,6 @@ module.exports = window["React"];
   \************************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = window["wc"]["wcSettings"];
 
 /***/ }),
@@ -347,7 +215,6 @@ module.exports = window["wc"]["wcSettings"];
   \*************************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = window["wp"]["blockEditor"];
 
 /***/ }),
@@ -358,7 +225,6 @@ module.exports = window["wp"]["blockEditor"];
   \********************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = window["wp"]["blocks"];
 
 /***/ }),
@@ -369,7 +235,6 @@ module.exports = window["wp"]["blocks"];
   \************************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = window["wp"]["components"];
 
 /***/ }),
@@ -380,19 +245,7 @@ module.exports = window["wp"]["components"];
   \******************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = window["wp"]["i18n"];
-
-/***/ }),
-
-/***/ "./src/terminal-selection-block/cart/block.json":
-/*!******************************************************!*\
-  !*** ./src/terminal-selection-block/cart/block.json ***!
-  \******************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"apiVersion":2,"name":"omnivalt/terminal-selection-cart","version":"0.0.3","title":"Omniva terminal information","category":"woocommerce","description":"Allow to add components for Omniva shipping method","parent":["woocommerce/cart-order-summary-block"],"supports":{"html":false,"align":false,"multiple":false,"reusable":false},"attributes":{"lock":{"type":"object","default":{"remove":false,"move":false}}},"textdomain":"omnivalt"}');
 
 /***/ }),
 
@@ -402,7 +255,6 @@ module.exports = JSON.parse('{"apiVersion":2,"name":"omnivalt/terminal-selection
   \**********************************************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = JSON.parse('{"apiVersion":2,"name":"omnivalt/terminal-selection-checkout","version":"0.0.2","title":"Omniva terminal selection","category":"woocommerce","description":"Allow to add components for Omniva shipping method","parent":["woocommerce/checkout-shipping-methods-block"],"supports":{"html":false,"align":false,"multiple":false,"reusable":false},"attributes":{"lock":{"type":"object","default":{"remove":true,"move":true}},"text":{"type":"string","default":""}},"textdomain":"omnivalt"}');
 
 /***/ })
@@ -476,23 +328,39 @@ module.exports = JSON.parse('{"apiVersion":2,"name":"omnivalt/terminal-selection
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
-/*!***********************************************!*\
-  !*** ./src/terminal-selection-block/index.js ***!
-  \***********************************************/
+/*!********************************************************!*\
+  !*** ./src/terminal-selection-block/checkout/index.js ***!
+  \********************************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _global__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./global */ "./src/terminal-selection-block/global/index.js");
-/* harmony import */ var _global__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_global__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _global__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _global__WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
-/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-/* harmony import */ var _cart__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./cart */ "./src/terminal-selection-block/cart/index.js");
-/* harmony import */ var _checkout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./checkout */ "./src/terminal-selection-block/checkout/index.js");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./edit */ "./src/terminal-selection-block/checkout/edit.js");
+/* harmony import */ var _global_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../global/icons */ "./src/terminal-selection-block/global/icons.js");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/terminal-selection-block/checkout/block.json");
+/**
+ * External dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
 
 
 
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_3__, {
+  icon: _global_icons__WEBPACK_IMPORTED_MODULE_2__.omnivaVertical,
+  edit: _edit__WEBPACK_IMPORTED_MODULE_1__.Edit,
+  attributes: {
+    terminal: {
+      type: 'string',
+      default: '',
+      source: 'attribute'
+    }
+  }
+});
 })();
 
 /******/ })()

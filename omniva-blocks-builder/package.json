@@ -1,6 +1,6 @@
 {
   "name": "omnivalt-woocommerce",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Extending the functionality of the Omniva plugin to work with Woocommerce blocks",
   "main": "index.js",
   "scripts": {

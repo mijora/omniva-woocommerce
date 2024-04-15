@@ -1,0 +1,101 @@
+:root {
+    --omnivalt-blocks-omniva-color-main: #f60;
+    --omnivalt-blocks-matkahuolto-color-main: #001e60;
+    --omnivalt-blocks-white-color: #fff;
+}
+
+.wp-site-blocks .omnivalt-org-select select,
+.wp-site-blocks .omnivalt-org-select .components-input-control__container {
+    display: none !important;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-selected-terminal {
+    padding-bottom: 5px;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-open-modal-btn {
+    color: var(--omnivalt-blocks-white-color);
+    border: 1px solid var(--omnivalt-blocks-omniva-color-main);
+    background-color: var(--omnivalt-blocks-omniva-color-main);
+    padding: 7px 15px;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-open-modal-btn:hover,
+.wp-site-blocks .omnivalt-map-select .tmjs-open-modal-btn:focus {
+    color: var(--omnivalt-blocks-omniva-color-main);
+    background-color: var(--omnivalt-blocks-white-color);
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-terminal-sidebar h2 {
+    font-size: 28px;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-terminal-sidebar h3 {
+    font-size: 20px;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-terminal-sidebar a:hover {
+    color: var(--omnivalt-blocks-omniva-color-main);
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-close-modal-btn:hover:before,
+.wp-site-blocks .omnivalt-map-select .tmjs-close-modal-btn:hover:after {
+    background-color: var(--omnivalt-blocks-omniva-color-main);
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-search-btn {
+    background-color: var(--omnivalt-blocks-omniva-color-main);
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-active {
+    background-color: var(--omnivalt-blocks-omniva-color-main) !important;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-terminal-comment {
+    color: #fffc;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn {
+    color: #000;
+    background-color: var(--omnivalt-blocks-white-color);
+    border: 1px solid var(--omnivalt-blocks-white-color);
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:hover,
+.wp-site-blocks .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:focus {
+    color: var(--omnivalt-blocks-white-color);
+    background-color: var(--omnivalt-blocks-omniva-color-main);
+}
+
+/* Matkahuolto */
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-close-modal-btn:hover:before,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-close-modal-btn:hover:after,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-search-btn,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:hover,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:focus {
+    background-color: var(--omnivalt-blocks-matkahuolto-color-main);
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-active {
+    background-color: var(--omnivalt-blocks-matkahuolto-color-main) !important;
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:hover,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:focus {
+    background-color: var(--omnivalt-blocks-white-color);
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn {
+    border-color: var(--omnivalt-blocks-matkahuolto-color-main);
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:hover,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:focus,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-terminal-sidebar a:hover {
+    color: var(--omnivalt-blocks-matkahuolto-color-main);
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:hover {
+    color: var(--omnivalt-blocks-white-color);
+}

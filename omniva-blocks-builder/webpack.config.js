@@ -13,7 +13,10 @@ module.exports = {
     entry: {
         index: path.resolve(process.cwd(), 'src', 'index.js'),
         'terminal-selection-block/index': path.resolve(process.cwd(), 'src', 'terminal-selection-block', 'index.js'),
-        'terminal-selection-block/frontend': path.resolve(process.cwd(), 'src', 'terminal-selection-block', 'frontend.js'),
+        'terminal-selection-block/checkout/index': path.resolve(process.cwd(), 'src', 'terminal-selection-block', 'checkout', 'index.js'),
+        'terminal-selection-block/checkout/frontend': path.resolve(process.cwd(), 'src', 'terminal-selection-block', 'checkout', 'frontend.js'),
+        'terminal-selection-block/cart/index': path.resolve(process.cwd(), 'src', 'terminal-selection-block', 'cart', 'index.js'),
+        'terminal-selection-block/cart/frontend': path.resolve(process.cwd(), 'src', 'terminal-selection-block', 'cart', 'frontend.js'),
     },
     module: {
         ...defaultConfig.module,

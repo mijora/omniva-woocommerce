@@ -8,6 +8,9 @@ class OmnivaLt_Wc_Blocks
         add_action('woocommerce_blocks_checkout_block_registration', function( $integration_registry ) {
             $integration_registry->register( new Omnivalt_Blocks_Integration() );
         });
+        add_action('woocommerce_blocks_cart_block_registration', function( $integration_registry ) {
+            $integration_registry->register( new Omnivalt_Blocks_Integration() );
+        });
 
         if ( function_exists('woocommerce_store_api_register_endpoint_data') ) {
             woocommerce_store_api_register_endpoint_data(array(
@@ -19,6 +22,16 @@ class OmnivaLt_Wc_Blocks
             ));
         }
         add_action('woocommerce_store_api_checkout_update_order_from_request', 'OmnivaLt_Wc_Blocks::update_block_order_meta', 10, 2);
+
+        add_filter(
+            '__experimental_woocommerce_blocks_add_data_attributes_to_namespace',
+            function ( $allowed_namespaces ) {
+                $allowed_namespaces[] = 'omnivalt';
+                return $allowed_namespaces;
+            },
+            10,
+            1
+        );
     }
 
     public static function update_block_order_meta($order, $request)
@@ -40,7 +53,7 @@ class OmnivaLt_Wc_Blocks
             [
                 [
                     'slug'  => 'omnivalt',
-                    'title' => __( 'Omniva Blocks', 'omnivalt' ),
+                    'title' => __('Omniva Blocks', 'omnivalt'),
                 ],
             ]
         );
@@ -49,7 +62,6 @@ class OmnivaLt_Wc_Blocks
     public static function cb_data_callback()
     {
         return array(
-            'ajax_url' => admin_url('admin-ajax.php'),
             'selected_terminal' => '',
             'selected_rate_id' => '',
         );

@@ -29,6 +29,7 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
      */
     public function initialize() {
         require_once OmnivaLt_Core::get_core_dir() . 'wc-blocks/class-blocks-extend-store-endpoint.php';
+        $this->register_external_scripts();
         $this->register_block_frontend_scripts();
         $this->register_block_editor_scripts();
         $this->register_main_integration();
@@ -41,7 +42,7 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
      * @return string[]
      */
     public function get_script_handles() {
-        return array('omnivalt-blocks-integration', 'omnivalt-block-frontend');
+        return array('omnivalt-blocks-integration', 'omnivalt-block-frontend-checkout', 'omnivalt-block-frontend-cart');
     }
 
     /**
@@ -50,7 +51,7 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
      * @return string[]
      */
     public function get_editor_script_handles() {
-        return array( 'omnivalt-block-editor' );
+        return array('omnivalt-block-edit-checkout', 'omnivalt-block-edit-cart');
     }
 
     /**
@@ -59,19 +60,33 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
      * @return array
      */
     public function get_script_data() {
+        $omniva_settings = get_option(\OmnivaLt_Core::get_configs('plugin')['settings_key']);
+        $show_map = (isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == 'yes') ? true : ((! isset($omniva_settings['show_map'])) ? true : false);
+        $debug_mode = (isset($omniva_settings['debug_mode']) && $omniva_settings['debug_mode'] == 'yes') ? true : false;
+        
         return array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'plugin_url' => OMNIVALT_URL,
             'methods' => array(
                 'terminal_omniva' => 'omnivalt_pt',
                 'terminal_matkahoulto' => 'omnivalt_pt',
-            )
+                'post_omniva' => 'omnivalt_ps',
+            ),
+            'show_map' => $show_map,
+            'debug' => $debug_mode,
         );
     }
 
     public function register_block_frontend_scripts() {
         $scripts = array(
-            'omnivalt-block-frontend' => array(
-                'js' => 'terminal-selection-block/frontend.js',
-                'asset' => 'terminal-selection-block/frontend.asset.php',
+            'omnivalt-block-frontend-checkout' => array(
+                'js' => 'terminal-selection-block/checkout/frontend.js',
+                'asset' => 'terminal-selection-block/checkout/frontend.asset.php',
+                'css' => 'terminal-selection-block/checkout/frontend.css'
+            ),
+            'omnivalt-block-frontend-cart' => array(
+                'js' => 'terminal-selection-block/cart/frontend.js',
+                'asset' => 'terminal-selection-block/cart/frontend.asset.php',
             ),
         );
 
@@ -80,9 +95,13 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
 
     public function register_block_editor_scripts() {
         $scripts = array(
-            'omnivalt-block-editor' => array(
-                'js' => 'terminal-selection-block/index.js',
-                'asset' => 'terminal-selection-block/index.asset.php',
+            'omnivalt-block-edit-checkout' => array(
+                'js' => 'terminal-selection-block/checkout/index.js',
+                'asset' => 'terminal-selection-block/checkout/index.asset.php',
+            ),
+            'omnivalt-block-edit-cart' => array(
+                'js' => 'terminal-selection-block/cart/index.js',
+                'asset' => 'terminal-selection-block/cart/index.asset.php',
             ),
         );
 
@@ -159,9 +178,11 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
     {
         add_action('wp_ajax_omnivalt_get_terminals', array($this, 'get_terminals_callback'));
         add_action('wp_ajax_nopriv_omnivalt_get_terminals', array($this, 'get_terminals_callback'));
+        add_action('wp_ajax_omnivalt_get_dynamic_data', array($this, 'get_dynamic_data_callback'));
+        add_action('wp_ajax_nopriv_omnivalt_get_dynamic_data', array($this, 'get_dynamic_data_callback'));
     }
 
-    public function get_terminals_callback() //TODO: Testi
+    public function get_terminals_callback()
     {
         if ( empty($_GET['country']) ) {
             wp_send_json_error('Missing country parameter');
@@ -169,27 +190,84 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         }
 
         $country = esc_attr($_GET['country']);
+        $type = (! empty($_GET['type'])) ? esc_attr($_GET['type']) : 'terminal';
 
-        $terminals = \OmnivaLt_Terminals::get_terminals_list($country, 'terminal');
+        $terminals = \OmnivaLt_Terminals::get_terminals_for_map_new($country, $type);
         if ( empty($terminals) || ! is_array($terminals) ) {
             $terminals = array();
         }
-        $prepared_terminals = array(
-            array('label' => __('Select parcel terminal', 'omnivalt'), 'value' => '')
-        );
-        $this->build_terminals_list($terminals, $prepared_terminals);
-
-        wp_send_json_success($prepared_terminals);
+        
+        wp_send_json_success($terminals);
     }
 
-    private function build_terminals_list( $terminals_group, &$prepared_list )
+    private function build_terminals_list( $terminals, &$prepared_list ) //TODO: Galbut nereiks
     {
+        foreach ( $terminals as $terminal ) {}
         foreach ( $terminals_group as $group => $group_values ) {
             if ( ! is_array($group_values) ) {
                 $prepared_list[] = array('label' => $group_values, 'value' => $group);
                 continue;
             }
             $this->build_terminals_list($group_values, $prepared_list);
+        }
+    }
+
+    public function get_dynamic_data_callback()
+    {
+        if ( empty($_GET['country']) ) {
+            wp_send_json_error('Missing country parameter');
+            return;
+        }
+        if ( empty($_GET['method']) ) {
+            wp_send_json_error('Missing method parameter');
+            return;
+        }
+
+        $country = esc_attr($_GET['country']);
+        $woo_method_id = esc_attr($_GET['method']);
+
+        $method_key = \OmnivaLt_Omniva_Order::get_method_key_from_id($woo_method_id);
+        $terminals_type = \OmnivaLt_Configs::get_method_terminals_type($method_key);
+        $omniva_methods = OmnivaLt_Core::get_configs('method_params_new');
+        $omniva_method = ($terminals_type == 'post') ? $omniva_methods['post_specific'] : $omniva_methods['terminal'];
+
+        $provider = 'omniva';
+        $map_icon = $omniva_method['map_marker'];
+        if ( $country == 'FI' ) {
+            $provider = 'matkahuolto';
+            $map_icon = $omniva_method['display_by_country'][$country]['map_marker'];
+        }
+
+        wp_send_json_success(array(
+            'terminals_type' => $terminals_type,
+            'provider' => $provider,
+            'map_icon' => $map_icon,
+        ));
+    }
+
+    public function register_external_scripts()
+    {
+        $js_url = OMNIVALT_URL . 'assets/js/';
+        $css_url = OMNIVALT_URL . 'assets/css/';
+
+        $scripts = array(
+            'omnivalt-library-mapping' => array(
+                'js' => 'terminal-mapping.js',
+                'css' => 'terminal-mapping.css'
+            ),
+            'omnivalt-library-leaflet' => array(
+                'js' => 'leaflet.js',
+                'css' => 'leaflet.css'
+            ),
+        );
+
+        foreach ( $scripts as $script_id => $script_files ) {
+            if ( ! empty($script_files['js']) ) {
+                wp_enqueue_script($script_id, $js_url . $script_files['js'], array('jquery'), null, true);
+            }
+            if ( ! empty($script_files['css']) ) {
+                wp_enqueue_style($script_id, $css_url . $script_files['css']);
+            }
         }
     }
 

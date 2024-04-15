@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 
-import { txt } from './text';
+import { txt } from '../global/text';
 
 export const options = [
 	{
