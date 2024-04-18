@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed map load on Cart page when the updated_wc_div event fires
+
 ## [1.15.7]
 ### Fixed
 - fixed JS error on Cart page (due to the missing postcode field)

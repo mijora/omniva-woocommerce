@@ -144,7 +144,11 @@ jQuery('document').ready(function($){
         if ($(".woocommerce-shipping-calculator").length) {
             $("select.shipping_method, :input[name^=shipping_method]:checked").trigger('change'); //TODO: Need better solution for dropdown update when in cart change country
         } else {
-            $('.omnivalt_terminal').omniva(); //TODO: Not working when country select is enabled in cart
+            if (omnivalt_settings.show_map) {
+                omnivalt_init_map();
+            } else {
+                $('.omnivalt_terminal').omniva(); //TODO: Not working when country select is enabled in cart
+            }
             $("select.shipping_method").trigger('click');
         }
     });
