@@ -23,6 +23,7 @@ class OmnivaLt_Api_Core
     {
         $this->omnivalt_configs = OmnivaLt_Core::get_configs();
         $this->omnivalt_settings = get_option($this->omnivalt_configs['plugin']['settings_key']);
+        \culog($this->omnivalt_settings,'OmnivaDebug');
     }
 
     public function register_shipment( $id_order )
@@ -347,11 +348,11 @@ class OmnivaLt_Api_Core
     {
         $data = array();
 
-        for ( $i = 0; $i < 1; $i++ ) { // Preparing for multiple packages
+        for ( $i = 0; $i < $order->shipment->total_shipments; $i++ ) { // Preparing for multiple packages
             $shipment_size = $this->prepare_package_size($order->shipment->size, $order->units);
 
             $shipment_data = array(
-                'id' => $order->id . '-' . ($i + 1),
+                'id' => $order->id,
                 'method' => $order->omniva->method,
                 'terminal' => $order->omniva->terminal_id ?? '',
                 'weight' => $shipment_size['weight'],

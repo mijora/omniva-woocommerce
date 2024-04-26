@@ -182,6 +182,7 @@ do_action('omniva_admin_manifest_head');
                 $manifest_date = $order_data->omniva->manifest_date;
                 $date = date('Y-m-d H:i', strtotime($manifest_date));
                 $order_size = $order_data->shipment->size;
+                $total_shipments = $order_data->shipment->total_shipments;
                 ?>
                 <?php if ( OmnivaLt_Manifest::is_mannifest_orders_table($orders_data['action']) && $date_tracker !== $date ) : ?>
                   <tr>
@@ -222,6 +223,9 @@ do_action('omniva_admin_manifest_head');
                     </div>
                     <div class="data-grid-cell-content">
                       <b><?php echo __('Size', 'omnivalt'); ?>:</b> <?php echo OmnivaLt_Order::get_dimmension_text($order_size); ?>
+                    </div>
+                    <div class="data-grid-cell-content">
+                      <b><?php echo __('Total shipments', 'omnivalt'); ?>:</b> <?php echo (! empty($total_shipments)) ? $total_shipments : 1; ?>
                     </div>
                   </td>
                   <td class="manage-column">

@@ -82,6 +82,19 @@ class OmnivaLt_Product
             woocommerce_wp_text_input($field_params);
           }
         }
+        woocommerce_wp_text_input(array(
+          'id' => '_omnivalt_total_shipments',
+          'label' => __('Number of parcels (MPS)', 'omnivalt'),
+          'desc_tip' => 'true',
+          'description' => __('Specify how many separate shipments will be required for 1 quantity of this product. If a value of 1 or more is specified, when generating labels for the Order, as many labels as specified here will be additionally generated. If specify a value of 0, no additional shipping labels will be generated.', 'omnivalt'),
+          'type' => 'number',
+          'custom_attributes' => array(
+            'min' => '0',
+            'max' => '',
+            'step' => '1',
+          ),
+          'default' => '0'
+        ));
         ?>
       </div>
     </div>
@@ -95,6 +108,7 @@ class OmnivaLt_Product
    */
   public static function save_options_fields($post_id)
   {
+    $meta_keys = OmnivaLt_Core::get_configs('meta_keys');
     $configs_services = OmnivaLt_Core::get_configs('additional_services');
 
     foreach ($configs_services as $service_key => $service_values) {
@@ -112,6 +126,10 @@ class OmnivaLt_Product
       }
 
       OmnivaLt_Wc_Product::update_meta($post_id, '_omnivalt_' . $service_key, $value);
+    }
+
+    if ( isset($_POST['_omnivalt_total_shipments']) ) {
+      OmnivaLt_Wc_Product::update_meta($post_id, $meta_keys['total_shipments'], absint($_POST['_omnivalt_total_shipments']));
     }
   }
 
