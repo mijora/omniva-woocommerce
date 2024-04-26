@@ -23,7 +23,6 @@ class OmnivaLt_Api_Core
     {
         $this->omnivalt_configs = OmnivaLt_Core::get_configs();
         $this->omnivalt_settings = get_option($this->omnivalt_configs['plugin']['settings_key']);
-        \culog($this->omnivalt_settings,'OmnivaDebug');
     }
 
     public function register_shipment( $id_order )
