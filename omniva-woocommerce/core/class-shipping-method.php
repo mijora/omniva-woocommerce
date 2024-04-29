@@ -1301,6 +1301,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $country = $package["destination"]["country"];
 
       global $woocommerce;
+      if ( ! property_exists($woocommerce, 'cart') || empty($woocommerce->cart->cart_contents) ) {
+        return;
+      }
       $cart_amount = $woocommerce->cart->cart_contents_total + $woocommerce->cart->tax_total;
 
       $products_for_dim = array();
