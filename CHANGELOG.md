@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed map load on Cart page when the updated_wc_div event fires
+- fixed to check if the cart is not empty before creating shipping methods
 
 ### Improved
 - added possibility to register multi-parcels shipments (MPS)
