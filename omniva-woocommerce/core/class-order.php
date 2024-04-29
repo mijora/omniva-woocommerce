@@ -1,6 +1,8 @@
 <?php
 class OmnivaLt_Order
 {
+  public static $save_in_progress = false;
+  
   public static function load_admin_scripts( $hook )
   {
     if ( self::is_admin_order_edit_page() ) {
@@ -259,11 +261,9 @@ class OmnivaLt_Order
     if ($order->omniva->method) {
       $shipping_settings = OmnivaLt_Core::get_settings();
       $omnivalt_labels = new OmnivaLt_Labels();
-
-      $barcode = $order->omniva->barcodes[0];
       $country_code = $shipping_settings['shop_countrycode'];
-      $data['omnivalt_tracking_link'] = $omnivalt_labels->get_tracking_link($country_code, $barcode, true);
-      $data['omnivalt_barcode'] = $barcode;
+      
+      $data['omnivalt_tracking_links_html'] = implode(', ', $omnivalt_labels->build_tracking_links($country_code, $order->omniva->barcodes));
     }
 
     return $data;
@@ -271,10 +271,10 @@ class OmnivaLt_Order
 
   public static function display_order_data_in_admin()
   {
-    echo '<# if ( data.omnivalt_barcode ) { #>' .
+    echo '<# if ( data.omnivalt_tracking_links_html ) { #>' .
       '<p><div class="wc-order-preview-addresses">' .
-      '<div class="wc-order-preview-address">' .
-      '<strong>' . __('Omniva tracking number', 'omnivalt') .':</strong><a href="{{data.omnivalt_tracking_link}}" target="_blank">{{data.omnivalt_barcode}}</a>' .
+      '<div class="wc-order-preview-address" style="width:100%">' .
+      '<strong>' . __('Omniva tracking numbers', 'omnivalt') .':</strong>' . '{{{data.omnivalt_tracking_links_html}}}' .
       '</div></div></p>' .
       '<# } #>';
   }
@@ -442,6 +442,7 @@ class OmnivaLt_Order
     }
 
     if ( self::is_admin_order_edit_page($order->id) ) {
+      echo self::build_total_shipments_text($order->shipment->total_shipments);
       echo self::build_shipment_size_text($order->shipment->size);
     }
 
@@ -499,24 +500,9 @@ class OmnivaLt_Order
       echo __('The delivery address is changed in the fields above', 'omnivalt');
     }
 
+    echo self::build_total_shipments_field($order->shipment->total_shipments);
     echo self::build_shipment_size_fields($order->shipment->size);
-    
-    foreach ( $configs['additional_services'] as $service_key => $service_values ) {
-      if ( $service_values['add_always'] ) continue;
-      if ( ! $service_values['in_order'] ) continue;
-      
-      echo '<p class="form-field-wide">';
-      $field_id = 'omnivalt_' . $service_key;
-      echo '<label for="' . $field_id . '">' . $service_values['title'] . '</label>';
-      if ($service_values['in_order'] === 'checkbox') {
-        echo '<select id="' . $field_id . '" class="select short" name="' . $field_id . '">';
-        echo '<option value="no">' . __('No', 'omnivalt') . '</option>';
-        $selected = (in_array($service_key, $services)) ? 'selected' : '';
-        echo '<option value="yes" ' . $selected . '>' . __('Yes', 'omnivalt') . '</option>';
-        echo '</select>';
-      }
-      echo '</p>';
-    }
+    echo self::build_additional_services_fields($configs['additional_services'], $services);
 
     echo '</div>';
     echo '<hr style="margin-top:20px;">';
@@ -606,6 +592,57 @@ class OmnivaLt_Order
     return $output;
   }
 
+  private static function build_total_shipments_text( $current_value )
+  {
+    $output = '<p>';
+
+    $output .= '<strong class="title">' . __('Total shipments', 'omnivalt') . ':</strong>';
+    $output .= (! empty($current_value)) ? $current_value : 1;
+
+    $output .= '</p>';
+
+    return $output;
+  }
+
+  private static function build_total_shipments_field( $current_value )
+  {
+    $output = '';
+
+    $field_id = 'omnivalt_total_shipments';
+    $value = (! empty($current_value)) ? $current_value : 1;
+
+    $output .= '<p class="form-field-wide omnivalt-total_shipments">';
+    $output .= '<label for="' . $field_id . '">' . __('Total shipments', 'omnivalt') . '</label>';
+    $output .= '<input type="number" id="' . $field_id . '" class="short" name="' . $field_id . '" value="' . $value . '" min="0" step="1"/>';
+    $output .= '</p>';
+
+    return $output;
+  }
+
+  private static function build_additional_services_fields( $all_additional_services, $selected_order_services )
+  {
+    $output = '';
+
+    foreach ( $all_additional_services as $service_key => $service_values ) {
+      if ( $service_values['add_always'] ) continue;
+      if ( ! $service_values['in_order'] ) continue;
+      
+      $output .= '<p class="form-field-wide omnivalt-additional_service">';
+      $field_id = 'omnivalt_' . $service_key;
+      $output .= '<label for="' . $field_id . '">' . $service_values['title'] . '</label>';
+      if ($service_values['in_order'] === 'checkbox') {
+        $output .= '<select id="' . $field_id . '" class="select short" name="' . $field_id . '">';
+        $output .= '<option value="no">' . __('No', 'omnivalt') . '</option>';
+        $selected = (in_array($service_key, $selected_order_services)) ? 'selected' : '';
+        $output .= '<option value="yes" ' . $selected . '>' . __('Yes', 'omnivalt') . '</option>';
+        $output .= '</select>';
+      }
+      $output .= '</p>';
+    }
+
+    return $output;
+  }
+
   private static function add_Omniva_manually()
   {
     $configs = OmnivaLt_Core::get_configs();
@@ -631,6 +668,9 @@ class OmnivaLt_Order
       return $post_id;
     }
 
+    if (self::$save_in_progress) return $post_id; //Temporary fix to avoid infinity loop
+    self::$save_in_progress = true;
+
     $configs = OmnivaLt_Core::get_configs();
 
     if ( isset($_POST['omnivalt_terminal_id']) ) {
@@ -639,6 +679,10 @@ class OmnivaLt_Order
         OmnivaLt_Omniva_Order::set_terminal_id($post_id, $terminal_id);
         OmnivaLt_Wc_Order::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
       }
+    }
+
+    if ( isset($_POST['omnivalt_total_shipments']) ) {
+      OmnivaLt_Omniva_Order::set_total_shipments($post_id, (int) wc_clean($_POST['omnivalt_total_shipments']));
     }
 
     if ( isset($_POST['omnivalt_dimmensions']) ) {
@@ -679,6 +723,10 @@ class OmnivaLt_Order
         OmnivaLt_Omniva_Order::set_terminal_id($post_id, $terminal_id);
         OmnivaLt_Wc_Order::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
       }
+    }
+
+    if ( isset($_POST['omnivalt_total_shipments']) ) {
+      OmnivaLt_Omniva_Order::set_total_shipments($post_id, (int) wc_clean($_POST['omnivalt_total_shipments']));
     }
 
     if ( isset($_POST['omnivalt_dimmensions']) ) {
@@ -815,6 +863,29 @@ class OmnivaLt_Order
     }
 
     return $spreaded_items;
+  }
+
+  public static function count_order_total_shipments( $items_data )
+  {
+    $meta_keys = OmnivaLt_Core::get_configs('meta_keys');
+    $total = 0;
+    $found_zero = false;
+
+    foreach ( $items_data as $item ) {
+      if ( ! isset($item['product_meta_data'])
+        || ! isset($item['product_meta_data'][$meta_keys['total_shipments']])
+        || $item['product_meta_data'][$meta_keys['total_shipments']] == 0 ) {
+        $found_zero = true;
+        continue;
+      }
+      $total += $item['quantity'] * $item['product_meta_data'][$meta_keys['total_shipments']];
+    }
+
+    if ( $found_zero ) {
+      $total += 1;
+    }
+
+    return $total;
   }
 
   public static function count_order_weight( $items_data )

@@ -76,7 +76,7 @@ class OmnivaLt_Labels
     OmnivaLt_Omniva_Order::set_error($order->id, '');
     $status = $this->omnivalt_api->get_tracking_number($order->id);
 
-    if ( ! empty($status['debug']) ) {
+    if ( ! empty($status['debug']) && isset($this->omnivalt_settings['debug_notice']) && $this->omnivalt_settings['debug_notice'] === 'yes' ) {
       OmnivaLt_Helper::add_msg('<b>OMNIVA RESPONSE DEBUG:</b><br/><pre style="white-space:pre-wrap;">' . htmlspecialchars($status['debug']) . '</pre>', 'notice');
     }
 
@@ -88,9 +88,12 @@ class OmnivaLt_Labels
       $send_email = (isset($this->omnivalt_settings['email_created_label'])) ? $this->omnivalt_settings['email_created_label'] : 'yes';
       if ($send_email === 'yes') {
         $email_subject = (isset($this->omnivalt_settings['email_created_label_subject'])) ? $this->omnivalt_settings['email_created_label_subject'] : '';
+        $customer_country = OmnivaLt_Order::get_customer_shipping_country($order);
+        $tracking_codes = $this->build_tracking_links($customer_country, $barcodes, true);
         $email_params = array(
           'tracking_code' => $barcodes[0],
-          'tracking_link' => $this->get_tracking_link(OmnivaLt_Order::get_customer_shipping_country($order), $barcodes[0], true),
+          'tracking_link' => $this->get_tracking_link($customer_country, $barcodes[0], true),
+          'tracking_codes' => $tracking_codes,
           'subject' => $email_subject
         );
         $this->omnivalt_emails->send_label($order, $order->billing->email, $email_params);
@@ -135,7 +138,7 @@ class OmnivaLt_Labels
   {
     $country_code = strtoupper($country_code);
     $omniva_tracking_url = array();
-    
+ 
     foreach ( $this->omnivalt_configs['shipping_params'] as $ship_country => $ship_values ) {
       $omniva_tracking_url[$ship_country] = $ship_values['tracking_url'];
     }
@@ -147,7 +150,7 @@ class OmnivaLt_Labels
       return $omniva_tracking_url[$country_code] . $barcode;
     }
     
-    return "<a href=\"" . $omniva_tracking_url[$country_code] . $barcode . "\" target=\"_blank\">" . $barcode . "</a>\n";
+    return "<a href=\"" . $omniva_tracking_url[$country_code] . $barcode . "\" target=\"_blank\">" . $barcode . "</a>";
   }
 
   public function print_tracking_link( $order, $admin_panel = true, $print = true )
@@ -160,7 +163,7 @@ class OmnivaLt_Labels
       $text = __('Omniva tracking number', 'omnivalt');
     } else {
       $country_code = OmnivaLt_Order::get_customer_shipping_country($order);
-      $text = __('You can track your parcel with this number', 'omnivalt');
+      $text = __('You can track your parcels with this numbers', 'omnivalt');
     }
 
     $html = '';
@@ -172,12 +175,27 @@ class OmnivaLt_Labels
         }
         $barcodes_html .= $this->get_tracking_link($country_code, $barcode);
       }
-      $html = '<p><strong>' . $text . ':</strong> <br/>' . $barcodes_html . '</p>';
+      $html = '<p><strong>' . $text . ':</strong> ' . $barcodes_html . '</p>';
     }
     if ( $print ) {
       echo $html;
     }
     return $html;
+  }
+
+  public function build_tracking_links( $country_code, $barcodes, $link_only = false )
+  {
+    if ( ! is_array($barcodes) ) {
+      $barcodes = array($barcodes);
+    }
+    
+    $links = array();
+    
+    foreach ( $barcodes as $barcode ) {
+      $links[$barcode] = $this->get_tracking_link($country_code, $barcode, $link_only);
+    }
+
+    return $links;
   }
 
   public static function post_call_courier_actions()

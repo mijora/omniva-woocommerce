@@ -42,6 +42,10 @@ class OmnivaLt_Wc_Order
             $order_saved_dimmension = json_decode($wc_order->get_meta($meta_keys['dimmensions'], true), true);
             $order_size = OmnivaLt_Order::get_order_items_size($order_items, $order_saved_dimmension);
             $order_size['weight'] = OmnivaLt_Order::count_order_weight($order_items);
+            $order_total_shipments = $wc_order->get_meta($meta_keys['total_shipments'], true);
+            if ( empty($order_total_shipments) ) {
+                $order_total_shipments = OmnivaLt_Order::count_order_total_shipments($order_items);
+            }
         }
 
         if ( empty($get_sections) || in_array('shipment', $get_sections) || in_array('omniva', $get_sections) ) {
@@ -105,6 +109,7 @@ class OmnivaLt_Wc_Order
         if ( empty($get_sections) || in_array('shipment', $get_sections) ) {
             $data['shipment'] = (object) array(
                 'method' => $order_shipping_method,
+                'total_shipments' => $order_total_shipments,
                 'size' => $order_size,
                 'formated_shipping_address' => $wc_order->get_formatted_shipping_address(),
             );

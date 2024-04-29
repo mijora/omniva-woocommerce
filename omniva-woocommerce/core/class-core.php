@@ -442,6 +442,7 @@ class OmnivaLt_Core
         'manifest_date' => '_omnivalt_manifest_date',
         'terminal_id' => '_omnivalt_terminal_id',
         'dimmensions' => '_omnivalt_dimmensions',
+        'total_shipments' => '_omnivalt_total_shipments',
         'courier_calls' => '_omnivalt_courier_calls',
       ),
     );
