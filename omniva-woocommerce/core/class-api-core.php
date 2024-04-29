@@ -406,7 +406,7 @@ class OmnivaLt_Api_Core
             if ( ! in_array($service_values['code'], $service_additional_services) ) {
                 $add_service = false;
             }
-
+            
             if ( $add_service ) {
                 $additional_services[$service_key] = $service_values['code'];
             }
