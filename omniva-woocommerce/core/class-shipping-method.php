@@ -477,9 +477,17 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'description' => __('Enable request and response logging.', 'omnivalt') . ' ' . sprintf(__('Log files are stored for %d days.', 'omnivalt'), $this->omnivalt_configs['debug']['delete_after']),
         'default' => ''
       );
+      $fields['debug_notice'] = array(
+        'title' => __('Show debug data in WP notice', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('Display debug information via WP notice at the top of the web page after some action', 'omnivalt'),
+        'default' => '',
+        'class' => 'omniva_debug'
+      );
       $fields['debugview_request'] = array(
         'type' => 'debug_window',
         'files' => OmnivaLt_Debug::get_all_files(),
+        'title-main' => __('Logs list', 'omnivalt'),
         'title' => __('Logged communications with API', 'omnivalt'),
         'class' => 'omniva_debug'
       );
@@ -1221,11 +1229,14 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $files = (isset($value['files'])) ? $value['files'] : array();
       $files_dir = OmnivaLt_Debug::$_debug_dir;
       $files_subtitle = (isset($value['subtitle'])) ? $value['subtitle'] : '';
+      $main_title = (isset($value['title-main'])) ? $value['title-main'] : '';
 
       ob_start();
       ?>
       <tr class="omniva-debugview" valign="top">
-        <th scope="row" class="titledesc"></th>
+        <th scope="row" class="titledesc">
+          <label><?php echo esc_html($main_title); ?></label>
+        </th>
         <td class="forminp">
           <fieldset class="field-debug <?php echo $field_class; ?>">
             <span class="title"><?php echo esc_html($value['title']); ?></span>
@@ -1290,6 +1301,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $country = $package["destination"]["country"];
 
       global $woocommerce;
+      if ( ! property_exists($woocommerce, 'cart') || empty($woocommerce->cart->cart_contents) ) {
+        return;
+      }
       $cart_amount = $woocommerce->cart->cart_contents_total + $woocommerce->cart->tax_total;
 
       $products_for_dim = array();

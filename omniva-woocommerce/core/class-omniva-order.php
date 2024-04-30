@@ -99,6 +99,18 @@ class OmnivaLt_Omniva_Order
         return OmnivaLt_Wc_Order::get_meta($order_id, $meta_keys['error']);
     }
 
+    public static function set_total_shipments( $order_id, $total_shipments )
+    {
+        $meta_keys = OmnivaLt_Core::get_configs('meta_keys');
+        return OmnivaLt_Wc_Order::update_meta($order_id, $meta_keys['total_shipments'], $total_shipments);
+    }
+
+    public static function get_total_shipments( $order_id )
+    {
+        $meta_keys = OmnivaLt_Core::get_configs('meta_keys');
+        return OmnivaLt_Wc_Order::get_meta($order_id, $meta_keys['total_shipments']);
+    }
+
     public static function set_dimmensions( $order_id, $dimmensions )
     {
         $meta_keys = OmnivaLt_Core::get_configs('meta_keys');

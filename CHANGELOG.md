@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.15.8]
+### Fixed
+- fixed map load on Cart page when the updated_wc_div event fires
+- fixed to check if the cart is not empty before creating shipping methods
+
+### Improved
+- added possibility to register multi-parcels shipments (MPS)
+- added the option to specify how many MPS shipments it needs for the product
+
+### Updated
+- updated Omniva API library to v1.0.17
+
 ## [1.15.7]
 ### Fixed
 - fixed JS error on Cart page (due to the missing postcode field)

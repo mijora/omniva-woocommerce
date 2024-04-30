@@ -14,6 +14,7 @@ class OmnivaLt_Emails
 	public function send_label( $order, $recipient, $params=array() ) {
 		$variables['tracking_code'] = (isset($params['tracking_code'])) ? $params['tracking_code'] : '';
 		$variables['tracking_link'] = (isset($params['tracking_link'])) ? $params['tracking_link'] : '';
+		$variables['tracking_codes'] = (isset($params['tracking_codes'])) ? $params['tracking_codes'] : '';
 		$variables['name'] = OmnivaLt_Order::get_customer_name($order);
 		$variables['fullname'] = OmnivaLt_Order::get_customer_fullname($order);
 		$variables['company'] = OmnivaLt_Order::get_customer_company($order);

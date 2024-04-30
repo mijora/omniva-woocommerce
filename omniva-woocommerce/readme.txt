@@ -14,6 +14,20 @@ omnivalt_orders_list_per_page - args: $per_page - allows to change the number of
 
 == Changelog ==
 
+= 1.15.8 =
+- fixed map load on Cart page when the updated_wc_div event fires
+- fixed to check if the cart is not empty before creating shipping methods
+- added possibility to register multi-parcels shipments (MPS)
+- added the option to specify how many MPS shipments it needs for the product
+- updated Omniva API library to v1.0.17
+
+= 1.15.7 =
+- fixed JS error on Cart page (due to the missing postcode field)
+- fixed JS error on Checkout page (due to a empty line in the script code)
+- fixed an error occurring during customer registration
+- added the option to specify a landline phone number in the sender (shop) settings, if no mobile phone number is entered
+- created an error display in the admin area when the plugin cannot work
+
 = 1.15.6 =
 - fixed set of API type
 - fixed adding the tracking link to the email when the order status is changed outside of the order edit page

@@ -26,7 +26,17 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 <?php /* translators: %s: Customer first name */ ?>
 <p><?php printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( (!empty($name)) ? $name : $company ) ); ?></p>
-<p><?php esc_html_e( 'We are writing to let you know that a tracking number has been generated for your shipment.', 'omnivalt' ); ?><br/><?php printf( esc_html__( 'Your tracking number is %s.', 'omnivalt' ), '<a href="' . esc_html( $tracking_link ) . '" target="_blank">' . esc_html( $tracking_code ) . '</a>' ); ?></p>
+<?php if ( empty($tracking_codes) ) : ?>
+	<p><?php esc_html_e( 'We are writing to let you know that a tracking number has been generated for your shipment.', 'omnivalt' ); ?><br/><?php printf( esc_html__( 'Your tracking number is %s.', 'omnivalt' ), '<a href="' . esc_html( $tracking_link ) . '" target="_blank">' . esc_html( $tracking_code ) . '</a>' ); ?></p>
+<?php else : ?>
+	<?php
+	$tracking_codes_links = array();
+	foreach ( $tracking_codes as $code => $link ) {
+		$tracking_codes_links[] = '<a href="' . esc_html( $link ) . '" target="_blank">' . esc_html( $code ) . '</a>';
+	}
+	?>
+	<p><?php esc_html_e( 'We are writing to let you know that your order is being prepared for shipment.', 'omnivalt' ); ?><br/><?php printf( esc_html__( 'Your shipment tracking numbers are %s.', 'omnivalt' ), implode(', ', $tracking_codes_links) ); ?></p>
+<?php endif; ?>
 
 <p><?php esc_html_e( 'As a reminder, here are your order details:', 'woocommerce' ); ?></p>
 
