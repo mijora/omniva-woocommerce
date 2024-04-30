@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.15.8]
 ### Fixed
 - fixed map load on Cart page when the updated_wc_div event fires
 - fixed to check if the cart is not empty before creating shipping methods
