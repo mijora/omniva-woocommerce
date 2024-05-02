@@ -62,6 +62,8 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
     public function get_script_data() {
         $omniva_settings = get_option(\OmnivaLt_Core::get_configs('plugin')['settings_key']);
         $show_map = (isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == 'yes') ? true : ((! isset($omniva_settings['show_map'])) ? true : false);
+        $autoselect = (isset($omniva_settings['auto_select']) && $omniva_settings['auto_select'] == 'yes') ? true : false;
+        if ( ! isset($omniva_settings['auto_select']) ) $autoselect = true; //Enable by default
         $debug_mode = (isset($omniva_settings['debug_mode']) && $omniva_settings['debug_mode'] == 'yes') ? true : false;
         
         return array(
@@ -73,6 +75,7 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
                 'post_omniva' => 'omnivalt_ps',
             ),
             'show_map' => $show_map,
+            'autoselect' => $autoselect,
             'debug' => $debug_mode,
         );
     }
@@ -198,18 +201,6 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         }
         
         wp_send_json_success($terminals);
-    }
-
-    private function build_terminals_list( $terminals, &$prepared_list ) //TODO: Galbut nereiks
-    {
-        foreach ( $terminals as $terminal ) {}
-        foreach ( $terminals_group as $group => $group_values ) {
-            if ( ! is_array($group_values) ) {
-                $prepared_list[] = array('label' => $group_values, 'value' => $group);
-                continue;
-            }
-            $this->build_terminals_list($group_values, $prepared_list);
-        }
     }
 
     public function get_dynamic_data_callback()

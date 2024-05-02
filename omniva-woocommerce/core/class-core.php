@@ -450,6 +450,7 @@ class OmnivaLt_Core
   private static function load_init_hooks()
   {
     add_action('before_woocommerce_init', 'OmnivaLt_Compatibility::declare_wc_hpos_compatibility');
+    add_action('before_woocommerce_init', 'OmnivaLt_Compatibility::declare_wc_blocks_compatibility');
     add_action('woocommerce_shipping_init', 'OmnivaLt_Core::init_shipping_method');
     add_action('init', 'OmnivaLt_Core::textdomain');
     add_action('admin_notices', 'OmnivaLt_Core::admin_notices');
