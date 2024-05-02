@@ -1,7 +1,7 @@
 {
 	"apiVersion": 2,
 	"name": "omnivalt/terminal-selection-checkout",
-	"version": "0.0.2",
+	"version": "1.0.0",
 	"title": "Omniva terminal selection",
 	"category": "woocommerce",
 	"description": "Allow to add components for Omniva shipping method",
