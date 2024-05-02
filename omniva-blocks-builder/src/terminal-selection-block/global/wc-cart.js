@@ -17,23 +17,33 @@ export const getShippingCountry = (shippingAddress) => {
     return shippingAddress.country;
 };
 
-export const getDestinationCountry = (shippingRates) => {
-    debug('Getting destination country...');
+export const getDestination = (shippingRates, getFirst = true) => {
+    debug('Getting destination...');
     if ( ! shippingRates.length ) {
-        debug('Destination country LT');
-        return 'LT';
+        debug('Failed to get destination because shipping rates is empty');
+        return null;
     }
 
-    let country = '';
+    let allDestinations = [];
     for ( let i = 0; i < shippingRates.length; i++ ) {
-        if ( ! shippingRates[i].destination.country || shippingRates[i].destination.country.trim() == "" ) {
+        if ( ! shippingRates[i].destination ) {
             continue;
         }
-        country = shippingRates[i].destination.country.trim();
+        allDestinations.push(shippingRates[i].destination);
     }
-    
-    debug('Destination country', country);
-    return country;
+
+    if ( ! allDestinations.length ) {
+        debug('Failed to get destination');
+        return null;
+    }
+
+    if ( ! getFirst ) {
+        debug('Destinations', allDestinations);
+        return allDestinations;
+    }
+
+    debug('First destination', allDestinations[0]);
+    return allDestinations[0];
 };
 
 export const getActiveShippingRates = (shippingRates) => {

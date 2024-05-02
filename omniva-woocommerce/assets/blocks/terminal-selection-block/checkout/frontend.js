@@ -54,7 +54,11 @@ const Block = ({
   const {
     setExtensionData
   } = checkoutExtensionData;
-  const [country, setCountry] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
+  const [mapValues, setMapValues] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    country: 'LT',
+    postcode: ''
+  });
+  const [destination, setDestination] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
   const [activeRates, setActiveRates] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
   const [omnivaData, setOmnivaData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({});
   const [terminals, setTerminals] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
@@ -74,12 +78,15 @@ const Block = ({
     provider: 'unknown',
     type: 'unknown'
   });
+  const [containerErrorClass, setContainerErrorClass] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const elemTerminalSelectField = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const elemMapContainer = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
   const map = (0,_global_terminals__WEBPACK_IMPORTED_MODULE_7__.loadMap)();
+  const customSelect = (0,_global_terminals__WEBPACK_IMPORTED_MODULE_7__.loadCustomSelect)();
   (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.enableStateDebug)('Block show', showBlock);
   (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.enableStateDebug)('Terminals list', terminals);
-  (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.enableStateDebug)('Selected country', country);
+  (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.enableStateDebug)('Destination', destination);
+  (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.enableStateDebug)('Map values', mapValues);
   (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.enableStateDebug)('Selected terminal', selectedOmnivaTerminal);
   (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.enableStateDebug)('Selected rate ID', selectedRateId);
   (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.enableStateDebug)('Omniva dynamic data', omnivaData);
@@ -123,9 +130,22 @@ const Block = ({
   }, [activeRates]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if (showBlock.value) {
-      setCountry((0,_global_wc_cart__WEBPACK_IMPORTED_MODULE_5__.getDestinationCountry)(shippingRates));
+      setDestination((0,_global_wc_cart__WEBPACK_IMPORTED_MODULE_5__.getDestination)(shippingRates));
     }
   }, [showBlock]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (!destination || destination.country.trim() == "") {
+      setMapValues({
+        country: 'LT',
+        postcode: ''
+      });
+    } else {
+      setMapValues({
+        country: destination.country,
+        postcode: destination.postcode
+      });
+    }
+  }, [destination]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if (!(0,_global_omniva__WEBPACK_IMPORTED_MODULE_6__.isOmnivaTerminalMethod)(selectedRateId)) {
       (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('The selected delivery method is not delivery to the Omniva terminal');
@@ -135,20 +155,15 @@ const Block = ({
       (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('Skipped retrieving dynamic Omniva data because the value of the selected rate ID is not received');
       return;
     }
-    if (country == '') {
-      (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('Skipped retrieving dynamic Omniva data because the value of the country is empty');
-      return;
-    }
-    (0,_global_omniva__WEBPACK_IMPORTED_MODULE_6__.getDynamicOmnivaData)(country, selectedRateId).then(response => {
+    (0,_global_omniva__WEBPACK_IMPORTED_MODULE_6__.getDynamicOmnivaData)(mapValues.country, selectedRateId).then(response => {
       if (response.data) {
         const data = response.data;
-        data.country = country;
         setOmnivaData(data);
       } else {
         (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('Failed to get dynamic Omniva data');
       }
     });
-  }, [country, selectedRateId]);
+  }, [mapValues, selectedRateId]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if ((0,_global_utils__WEBPACK_IMPORTED_MODULE_9__.isObjectEmpty)(omnivaData)) {
       (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('Skipped getting Terminals because the Omniva dynamic data is empty');
@@ -159,7 +174,7 @@ const Block = ({
       return;
     }
     const terminalsType = 'terminals_type' in omnivaData ? omnivaData.terminals_type : 'omniva';
-    (0,_global_terminals__WEBPACK_IMPORTED_MODULE_7__.getTerminalsByCountry)(country, terminalsType).then(response => {
+    (0,_global_terminals__WEBPACK_IMPORTED_MODULE_7__.getTerminalsByCountry)(mapValues.country, terminalsType).then(response => {
       if (response.data) {
         setTerminals(response.data);
       } else {
@@ -199,14 +214,18 @@ const Block = ({
       });
     }
     setTerminalsOptions(preparedTerminalsOptions);
+  }, [terminals]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     if (elemMapContainer.current) {
       if (elemMapContainer.current.innerHTML !== "") {
-        (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('Removing previous map...');
+        (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('Removing previous custom field/map...');
         (0,_global_terminals__WEBPACK_IMPORTED_MODULE_7__.removeMap)(elemMapContainer.current);
       }
       let showMap = null;
+      let autoselect = true;
       if ('show_map' in (0,_global_omniva__WEBPACK_IMPORTED_MODULE_6__.getOmnivaData)()) {
         showMap = (0,_global_omniva__WEBPACK_IMPORTED_MODULE_6__.getOmnivaData)().show_map;
+        autoselect = (0,_global_omniva__WEBPACK_IMPORTED_MODULE_6__.getOmnivaData)().autoselect;
         setContainerParams({
           provider: 'provider' in omnivaData ? omnivaData.provider : 'unknown',
           type: 'terminals_type' in omnivaData ? omnivaData.terminals_type : 'unknown'
@@ -219,26 +238,40 @@ const Block = ({
           map_container: elemMapContainer.current,
           terminals_type: omnivaData.terminals_type,
           provider: omnivaData.provider,
-          country: country,
+          country: mapValues.country,
           map_icon: omnivaData.map_icon,
           selected_terminal: selectedOmnivaTerminal
         });
         map.init(terminals);
+        map.set_search_value(mapValues.postcode);
       } else if (showMap === false) {
-        console.log('Nerodo zemes'); //TODO: Padaryti custom select field
+        (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('Initializing terminal select field...');
+        customSelect.load_data({
+          org_field: elemTerminalSelectField.current,
+          custom_container: elemMapContainer.current,
+          provider: omnivaData.provider,
+          terminals_type: omnivaData.terminals_type,
+          country: mapValues.country,
+          selected_terminal: selectedOmnivaTerminal,
+          autoselect_terminal: autoselect
+        });
+        customSelect.set_terminals(terminals);
+        customSelect.init();
+        customSelect.set_search_value(mapValues.postcode);
       } else {
         (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('Failed to get map display param');
       }
     } else {
-      (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('Failed to get map container');
+      (0,_global_debug__WEBPACK_IMPORTED_MODULE_10__.debug)('Failed to get container for custom field/map');
     }
-  }, [terminals]);
+  }, [terminalsOptions]);
 
   /* Handle changing the select's value */
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
     setExtensionData('omnivalt', 'selected_terminal', selectedOmnivaTerminal);
     if (selectedOmnivaTerminal !== '') {
       clearValidationError(terminalValidationErrorId);
+      setContainerErrorClass('');
       return;
     }
     if (selectedOmnivaTerminal === '') {
@@ -248,6 +281,7 @@ const Block = ({
           hidden: false
         }
       });
+      setContainerErrorClass('error');
     }
   }, [setExtensionData, selectedOmnivaTerminal, setValidationErrors, clearValidationError, blockText]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
@@ -257,7 +291,7 @@ const Block = ({
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null);
   }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: `omnivalt-terminal-select-container provider-${containerParams.provider} type-${containerParams.type}`
+    className: `omnivalt-terminal-select-container provider-${containerParams.provider} type-${containerParams.type} ${containerErrorClass}`
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     id: "omnivalt-terminal-container-org",
     className: "omnivalt-org-select"
@@ -274,7 +308,9 @@ const Block = ({
     id: "omnivalt-terminal-container-map",
     className: "omnivalt-map-select",
     ref: elemMapContainer
-  }));
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    class: "omnivalt-loader"
+  })));
 };
 
 /***/ }),
@@ -389,13 +425,23 @@ const isOmnivaTerminalMethod = methodKey => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getTerminalsByCountry: () => (/* binding */ getTerminalsByCountry),
+/* harmony export */   loadCustomSelect: () => (/* binding */ loadCustomSelect),
 /* harmony export */   loadMap: () => (/* binding */ loadMap),
 /* harmony export */   removeMap: () => (/* binding */ removeMap)
 /* harmony export */ });
 /* harmony import */ var _text__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./text */ "./src/terminal-selection-block/global/text.js");
 /* harmony import */ var _omniva__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./omniva */ "./src/terminal-selection-block/global/omniva.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/terminal-selection-block/global/utils.js");
 
 
+
+const markSelectControlValue = (selectElem, value) => {
+  selectElem.value = value;
+  const event = new Event('change', {
+    bubbles: true
+  });
+  selectElem.dispatchEvent(event);
+};
 const getTerminalsByCountry = (country, type) => {
   return fetch(`${(0,_omniva__WEBPACK_IMPORTED_MODULE_1__.getOmnivaData)().ajax_url}?action=omnivalt_get_terminals&country=${country}&type=${type}`, {
     method: 'GET',
@@ -432,7 +478,6 @@ const loadMap = () => {
       const provider = this.params.provider in _text__WEBPACK_IMPORTED_MODULE_0__.txt.providers ? _text__WEBPACK_IMPORTED_MODULE_0__.txt.providers[this.params.provider] : _text__WEBPACK_IMPORTED_MODULE_0__.txt.providers.omniva;
       this.translations = {
         modal_header: provider + " " + modal_header,
-        //TODO: Prideti provider gavima
         terminal_list_header: this.params.terminals_type == 'post' ? _text__WEBPACK_IMPORTED_MODULE_0__.txt.map.modal_search_title_post : _text__WEBPACK_IMPORTED_MODULE_0__.txt.map.modal_search_title_terminal,
         select_pickup_point: this.params.terminals_type == 'post' ? _text__WEBPACK_IMPORTED_MODULE_0__.txt.map.select_post : _text__WEBPACK_IMPORTED_MODULE_0__.txt.map.select_terminal,
         seach_header: _text__WEBPACK_IMPORTED_MODULE_0__.txt.map.search_placeholder,
@@ -454,7 +499,7 @@ const loadMap = () => {
     },
     init: function (terminals) {
       if (!this.elements.map_container) {
-        console.error('OMNIVA MAP: Failed to get a container for the map');
+        this.error('Failed to get a container for the map');
         return;
       }
       this.lib = new TerminalMappingOmnivalt();
@@ -493,14 +538,21 @@ const loadMap = () => {
         }
       });
       this.lib.sub("terminal-selected", function (data) {
-        thisMap.elements.org_field.value = data.id;
-        const event = new Event('change', {
-          bubbles: true
-        });
-        thisMap.elements.org_field.dispatchEvent(event);
+        markSelectControlValue(thisMap.elements.org_field, data.id);
         thisMap.lib.dom.setActiveTerminal(data.id);
         thisMap.lib.publish("close-map-modal");
       });
+    },
+    set_search_value: function (value) {
+      value = value.trim();
+      if (value == '') {
+        return;
+      }
+      this.lib.dom.searchNearest(value);
+      this.lib.dom.UI.modal.querySelector('.tmjs-search-input').value = value;
+    },
+    error: function (error_text) {
+      console.error('OMNIVA MAP:', error_text);
     }
   };
 };
@@ -508,6 +560,367 @@ const removeMap = mapContainer => {
   while (mapContainer.firstChild) {
     mapContainer.removeChild(mapContainer.lastChild);
   }
+};
+const loadCustomSelect = () => {
+  return {
+    map: null,
+    selected: {},
+    terminals: [],
+    elements: {},
+    params: {},
+    translations: {},
+    loaded: false,
+    load_data: function (params) {
+      this.elements = {
+        org_field: this.set_param(params, 'org_field', null),
+        custom_container: this.set_param(params, 'custom_container', null),
+        this_dropdown: null,
+        this_list: null,
+        this_container: null,
+        this_inner_container: null,
+        this_loader: null,
+        this_search: null,
+        this_search_msg: null,
+        this_show_more: null
+      };
+      this.params = {
+        provider: this.set_param(params, 'provider', 'omniva'),
+        terminals_type: this.set_param(params, 'terminals_type', 'terminal'),
+        country: this.set_param(params, 'country', 'LT'),
+        max_show: this.set_param(params, 'max_show', 8),
+        active_timeout: null,
+        autoselect: this.set_param(params, 'autoselect', true),
+        selected_terminal: this.set_param(params, 'selected_terminal', '')
+      };
+      const provider = this.params.provider in _text__WEBPACK_IMPORTED_MODULE_0__.txt.providers ? _text__WEBPACK_IMPORTED_MODULE_0__.txt.providers[this.params.provider] : _text__WEBPACK_IMPORTED_MODULE_0__.txt.providers.omniva;
+      this.translations = {
+        not_found: _text__WEBPACK_IMPORTED_MODULE_0__.txt.select.not_found,
+        too_short: _text__WEBPACK_IMPORTED_MODULE_0__.txt.select.search_too_short,
+        select_terminal: this.params.terminals_type == 'post' ? _text__WEBPACK_IMPORTED_MODULE_0__.txt.select.post_select : _text__WEBPACK_IMPORTED_MODULE_0__.txt.select.terminal_select,
+        enter_address: _text__WEBPACK_IMPORTED_MODULE_0__.txt.select.enter_address,
+        show_more: _text__WEBPACK_IMPORTED_MODULE_0__.txt.select.show_more
+      };
+    },
+    set_param: function (all_params, param_key, fail_value = null) {
+      if (!(param_key in all_params)) {
+        return fail_value;
+      }
+      return all_params[param_key];
+    },
+    init: function () {
+      if ((0,_utils__WEBPACK_IMPORTED_MODULE_2__.isObjectEmpty)(this.elements)) {
+        this.error('Load data is required before initialization');
+        return;
+      }
+      if (!this.elements.custom_container) {
+        this.error('Failed to get a container for the custom field');
+        return;
+      }
+      if (this.elements.org_field.value) {
+        this.set_selected();
+      }
+      let listElem,
+        link,
+        linkText = null;
+      this.elements.this_container = document.createElement('div');
+      this.elements.this_container.classList.add('omnivalt-terminals-list');
+      this.elements.this_dropdown = document.createElement('div');
+      this.elements.this_dropdown.classList.add('dropdown');
+      this.elements.this_dropdown.innerHTML = this.translations.select_terminal;
+      this.update_element_dropdown();
+      this.elements.this_search = document.createElement('input');
+      this.elements.this_search.type = 'text';
+      this.elements.this_search.classList.add('search-input');
+      this.elements.this_search.placeholder = this.translations.enter_address;
+      this.elements.this_search_msg = document.createElement('span');
+      this.elements.this_search_msg.classList.add('search-msg');
+      this.show_element_search_msg(false);
+      this.elements.this_loader = document.createElement('div');
+      this.elements.this_loader.classList.add('omnivalt-loader');
+      this.show_element_loader(false);
+      this.elements.this_list = document.createElement('ul');
+      this.elements.this_show_more = document.createElement('div');
+      this.elements.this_show_more.classList.add('show-more');
+      link = document.createElement('a');
+      linkText = document.createTextNode(this.translations.show_more);
+      link.appendChild(linkText);
+      link.href = '#';
+      this.elements.this_show_more.appendChild(link);
+      this.elements.this_inner_container = document.createElement('div');
+      this.elements.this_inner_container.classList.add('inner-container');
+      this.show_element_inner_container(false);
+      this.elements.this_inner_container.append(this.elements.this_search, this.elements.this_search_msg, this.elements.this_loader, this.elements.this_list, this.elements.this_show_more);
+      this.elements.this_container.append(this.elements.this_dropdown, this.elements.this_inner_container);
+      this.elements.custom_container.append(this.elements.this_container);
+      this.reset_terminals();
+      this.refresh_element_list();
+
+      /* Events */
+      this.elements.this_show_more.addEventListener('click', e => {
+        e.preventDefault();
+        this.show_element_all_options();
+      });
+      this.elements.this_dropdown.addEventListener('click', e => {
+        this.toggle_dropdown();
+      });
+      this.elements.org_field.addEventListener('click', e => {
+        this.set_selected();
+        this.update_element_dropdown();
+        this.elements.this_list.querySelector('li[data-id="' + this.elements.org_field.value + '"').classList.add('selected');
+      });
+      this.elements.this_search.addEventListener('keyup', () => {
+        this.show_element_search_msg(false);
+        this.show_element_loader(true);
+        clearTimeout(this.params.active_timeout);
+        this.params.active_timeout = setTimeout(() => {
+          this.params.autoselect = false;
+          this.geo_suggest(this.elements.this_search.value);
+        }, 400);
+      });
+      this.elements.this_search.addEventListener('keyup', e => {
+        if (e.which == '13') {
+          e.preventDefault();
+        }
+      });
+      document.addEventListener('mousedown', e => {
+        if (this.elements.this_container != e.target && !this.elements.this_container.contains(e.target) && this.elements.this_container.classList.contains('open')) {
+          this.toggle_dropdown(true);
+        }
+      });
+      this.loaded = true;
+    },
+    set_terminals: function (terminals) {
+      for (let i = 0; i < terminals.length; i++) {
+        terminals[i]['distance'] = false;
+      }
+      this.terminals = terminals;
+    },
+    set_selected: function () {
+      this.selected = {
+        id: this.params.selected_terminal,
+        text: this.elements.org_field.options[this.elements.org_field.selectedIndex].text,
+        distance: false
+      };
+    },
+    set_search_value: function (value) {
+      this.elements.this_search.value = value.trim();
+      this.geo_suggest(this.elements.this_search.value);
+    },
+    activate_autoselect: function () {
+      if (this.params.selected_terminal == '') {
+        let firstElem = this.elements.this_list.querySelector('li:not(.city)');
+        this.mark_element_list_selected(firstElem);
+      }
+    },
+    update_element_dropdown: function () {
+      if ('text' in this.selected) {
+        this.elements.this_dropdown.innerHTML = this.selected.text;
+      }
+    },
+    show_element_loader: function (show = false) {
+      if (show) {
+        this.elements.this_loader.style.display = 'block';
+      } else {
+        this.elements.this_loader.style.display = 'none';
+      }
+    },
+    show_element_search_msg: function (show = false) {
+      if (show) {
+        this.elements.this_search_msg.style.display = 'block';
+      } else {
+        this.elements.this_search_msg.style.display = 'none';
+      }
+    },
+    show_element_inner_container: function (show = false) {
+      if (show) {
+        this.elements.this_inner_container.style.display = 'block';
+      } else {
+        this.elements.this_inner_container.style.display = 'none';
+      }
+    },
+    refresh_element_list: function () {
+      let counter = 0;
+      let city = false;
+      let html = '';
+      let listElem,
+        listCityElem,
+        boldTextElem,
+        textElem,
+        selectedElem = null;
+      let topOffset = 0;
+      this.clear_element_list();
+      for (let terminal of this.terminals) {
+        listElem = document.createElement('li');
+        listElem.setAttribute('data-id', terminal.id);
+        listElem.innerHTML = terminal.name;
+        if ('distance' in terminal && terminal.distance !== false) {
+          boldTextElem = document.createElement('strong');
+          textElem = document.createTextNode('' + terminal.distance + 'km');
+          boldTextElem.appendChild(textElem);
+          listElem.innerHTML += ' ' + boldTextElem.outerHTML;
+          counter++;
+        } else {
+          this.elements.this_show_more.style.display = 'none';
+        }
+        if ('id' in this.selected && this.selected.id == terminal.id) {
+          listElem.classList.add('selected');
+        }
+        if (counter > this.params.max_show) {
+          listElem.style.display = 'none';
+        }
+        if (city != terminal.city) {
+          listCityElem = document.createElement('li');
+          listCityElem.classList.add('city');
+          listCityElem.innerHTML = terminal.city;
+          if (counter > this.params.max_show) {
+            listCityElem.style.display = 'none';
+          }
+          this.elements.this_list.append(listCityElem);
+          city = terminal.city;
+        }
+        this.elements.this_list.append(listElem);
+      }
+      this.elements.this_list.querySelectorAll('li:not(.city)').forEach(el => el.addEventListener('click', () => {
+        this.mark_element_list_selected(el);
+      }));
+    },
+    clear_element_list: function () {
+      while (this.elements.this_list.firstChild) {
+        this.elements.this_list.removeChild(this.elements.this_list.lastChild);
+      }
+    },
+    unmark_element_list_selected: function () {
+      let selectedElem = this.elements.this_list.querySelector('li.selected');
+      if (selectedElem) {
+        selectedElem.classList.remove('selected');
+      }
+    },
+    mark_element_list_selected: function (listElem) {
+      this.unmark_element_list_selected();
+      const selectedTerminal = listElem.getAttribute('data-id');
+      listElem.classList.add('selected');
+      markSelectControlValue(this.elements.org_field, selectedTerminal);
+      this.params.selected_terminal = selectedTerminal;
+      this.set_selected();
+      this.update_element_dropdown();
+      this.toggle_dropdown(true);
+    },
+    toggle_dropdown: function (forceClose = false) {
+      if (this.elements.this_container.classList.contains('open') || forceClose) {
+        this.show_element_inner_container(false);
+        this.elements.this_container.classList.remove('open');
+      } else {
+        this.show_element_inner_container(true);
+        this.elements.this_container.classList.add('open');
+      }
+    },
+    show_element_all_options: function () {
+      this.elements.this_list.querySelectorAll('li').forEach(el => {
+        el.style.display = '';
+        this.elements.this_show_more.style.display = 'none';
+      });
+    },
+    hide_element_all_options: function () {
+      this.elements.this_list.querySelectorAll('li').forEach(el => {
+        el.style.display = 'none';
+        this.elements.this_show_more.style.display = '';
+      });
+    },
+    reset_terminals: function () {
+      for (let i = 0; i < this.terminals.length; i++) {
+        this.terminals[i].distance = false;
+      }
+      this.terminals.sort(function (a, b) {
+        //Sort by name
+        return a.city.localeCompare(b.city) || b.name - a.name;
+      });
+    },
+    geo_find_position: async function (address) {
+      if (address == '' || address.length < 3) {
+        this.reset_terminals();
+        this.show_element_all_options();
+        this.refresh_element_list();
+        return false;
+      }
+      let url = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?singleLine=' + address + '&sourceCountry=' + this.params.country + '&category=&outFields=Postal&maxLocations=1&forStorage=false&f=pjson';
+      const fetchData = async () => {
+        const data = await (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getJsonDataFromUrl)(url);
+        return data;
+      };
+      let location_result = await fetchData();
+      if ('candidates' in location_result && location_result.candidates.length) {
+        let location = location_result.candidates[0];
+        this.sort_list_by_distance(location.location.y, location.location.x);
+        this.refresh_element_list();
+        this.elements.this_show_more.style.display = '';
+        if (this.params.autoselect) {
+          this.activate_autoselect();
+        }
+      }
+    },
+    geo_suggest: async function (address) {
+      if (address == '' || address.length < 3) {
+        this.reset_terminals();
+        this.show_element_all_options();
+        this.refresh_element_list();
+        this.show_element_loader(false);
+        if (address.length) {
+          this.elements.this_search_msg.innerHTML = this.translations.too_short;
+          this.show_element_search_msg(true);
+        }
+        return false;
+      }
+      let url = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?text=' + address + '&f=pjson&sourceCountry=' + this.params.country + '&maxSuggestions=1';
+      const fetchData = async () => {
+        const data = await (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getJsonDataFromUrl)(url);
+        return data;
+      };
+      let suggest_result = await fetchData();
+      if ('suggestions' in suggest_result && suggest_result.suggestions.length) {
+        this.geo_find_position(suggest_result.suggestions[0].text);
+      } else {
+        this.elements.this_search_msg.innerHTML = this.translations.not_found;
+        this.show_element_search_msg(true);
+        this.hide_element_all_options();
+      }
+      this.show_element_loader(false);
+    },
+    sort_list_by_distance: function (y, x) {
+      let distance;
+      for (let i = 0; i < this.terminals.length; i++) {
+        distance = this.calculate_distance(y, x, this.terminals[i].coords.lat, this.terminals[i].coords.lng);
+        this.terminals[i].distance = distance.toFixed(2);
+      }
+      this.terminals.sort((a, b) => {
+        let dist1 = a.distance;
+        let dist2 = b.distance;
+        if (parseFloat(dist1) < parseFloat(dist2)) {
+          return -1;
+        }
+        if (parseFloat(dist1) > parseFloat(dist2)) {
+          return 1;
+        }
+        return 0;
+      });
+    },
+    calculate_distance: function (lat1, lon1, lat2, lon2) {
+      let R = 6371;
+      let dLat = this.to_radius(lat2 - lat1);
+      let dLon = this.to_radius(lon2 - lon1);
+      lat1 = this.to_radius(lat1);
+      lat2 = this.to_radius(lat2);
+      let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      let d = R * c;
+      return d;
+    },
+    to_radius(value) {
+      return value * Math.PI / 180;
+    },
+    error: function (error_text) {
+      console.error('OMNIVA CUSTOM SELECT:', error_text);
+    }
+  };
 };
 
 /***/ }),
@@ -534,6 +947,7 @@ const txt = {
   select_terminal: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select parcel terminal', 'omnivalt'),
   error_terminal: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Please select parcel terminal', 'omnivalt'),
   cart_terminal_info: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('You can choose the parcel terminal on the Checkout page', 'omnivalt'),
+  loading_field: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loading select field...', 'omnivalt'),
   title_post: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post office', 'omnivalt'),
   select_post: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select post office', 'omnivalt'),
   error_post: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Please select post office', 'omnivalt'),
@@ -558,6 +972,19 @@ const txt = {
     not_found: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Place not found', 'omnivalt'),
     no_cities_found: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('There were no cities found for your search term', 'omnivalt'),
     geo_not_supported: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Geolocation is not supported', 'omnivalt')
+  },
+  select: {
+    not_found: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Place not found', 'omnivalt'),
+    search_too_short: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Value is too short', 'omnivalt'),
+    terminal_select: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select terminal', 'omnivalt'),
+    terminal_map_title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('parcel terminals', 'omnivalt'),
+    terminal_map_search_title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Parcel terminals addresses', 'omnivalt'),
+    post_select: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select post office', 'omnivalt'),
+    post_map_title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('post offices', 'omnivalt'),
+    post_map_search_title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post offices addresses', 'omnivalt'),
+    enter_address: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter postcode/address', 'omnivalt'),
+    show_in_map: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show in map', 'omnivalt'),
+    show_more: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show more', 'omnivalt')
   }
 };
 
@@ -573,7 +1000,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   addTokenToValue: () => (/* binding */ addTokenToValue),
 /* harmony export */   buildToken: () => (/* binding */ buildToken),
+/* harmony export */   getJsonDataFromUrl: () => (/* binding */ getJsonDataFromUrl),
 /* harmony export */   getObjectValue: () => (/* binding */ getObjectValue),
+/* harmony export */   insertAfter: () => (/* binding */ insertAfter),
 /* harmony export */   isObjectEmpty: () => (/* binding */ isObjectEmpty)
 /* harmony export */ });
 const buildToken = length => {
@@ -610,6 +1039,20 @@ const getObjectValue = (obj, key, valueIsNot = null) => {
   }
   return obj[key];
 };
+const insertAfter = (elem, newElem, afterElem = null) => {
+  afterElem = afterElem ? afterElem.nextSibling : elem.firstChild;
+  elem.insertBefore(newElem, afterElem);
+};
+const getJsonDataFromUrl = async url => {
+  let responseData = null;
+  try {
+    let response = await fetch(url);
+    responseData = await response.json();
+  } catch (error) {
+    console.error('OMNIVA UTILS:', error);
+  }
+  return responseData;
+};
 
 /***/ }),
 
@@ -622,7 +1065,7 @@ const getObjectValue = (obj, key, valueIsNot = null) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getActiveShippingRates: () => (/* binding */ getActiveShippingRates),
-/* harmony export */   getDestinationCountry: () => (/* binding */ getDestinationCountry),
+/* harmony export */   getDestination: () => (/* binding */ getDestination),
 /* harmony export */   getShippingCountry: () => (/* binding */ getShippingCountry)
 /* harmony export */ });
 /* harmony import */ var _debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./debug */ "./src/terminal-selection-block/global/debug.js");
@@ -643,21 +1086,29 @@ const getShippingCountry = shippingAddress => {
   (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Shipping country', shippingAddress.country);
   return shippingAddress.country;
 };
-const getDestinationCountry = shippingRates => {
-  (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Getting destination country...');
+const getDestination = (shippingRates, getFirst = true) => {
+  (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Getting destination...');
   if (!shippingRates.length) {
-    (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Destination country LT');
-    return 'LT';
+    (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Failed to get destination because shipping rates is empty');
+    return null;
   }
-  let country = '';
+  let allDestinations = [];
   for (let i = 0; i < shippingRates.length; i++) {
-    if (!shippingRates[i].destination.country || shippingRates[i].destination.country.trim() == "") {
+    if (!shippingRates[i].destination) {
       continue;
     }
-    country = shippingRates[i].destination.country.trim();
+    allDestinations.push(shippingRates[i].destination);
   }
-  (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Destination country', country);
-  return country;
+  if (!allDestinations.length) {
+    (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Failed to get destination');
+    return null;
+  }
+  if (!getFirst) {
+    (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Destinations', allDestinations);
+    return allDestinations;
+  }
+  (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('First destination', allDestinations[0]);
+  return allDestinations[0];
 };
 const getActiveShippingRates = shippingRates => {
   if (!shippingRates.length) {

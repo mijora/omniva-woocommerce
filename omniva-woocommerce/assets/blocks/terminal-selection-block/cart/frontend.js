@@ -198,6 +198,7 @@ const txt = {
   select_terminal: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select parcel terminal', 'omnivalt'),
   error_terminal: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Please select parcel terminal', 'omnivalt'),
   cart_terminal_info: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('You can choose the parcel terminal on the Checkout page', 'omnivalt'),
+  loading_field: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Loading select field...', 'omnivalt'),
   title_post: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post office', 'omnivalt'),
   select_post: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select post office', 'omnivalt'),
   error_post: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Please select post office', 'omnivalt'),
@@ -222,6 +223,19 @@ const txt = {
     not_found: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Place not found', 'omnivalt'),
     no_cities_found: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('There were no cities found for your search term', 'omnivalt'),
     geo_not_supported: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Geolocation is not supported', 'omnivalt')
+  },
+  select: {
+    not_found: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Place not found', 'omnivalt'),
+    search_too_short: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Value is too short', 'omnivalt'),
+    terminal_select: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select terminal', 'omnivalt'),
+    terminal_map_title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('parcel terminals', 'omnivalt'),
+    terminal_map_search_title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Parcel terminals addresses', 'omnivalt'),
+    post_select: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Select post office', 'omnivalt'),
+    post_map_title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('post offices', 'omnivalt'),
+    post_map_search_title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Post offices addresses', 'omnivalt'),
+    enter_address: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Enter postcode/address', 'omnivalt'),
+    show_in_map: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show in map', 'omnivalt'),
+    show_more: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_0__.__)('Show more', 'omnivalt')
   }
 };
 
@@ -237,7 +251,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   addTokenToValue: () => (/* binding */ addTokenToValue),
 /* harmony export */   buildToken: () => (/* binding */ buildToken),
+/* harmony export */   getJsonDataFromUrl: () => (/* binding */ getJsonDataFromUrl),
 /* harmony export */   getObjectValue: () => (/* binding */ getObjectValue),
+/* harmony export */   insertAfter: () => (/* binding */ insertAfter),
 /* harmony export */   isObjectEmpty: () => (/* binding */ isObjectEmpty)
 /* harmony export */ });
 const buildToken = length => {
@@ -274,6 +290,20 @@ const getObjectValue = (obj, key, valueIsNot = null) => {
   }
   return obj[key];
 };
+const insertAfter = (elem, newElem, afterElem = null) => {
+  afterElem = afterElem ? afterElem.nextSibling : elem.firstChild;
+  elem.insertBefore(newElem, afterElem);
+};
+const getJsonDataFromUrl = async url => {
+  let responseData = null;
+  try {
+    let response = await fetch(url);
+    responseData = await response.json();
+  } catch (error) {
+    console.error('OMNIVA UTILS:', error);
+  }
+  return responseData;
+};
 
 /***/ }),
 
@@ -286,7 +316,7 @@ const getObjectValue = (obj, key, valueIsNot = null) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getActiveShippingRates: () => (/* binding */ getActiveShippingRates),
-/* harmony export */   getDestinationCountry: () => (/* binding */ getDestinationCountry),
+/* harmony export */   getDestination: () => (/* binding */ getDestination),
 /* harmony export */   getShippingCountry: () => (/* binding */ getShippingCountry)
 /* harmony export */ });
 /* harmony import */ var _debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./debug */ "./src/terminal-selection-block/global/debug.js");
@@ -307,21 +337,29 @@ const getShippingCountry = shippingAddress => {
   (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Shipping country', shippingAddress.country);
   return shippingAddress.country;
 };
-const getDestinationCountry = shippingRates => {
-  (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Getting destination country...');
+const getDestination = (shippingRates, getFirst = true) => {
+  (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Getting destination...');
   if (!shippingRates.length) {
-    (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Destination country LT');
-    return 'LT';
+    (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Failed to get destination because shipping rates is empty');
+    return null;
   }
-  let country = '';
+  let allDestinations = [];
   for (let i = 0; i < shippingRates.length; i++) {
-    if (!shippingRates[i].destination.country || shippingRates[i].destination.country.trim() == "") {
+    if (!shippingRates[i].destination) {
       continue;
     }
-    country = shippingRates[i].destination.country.trim();
+    allDestinations.push(shippingRates[i].destination);
   }
-  (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Destination country', country);
-  return country;
+  if (!allDestinations.length) {
+    (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Failed to get destination');
+    return null;
+  }
+  if (!getFirst) {
+    (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('Destinations', allDestinations);
+    return allDestinations;
+  }
+  (0,_debug__WEBPACK_IMPORTED_MODULE_0__.debug)('First destination', allDestinations[0]);
+  return allDestinations[0];
 };
 const getActiveShippingRates = shippingRates => {
   if (!shippingRates.length) {

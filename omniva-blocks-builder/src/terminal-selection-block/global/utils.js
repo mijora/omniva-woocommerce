@@ -35,3 +35,19 @@ export const getObjectValue = (obj, key, valueIsNot = null) => {
     }
     return obj[key];
 };
+
+export const insertAfter = (elem, newElem, afterElem = null) => {
+    afterElem = (afterElem) ? afterElem.nextSibling : elem.firstChild;
+    elem.insertBefore(newElem, afterElem);
+};
+
+export const getJsonDataFromUrl = async (url) => {
+    let responseData = null;
+    try {
+        let response = await fetch(url);
+        responseData = await response.json();
+    } catch( error ) {
+        console.error('OMNIVA UTILS:', error);
+    }
+    return responseData;
+};

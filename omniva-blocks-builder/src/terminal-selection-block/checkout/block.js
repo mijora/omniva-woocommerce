@@ -9,17 +9,21 @@ import { debounce } from 'lodash';
 /**
  * Internal dependencies
  */
-import { getDestinationCountry, getActiveShippingRates } from '../global/wc-cart';
+import { getDestination, getActiveShippingRates } from '../global/wc-cart';
 import { getOmnivaData, getDynamicOmnivaData, isOmnivaTerminalMethod } from '../global/omniva';
-import { getTerminalsByCountry, loadMap, removeMap } from '../global/terminals';
+import { getTerminalsByCountry, loadMap, removeMap, loadCustomSelect } from '../global/terminals';
 import { txt } from '../global/text';
-import { addTokenToValue, buildToken, isObjectEmpty, getObjectValue } from '../global/utils';
+import { addTokenToValue, isObjectEmpty} from '../global/utils';
 import { debug, enableStateDebug } from '../global/debug';
 
 export const Block = ({ checkoutExtensionData, extensions }) => {
     const terminalValidationErrorId = 'omnivalt_terminal';
     const { setExtensionData } = checkoutExtensionData;
-    const [country, setCountry] = useState('');
+    const [mapValues, setMapValues] = useState({
+        country: 'LT',
+        postcode: ''
+    });
+    const [destination, setDestination] = useState(null);
     const [activeRates, setActiveRates] = useState([]);
     const [omnivaData, setOmnivaData] = useState({});
     const [terminals, setTerminals] = useState([]);
@@ -35,19 +39,22 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         label: txt.select_terminal,
         error: txt.error_terminal,
     });
-    const [selectedOmnivaTerminal, setSelectedOmnivaTerminal,] = useState('');
+    const [selectedOmnivaTerminal, setSelectedOmnivaTerminal] = useState('');
     const [selectedRateId, setSelectedRateId] = useState('');
     const [containerParams, setContainerParams] = useState({
         provider: 'unknown',
-        type: 'unknown'
-    })
+        type: 'unknown',
+    });
+    const [containerErrorClass, setContainerErrorClass] = useState('');
     const elemTerminalSelectField = useRef(null);
     const elemMapContainer = useRef(null);
     const map = loadMap();
+    const customSelect = loadCustomSelect();
 
     enableStateDebug('Block show', showBlock);
     enableStateDebug('Terminals list', terminals);
-    enableStateDebug('Selected country', country);
+    enableStateDebug('Destination', destination);
+    enableStateDebug('Map values', mapValues);
     enableStateDebug('Selected terminal', selectedOmnivaTerminal);
     enableStateDebug('Selected rate ID', selectedRateId);
     enableStateDebug('Omniva dynamic data', omnivaData);
@@ -104,10 +111,26 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
 
     useEffect(() => {
         if ( showBlock.value ) {
-            setCountry(getDestinationCountry(shippingRates));
+            setDestination(getDestination(shippingRates));
         }
     }, [
         showBlock
+    ]);
+
+    useEffect(() => {
+        if ( ! destination || destination.country.trim() == "" ) {
+            setMapValues({
+                country: 'LT',
+                postcode: ''
+            });
+        } else {
+            setMapValues({
+                country: destination.country,
+                postcode: destination.postcode
+            });
+        }
+    }, [
+        destination
     ]);
 
     useEffect(() => {
@@ -119,22 +142,17 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             debug('Skipped retrieving dynamic Omniva data because the value of the selected rate ID is not received');
             return;
         }
-        if ( country == '' ) {
-            debug('Skipped retrieving dynamic Omniva data because the value of the country is empty');
-            return;
-        }
 
-        getDynamicOmnivaData(country, selectedRateId).then(response => {
+        getDynamicOmnivaData(mapValues.country, selectedRateId).then(response => {
             if ( response.data ) {
                 const data = response.data;
-                data.country = country;
                 setOmnivaData(data);
             } else {
                 debug('Failed to get dynamic Omniva data');
             }
         });
     }, [
-        country,
+        mapValues,
         selectedRateId
     ]);
 
@@ -149,7 +167,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         }
 
         const terminalsType = ('terminals_type' in omnivaData) ? omnivaData.terminals_type : 'omniva';
-        getTerminalsByCountry(country, terminalsType).then(response => {
+        getTerminalsByCountry(mapValues.country, terminalsType).then(response => {
             if ( response.data ) {
                 setTerminals(response.data);
             } else {
@@ -198,15 +216,21 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             });
         }
         setTerminalsOptions(preparedTerminalsOptions);
+    }, [
+        terminals
+    ]);
 
+    useEffect(() => {
         if ( elemMapContainer.current ) {
             if ( elemMapContainer.current.innerHTML !== "" ) {
-                debug('Removing previous map...');
+                debug('Removing previous custom field/map...');
                 removeMap(elemMapContainer.current);
             }
             let showMap = null;
+            let autoselect = true;
             if ( 'show_map' in getOmnivaData() ) {
                 showMap = getOmnivaData().show_map;
+                autoselect = getOmnivaData().autoselect;
                 setContainerParams({
                     provider: ('provider' in omnivaData) ? omnivaData.provider : 'unknown',
                     type: ('terminals_type' in omnivaData) ? omnivaData.terminals_type : 'unknown'
@@ -219,21 +243,34 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
                     map_container: elemMapContainer.current,
                     terminals_type: omnivaData.terminals_type,
                     provider: omnivaData.provider,
-                    country: country,
+                    country: mapValues.country,
                     map_icon: omnivaData.map_icon,
                     selected_terminal: selectedOmnivaTerminal
                 });
                 map.init(terminals);
+                map.set_search_value(mapValues.postcode);
             } else if ( showMap === false ) {
-console.log('Nerodo zemes'); //TODO: Padaryti custom select field
+                debug('Initializing terminal select field...');
+                customSelect.load_data({
+                    org_field: elemTerminalSelectField.current,
+                    custom_container: elemMapContainer.current,
+                    provider: omnivaData.provider,
+                    terminals_type: omnivaData.terminals_type,
+                    country: mapValues.country,
+                    selected_terminal: selectedOmnivaTerminal,
+                    autoselect_terminal: autoselect
+                });
+                customSelect.set_terminals(terminals);
+                customSelect.init();
+                customSelect.set_search_value(mapValues.postcode);
             } else {
                 debug('Failed to get map display param');
             }
         } else {
-            debug('Failed to get map container');
+            debug('Failed to get container for custom field/map');
         }
     }, [
-        terminals
+        terminalsOptions
     ]);
 
     /* Handle changing the select's value */
@@ -246,6 +283,7 @@ console.log('Nerodo zemes'); //TODO: Padaryti custom select field
 
         if ( selectedOmnivaTerminal !== '' ) {
             clearValidationError(terminalValidationErrorId);
+            setContainerErrorClass('');
             return;
         }
 
@@ -256,6 +294,7 @@ console.log('Nerodo zemes'); //TODO: Padaryti custom select field
                     hidden: false
                 }
             });
+            setContainerErrorClass('error');
         }
     }, [
         setExtensionData,
@@ -281,7 +320,7 @@ console.log('Nerodo zemes'); //TODO: Padaryti custom select field
     }
 
     return (
-        <div className={`omnivalt-terminal-select-container provider-${containerParams.provider} type-${containerParams.type}`}>
+        <div className={`omnivalt-terminal-select-container provider-${containerParams.provider} type-${containerParams.type} ${containerErrorClass}`}>
             <div id="omnivalt-terminal-container-org" className="omnivalt-org-select">
                 <SelectControl
                     id="omnivalt-terminal-select-field"
@@ -297,7 +336,7 @@ console.log('Nerodo zemes'); //TODO: Padaryti custom select field
                     </div>
                 )}
             </div>
-            <div id="omnivalt-terminal-container-map" className="omnivalt-map-select" ref={elemMapContainer}></div>
+            <div id="omnivalt-terminal-container-map" className="omnivalt-map-select" ref={elemMapContainer}><div class="omnivalt-loader"></div></div>
         </div>
     );
 };
