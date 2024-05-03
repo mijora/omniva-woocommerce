@@ -181,7 +181,7 @@ class OmnivaLt_Terminals
     }
     
     $map_script = "<script style='display:none;'>
-      var omnivalt_terminals = " . json_encode(self::get_terminals_for_map_new('', $country, $get_list)) . ";
+      var omnivalt_terminals = " . json_encode(self::get_terminals_for_map_new($country, $get_list)) . ";
     </script>";
     $map_script .= "<script style='display:none;'>
       var omnivalt_current_country = '" . $country . "';
@@ -213,7 +213,7 @@ class OmnivaLt_Terminals
     return $container;
   }
 
-  public static function get_terminals_for_map_new( $selected = '', $country = "LT", $get_list = 'terminal' )
+  public static function get_terminals_for_map_new( $country = "LT", $get_list = 'terminal' )
   {
     $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
     $terminals = self::read_terminals_file();

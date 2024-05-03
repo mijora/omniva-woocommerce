@@ -31,15 +31,19 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       foreach ( $this->omnivalt_configs['shipping_params'] as $ship_params ) {
         foreach ( $ship_params['shipping_sets'] as $country => $set ) {
           if ( $country === 'call' ) continue;
-          if ( ! in_array($country, $this->destinations_countries) ) {
-            $this->destinations_countries[] = $country;
+          if ( ! isset($this->destinations_countries[$country]) ) {
+            $country_name = $country;
+            if ( isset($this->omnivalt_configs['shipping_params'][$country]['title']) ) {
+              $country_name = $this->omnivalt_configs['shipping_params'][$country]['title'];
+            }
+            $this->destinations_countries[$country] = $country_name;
           }
         }
       }
 
       // Availability, Countries and other required Woocommerce functions
       $this->availability = 'including';
-      $this->countries = $this->destinations_countries;
+      $this->countries = array_keys($this->destinations_countries);
 
       $this->init();
 
@@ -259,7 +263,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'hr',
         'title' => __('Delivery countries and prices', 'omnivalt'),
       );
-      foreach ( $this->destinations_countries as $country_code ) {
+      foreach ( $this->destinations_countries as $country_code => $country_name ) {
         $fields['prices_'.$country_code] = array(
           'type' => 'prices_box',
           'lang' => $country_code,

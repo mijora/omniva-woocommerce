@@ -1,0 +1,295 @@
+:root {
+    --omnivalt-blocks-omniva-color-main: #f60;
+    --omnivalt-blocks-matkahuolto-color-main: #001e60;
+    --omnivalt-blocks-white-color: #fff;
+}
+
+/*** GLOBAL: Omniva ***/
+
+.omnivalt-loader {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--omnivalt-blocks-omniva-color-main);
+  position: relative;
+  margin: 15px auto;
+}
+
+.omnivalt-loader:before,
+.omnivalt-loader:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  inset: 0;
+  background: var(--omnivalt-blocks-omniva-color-main);
+  transform: rotate(0deg) translate(15px);
+  animation: omnivalt-rotate 1s ease infinite;
+}
+
+.omnivalt-loader:after {
+  animation-delay: 0.5s;
+}
+
+@keyframes omnivalt-rotate {
+  100% {transform: rotate(360deg) translate(15px)};
+}
+
+.wp-site-blocks .omnivalt-org-select select,
+.wp-site-blocks .omnivalt-org-select .components-input-control__container {
+    display: none !important;
+}
+
+/*** GLOBAL: Matkahuolto ***/
+.provider-matkahuolto .omnivalt-loader,
+.provider-matkahuolto .omnivalt-loader:before,
+.provider-matkahuolto .omnivalt-loader:after {
+    background: var(--omnivalt-blocks-matkahuolto-color-main);
+}
+
+/*** MAP: Omniva ***/
+
+.wp-site-blocks .omnivalt-map-select .tmjs-selected-terminal {
+    padding-bottom: 5px;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-open-modal-btn {
+    color: var(--omnivalt-blocks-white-color);
+    border: 1px solid var(--omnivalt-blocks-omniva-color-main);
+    background-color: var(--omnivalt-blocks-omniva-color-main);
+    padding: 7px 15px;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-open-modal-btn:hover,
+.wp-site-blocks .omnivalt-map-select .tmjs-open-modal-btn:focus {
+    color: var(--omnivalt-blocks-omniva-color-main);
+    background-color: var(--omnivalt-blocks-white-color);
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-terminal-sidebar h2 {
+    font-size: 28px;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-terminal-sidebar h3 {
+    font-size: 20px;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-terminal-sidebar a:hover {
+    color: var(--omnivalt-blocks-omniva-color-main);
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-close-modal-btn:hover:before,
+.wp-site-blocks .omnivalt-map-select .tmjs-close-modal-btn:hover:after {
+    background-color: var(--omnivalt-blocks-omniva-color-main);
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-search-btn {
+    background-color: var(--omnivalt-blocks-omniva-color-main);
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-active {
+    background-color: var(--omnivalt-blocks-omniva-color-main) !important;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-terminal-comment {
+    color: #fffc;
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn {
+    color: #000;
+    background-color: var(--omnivalt-blocks-white-color);
+    border: 1px solid var(--omnivalt-blocks-white-color);
+}
+
+.wp-site-blocks .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:hover,
+.wp-site-blocks .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:focus {
+    color: var(--omnivalt-blocks-white-color);
+    background-color: var(--omnivalt-blocks-omniva-color-main);
+}
+
+/*** MAP: Matkahuolto ***/
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-close-modal-btn:hover:before,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-close-modal-btn:hover:after,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-search-btn,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:hover,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:focus {
+    background-color: var(--omnivalt-blocks-matkahuolto-color-main);
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-active {
+    background-color: var(--omnivalt-blocks-matkahuolto-color-main) !important;
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:hover,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:focus {
+    background-color: var(--omnivalt-blocks-white-color);
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn {
+    border-color: var(--omnivalt-blocks-matkahuolto-color-main);
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:hover,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:focus,
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-terminal-sidebar a:hover {
+    color: var(--omnivalt-blocks-matkahuolto-color-main);
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:hover {
+    color: var(--omnivalt-blocks-white-color);
+}
+
+/*** SELECT FIELD: Omniva ***/
+
+.wp-site-blocks .omnivalt-terminals-list {
+    background-color: #fff;
+    position: relative;
+}
+
+.wp-site-blocks .omnivalt-terminals-list * {
+    box-sizing: border-box;
+}
+
+.wp-site-blocks .omnivalt-terminals-list .dropdown {
+    border: 1px solid #888;
+    border-radius: 2px;
+    word-wrap: normal;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 4px 7px;
+}
+
+.wp-site-blocks .omnivalt-terminals-list .dropdown:hover {
+    box-shadow: 0 0 0 1px #50575e;
+}
+
+.wp-site-blocks .omnivalt-terminals-list .dropdown:before {
+    position: absolute;
+    content: "";
+    right: 0px;
+    width: 20px;
+    height: 100%;
+    top: 0;
+    background-color: #fff;
+}
+
+.wp-site-blocks .omnivalt-terminals-list .dropdown:after {
+    position: absolute;
+    content: "";
+    border-color: #888 transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    height: 0;
+    right: 7px;
+    margin-left: -4px;
+    margin-top: -2px;
+    position: absolute;
+    top: 50%;
+    width: 0;
+}
+
+.wp-site-blocks .omnivalt-terminal-select-container.error .omnivalt-terminals-list .dropdown {
+    border-color: #cc1818;
+}
+
+.wp-site-blocks .omnivalt-terminal-select-container.error .omnivalt-terminals-list .dropdown:hover {
+    box-shadow: 0 0 0 1px #cc1818;
+}
+
+.wp-site-blocks .omnivalt-terminals-list .inner-container {
+    position: absolute;
+    background: #fff;
+    z-index: 100;
+    border: 1px solid #888;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    width: 100%;
+}
+
+.wp-site-blocks .omnivalt-terminals-list .search-input {
+    display: inline-block;
+    padding: 4px 10px;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 4px;
+    background-color: var(--omnivalt-blocks-omniva-color-main);
+    color: #ffffff;
+}
+
+.wp-site-blocks .omnivalt-terminals-list .search-msg {
+    font-size: 12px;
+    text-align: center;
+    color: #888;
+}
+
+.wp-site-blocks .omnivalt-terminals-list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 240px;
+    overflow: auto;
+}
+
+.wp-site-blocks .omnivalt-terminals-list ul li {
+    background: none;
+    border-radius: 0;
+    border: none;
+    padding: 3px 5px;
+    margin: 0;
+    cursor: pointer;
+    font-size: 13px;
+    padding-left: 10px;
+}
+
+.wp-site-blocks .omnivalt-terminals-list ul li.city {
+    cursor: default;
+    font-weight: bold;
+}
+
+.wp-site-blocks .omnivalt-terminals-list ul li:not(.city) {
+    padding-left: 25px;
+}
+
+.wp-site-blocks .omnivalt-terminals-list ul li.selected {
+    background-color: var(--omnivalt-blocks-omniva-color-main);
+    color: #fff;
+}
+
+.wp-site-blocks .omnivalt-terminals-list ul li:not(.city):hover,
+.wp-site-blocks .omnivalt-terminals-list ul li.selected:hover {
+    color: #fff;
+    background-color: #bbb;
+}
+
+.wp-site-blocks .omnivalt-terminals-list ul li:not(.city) strong {
+    font-style: italic;
+}
+
+.wp-site-blocks .omnivalt-terminals-list .show-more {
+    margin-bottom: 4px;
+}
+
+.wp-site-blocks .omnivalt-terminals-list .show-more a {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.wp-site-blocks .omnivalt-terminals-list .show-more a:hover {
+    color: var(--omnivalt-blocks-omniva-color-main);
+}
+
+/* SELECT FIELD: Matkahuolto */
+.wp-site-blocks .provider-matkahuolto .omnivalt-terminals-list .search-input,
+.wp-site-blocks .provider-matkahuolto .omnivalt-terminals-list ul li.selected {
+    background-color: var(--omnivalt-blocks-matkahuolto-color-main);
+}
+
+.wp-site-blocks .provider-matkahuolto .omnivalt-terminals-list .show-more a:hover {
+    color: var(--omnivalt-blocks-matkahuolto-color-main);
+}
