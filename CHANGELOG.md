@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- disabled phone format validation, when selected shipping method is not Omniva
+
 ### Improved
 - created a parcel terminal selection on the block-based Checkout page
 

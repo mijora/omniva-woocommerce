@@ -119,6 +119,20 @@ class OmnivaLt_Frontend
       return $validation_error;
     }
 
+    if ( empty($_POST['shipping_method']) || ! is_array($_POST['shipping_method']) ) {
+      return $validation_error;
+    }
+    
+    $is_omniva_method = false;
+    foreach ( $_POST['shipping_method'] as $method ) {
+      if ( OmnivaLt_Helper::is_omniva_method($method) ) {
+        $is_omniva_method = true;
+      }
+    }
+    if ( ! $is_omniva_method ) {
+      return $validation_error;
+    }
+
     $settings = OmnivaLt_Core::get_settings();
     if ( ! isset($settings['verify_phone']) || $settings['verify_phone'] !== 'yes' ) {
       return $validation_error;
