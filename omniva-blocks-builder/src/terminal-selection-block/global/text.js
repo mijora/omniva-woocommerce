@@ -3,7 +3,9 @@
  */
 import { __ } from '@wordpress/i18n';
 
-export const txt = {
+export const txt = wcSettings["omnivalt-blocks_data"].txt; //Temporary solution while not clear how use @wordpress/i18n
+
+export const txt_json = {
     block_options: __('Block options', 'omnivalt'),
     title_terminal: __('Parcel terminal', 'omnivalt'),
     select_terminal: __('Select parcel terminal', 'omnivalt'),
