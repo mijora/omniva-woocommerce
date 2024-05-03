@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Improved
+- created a parcel terminal selection on the block-based Checkout page
+
 ## [1.15.8]
 ### Fixed
 - fixed map load on Cart page when the updated_wc_div event fires
