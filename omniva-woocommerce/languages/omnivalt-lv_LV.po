@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-04 08:59+0000\n"
-"PO-Revision-Date: 2024-05-03 08:35+0000\n"
+"PO-Revision-Date: 2024-05-07 08:42+0000\n"
 "Last-Translator: \n"
 "Language-Team: Latvian (Latvia)\n"
 "Language: lv_LV\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 74461\n"
 "X-Loco-Api-Version: 1.0.24 20191119-1\n"
-"X-Loco-Version: 2.6.4; wp-6.1.1"
+"X-Loco-Version: 2.6.7; wp-6.5.2"
 
 #: manifest_page.php:346
 msgid "2 people are needed to pick up the shipments"
@@ -209,7 +209,7 @@ msgstr "Svītrkods"
 msgid "Block options"
 msgstr ""
 
-#: core/class-shipping-method.php:707
+#: core/class-shipping-method.php:714
 msgid "Box size"
 msgstr "Iepakojuma izmērs"
 
@@ -243,7 +243,7 @@ msgctxt "button"
 msgid "Regenerate"
 msgstr "Pārģenerēt"
 
-#: core/class-shipping-method.php:766
+#: core/class-shipping-method.php:773
 msgid "By box size"
 msgstr "Atbilstoši iepakojuma izmēram"
 
@@ -277,11 +277,11 @@ msgid ""
 "permissions."
 msgstr ""
 
-#: core/class-shipping-method.php:1350
+#: core/class-shipping-method.php:1357
 msgid "Carrier"
 msgstr "Pārvadātājs"
 
-#: core/class-shipping-method.php:704
+#: core/class-shipping-method.php:711
 msgid "Cart amount"
 msgstr "Groza kopsumma"
 
@@ -377,7 +377,7 @@ msgstr ""
 msgid "Date"
 msgstr "Datums"
 
-#: core/class-shipping-method.php:1264
+#: core/class-shipping-method.php:1271
 msgid "Date unknown"
 msgstr "Datums nav zināms"
 
@@ -385,7 +385,7 @@ msgstr "Datums nav zināms"
 msgid "Debug"
 msgstr "Kļūdu pārbaudes režīms"
 
-#: core/class-shipping-method.php:1248
+#: core/class-shipping-method.php:1255
 msgid "Debug files still not created"
 msgstr "Atkļūdošanas faili vēl nav izveidoti"
 
@@ -410,7 +410,7 @@ msgstr "Piegādes valstis un cenas"
 msgid "Delivery to private customer"
 msgstr "Piegāde privātam klientam"
 
-#: core/class-shipping-method.php:727
+#: core/class-shipping-method.php:734
 msgid "Description"
 msgstr "Apraksts"
 
@@ -432,6 +432,11 @@ msgid ""
 "some action"
 msgstr ""
 
+#: core/class-shipping-method.php:494
+msgid ""
+"Display Javascript debug information in the console of the Checkout page"
+msgstr ""
+
 #: core/class-core.php:274 core/wc-blocks/class-blocks-integration.php:107
 msgid "Distance calculated from this point"
 msgstr ""
@@ -444,11 +449,11 @@ msgstr "Nesūtīt"
 msgid "Document return"
 msgstr "Dokumentu atgriešana"
 
-#: core/class-shipping-method.php:120 core/class-shipping-method.php:687
+#: core/class-shipping-method.php:120 core/class-shipping-method.php:694
 msgid "Enable"
 msgstr "Iespējot"
 
-#: core/class-shipping-method.php:658
+#: core/class-shipping-method.php:665
 #, php-format
 msgid "Enable %s"
 msgstr "Iespējot %s"
@@ -549,7 +554,7 @@ msgstr ""
 msgid "Failed to register shipments"
 msgstr ""
 
-#: core/class-shipping-method.php:1258
+#: core/class-shipping-method.php:1265
 msgid "File is empty"
 msgstr "Fails ir tukšs"
 
@@ -561,11 +566,11 @@ msgstr "Filtrēt"
 msgid "Fragile"
 msgstr "Trausls"
 
-#: core/class-shipping-method.php:713
+#: core/class-shipping-method.php:720
 msgid "Free from"
 msgstr "Bezmaksas, sākot ar"
 
-#: core/class-shipping-method.php:716
+#: core/class-shipping-method.php:723
 msgid "Free with coupon"
 msgstr "Bezmaksas ar kuponu"
 
@@ -587,7 +592,7 @@ msgstr "Ģenerēt sūtījumu saraksts"
 msgid "Geolocation is not supported"
 msgstr ""
 
-#: core/class-shipping-method.php:1005 core/class-order.php:569
+#: core/class-shipping-method.php:1012 core/class-order.php:569
 msgid "Height"
 msgstr "Augstums"
 
@@ -611,7 +616,7 @@ msgstr "https://www.omniva.lv/"
 msgid "ID"
 msgstr "ID"
 
-#: core/class-shipping-method.php:863
+#: core/class-shipping-method.php:870
 msgid ""
 "If at least one item in the cart does not have the specified size, then this "
 "shipping method will not be displayed"
@@ -639,7 +644,7 @@ msgstr "Svarīgs!"
 msgid "Insurance"
 msgstr "Apdrošināšana"
 
-#: core/class-frontend.php:136
+#: core/class-frontend.php:150
 #, php-format
 msgid "Invalid %s format"
 msgstr ""
@@ -672,7 +677,7 @@ msgstr ""
 "Atstājiet tukšu, lai nemainītu pozīciju. Lielāks skaitlis nozīmē zemāku "
 "pozīciju (1 - saraksta augšdaļa)."
 
-#: core/class-shipping-method.php:995 core/class-order.php:567
+#: core/class-shipping-method.php:1002 core/class-order.php:567
 msgid "Length"
 msgstr "Garums"
 
@@ -688,7 +693,7 @@ msgstr "Atrašanās vieta nav atrasta!"
 msgid "Log files are stored for %d days."
 msgstr "Žurnāla faili tiek glabāti %d dienas."
 
-#: core/class-shipping-method.php:495
+#: core/class-shipping-method.php:502
 msgid "Logged communications with API"
 msgstr ""
 
@@ -697,7 +702,7 @@ msgstr ""
 msgid "Logistics center"
 msgstr "Loģistikas centrs"
 
-#: core/class-shipping-method.php:494
+#: core/class-shipping-method.php:501
 msgid "Logs list"
 msgstr ""
 
@@ -767,7 +772,7 @@ msgstr "Karti"
 msgid "Matkahuolto"
 msgstr ""
 
-#: core/class-shipping-method.php:852
+#: core/class-shipping-method.php:859
 #, php-format
 msgid "Max %s cm"
 msgstr "Maks. %s cm"
@@ -819,8 +824,8 @@ msgstr "Nav atbilstošu pasūtījumu, ko pievienot manifestam"
 msgid "Not Omniva"
 msgstr "Ne Omniva"
 
-#: core/class-shipping-method.php:376 core/class-shipping-method.php:863
-#: core/class-shipping-method.php:938
+#: core/class-shipping-method.php:376 core/class-shipping-method.php:870
+#: core/class-shipping-method.php:945
 msgid "NOTE"
 msgstr "PIEZĪME"
 
@@ -1056,7 +1061,7 @@ msgstr ""
 "Provizoriskais groza kopējais izmērs tiek aprēķināts, atbilstoši preču "
 "iestatījumos norādītajiem izmēriem."
 
-#: core/class-admin-html.php:44 core/class-shipping-method.php:698
+#: core/class-admin-html.php:44 core/class-shipping-method.php:705
 msgid "Price"
 msgstr "Cena"
 
@@ -1068,7 +1073,7 @@ msgstr "Cenas veids"
 msgid "Prices"
 msgstr "Cenas"
 
-#: core/class-shipping-method.php:609
+#: core/class-shipping-method.php:616
 msgid "prices"
 msgstr "cenas"
 
@@ -1092,7 +1097,7 @@ msgstr ""
 msgid "Registered orders"
 msgstr ""
 
-#: core/class-shipping-method.php:1269
+#: core/class-shipping-method.php:1276
 msgid "Request"
 msgstr "Pieprasīt"
 
@@ -1110,7 +1115,7 @@ msgstr ""
 msgid "Reset"
 msgstr "Atiestatīt"
 
-#: core/class-shipping-method.php:1270
+#: core/class-shipping-method.php:1277
 msgid "Response"
 msgstr "Atbilde"
 
@@ -1255,7 +1260,7 @@ msgstr ""
 msgid "Shipments weight exceeds 30 kg"
 msgstr ""
 
-#: core/class-shipping-method.php:684
+#: core/class-shipping-method.php:691
 msgid "Shipping"
 msgstr "Piegāde"
 
@@ -1321,6 +1326,10 @@ msgstr "Rādīt svītrkoda attēlu manifestā."
 msgid "Show barcode in manifest"
 msgstr "Rādīt svītrkodu manifestā"
 
+#: core/class-shipping-method.php:492
+msgid "Show debug data in Checkout"
+msgstr ""
+
 #: core/class-shipping-method.php:485
 msgid "Show debug data in WP notice"
 msgstr ""
@@ -1374,8 +1383,9 @@ msgstr "Izmērs"
 
 #: core/class-order.php:186
 #, php-format
-msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
-msgstr "Atvainojiet,% d kg pārsniedz maksimālo svaru% d kg% s"
+#| msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
+msgid "Sorry, %1$d kg exceeds the maximum weight of %2$d kg for %3$s"
+msgstr "Atvainojiet, %1$d kg pārsniedz maksimālo svaru %2$d kg %3$s"
 
 #: omniva-woocommerce.php:221 core/class-method-postspecific.php:8
 msgid "Specific post office"
@@ -1410,7 +1420,7 @@ msgid ""
 "The value of this field is used only if the mobile number is not entered."
 msgstr ""
 
-#: core/class-shipping-method.php:938
+#: core/class-shipping-method.php:945
 msgid ""
 "The website has too many coupons, so only the first %d coupons are displayed"
 msgstr ""
@@ -1482,16 +1492,16 @@ msgstr ""
 "nav iekļautas atjauninājumā"
 
 #: manifest_page.php:222 core/class-shipping-method-helper.php:80
-#: core/class-shipping-method.php:701
+#: core/class-shipping-method.php:708
 msgid "Weight"
 msgstr "Svars"
 
-#: core/class-frontend.php:136
+#: core/class-frontend.php:150
 msgctxt "whose"
 msgid "phone number"
 msgstr ""
 
-#: core/class-shipping-method.php:1000 core/class-order.php:568
+#: core/class-shipping-method.php:1007 core/class-order.php:568
 msgid "Width"
 msgstr "Platums"
 

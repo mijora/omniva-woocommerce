@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Omniva Shipping\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-29 09:53+0000\n"
-"PO-Revision-Date: 2024-05-03 08:36+0000\n"
+"PO-Revision-Date: 2024-05-07 08:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: Estonian\n"
 "Language: et\n"
@@ -200,7 +200,7 @@ msgstr "Vöötkood"
 msgid "Block options"
 msgstr ""
 
-#: core/class-shipping-method.php:707
+#: core/class-shipping-method.php:714
 msgid "Box size"
 msgstr "Kasti suurus"
 
@@ -234,7 +234,7 @@ msgctxt "button"
 msgid "Regenerate"
 msgstr "Loo uuesti"
 
-#: core/class-shipping-method.php:766
+#: core/class-shipping-method.php:773
 msgid "By box size"
 msgstr "Kasti suuruse järgi"
 
@@ -268,11 +268,11 @@ msgid ""
 "permissions."
 msgstr ""
 
-#: core/class-shipping-method.php:1350
+#: core/class-shipping-method.php:1357
 msgid "Carrier"
 msgstr ""
 
-#: core/class-shipping-method.php:704
+#: core/class-shipping-method.php:711
 msgid "Cart amount"
 msgstr "Ostukorvi summa"
 
@@ -367,7 +367,7 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: core/class-shipping-method.php:1264
+#: core/class-shipping-method.php:1271
 msgid "Date unknown"
 msgstr "Kuupäev teadmata"
 
@@ -375,7 +375,7 @@ msgstr "Kuupäev teadmata"
 msgid "Debug"
 msgstr ""
 
-#: core/class-shipping-method.php:1248
+#: core/class-shipping-method.php:1255
 msgid "Debug files still not created"
 msgstr "Debug faile pole veel loodud"
 
@@ -400,7 +400,7 @@ msgstr "Kättetoimetamise riigid ja hinnad"
 msgid "Delivery to private customer"
 msgstr "Kättetoimetamine erakliendile"
 
-#: core/class-shipping-method.php:727
+#: core/class-shipping-method.php:734
 msgid "Description"
 msgstr "Kirjeldus"
 
@@ -422,6 +422,11 @@ msgid ""
 "some action"
 msgstr ""
 
+#: core/class-shipping-method.php:494
+msgid ""
+"Display Javascript debug information in the console of the Checkout page"
+msgstr ""
+
 #: core/class-core.php:274 core/wc-blocks/class-blocks-integration.php:107
 msgid "Distance calculated from this point"
 msgstr ""
@@ -434,11 +439,11 @@ msgstr ""
 msgid "Document return"
 msgstr "Dokumenditagastus"
 
-#: core/class-shipping-method.php:120 core/class-shipping-method.php:687
+#: core/class-shipping-method.php:120 core/class-shipping-method.php:694
 msgid "Enable"
 msgstr "Luba"
 
-#: core/class-shipping-method.php:658
+#: core/class-shipping-method.php:665
 #, php-format
 msgid "Enable %s"
 msgstr "Luba %s"
@@ -539,7 +544,7 @@ msgstr ""
 msgid "Failed to register shipments"
 msgstr ""
 
-#: core/class-shipping-method.php:1258
+#: core/class-shipping-method.php:1265
 msgid "File is empty"
 msgstr "Tühi fail"
 
@@ -551,11 +556,11 @@ msgstr "Filtreeri"
 msgid "Fragile"
 msgstr "Ettevaatlik käsitlemine"
 
-#: core/class-shipping-method.php:713
+#: core/class-shipping-method.php:720
 msgid "Free from"
 msgstr "Tasuta alates"
 
-#: core/class-shipping-method.php:716
+#: core/class-shipping-method.php:723
 msgid "Free with coupon"
 msgstr "Kupongiga tasuta"
 
@@ -577,7 +582,7 @@ msgstr "Loo saateleht"
 msgid "Geolocation is not supported"
 msgstr ""
 
-#: core/class-shipping-method.php:1005 core/class-order.php:569
+#: core/class-shipping-method.php:1012 core/class-order.php:569
 msgid "Height"
 msgstr "Kõrgus"
 
@@ -601,7 +606,7 @@ msgstr "https://www.omniva.ee/"
 msgid "ID"
 msgstr "ID"
 
-#: core/class-shipping-method.php:863
+#: core/class-shipping-method.php:870
 msgid ""
 "If at least one item in the cart does not have the specified size, then this "
 "shipping method will not be displayed"
@@ -630,7 +635,7 @@ msgstr "Tähtis!"
 msgid "Insurance"
 msgstr "Kindlustus"
 
-#: core/class-frontend.php:136
+#: core/class-frontend.php:150
 #, php-format
 msgid "Invalid %s format"
 msgstr ""
@@ -661,7 +666,7 @@ msgid ""
 "(1 - top of the list)."
 msgstr ""
 
-#: core/class-shipping-method.php:995 core/class-order.php:567
+#: core/class-shipping-method.php:1002 core/class-order.php:567
 msgid "Length"
 msgstr "Pikkus"
 
@@ -679,7 +684,7 @@ msgstr "Kohta ei leitud!"
 msgid "Log files are stored for %d days."
 msgstr "Logifaile säilitatakse %d päeva."
 
-#: core/class-shipping-method.php:495
+#: core/class-shipping-method.php:502
 msgid "Logged communications with API"
 msgstr ""
 
@@ -688,7 +693,7 @@ msgstr ""
 msgid "Logistics center"
 msgstr "Logistikakeskus"
 
-#: core/class-shipping-method.php:494
+#: core/class-shipping-method.php:501
 msgid "Logs list"
 msgstr ""
 
@@ -758,7 +763,7 @@ msgstr "Kaart"
 msgid "Matkahuolto"
 msgstr ""
 
-#: core/class-shipping-method.php:852
+#: core/class-shipping-method.php:859
 #, php-format
 msgid "Max %s cm"
 msgstr "Maksimaalselt %s cm"
@@ -808,8 +813,8 @@ msgstr "Saatelehele lisatavad tellimused puuduvad"
 msgid "Not Omniva"
 msgstr ""
 
-#: core/class-shipping-method.php:376 core/class-shipping-method.php:863
-#: core/class-shipping-method.php:938
+#: core/class-shipping-method.php:376 core/class-shipping-method.php:870
+#: core/class-shipping-method.php:945
 msgid "NOTE"
 msgstr "MÄRKUS"
 
@@ -1045,7 +1050,7 @@ msgstr ""
 "Esialgne ostukorvi suurus arvestatakse kõikide toodete mahtude alusel, "
 "kasutades selleks toodete seadetes märgitud mõõtmeid."
 
-#: core/class-admin-html.php:44 core/class-shipping-method.php:698
+#: core/class-admin-html.php:44 core/class-shipping-method.php:705
 msgid "Price"
 msgstr "Hind"
 
@@ -1057,7 +1062,7 @@ msgstr "Hinnatüüp"
 msgid "Prices"
 msgstr "Hinnad"
 
-#: core/class-shipping-method.php:609
+#: core/class-shipping-method.php:616
 msgid "prices"
 msgstr "hinnad"
 
@@ -1081,7 +1086,7 @@ msgstr ""
 msgid "Registered orders"
 msgstr ""
 
-#: core/class-shipping-method.php:1269
+#: core/class-shipping-method.php:1276
 msgid "Request"
 msgstr ""
 
@@ -1098,7 +1103,7 @@ msgstr ""
 msgid "Reset"
 msgstr "Lähtesta"
 
-#: core/class-shipping-method.php:1270
+#: core/class-shipping-method.php:1277
 msgid "Response"
 msgstr ""
 
@@ -1242,7 +1247,7 @@ msgstr ""
 msgid "Shipments weight exceeds 30 kg"
 msgstr ""
 
-#: core/class-shipping-method.php:684
+#: core/class-shipping-method.php:691
 msgid "Shipping"
 msgstr "Vedu"
 
@@ -1310,6 +1315,10 @@ msgstr "Näita saatelehel vöötkoodi kujutist"
 msgid "Show barcode in manifest"
 msgstr "Näita saatelehel vöötkoodi"
 
+#: core/class-shipping-method.php:492
+msgid "Show debug data in Checkout"
+msgstr ""
+
 #: core/class-shipping-method.php:485
 msgid "Show debug data in WP notice"
 msgstr ""
@@ -1361,9 +1370,11 @@ msgstr "Suurus"
 
 #: core/class-order.php:186
 #, php-format
-msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
+#| msgid "Sorry, %d kg exceeds the maximum weight of %d kg for %s"
+msgid "Sorry, %1$d kg exceeds the maximum weight of %2$d kg for %3$s"
 msgstr ""
-"Vabandame, kuid %d kg ületab %s jaoks lubatud maksimaalse kaalu, mis on %d kg"
+"Vabandame, kuid %1$d kg ületab %3$s jaoks lubatud maksimaalse kaalu, mis on "
+"%2$d kg"
 
 #: omniva-woocommerce.php:221 core/class-method-postspecific.php:8
 msgid "Specific post office"
@@ -1398,7 +1409,7 @@ msgid ""
 "The value of this field is used only if the mobile number is not entered."
 msgstr ""
 
-#: core/class-shipping-method.php:938
+#: core/class-shipping-method.php:945
 msgid ""
 "The website has too many coupons, so only the first %d coupons are displayed"
 msgstr ""
@@ -1469,16 +1480,16 @@ msgid ""
 msgstr ""
 
 #: manifest_page.php:222 core/class-shipping-method-helper.php:80
-#: core/class-shipping-method.php:701
+#: core/class-shipping-method.php:708
 msgid "Weight"
 msgstr "Kaal"
 
-#: core/class-frontend.php:136
+#: core/class-frontend.php:150
 msgctxt "whose"
 msgid "phone number"
 msgstr ""
 
-#: core/class-shipping-method.php:1000 core/class-order.php:568
+#: core/class-shipping-method.php:1007 core/class-order.php:568
 msgid "Width"
 msgstr "Laius"
 
