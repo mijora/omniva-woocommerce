@@ -3,7 +3,7 @@ use \Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
 
 class Omnivalt_Blocks_Integration implements IntegrationInterface
 {
-    private $version = '0.0.1';
+    private $version = '1.0.0';
 
     private function get_scripts_dir()
     {
@@ -64,7 +64,7 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         $show_map = (isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == 'yes') ? true : ((! isset($omniva_settings['show_map'])) ? true : false);
         $autoselect = (isset($omniva_settings['auto_select']) && $omniva_settings['auto_select'] == 'yes') ? true : false;
         if ( ! isset($omniva_settings['auto_select']) ) $autoselect = true; //Enable by default
-        $debug_mode = (isset($omniva_settings['debug_mode']) && $omniva_settings['debug_mode'] == 'yes') ? true : false;
+        $debug_mode = (isset($omniva_settings['debug_front_js']) && $omniva_settings['debug_front_js'] == 'yes') ? true : false;
         
         return array(
             'ajax_url' => admin_url('admin-ajax.php'),
