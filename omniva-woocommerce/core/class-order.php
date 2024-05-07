@@ -183,7 +183,7 @@ class OmnivaLt_Order
 
         $weight = wc_get_weight($weight, 'kg');
         if ( $weight > $weightLimit ) {
-          $message = sprintf(__('Sorry, %d kg exceeds the maximum weight of %d kg for %s', 'omnivalt'), $weight, $weightLimit, __('Omniva shipping', 'omnivalt'));
+          $message = sprintf(__('Sorry, %1$d kg exceeds the maximum weight of %2$d kg for %3$s', 'omnivalt'), $weight, $weightLimit, __('Omniva shipping', 'omnivalt'));
           $messageType = "error";
           if ( ! wc_has_notice($message, $messageType) ) {
             wc_add_notice($message, $messageType);
