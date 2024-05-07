@@ -488,6 +488,13 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'default' => '',
         'class' => 'omniva_debug'
       );
+      $fields['debug_front_js'] = array(
+        'title' => __('Show debug data in Checkout', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('Display Javascript debug information in the console of the Checkout page', 'omnivalt'),
+        'default' => '',
+        'class' => 'omniva_debug'
+      );
       $fields['debugview_request'] = array(
         'type' => 'debug_window',
         'files' => OmnivaLt_Debug::get_all_files(),

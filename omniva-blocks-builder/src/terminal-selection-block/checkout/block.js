@@ -275,19 +275,24 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
 
     /* Handle changing the select's value */
     useEffect(() => {
+        if ( validationError ) {
+            debug('Clearing terminal validation error...');
+            clearValidationError(terminalValidationErrorId);
+            setContainerErrorClass('');
+        }
+
+        if ( ! isOmnivaTerminalMethod(selectedRateId) ) {
+            return;
+        }
+
         setExtensionData(
             'omnivalt',
             'selected_terminal',
             selectedOmnivaTerminal
         );
 
-        if ( selectedOmnivaTerminal !== '' ) {
-            clearValidationError(terminalValidationErrorId);
-            setContainerErrorClass('');
-            return;
-        }
-
         if ( selectedOmnivaTerminal === '' ) {
+            debug('Terminal not selected. Adding terminal validation error...');
             setValidationErrors({
                 [terminalValidationErrorId]: {
                     message: blockText.error,
@@ -299,9 +304,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     }, [
         setExtensionData,
         selectedOmnivaTerminal,
-        setValidationErrors,
-        clearValidationError,
-        blockText
+        selectedRateId
     ]);
 
     useEffect(() => {
