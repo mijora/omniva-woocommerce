@@ -6,6 +6,7 @@
 
 ### Improved
 - created a parcel terminal selection on the block-based Checkout page
+- added translations of the plugin into Latvian and Estonian languages
 
 ## [1.15.8]
 ### Fixed
