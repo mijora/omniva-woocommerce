@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.16.0]
 ### Fixed
 - disabled phone format validation, when selected shipping method is not Omniva
 
