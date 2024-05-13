@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.16.0]
+### Fixed
+- disabled phone format validation, when selected shipping method is not Omniva
+
+### Improved
+- created a parcel terminal selection on the block-based Checkout page
+- added translations of the plugin into Latvian and Estonian languages
+
 ## [1.15.8]
 ### Fixed
 - fixed map load on Cart page when the updated_wc_div event fires
