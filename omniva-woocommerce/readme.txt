@@ -14,6 +14,11 @@ omnivalt_orders_list_per_page - args: $per_page - allows to change the number of
 
 == Changelog ==
 
+= 1.16.0 =
+- disabled phone format validation, when selected shipping method is not Omniva
+- created a parcel terminal selection on the block-based Checkout page
+- added translations of the plugin into Latvian and Estonian languages
+
 = 1.15.8 =
 - fixed map load on Cart page when the updated_wc_div event fires
 - fixed to check if the cart is not empty before creating shipping methods
