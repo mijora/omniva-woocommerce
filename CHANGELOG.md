@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed terminal autoselect on old Checkout page
+
 ## [1.16.0]
 ### Fixed
 - disabled phone format validation, when selected shipping method is not Omniva
