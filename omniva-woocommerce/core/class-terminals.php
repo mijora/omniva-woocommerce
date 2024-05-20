@@ -194,6 +194,9 @@ class OmnivaLt_Terminals
         show_map: " . (($show_map) ? 'true' : 'false') . ",
       };
       jQuery('document').ready(function(){
+        jQuery(document).on('updated_checkout updated_shipping_method', function() {
+            omnivalt_init_map();
+        });
         omnivalt_init_map();
       });
       </script>";
