@@ -51,3 +51,12 @@ export const getJsonDataFromUrl = async (url) => {
     }
     return responseData;
 };
+
+export const findArrayElemByObjProp = (elemsArray, prop, value) => {
+    for ( let i = 0; i < elemsArray.length; i++ ) {
+        if ( elemsArray[i][prop] === value ) {
+            return elemsArray[i];
+        }
+    }
+    return null;
+};

@@ -29,6 +29,9 @@ export const loadMap = () => {
         elements: {},
         translations: {},
         params: {},
+        variables: {
+            allow_close_modal: true
+        },
 
         load_data: function ( params ) {
             this.elements = {
@@ -39,6 +42,7 @@ export const loadMap = () => {
                 provider: this.set_param(params, 'provider', 'omniva'),
                 terminals_type: this.set_param(params, 'terminals_type', 'terminal'),
                 selected_terminal: this.set_param(params, 'selected_terminal', ''),
+                autoselect: this.set_param(params, 'autoselect', true),
                 icons_url: this.set_param(params, 'icons_url', `${getOmnivaData().plugin_url}assets/img/terminal-mapping/`),
                 country: this.set_param(params, 'country', 'LT'),
                 //show_map: getOmnivaData().show_map,
@@ -116,21 +120,40 @@ export const loadMap = () => {
                 }
             });
 
+            this.lib.sub('search-result', function(data) {
+                thisMap.activate_autoselect();
+            });
+
             this.lib.sub("terminal-selected", function( data ) {
                 markSelectControlValue(thisMap.elements.org_field, data.id);
                 thisMap.lib.dom.setActiveTerminal(data.id);
-                thisMap.lib.publish("close-map-modal");
+                if ( thisMap.variables.allow_close_modal ) {
+                    thisMap.lib.publish("close-map-modal");
+                }
+                thisMap.variables.allow_close_modal = true;
             });
         },
 
         set_search_value: function( value ) {
             value = value.trim();
-            if ( value == '' ) {
+            if ( value == '' || ! this.lib.map ) {
                 return;
             }
 
             this.lib.dom.searchNearest(value);
             this.lib.dom.UI.modal.querySelector('.tmjs-search-input').value = value;
+        },
+
+        activate_autoselect: function() {
+            if ( ! this.params.autoselect || this.params.selected_terminal != '' || ! this.lib ) {
+                return;
+            }
+
+            if ( 'map' in this.lib && this.lib.map && 'locations' in this.lib.map && this.lib.map.locations.length ) {
+                this.variables.allow_close_modal = false;
+                this.lib.dom.setActiveTerminal(this.lib.map.locations[0].id);
+                this.lib.publish('terminal-selected', this.lib.map.locations[0]);
+            }
         },
 
         error: function( error_text ) {

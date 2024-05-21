@@ -13,7 +13,7 @@ import { getDestination, getActiveShippingRates } from '../global/wc-cart';
 import { getOmnivaData, getDynamicOmnivaData, isOmnivaTerminalMethod } from '../global/omniva';
 import { getTerminalsByCountry, loadMap, removeMap, loadCustomSelect } from '../global/terminals';
 import { txt } from '../global/text';
-import { addTokenToValue, isObjectEmpty} from '../global/utils';
+import { addTokenToValue, isObjectEmpty, findArrayElemByObjProp} from '../global/utils';
 import { debug, enableStateDebug } from '../global/debug';
 
 export const Block = ({ checkoutExtensionData, extensions }) => {
@@ -202,6 +202,14 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             return;
         }
 
+        if ( selectedOmnivaTerminal !== '' ) {
+            debug('Checking if the selected terminal is in the terminals list...');
+            if ( ! findArrayElemByObjProp(terminals, 'id', selectedOmnivaTerminal) ) {
+                debug('The specified terminal was not found in the list of terminals');
+                setSelectedOmnivaTerminal('');
+            }
+        }
+
         debug('Updating terminal selection options...');
         const preparedTerminalsOptions = [
             {
@@ -236,6 +244,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
                     type: ('terminals_type' in omnivaData) ? omnivaData.terminals_type : 'unknown'
                 });
             }
+
             if ( showMap === true ) {
                 debug('Initializing TMJS map...');
                 map.load_data({
@@ -245,10 +254,12 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
                     provider: omnivaData.provider,
                     country: mapValues.country,
                     map_icon: omnivaData.map_icon,
-                    selected_terminal: selectedOmnivaTerminal
+                    selected_terminal: selectedOmnivaTerminal,
+                    autoselect: autoselect
                 });
                 map.init(terminals);
                 map.set_search_value(mapValues.postcode);
+                map.activate_autoselect();
             } else if ( showMap === false ) {
                 debug('Initializing terminal select field...');
                 customSelect.load_data({

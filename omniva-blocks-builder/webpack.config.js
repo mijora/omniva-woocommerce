@@ -18,6 +18,9 @@ module.exports = {
         'terminal-selection-block/cart/index': path.resolve(process.cwd(), 'src', 'terminal-selection-block', 'cart', 'index.js'),
         'terminal-selection-block/cart/frontend': path.resolve(process.cwd(), 'src', 'terminal-selection-block', 'cart', 'frontend.js'),
     },
+    output: {
+        path: path.resolve(process.cwd(), '../omniva-woocommerce/assets/blocks'),
+    },
     module: {
         ...defaultConfig.module,
         rules: [
