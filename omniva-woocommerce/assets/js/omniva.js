@@ -18,6 +18,10 @@ function omnivalt_init_map() {
         icons_URL: '',
         translations: {},
         params: {},
+        variables: {
+            selected_terminal_id: '',
+            allow_close_modal: true
+        },
 
         load_data: function () {
             this.field = document.getElementById("omnivalt-terminal-selected");
@@ -39,7 +43,8 @@ function omnivalt_init_map() {
             };
             this.params = {
                 country: omnivalt_current_country,
-                show_map: omnivalt_settings.show_map
+                show_map: omnivalt_settings.show_map,
+                auto_select: omnivalt_settings.auto_select
             };
         },
         
@@ -71,11 +76,19 @@ function omnivalt_init_map() {
                 }
             });
 
+            this.lib.sub('search-result', function(data) {
+                omnivaltMap.activate_autoselect();
+            });
+
             this.lib.sub("terminal-selected", function(data) {
                 omnivaltMap.load_data();
                 omnivaltMap.field.value = data.id;
                 omnivaltMap.lib.dom.setActiveTerminal(data.id);
-                omnivaltMap.lib.publish("close-map-modal");
+                omnivaltMap.variables.selected_terminal_id = data.id;
+                if ( omnivaltMap.variables.allow_close_modal ) {
+                    omnivaltMap.lib.publish("close-map-modal");
+                }
+                omnivaltMap.variables.allow_close_modal = true;
                 console.log("OMNIVA: Saving selected terminal...");
                 omniva_setCookie('omniva_terminal', data.id, 30);
                 console.log("OMNIVA: Terminal changed to " + data.id);
@@ -105,6 +118,21 @@ function omnivalt_init_map() {
 
             this.lib.dom.searchNearest(selected_postcode);
             this.lib.dom.UI.modal.querySelector('.tmjs-search-input').value = selected_postcode;
+        },
+
+        activate_autoselect: function() {
+            if ( this.params.auto_select != 'yes' ) {
+                return;
+            }
+            if ( this.variables.selected_terminal_id == '' ) {
+                if ( 'map' in this.lib && 'locations' in this.lib.map ) {
+                    if ( this.lib.map.locations.length ) {
+                        this.variables.allow_close_modal = false;
+                        this.lib.dom.setActiveTerminal(this.lib.map.locations[0].id);
+                        this.lib.publish('terminal-selected', this.lib.map.locations[0]);
+                    }
+                }
+            }
         },
 
         get_postcode: function() {
