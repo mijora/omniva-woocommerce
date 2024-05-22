@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.16.0
+ * Version: 1.16.1
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 
