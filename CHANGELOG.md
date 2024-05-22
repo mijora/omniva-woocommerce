@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.16.1]
 ### Fixed
 - fixed terminal autoselect on old Checkout page
 

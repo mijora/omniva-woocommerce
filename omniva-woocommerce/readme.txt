@@ -14,6 +14,9 @@ omnivalt_orders_list_per_page - args: $per_page - allows to change the number of
 
 == Changelog ==
 
+= 1.16.1 =
+- fixed terminal autoselect on old Checkout page
+
 = 1.16.0 =
 - disabled phone format validation, when selected shipping method is not Omniva
 - created a parcel terminal selection on the block-based Checkout page
