@@ -7,8 +7,10 @@ class OmnivaLt_Core
   public static function init()
   {
     self::load_classes();
-    register_activation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'plugin_activation'));
-    register_deactivation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, array(__CLASS__, 'plugin_deactivation'));
+    if ( ! self::allow_activate_plugin() ) {
+      OmnivaLt_Helper::show_notices();
+      return;
+    }
     self::load_init_hooks();
 
     if ( ! function_exists('is_plugin_active') ) {
@@ -16,20 +18,25 @@ class OmnivaLt_Core
     }
     if ( is_plugin_active('woocommerce/woocommerce.php') ) {
       self::load_launch_hooks();
+      self::load_conditional_hooks();
       OmnivaLt_Cronjob::init();
     }
   }
 
-  public static function plugin_activation()
+  public static function allow_activate_plugin()
   {
-    if ( ! self::is_directory_writable(OMNIVALT_DIR) ) {
-      throw new \Exception(__('Cannot create files in plugin folder', 'omnivalt'));
+    $error_prefix = __('Omniva plugin not working', 'omnivalt');
+    if ( version_compare(PHP_VERSION, '7.0.0', '<') ) {
+      OmnivaLt_Helper::add_msg(__('The website is using too low a PHP version', 'omnivalt'), 'error', $error_prefix);
+      return false;
     }
-  }
 
-  public static function plugin_deactivation()
-  {
-    // Do nothing
+    if ( ! self::is_directory_writable(OMNIVALT_DIR) ) {
+      OmnivaLt_Helper::add_msg(__('Cannot create files in plugin folder. Please check the plugin folder permissions.', 'omnivalt'), 'error', $error_prefix);
+      return false;
+    }
+
+    return true;
   }
 
   public static function get_configs( $section_name = false )
@@ -258,6 +265,7 @@ class OmnivaLt_Core
           'modal_open_button' => __('Select in map', 'omnivalt'),
           'search_placeholder' => __('Enter postcode', 'omnivalt'),
           'search_button' => __('Search', 'omnivalt'),
+          'select_button' => __('Select', 'omnivalt'),
           'not_found' => __('Place not found', 'omnivalt'),
           'no_cities_found' => __('There were no cities found for your search term', 'omnivalt'),
           'enter_address' => __('Enter postcode/address', 'omnivalt'),
@@ -329,7 +337,7 @@ class OmnivaLt_Core
   {
     require_once OMNIVALT_DIR . 'core/class-shipping-method-helper.php';
     include OMNIVALT_DIR . 'core/class-shipping-method.php';
-    self::load_conditional_hooks();
+    
     OmnivaLt_Terminals::check_terminals_json_file();
   }
 
@@ -371,17 +379,23 @@ class OmnivaLt_Core
     return $errors[$error_code];
   }
 
+  public static function get_core_dir()
+  {
+    return OMNIVALT_DIR . 'core/';
+  }
+
   private static function load_classes()
   {
     include OMNIVALT_DIR . 'vendor/autoload.php';
     
-    $core_dir = OMNIVALT_DIR . 'core/';
+    $core_dir = self::get_core_dir();
     require_once $core_dir . 'class-debug.php';
     require_once $core_dir . 'class-configs.php';
     require_once $core_dir . 'class-helper.php';
     require_once $core_dir . 'class-wc.php';
     require_once $core_dir . 'class-wc-order.php';
     require_once $core_dir . 'class-wc-product.php';
+    require_once $core_dir . 'class-wc-blocks.php';
     require_once $core_dir . 'class-method-core.php';
     require_once $core_dir . 'class-method-terminal.php';
     require_once $core_dir . 'class-method-courier.php';
@@ -434,6 +448,7 @@ class OmnivaLt_Core
         'manifest_date' => '_omnivalt_manifest_date',
         'terminal_id' => '_omnivalt_terminal_id',
         'dimmensions' => '_omnivalt_dimmensions',
+        'total_shipments' => '_omnivalt_total_shipments',
         'courier_calls' => '_omnivalt_courier_calls',
       ),
     );
@@ -442,6 +457,7 @@ class OmnivaLt_Core
   private static function load_init_hooks()
   {
     add_action('before_woocommerce_init', 'OmnivaLt_Compatibility::declare_wc_hpos_compatibility');
+    add_action('before_woocommerce_init', 'OmnivaLt_Compatibility::declare_wc_blocks_compatibility');
     add_action('woocommerce_shipping_init', 'OmnivaLt_Core::init_shipping_method');
     add_action('init', 'OmnivaLt_Core::textdomain');
     add_action('admin_notices', 'OmnivaLt_Core::admin_notices');
@@ -483,6 +499,10 @@ class OmnivaLt_Core
     add_action('woocommerce_checkout_process', 'OmnivaLt_Order::checkout_validate_terminal');
     add_action('wp_ajax_nopriv_remove_courier_call', 'OmnivaLt_Labels::ajax_remove_courier_call');
     add_action('wp_ajax_remove_courier_call', 'OmnivaLt_Labels::ajax_remove_courier_call');
+    add_action('woocommerce_after_save_address_validation','OmnivaLt_Frontend::validate_phone_number', 1, 2);
+    add_action('woocommerce_checkout_process', 'OmnivaLt_Frontend::validate_phone_number');
+    add_action('woocommerce_blocks_loaded', 'OmnivaLt_Wc_Blocks::init');
+    add_action('block_categories_all', 'OmnivaLt_Wc_Blocks::register_block_categories', 10, 2 );
 
     add_filter('script_loader_tag', 'OmnivaLt_Core::add_asyncdefer_by_handle', 10, 2);
     add_filter('woocommerce_shipping_methods', 'OmnivaLt_Core::add_shipping_method');
@@ -502,6 +522,7 @@ class OmnivaLt_Core
     add_filter('woocommerce_cart_shipping_method_full_label', 'OmnivaLt_Frontend::add_logo_to_method', 10, 2);
     add_filter('woocommerce_package_rates' , 'OmnivaLt_Frontend::change_methods_position', 99, 2);
     add_filter('woocommerce_available_payment_gateways', 'OmnivaLt_Frontend::change_payment_list_by_shipping_method');
+    add_filter('woocommerce_process_registration_errors', 'OmnivaLt_Frontend::validate_phone_number', 10, 4);
   }
 
   private static function load_conditional_hooks()

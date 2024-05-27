@@ -8,6 +8,13 @@ class OmnivaLt_Compatibility
         }
     }
 
+    public static function declare_wc_blocks_compatibility()
+    {
+        if ( class_exists('\Automattic\WooCommerce\Utilities\FeaturesUtil') ) {
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', OmnivaLt_Core::$main_file_path, true);
+        }
+    }
+
     public static function get_terms( $taxonomy, $args = array() )
     {
         if ( defined('ICL_SITEPRESS_VERSION') ) {

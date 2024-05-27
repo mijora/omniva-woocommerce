@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.16.1]
+### Fixed
+- fixed terminal autoselect on old Checkout page
+
+## [1.16.0]
+### Fixed
+- disabled phone format validation, when selected shipping method is not Omniva
+
+### Improved
+- created a parcel terminal selection on the block-based Checkout page
+- added translations of the plugin into Latvian and Estonian languages
+
+## [1.15.8]
+### Fixed
+- fixed map load on Cart page when the updated_wc_div event fires
+- fixed to check if the cart is not empty before creating shipping methods
+
+### Improved
+- added possibility to register multi-parcels shipments (MPS)
+- added the option to specify how many MPS shipments it needs for the product
+
+### Updated
+- updated Omniva API library to v1.0.17
+
+## [1.15.7]
+### Fixed
+- fixed JS error on Cart page (due to the missing postcode field)
+- fixed JS error on Checkout page (due to a empty line in the script code)
+- fixed an error occurring during customer registration
+
+### Improved
+- added the option to specify a landline phone number in the sender (shop) settings, if no mobile phone number is entered
+- created an error display in the admin area when the plugin cannot work
+
+## [1.15.6]
+### Fixed
+- fixed set of API type
+- fixed adding the tracking link to the email when the order status is changed outside of the order edit page
+
+### Improved
+- added the ability to translate the text of the "Select" button displayed on the map
+- added an option to activate the format validation of the entered phone number on the Checkout page
+- added possibility for Latvian Omniva clients to send parcels to Finland parcel terminals
+- added a new WP filter that allows to change the number of orders displayed on the Omniva Orders page
+
 ## [1.15.5]
 ### Fixed
 - reworked getting settings to avoid an error when the required element is not among the saved settings

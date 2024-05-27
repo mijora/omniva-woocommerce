@@ -182,6 +182,7 @@ do_action('omniva_admin_manifest_head');
                 $manifest_date = $order_data->omniva->manifest_date;
                 $date = date('Y-m-d H:i', strtotime($manifest_date));
                 $order_size = $order_data->shipment->size;
+                $total_shipments = $order_data->shipment->total_shipments;
                 ?>
                 <?php if ( OmnivaLt_Manifest::is_mannifest_orders_table($orders_data['action']) && $date_tracker !== $date ) : ?>
                   <tr>
@@ -222,6 +223,9 @@ do_action('omniva_admin_manifest_head');
                     </div>
                     <div class="data-grid-cell-content">
                       <b><?php echo __('Size', 'omnivalt'); ?>:</b> <?php echo OmnivaLt_Order::get_dimmension_text($order_size); ?>
+                    </div>
+                    <div class="data-grid-cell-content">
+                      <b><?php echo __('Total shipments', 'omnivalt'); ?>:</b> <?php echo (! empty($total_shipments)) ? $total_shipments : 1; ?>
                     </div>
                   </td>
                   <td class="manage-column">
@@ -306,12 +310,12 @@ do_action('omniva_admin_manifest_head');
             <input type="hidden" name="action" value="omnivalt_call_courier" />
             <?php wp_nonce_field('omnivalt_call_courier', 'omnivalt_call_courier_nonce'); ?>
             <div><span><?php _e("Shop name", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_name']; ?></div>
-            <div><span><?php _e("Shop phone number", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_phone']; ?></div>
+            <div><span><?php _e("Shop phone number", 'omnivalt'); ?>:</span> <?php echo (empty($shipping_settings['shop_mobile'])) ? $shipping_settings['shop_phone'] : $shipping_settings['shop_mobile']; ?></div>
             <div><span><?php _e("Shop postcode", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_postcode']; ?></div>
             <div>
               <span><?php _e("Shop address", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['shop_address'] . ', ' . $shipping_settings['shop_city']; ?>
             </div>
-            <div><span><?php _e("Comment", 'omnivalt'); ?>:</span> <?php echo $shipping_settings['pickup_comment']; ?></div>
+            <div><span><?php _e("Comment", 'omnivalt'); ?>:</span> <?php echo (! empty($shipping_settings['pickup_comment'])) ? $shipping_settings['pickup_comment'] : '-'; ?></div>
             <table cellspacing="0">
               <tr>
                 <th>

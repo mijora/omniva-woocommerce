@@ -1,0 +1,25 @@
+{
+	"apiVersion": 2,
+	"name": "omnivalt/terminal-selection-cart",
+	"version": "1.0.0",
+	"title": "Omniva terminal information",
+	"category": "woocommerce",
+	"description": "Allow to add components for Omniva shipping method",
+	"parent": ["woocommerce/cart-order-summary-block"],
+	"supports": {
+		"html": false,
+		"align": false,
+		"multiple": false,
+		"reusable": false
+	},
+	"attributes": {
+		"lock": {
+			"type": "object",
+			"default": {
+				"remove": false,
+				"move": false
+			}
+		}
+	},
+	"textdomain": "omnivalt"
+}

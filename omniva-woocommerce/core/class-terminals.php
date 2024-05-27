@@ -181,7 +181,7 @@ class OmnivaLt_Terminals
     }
     
     $map_script = "<script style='display:none;'>
-      var omnivalt_terminals = " . json_encode(self::get_terminals_for_map_new('', $country, $get_list)) . ";
+      var omnivalt_terminals = " . json_encode(self::get_terminals_for_map_new($country, $get_list)) . ";
     </script>";
     $map_script .= "<script style='display:none;'>
       var omnivalt_current_country = '" . $country . "';
@@ -193,8 +193,10 @@ class OmnivaLt_Terminals
         auto_select:'" . $set_autoselect . "',
         show_map: " . (($show_map) ? 'true' : 'false') . ",
       };
-
       jQuery('document').ready(function(){
+        jQuery(document).on('updated_checkout updated_shipping_method', function() {
+            omnivalt_init_map();
+        });
         omnivalt_init_map();
       });
       </script>";
@@ -214,7 +216,7 @@ class OmnivaLt_Terminals
     return $container;
   }
 
-  public static function get_terminals_for_map_new( $selected = '', $country = "LT", $get_list = 'terminal' )
+  public static function get_terminals_for_map_new( $country = "LT", $get_list = 'terminal' )
   {
     $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
     $terminals = self::read_terminals_file();
@@ -309,7 +311,10 @@ class OmnivaLt_Terminals
     if ( is_array($terminals) ) {
       foreach ( $terminals as $terminal ) {
         if ( (string) $terminal['ZIP'] == $terminal_code ) {
-          $terminal_name = (string) $terminal['NAME'] . ', ' . $terminal['A1_NAME'];
+          $terminal_name = (string) $terminal['NAME'];
+          if ( ! empty($terminal['A1_NAME']) ) {
+            $terminal_name .= ', ' . $terminal['A1_NAME'];
+          }
           if ( $get_with_country ) {
             $terminal_name .= ', ' . $terminal['A0_NAME'];
           }

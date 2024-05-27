@@ -111,7 +111,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     {
       $countries_options = array();
       foreach ($this->omnivalt_configs['shipping_params'] as $country_code => $ship_params) {
-        $countries_options[$country_code] = $country_code . ' - ' . $ship_params['title'];
+        $countries_options[$country_code] = $country_code . ' - ' . OmnivaLt_Wc::get_country_name($country_code);
       }
       OmnivaLt_Helper::get_available_methods();
       
@@ -146,8 +146,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'title' => __('API account country', 'omnivalt'),
           'type'    => 'select',
           'options' => array(
-            'LT' => __('Lithuania', 'omnivalt') . ' / ' . __('Latvia', 'omnivalt'),
-            'EE' => __('Estonia', 'omnivalt'),
+            'LT' => OmnivaLt_Wc::get_country_name('LT'),
+            'LV' => OmnivaLt_Wc::get_country_name('LV'),
+            'EE' => OmnivaLt_Wc::get_country_name('EE'),
           ),
           'default' => 'LT',
           'description' => __('Choose the country of Omniva support from which you received API logins.', 'omnivalt'),
@@ -190,6 +191,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         ),
         'shop_phone' => array(
           'title' => __('Shop phone number', 'omnivalt'),
+          'type' => 'text',
+          'description' => __('The value of this field is used only if the mobile number is not entered.', 'omnivalt'),
+        ),
+        'shop_mobile' => array(
+          'title' => __('Shop mobile number', 'omnivalt'),
           'type' => 'text',
           'description' => sprintf(__('Required mobile phone number if want use service "%s".', 'omnivalt'), $this->omnivalt_configs['additional_services']['delivery_confirmation_sms']['title']),
         ),
@@ -331,6 +337,12 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'default' => 'yes',
         'class' => 'omniva_terminal'
       );
+      $fields['verify_phone'] = array(
+        'title' => __('Check phone format', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('On the checkout page, check if the entered mobile phone number format is correct.', 'omnivalt'),
+        'default' => '',
+      );
       $fields['hr_design'] = array(
         'type' => 'hr',
         'title' => __('Design', 'omnivalt'),
@@ -469,9 +481,24 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'description' => __('Enable request and response logging.', 'omnivalt') . ' ' . sprintf(__('Log files are stored for %d days.', 'omnivalt'), $this->omnivalt_configs['debug']['delete_after']),
         'default' => ''
       );
+      $fields['debug_notice'] = array(
+        'title' => __('Show debug data in WP notice', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('Display debug information via WP notice at the top of the web page after some action', 'omnivalt'),
+        'default' => '',
+        'class' => 'omniva_debug'
+      );
+      $fields['debug_front_js'] = array(
+        'title' => __('Show debug data in Checkout', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('Display Javascript debug information in the console of the Checkout page', 'omnivalt'),
+        'default' => '',
+        'class' => 'omniva_debug'
+      );
       $fields['debugview_request'] = array(
         'type' => 'debug_window',
         'files' => OmnivaLt_Debug::get_all_files(),
+        'title-main' => __('Logs list', 'omnivalt'),
         'title' => __('Logged communications with API', 'omnivalt'),
         'class' => 'omniva_debug'
       );
@@ -586,7 +613,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
             <div class="prices_box" data-country="<?php echo $value['lang']; ?>">
               <div class="pb-lang">
                 <img src="<?php echo $flag_img_url; ?>" alt="[<?php echo $value['lang']; ?>]">
-                <span><?php echo $value['lang'] . ' ' . __('prices','omnivalt'); ?></span>
+                <span><?php echo OmnivaLt_Wc::get_country_name($value['lang']) . ' ' . __('prices','omnivalt'); ?></span>
               </div>
               <div class="pb-content">
                 <?php foreach ($shipping_keys as $ship_key) : ?>
@@ -1213,11 +1240,14 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $files = (isset($value['files'])) ? $value['files'] : array();
       $files_dir = OmnivaLt_Debug::$_debug_dir;
       $files_subtitle = (isset($value['subtitle'])) ? $value['subtitle'] : '';
+      $main_title = (isset($value['title-main'])) ? $value['title-main'] : '';
 
       ob_start();
       ?>
       <tr class="omniva-debugview" valign="top">
-        <th scope="row" class="titledesc"></th>
+        <th scope="row" class="titledesc">
+          <label><?php echo esc_html($main_title); ?></label>
+        </th>
         <td class="forminp">
           <fieldset class="field-debug <?php echo $field_class; ?>">
             <span class="title"><?php echo esc_html($value['title']); ?></span>
@@ -1282,6 +1312,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $country = $package["destination"]["country"];
 
       global $woocommerce;
+      if ( ! property_exists($woocommerce, 'cart') || empty($woocommerce->cart->cart_contents) ) {
+        return;
+      }
       $cart_amount = $woocommerce->cart->cart_contents_total + $woocommerce->cart->tax_total;
 
       $products_for_dim = array();

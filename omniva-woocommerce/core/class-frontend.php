@@ -112,4 +112,44 @@ class OmnivaLt_Frontend
     /*** Output ***/
     return $available_gateways;
   }
+
+  public static function validate_phone_number( $validation_error )
+  {
+    if ( ! is_checkout() ) {
+      return $validation_error;
+    }
+
+    if ( empty($_POST['shipping_method']) || ! is_array($_POST['shipping_method']) ) {
+      return $validation_error;
+    }
+    
+    $is_omniva_method = false;
+    foreach ( $_POST['shipping_method'] as $method ) {
+      if ( OmnivaLt_Helper::is_omniva_method($method) ) {
+        $is_omniva_method = true;
+      }
+    }
+    if ( ! $is_omniva_method ) {
+      return $validation_error;
+    }
+
+    $settings = OmnivaLt_Core::get_settings();
+    if ( ! isset($settings['verify_phone']) || $settings['verify_phone'] !== 'yes' ) {
+      return $validation_error;
+    }
+
+    $country = (! empty($_POST['ship_to_different_address'])) ? $_POST['shipping_country'] : $_POST['billing_country'];
+    $regex = OmnivaLt_Helper::get_mobile_regex(strtoupper($country));
+    $phone = $_POST['billing_phone'];
+
+    if ( empty($regex) || empty($phone) ) {
+      return $validation_error;
+    }
+
+    if ( ! preg_match($regex, $phone) ) {
+      wc_add_notice(sprintf(__( 'Invalid %s format', 'omnivalt') . '.', '<b>' . _x( 'phone number', 'whose', 'omnivalt') . '</b>'), 'error');
+    }
+
+    return $validation_error;
+  }
 }

@@ -79,6 +79,7 @@ class OmnivaLt_Helper
   {
     $associations = array(
       'LT' => 'baltic',
+      'LV' => 'latvia',
       'EE' => 'estonia',
     );
     $default_country = 'LT';
@@ -246,7 +247,16 @@ class OmnivaLt_Helper
     update_option($configs['meta_keys']['courier_calls'], array_values($current_calls));
   }
 
-  public static function add_msg( $msg, $type )
+  /**
+   * Add a message to the session so that admin notices can be created from it
+   * It is recommended to use functions that work in all PHP versions in use
+   * 
+   * @param (string) $message - Notice text
+   * @param (string) $type - Notice type
+   * @param (string|boolean) $prefix - Bold text that will appear at the beginning of the notice
+   * @param (boolean) $dismissible - Allow to disable notice display
+   **/
+  public static function add_msg( $message, $type, $prefix = false, $dismissible = false )
   {
     if ( ! session_id() ) {
       session_start();
@@ -254,9 +264,13 @@ class OmnivaLt_Helper
     if ( ! isset($_SESSION['omnivalt_notices']) ) {
       $_SESSION['omnivalt_notices'] = array();
     }
-    $_SESSION['omnivalt_notices'][] = array('msg' => $msg, 'type' => $type);
+    $_SESSION['omnivalt_notices'][] = array('msg' => $message, 'type' => $type, 'prefix' => $prefix, 'dismissible' => $dismissible);
   }
 
+  /**
+   * Show all notices from the session
+   * It is recommended to use functions that work in all PHP versions in use
+   **/
   public static function show_notices()
   {
     if ( ! session_id() ) {
@@ -264,12 +278,36 @@ class OmnivaLt_Helper
     }
     if ( is_array($_SESSION) && array_key_exists('omnivalt_notices', $_SESSION) ) {
       foreach ( $_SESSION['omnivalt_notices'] as $notice ) {
-        $wp_notices = array('error', 'warning', 'success', 'info');
-        $classes = (in_array($notice['type'], $wp_notices)) ? 'notice notice-' . $notice['type'] : $notice['type'];
-        echo '<div class="' . $classes . '"><p>' . $notice['msg'] . '</p></div>';
+        $prefix = isset($notice['prefix']) ? $notice['prefix'] : false;
+        $dismissible = isset($notice['dismissible']) ? $notice['dismissible'] : false;
+        echo self::build_notice($notice['msg'], $notice['type'], $notice['prefix'], $notice['dismissible']);
       }
       unset( $_SESSION['omnivalt_notices'] );
     }
+  }
+
+  /**
+   * Creating a notice block structure
+   * It is recommended to use functions that work in all PHP versions in use
+   * 
+   * @param (string) $message - Notice text
+   * @param (string) $type - Notice type
+   * @param (string|boolean) $prefix - Bold text that will appear at the beginning of the notice
+   * @param (boolean) $dismissible - Allow to disable notice display
+   * @return (string) - Builded HTML block of notice
+   **/
+  public static function build_notice( $message, $type, $prefix = false, $dismissible = false )
+  {
+    $wp_notices = array('error', 'warning', 'success', 'info');
+    $class = (in_array($type, $wp_notices)) ? 'notice notice-' . $type : $type;
+    if ( $dismissible ) {
+        $class .= ' is-dismissible';
+    }
+    if ( $prefix ) {
+        $message = '<b>' . $prefix . ':</b> ' . $message;
+    }
+
+    return '<div class="' . $class . '"><p>' . $message . '</p></div>';
   }
 
   public static function get_formated_time( $value, $value_if_not )
@@ -554,5 +592,17 @@ class OmnivaLt_Helper
     ob_end_clean();
 
     return $html;
+  }
+
+  public static function get_mobile_regex( $country )
+  {
+    $all_regex = array(
+      'LT' => '/^(8|0|\+370)6\d{7}$/',
+      'LV' => '/^\+3712\d{7}$/',
+      'EE' => '/^\+372(5|8)\d{6,7}$/',
+      'FI' => '/^(0|\+358)(4|5)\d{8}$/',
+    );
+
+    return $all_regex[$country] ?? '';
   }
 }

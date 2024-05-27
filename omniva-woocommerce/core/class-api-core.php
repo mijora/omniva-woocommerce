@@ -122,7 +122,8 @@ class OmnivaLt_Api_Core
             $api_sender_contact
                 ->setAddress($api_sender_address)
                 ->setEmail($data_shop->email)
-                ->setMobile($data_shop->phone)
+                ->setPhone($data_shop->phone)
+                ->setMobile($data_shop->mobile)
                 ->setPersonName($data_shop->name);
 
             /* Create manifest */
@@ -203,6 +204,7 @@ class OmnivaLt_Api_Core
             'country' => $this->omnivalt_settings['shop_countrycode'] ?? '',
             'postcode' => $this->omnivalt_settings['shop_postcode'] ?? '',
             'phone' => $this->omnivalt_settings['shop_phone'] ?? '',
+            'mobile' => $this->omnivalt_settings['shop_mobile'] ?? '',
             'email' => $this->omnivalt_settings['shop_email'] ?? '',
             'pick_day' => '',
             'pick_from' => $this->omnivalt_settings['pick_up_start'] ?? '',
@@ -345,11 +347,11 @@ class OmnivaLt_Api_Core
     {
         $data = array();
 
-        for ( $i = 0; $i < 1; $i++ ) { // Preparing for multiple packages
+        for ( $i = 0; $i < $order->shipment->total_shipments; $i++ ) { // Preparing for multiple packages
             $shipment_size = $this->prepare_package_size($order->shipment->size, $order->units);
 
             $shipment_data = array(
-                'id' => $order->id . '-' . ($i + 1),
+                'id' => $order->id,
                 'method' => $order->omniva->method,
                 'terminal' => $order->omniva->terminal_id ?? '',
                 'weight' => $shipment_size['weight'],
@@ -404,7 +406,7 @@ class OmnivaLt_Api_Core
             if ( ! in_array($service_values['code'], $service_additional_services) ) {
                 $add_service = false;
             }
-
+            
             if ( $add_service ) {
                 $additional_services[$service_key] = $service_values['code'];
             }
