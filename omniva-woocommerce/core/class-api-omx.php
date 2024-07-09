@@ -75,8 +75,9 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
 
         /* Set additional services */
         $additional_services = $this->get_additional_services($order, $shipment_service);
-        $is_cod = (isset($additional_services['cod'])) ? true : false;
-        if ( ! $is_cod && count($data_packages) > 1 ) {
+        
+        $use_consolidation = (isset($additional_services['cod']) || isset($additional_services['doc_return'])) ? true : false;
+        if ( ! $use_consolidation && count($data_packages) > 1 ) {
           $api_package->setId($data_package->id . '_' . $package_counter);
         }
 
@@ -91,7 +92,7 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
           $api_additional_service = new AdditionalService();
           $api_additional_service
             ->setServiceCode($additional_service_code);
-          if ( $package_counter > 1 && $is_cod && $additional_service_key != 'fragile' ) {
+          if ( $package_counter > 1 && $use_consolidation && $additional_service_key != 'fragile' ) {
             continue;
           }
           $all_api_additional_services[] = $api_additional_service;
