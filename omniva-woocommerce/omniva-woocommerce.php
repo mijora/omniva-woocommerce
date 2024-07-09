@@ -368,6 +368,13 @@ function omnivalt_configs($section_name = false) {
     ),
   );
 
+  /**
+   * Params for API requests
+   */
+  $params['api'] = array(
+    'type' => 'omx',
+  );
+
   /*
    * List of Cash of delivery payment methods key
    */

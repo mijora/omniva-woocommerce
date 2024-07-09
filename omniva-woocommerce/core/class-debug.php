@@ -50,7 +50,7 @@ class OmnivaLt_Debug
 
     public static function log( $type, $msg, $show_backtrace = false )
     {
-        $available_types = array('error', 'notice', 'order', 'cart', 'product', 'custom');
+        $available_types = array('error', 'notice', 'order', 'cart', 'checkout', 'product', 'custom');
         $message = '';
         
         if ( ! in_array($type, $available_types) ) {
