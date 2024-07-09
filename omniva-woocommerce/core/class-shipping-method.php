@@ -117,6 +117,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
 
       $active_omx = ($this->omnivalt_configs['api']['type'] === 'omx');
       $feature_not_available_txt = '<br/><b>' . __('This feature is not working yet', 'omnivalt') . '.</b>';
+      $feature_not_allowed_txt = '<br/><b>' . __('This feature is not allowed', 'omnivalt') . '.</b>';
       
       $fields = array(
         'enabled' => array(
@@ -472,7 +473,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['pickup_comment'] = array(
         'title' => __('Comment to the courier', 'omnivalt'),
         'type' => 'text',
-        'description' => __('A comment that will be sent with the courier call request', 'omnivalt') . ((!$active_omx) ? '.' . $feature_not_available_txt : ''),
+        'description' => __('A comment that will be sent with the courier call request', 'omnivalt') . ((!$active_omx) ? '.' . $feature_not_allowed_txt : ''),
         'custom_attributes' => $field_custom_attributes,
       );
       $fields['hr_debug'] = array(
