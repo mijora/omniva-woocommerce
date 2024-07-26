@@ -152,14 +152,30 @@ class OmnivaLt_Order
       return;
     }
     
+    if ( ! isset($_POST['shipping_method']) ) {
+      $chosen_methods = OmnivaLt_Wc::get_session('chosen_shipping_methods');
+      if ( is_array($chosen_methods) &&  ! isset($_POST['shipping_method']) ) {
+        foreach ( $chosen_methods as $method ) {
+          if ( str_contains($method, 'omnivalt') ) {
+            $_POST['shipping_method'] = $method;
+          }
+        }
+      }
+    }
+    if ( isset($_POST['shipping_method']) ) {
+      OmnivaLt_Omniva_Order::set_method($order_id, $_POST['shipping_method']);
+    }
+
+    $omniva_method = OmnivaLt_Omniva_Order::get_method($order_id);
+    if ( ! isset($_POST['omnivalt_terminal']) && $omniva_method ) {
+      if ( OmnivaLt_Helper::is_omniva_terminal_method($omniva_method) && isset($_COOKIE['omniva_terminal']) ) {
+        $_POST['omnivalt_terminal'] = $_COOKIE['omniva_terminal'];
+      }
+    }
     if ( isset($_POST['omnivalt_terminal']) ) {
       $terminal_id = wc_clean($_POST['omnivalt_terminal']);
       OmnivaLt_Omniva_Order::set_terminal_id($order_id, $terminal_id);
       OmnivaLt_Wc_Order::add_note($order_id, '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
-    }
-
-    if ( isset($_POST['shipping_method']) ) {
-      OmnivaLt_Omniva_Order::set_method($order_id, $_POST['shipping_method']);
     }
   }
 
