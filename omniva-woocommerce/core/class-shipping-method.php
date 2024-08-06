@@ -114,6 +114,10 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         $countries_options[$country_code] = $country_code . ' - ' . OmnivaLt_Wc::get_country_name($country_code);
       }
       OmnivaLt_Helper::get_available_methods();
+
+      $active_omx = ($this->omnivalt_configs['api']['type'] === 'omx');
+      $feature_not_available_txt = '<br/><b>' . __('This feature is not working yet', 'omnivalt') . '.</b>';
+      $feature_not_allowed_txt = '<br/><b>' . __('This feature is not allowed', 'omnivalt') . '.</b>';
       
       $fields = array(
         'enabled' => array(
@@ -462,14 +466,15 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'hr',
         'title' => __('Shipment pickup', 'omnivalt'),
       );
+      $field_custom_attributes = array(
+        'maxlength' => 120,
+      );
+      if (!$active_omx) $field_custom_attributes['disabled'] = true;
       $fields['pickup_comment'] = array(
         'title' => __('Comment to the courier', 'omnivalt'),
         'type' => 'text',
-        'description' => __('A comment that will be sent with the courier call request', 'omnivalt') . '.<br/><b>' . __('This feature is not working yet', 'omnivalt') . '.</b>',
-        'custom_attributes' => array(
-          'maxlength' => 120,
-          'disabled' => true,
-        ),
+        'description' => __('A comment that will be sent with the courier call request', 'omnivalt') . ((!$active_omx) ? '.' . $feature_not_allowed_txt : ''),
+        'custom_attributes' => $field_custom_attributes,
       );
       $fields['hr_debug'] = array(
         'type' => 'hr',
@@ -478,7 +483,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['debug_mode'] = array(
         'title' => __('Enable debug mode', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Enable request and response logging.', 'omnivalt') . ' ' . sprintf(__('Log files are stored for %d days.', 'omnivalt'), $this->omnivalt_configs['debug']['delete_after']),
+        'description' => __('Enable request and response logging.', 'omnivalt') . ' ' . sprintf(__('Log files are stored for %d days.', 'omnivalt'), $this->omnivalt_configs['debug']['delete_after']) . '<br/>' . __('Allow to use other debug parameters.', 'omnivalt'),
         'default' => ''
       );
       $fields['debug_notice'] = array(
@@ -492,6 +497,13 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'title' => __('Show debug data in Checkout', 'omnivalt'),
         'type' => 'checkbox',
         'description' => __('Display Javascript debug information in the console of the Checkout page', 'omnivalt'),
+        'default' => '',
+        'class' => 'omniva_debug'
+      );
+      $fields['debug_front_post_data'] = array(
+        'title' => __('Log the received Checkout data', 'omnivalt'),
+        'type' => 'checkbox',
+        'description' => __('Save the data in the logs, that is received during the creation of the Order. Sensitive information will not be stored. Intended for use when there is a problem that the delivery method of Omniva is not recognized or the parcel terminal is not added to the Order.', 'omnivalt'),
         'default' => '',
         'class' => 'omniva_debug'
       );
