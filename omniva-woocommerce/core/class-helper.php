@@ -529,6 +529,16 @@ class OmnivaLt_Helper
     return false;
   }
 
+  public static function is_omniva_terminal_method( $method_id )
+  {
+    if ( ! self::is_omniva_method( $method_id ) ) {
+      return false;
+    }
+    $method_key = OmnivaLt_Omniva_Order::get_method_key_from_id($method_id);
+
+    return ($method_key == 'pt' || $method_key == 'ps');
+  }
+
   public static function get_omniva_method_shipping_id( $key )
   {
     $found_key = $key;
