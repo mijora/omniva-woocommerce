@@ -55,6 +55,7 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
 
       /* Prepare packages */
       $packages = array();
+      $package_counter = 0;
       foreach ( $data_packages as $data_package ) {
         /* Create package */
         $shipment_service = OmnivaLt_Helper::get_shipping_service_code($data_shop->country, $data_client->country, $data_settings->pickup_method . ' ' . $data_package->method);
@@ -64,6 +65,8 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
           }
           throw new OmnivaException(__('Failed to get shipment service', 'omnivalt'));
         }
+
+        $package_counter++;
         
         $api_package = new Package();
         $api_package
@@ -72,6 +75,12 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
 
         /* Set additional services */
         $additional_services = $this->get_additional_services($order, $shipment_service);
+        
+        $use_consolidation = (isset($additional_services['cod']) || isset($additional_services['doc_return'])) ? true : false;
+        if ( ! $use_consolidation && count($data_packages) > 1 ) {
+          $api_package->setId($data_package->id . '_' . $package_counter);
+        }
+
         $all_api_additional_services = array();
         foreach ( $additional_services as $additional_service_key => $additional_service_code ) {
           $service_conditions = Shipment::getAdditionalServiceConditionsForShipment($shipment_service, $additional_service_code);
@@ -83,6 +92,9 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
           $api_additional_service = new AdditionalService();
           $api_additional_service
             ->setServiceCode($additional_service_code);
+          if ( $package_counter > 1 && $use_consolidation && $additional_service_key != 'fragile' ) {
+            continue;
+          }
           $all_api_additional_services[] = $api_additional_service;
           /* Add additional service data */
           if ( $additional_service_key == 'cod' ) {
@@ -140,7 +152,8 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
         $api_sender_contact
           ->setAddress($api_sender_address)
           ->setEmail($data_shop->email)
-          ->setMobile($data_shop->phone)
+          ->setPhone($data_shop->phone)
+          ->setMobile($data_shop->mobile)
           ->setPersonName($data_shop->name);
         $api_package->setSenderContact($api_sender_contact);
 
@@ -213,6 +226,10 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
           'call_id' => $result_data['courierOrderNumber'],
           'start_time' => date('Y-m-d H:i:s', strtotime($result_data['startTime'])),
           'end_time' => date('Y-m-d H:i:s', strtotime($result_data['endTime'])),
+          'debug' => array(
+            'request' => json_encode($debug_request),
+            'response' => json_encode($result_data),
+          ),
         );
       }
     } catch (OmnivaException $e) {

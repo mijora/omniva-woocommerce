@@ -18,7 +18,9 @@ if ( isset($_COOKIE['omniva_checked']) ) {
 }
 
 $manifest_enabled = (!isset($shipping_settings['manifest_enable']) || $shipping_settings['manifest_enable'] === 'yes') ? true : false;
+$active_omx = ($configs['api']['type'] === 'omx');
 $current_courier_calls = OmnivaLt_Helper::get_courier_calls();
+
 
 // Append custom css and js
 do_action('omniva_admin_manifest_head');
@@ -325,24 +327,24 @@ do_action('omniva_admin_manifest_head');
                   <input type="number" id="call_quantity" name="call_quantity" min="0" max="29" step="1" value="<?php echo count($selected_orders); ?>"/>
                 </td>
               </tr>
-              <tr title="<?php _e('This feature is not working yet', 'omnivalt'); ?>">
+              <tr title="<?php echo ($active_omx) ? '' : __('This feature is not available', 'omnivalt'); ?>">
                 <th>
                   <label for="call_checkboxes_heavy"><?php _e("Shipments is heavy", 'omnivalt'); ?>:</label>
                 </th>
                 <td>
                   <label>
-                    <input type="checkbox" id="call_checkboxes_heavy" name="call_checkboxes[]" value="heavy" disabled/>
+                    <input type="checkbox" id="call_checkboxes_heavy" name="call_checkboxes[]" value="heavy" <?php echo ($active_omx) ? '' : 'disabled'; ?>/>
                     <?php _e("Shipments weight exceeds 30 kg", 'omnivalt'); ?>
                   </label>
                 </td>
               </tr>
-              <tr title="<?php _e('This feature is not working yet', 'omnivalt'); ?>">
+              <tr title="<?php echo ($active_omx) ? '' : __('This feature is not available', 'omnivalt'); ?>">
                 <th>
                   <label for="call_checkboxes_twoman"><?php _e("Need two man", 'omnivalt'); ?>:</label>
                 </th>
                 <td>
                   <label>
-                    <input type="checkbox" id="call_checkboxes_twoman" name="call_checkboxes[]" value="twoman" disabled/>
+                    <input type="checkbox" id="call_checkboxes_twoman" name="call_checkboxes[]" value="twoman" <?php echo ($active_omx) ? '' : 'disabled'; ?>/>
                     <?php _e("2 people are needed to pick up the shipments", 'omnivalt'); ?>
                   </label>
                 </td>

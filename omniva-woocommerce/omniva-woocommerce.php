@@ -76,6 +76,7 @@ function omnivalt_configs($section_name = false) {
       'LT' => array('pickup', 'courier'),
       'LV' => array('pickup', 'courier'),
       'EE' => array('pickup', 'courier'),
+      'FI' => array('pickup'),
     ),
     'latvia' => array(
       'LT' => array('pickup', 'courier'),
@@ -366,6 +367,13 @@ function omnivalt_configs($section_name = false) {
       'add_always' => false,
       'required_fields' => array('sender_email'),
     ),
+  );
+
+  /**
+   * Params for API requests
+   */
+  $params['api'] = array(
+    'type' => 'omx',
   );
 
   /*

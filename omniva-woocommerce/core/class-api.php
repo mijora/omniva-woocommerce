@@ -7,7 +7,8 @@ class OmnivaLt_Api
 
     public function __construct()
     {
-        $this->set_api_type('xml')->load_api();
+        $configs_api = OmnivaLt_Core::get_configs('api');
+        $this->set_api_type($configs_api['type'])->load_api();
     }
 
     private function load_api()
