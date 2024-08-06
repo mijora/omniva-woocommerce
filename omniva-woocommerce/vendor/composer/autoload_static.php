@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInita73aa8f43670ba7945f8b18cff7bb9d1
+class ComposerStaticInit20a2c38daf1f5a4e4a13c7d5db5504f4
 {
     public static $files = array (
         'e1af0acb87348aa51d89cfb77fc80e82' => __DIR__ . '/..' . '/mijora/omniva-api/overrides/tcpdf/tcpdf_config.php',
@@ -39,6 +39,14 @@ class ComposerStaticInita73aa8f43670ba7945f8b18cff7bb9d1
         'Mijora\\Omniva\\Locations\\PickupPoints' => __DIR__ . '/..' . '/mijora/omniva-api/src/Locations/PickupPoints.php',
         'Mijora\\Omniva\\OmnivaException' => __DIR__ . '/..' . '/mijora/omniva-api/src/OmnivaException.php',
         'Mijora\\Omniva\\Request' => __DIR__ . '/..' . '/mijora/omniva-api/src/Request.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\AdditionalServiceInterface' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/AdditionalServiceInterface.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\CodService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/CodService.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\DeliveryToAnAdultService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/DeliveryToAnAdultService.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\DeliveryToSpecificPersonService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/DeliveryToSpecificPersonService.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\DocumentReturnService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/DocumentReturnService.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\FragileService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/FragileService.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\InsuranceService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/InsuranceService.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\SameDayDeliveryService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/SameDayDeliveryService.php',
         'Mijora\\Omniva\\Shipment\\CallCourier' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/CallCourier.php',
         'Mijora\\Omniva\\Shipment\\Label' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Label.php',
         'Mijora\\Omniva\\Shipment\\Manifest' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Manifest.php',
@@ -48,7 +56,16 @@ class ComposerStaticInita73aa8f43670ba7945f8b18cff7bb9d1
         'Mijora\\Omniva\\Shipment\\Package\\Cod' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Package/Cod.php',
         'Mijora\\Omniva\\Shipment\\Package\\Contact' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Package/Contact.php',
         'Mijora\\Omniva\\Shipment\\Package\\Measures' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Package/Measures.php',
+        'Mijora\\Omniva\\Shipment\\Package\\Notification' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Package/Notification.php',
         'Mijora\\Omniva\\Shipment\\Package\\Package' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Package/Package.php',
+        'Mijora\\Omniva\\Shipment\\Package\\ServicePackage' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Package/ServicePackage.php',
+        'Mijora\\Omniva\\Shipment\\Request\\CallCourierOmxRequest' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Request/CallCourierOmxRequest.php',
+        'Mijora\\Omniva\\Shipment\\Request\\CancelCourierOmxRequest' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Request/CancelCourierOmxRequest.php',
+        'Mijora\\Omniva\\Shipment\\Request\\CustomOmxRequest' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Request/CustomOmxRequest.php',
+        'Mijora\\Omniva\\Shipment\\Request\\EventsOmxRequest' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Request/EventsOmxRequest.php',
+        'Mijora\\Omniva\\Shipment\\Request\\OmxRequestInterface' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Request/OmxRequestInterface.php',
+        'Mijora\\Omniva\\Shipment\\Request\\PackageLabelOmxRequest' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Request/PackageLabelOmxRequest.php',
+        'Mijora\\Omniva\\Shipment\\Request\\ShipmentOmxRequest' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Request/ShipmentOmxRequest.php',
         'Mijora\\Omniva\\Shipment\\Shipment' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Shipment.php',
         'Mijora\\Omniva\\Shipment\\ShipmentHeader' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/ShipmentHeader.php',
         'Mijora\\Omniva\\Shipment\\Tracking' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Tracking.php',
@@ -121,9 +138,9 @@ class ComposerStaticInita73aa8f43670ba7945f8b18cff7bb9d1
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInita73aa8f43670ba7945f8b18cff7bb9d1::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInita73aa8f43670ba7945f8b18cff7bb9d1::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInita73aa8f43670ba7945f8b18cff7bb9d1::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit20a2c38daf1f5a4e4a13c7d5db5504f4::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit20a2c38daf1f5a4e4a13c7d5db5504f4::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit20a2c38daf1f5a4e4a13c7d5db5504f4::$classMap;
 
         }, null, ClassLoader::class);
     }
