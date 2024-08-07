@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.17.0]
 ### Fixed
 - added changes based on updated Omniva API OMX library
 
