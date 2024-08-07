@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.17.0]
+### Fixed
+- added changes based on updated Omniva API OMX library
+
+### Improved
+- added the possibility to log the data submitted from the Checkout page to the plugin
+- improved adding Omniva data to the Order when used the Checkout page does not pass Omniva data through the POST element
+
+### Updated
+- updated Omniva API library to v1.1.0
+
 ## [1.16.1]
 ### Fixed
 - fixed terminal autoselect on old Checkout page

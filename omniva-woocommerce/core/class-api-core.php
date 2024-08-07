@@ -394,6 +394,7 @@ class OmnivaLt_Api_Core
     protected function get_additional_services( $order, $shipment_service )
     {
         $order_services = OmnivaLt_Helper::get_order_services($order);
+        $active_omx = ($this->omnivalt_configs['api']['type'] === 'omx');
         $service_additional_services = Shipment::getAdditionalServicesForShipment($shipment_service);
         $additional_services = array();
 
@@ -403,7 +404,7 @@ class OmnivaLt_Api_Core
             if ( ! $add_service && $service_values['add_always'] ) {
                 $add_service = true;
             }
-            if ( ! in_array($service_values['code'], $service_additional_services) ) {
+            if ( ! $active_omx && ! in_array($service_values['code'], $service_additional_services) ) {
                 $add_service = false;
             }
             

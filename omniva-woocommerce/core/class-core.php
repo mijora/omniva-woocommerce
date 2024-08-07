@@ -438,6 +438,9 @@ class OmnivaLt_Core
       'locations' => array(),
       'update' => array(),
       'text_variables' => array(),
+      'api' => array(
+        'type' => 'xml',
+      ),
       'debug' => array(
         'delete_after' => 30,
       ),

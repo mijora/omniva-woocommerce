@@ -151,15 +151,33 @@ class OmnivaLt_Order
       OmnivaLt_Debug::log_error('Received empty Order ID when adding Order data');
       return;
     }
+
+    self::log_checkout_post_data($_POST, 'Received data for order #' . $order_id . ': ');
     
+    if ( ! isset($_POST['shipping_method']) ) {
+      $chosen_methods = OmnivaLt_Wc::get_session('chosen_shipping_methods');
+      if ( is_array($chosen_methods) &&  ! isset($_POST['shipping_method']) ) {
+        foreach ( $chosen_methods as $method ) {
+          if ( str_contains($method, 'omnivalt') ) {
+            $_POST['shipping_method'] = $method;
+          }
+        }
+      }
+    }
+    if ( isset($_POST['shipping_method']) ) {
+      OmnivaLt_Omniva_Order::set_method($order_id, $_POST['shipping_method']);
+    }
+
+    $omniva_method = OmnivaLt_Omniva_Order::get_method($order_id);
+    if ( ! isset($_POST['omnivalt_terminal']) && $omniva_method ) {
+      if ( OmnivaLt_Helper::is_omniva_terminal_method($omniva_method) && isset($_COOKIE['omniva_terminal']) ) {
+        $_POST['omnivalt_terminal'] = $_COOKIE['omniva_terminal'];
+      }
+    }
     if ( isset($_POST['omnivalt_terminal']) ) {
       $terminal_id = wc_clean($_POST['omnivalt_terminal']);
       OmnivaLt_Omniva_Order::set_terminal_id($order_id, $terminal_id);
       OmnivaLt_Wc_Order::add_note($order_id, '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
-    }
-
-    if ( isset($_POST['shipping_method']) ) {
-      OmnivaLt_Omniva_Order::set_method($order_id, $_POST['shipping_method']);
     }
   }
 
@@ -948,5 +966,48 @@ class OmnivaLt_Order
     }
 
     return $order_size;
+  }
+
+  private static function prepare_checkout_post_data_for_logs( $post_data )
+  {
+    if (isset($post_data['billing_last_name'])) $post_data['billing_last_name'] = substr($post_data['billing_last_name'], 0, 1) . '.';
+    if (isset($post_data['billing_address_1'])) $post_data['billing_address_1'] = '[Hidden]';
+    if (isset($post_data['billing_address_2'])) $post_data['billing_address_2'] = '[Hidden]';
+    if (isset($post_data['billing_postcode'])) $post_data['billing_postcode'] = '[Hidden]';
+    if (isset($post_data['billing_city'])) $post_data['billing_city'] = '[Hidden]';
+    if (isset($post_data['billing_phone'])) $post_data['billing_phone'] = '[Hidden]';
+    if (isset($post_data['billing_email'])) $post_data['billing_email'] = '[Hidden]';
+    if (isset($post_data['billing_company'])) $post_data['billing_company'] = '[Hidden]';
+    if (isset($post_data['company_code'])) $post_data['company_code'] = '[Hidden]';
+    if (isset($post_data['company_vat'])) $post_data['company_vat'] = '[Hidden]';
+    if (isset($post_data['shipping_last_name'])) $post_data['shipping_last_name'] = substr($post_data['shipping_last_name'], 0, 1) . '.';
+    if (isset($post_data['shipping_address_1'])) $post_data['shipping_address_1'] = '[Hidden]';
+    if (isset($post_data['shipping_address_2'])) $post_data['shipping_address_2'] = '[Hidden]';
+    if (isset($post_data['shipping_postcode'])) $post_data['shipping_postcode'] = '[Hidden]';
+    if (isset($post_data['shipping_city'])) $post_data['shipping_city'] = '[Hidden]';
+    if (isset($post_data['shipping_phone'])) $post_data['shipping_phone'] = '[Hidden]';
+    if (isset($post_data['shipping_email'])) $post_data['shipping_email'] = '[Hidden]';
+    if (isset($post_data['order_comments'])) $post_data['order_comments'] = '[Hidden]';
+    if (isset($post_data['shipping_company'])) $post_data['shipping_company'] = '[Hidden]';
+
+    return $post_data;
+  }
+
+  private static function log_checkout_post_data( $post_data, $log_msg_prefix = '' )
+  {
+    $settings = OmnivaLt_Core::get_settings();
+    if ( ! isset($settings['debug_mode']) || $settings['debug_mode'] !== 'yes' ) {
+      return;
+    }
+    if ( ! isset($settings['debug_front_post_data']) || $settings['debug_front_post_data'] !== 'yes' ) {
+      return;
+    }
+
+    self::log_data(self::prepare_checkout_post_data_for_logs($post_data), 'checkout', $log_msg_prefix);
+  }
+
+  private static function log_data( $data, $log_type = 'order', $log_msg_prefix = '' )
+  {
+    OmnivaLt_Debug::log($log_type, $log_msg_prefix . print_r($data, true), true);
   }
 }

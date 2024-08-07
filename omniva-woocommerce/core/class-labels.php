@@ -210,6 +210,10 @@ class OmnivaLt_Labels
 
     $call_result = $omnivalt_api->call_courier($call_params);
 
+    if ( ! empty($call_result['debug']) && isset($shipping_settings['debug_notice']) && $shipping_settings['debug_notice'] === 'yes' ) {
+      OmnivaLt_Helper::add_msg('<b>OMNIVA RESPONSE DEBUG:</b><br/><pre style="white-space:pre-wrap;">' . htmlspecialchars(print_r($call_result['debug'], true)) . '</pre>', 'notice');
+    }
+
     if ( $call_result['status'] == true ) {
       if ( isset($call_result['call_id']) ) {
         $result = OmnivaLt_Helper::update_courier_calls(array(
