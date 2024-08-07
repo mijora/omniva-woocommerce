@@ -1,5 +1,5 @@
 {
     "require": {
-        "mijora/omniva-api": "^1.0.14"
+        "mijora/omniva-api": "^1.1.0"
     }
 }
