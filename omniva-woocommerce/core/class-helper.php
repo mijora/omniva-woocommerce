@@ -204,6 +204,100 @@ class OmnivaLt_Helper
     return $allowed_methods;
   }
 
+  public static function get_shipping_methods_prices()
+  {
+    $settings = OmnivaLt_Core::get_settings();
+    $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
+    $shipping_countries = array_keys($shipping_params);
+    $methods_asociations = self::get_methods_asociations();
+    $shipping_prices = array();
+
+    foreach ( $shipping_countries as $country ) {
+      $prices_key = (array_key_exists($country, $shipping_params)) ? 'prices_' . $country : 'prices_LT';
+      $prices_data = (isset($settings[$prices_key])) ? json_decode($settings[$prices_key]) : array();
+      
+      $prices = array();
+      foreach ( $shipping_params[$country]['methods'] as $method_name ) {
+        $method_key = self::convert_method_name_to_short($methods_asociations, $method_name);
+        $prices[$method_name] = self::parse_shipping_methods_prices($method_key, $prices_data);
+      }
+      $shipping_prices[$country] = $prices;
+    }
+
+    return $shipping_prices;
+  }
+
+  private static function parse_shipping_methods_prices( $method_key, $prices_data )
+  {
+    $keys = array(
+      'single' => $method_key . '_price_single',
+      'type' => $method_key . '_price_type',
+      'weight' => $method_key . '_price_by_weight',
+      'amount' => $method_key . '_price_by_amount',
+      'boxsize' => $method_key . '_price_by_boxsize',
+    );
+    $settings = OmnivaLt_Core::get_settings();
+
+    $type = 'unknown';
+    $enabled = (isset($prices_data->{$method_key . '_enable'})) ? (bool) $prices_data->{$method_key . '_enable'} : false;
+    if ( isset($settings['method_' . $method_key]) && $settings['method_' . $method_key] !== 'yes' ) {
+      $enabled = false;
+    }
+    $prices = (isset($prices_data->{$keys['single']})) ? $prices_data->{$keys['single']} : '';
+
+    if ( isset($prices_data->{$keys['type']}) ) {
+      $type = $prices_data->{$keys['type']};
+      
+      if ( $prices_data->{$keys['type']} == 'weight' && isset($prices_data->{$keys['weight']}) ) {
+        $prices = array();
+        $from = 0;
+        foreach ( $prices_data->{$keys['weight']} as $weight_prices ) {
+          $prices[] = array(
+            'from' => (string) $from,
+            'to' => $weight_prices->value,
+            'price' => $weight_prices->price
+          );
+          if ( $weight_prices->value !== '' ) {
+            $from = $weight_prices->value + 0.001;
+          }
+        }
+      }
+
+      if ( $prices_data->{$keys['type']} == 'amount' && isset($prices_data->{$keys['amount']}) ) {
+        $prices = array();
+        $from = 0;
+        foreach ( $prices_data->{$keys['amount']} as $amount_prices ) {
+          $prices[] = array(
+            'from' => $from,
+            'to' => $amount_prices->value,
+            'price' => $amount_prices->price
+          );
+          if ( $amount_prices->value !== '' ) {
+            $from = $amount_prices->value + 0.01;
+          }
+        }
+      }
+
+      if ( $prices_data->{$keys['type']} == 'boxsize' && isset($prices_data->{$keys['boxsize']}) ) {
+        $prices = array();
+        foreach ( $prices_data->{$keys['boxsize']} as $amount_prices ) {
+          $prices[] = array(
+            'from' => $amount_prices->value,
+            'to' => '',
+            'price' => $amount_prices->price
+          );
+        }
+      }
+
+    }
+
+    return array(
+      'type' => $type,
+      'enabled' => $enabled,
+      'prices' => $prices
+    );
+  }
+
   public static function get_courier_calls()
   {
     $configs = OmnivaLt_Core::get_configs();

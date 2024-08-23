@@ -6,6 +6,7 @@ class OmnivaLt_Cronjob
     add_filter('cron_schedules', __CLASS__ . '::add_frequency');
 
     add_action('omnivalt_location_update', __CLASS__ . '::generate_locations_file');
+    add_action('omnivalt_send_statistic', __CLASS__ . '::send_statistic_data');
 
     register_activation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, __CLASS__ . '::activation');
     register_deactivation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, __CLASS__ . '::deactivation');
@@ -16,19 +17,31 @@ class OmnivaLt_Cronjob
     if ( ! as_next_scheduled_action('omnivalt_location_update') ) {
       as_schedule_recurring_action(current_time('timestamp'), self::get_interval_time('daily'), 'omnivalt_location_update');
     }
+    if ( ! as_next_scheduled_action('omnivalt_send_statistic') ) {
+      as_schedule_recurring_action(current_time('timestamp'), self::get_interval_time('daily'), 'omnivalt_send_statistic');
+    }
   }
 
   public static function deactivation()
   {
     as_unschedule_action('omnivalt_location_update');
+    as_unschedule_action('omnivalt_send_statistic');
   }
 
   public static function add_frequency($schedules)
   {
-    $schedules['daily'] = array(
-      'interval' => 86400,
-      'display' => __('Once daily', 'omnivalt'),
-    );
+    if ( ! isset($schedules['daily']) ) {
+      $schedules['daily'] = array(
+        'interval' => 86400,
+        'display' => __('Once daily', 'omnivalt'),
+      );
+    }
+    if ( ! isset($schedules['monthly']) ) {
+      $schedules['monthly'] = array(
+        'interval' => 2592000,
+        'display' => __('Once monthly', 'omnivalt'),
+      );
+    }
     return $schedules;
   }
 
@@ -79,9 +92,28 @@ class OmnivaLt_Cronjob
     }
   }
 
+  public static function send_statistic_data()
+  {
+    $meta_keys = OmnivaLt_Core::get_configs('meta_keys');
+
+    $last_track_date = get_option($meta_keys['last_track_date'], current_time('Y-m-d H:i:s'));
+    $date_minus_month = date('Y-m-d', strtotime('-1 month', strtotime(current_time('Y-m-d'))));
+    if ( current_time('j') == 2 || $last_track_date < $date_minus_month ) {
+      self::log('Sending statistics to Omniva...', true, true);
+      $api = new OmnivaLt_Api();
+      $result = $api->send_statistics();
+      if ( $result['status'] ) {
+        self::log('Data sent successfully.', false);
+      } else {
+        self::log('Failed.', false);
+      }
+      update_option($meta_keys['last_track_date'], current_time('Y-m-d H:i:s'));
+    }
+  }
+
   public static function log($message, $show_date = true, $next_same_line = false)
   {
-    $message = ($show_date) ? current_time('Y-m-d H:i:s') . ' ' . $message : $message;
+    $message = ($show_date) ? current_time('Y-m-d H:i:s') . ': ' . $message : $message;
     $message = ($next_same_line) ? $message . ' ' : $message . PHP_EOL;
 
     OmnivaLt_Core::add_required_directories();

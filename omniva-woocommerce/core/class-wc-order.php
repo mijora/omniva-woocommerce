@@ -25,9 +25,11 @@ class OmnivaLt_Wc_Order
         return $wc_order;
     }
 
-    public static function get_data( $wc_order_id, $get_sections = array() )
+    public static function get_data( $wc_order, $get_sections = array() )
     {
-        $wc_order = self::get_order($wc_order_id);
+        if ( ! is_object($wc_order) ) {
+            $wc_order = self::get_order($wc_order);
+        }
         if ( ! $wc_order ) {
             return false;
         }
@@ -127,6 +129,7 @@ class OmnivaLt_Wc_Order
                 'barcodes' => OmnivaLt_Omniva_Order::get_barcodes($wc_order->get_id()), //Compatibility with old
                 'manifest_date' => $wc_order->get_meta($meta_keys['manifest_date'], true),
                 'error' => $wc_order->get_meta($meta_keys['error'], true),
+                'order_tracked' => $wc_order->get_meta($meta_keys['order_tracked'], true),
             );
         }
 

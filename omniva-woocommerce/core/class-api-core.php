@@ -13,6 +13,7 @@ use \Mijora\Omniva\Shipment\Package\Contact;
 use \Mijora\Omniva\Shipment\Package\AdditionalService;
 use \Mijora\Omniva\Shipment\Package\Cod;
 use \Mijora\Omniva\Shipment\Package\Measures;
+use \Mijora\Omniva\PowerBi\OmnivaPowerBi;
 
 class OmnivaLt_Api_Core
 {
@@ -175,6 +176,97 @@ class OmnivaLt_Api_Core
 
             $api_manifest->downloadManifest('I', 'Omnivalt_manifest_' . current_time('Ymd_His'));
             $output['status'] = true;
+        } catch (OmnivaException $e) {
+            $output['msg'] = $e->getMessage();
+            $output['debug'] = $e->getData();
+        }
+
+        return $output;
+    }
+
+    public function send_statistics()
+    {
+        $output = array(
+            'status' => false,
+            'msg' => '',
+            'debug' => ''
+        );
+        $shipments_data = OmnivaLt_Statistics::collect_data();
+
+        $prepared_prices = array();
+        foreach ( $shipments_data['shipping_prices'] as $country => $methods_prices ) {
+            $preparing_prices = array();
+            foreach ( $methods_prices as $method_key => $prices_data ) {
+                if ( ! $prices_data['enabled'] ) {
+                    continue;
+                }
+                $price_values = array(
+                    'min' => null,
+                    'max' => null,
+                );
+                if ( is_array($prices_data['prices']) ) {
+                    $min_price = 9999999;
+                    $max_price = 0;
+                    foreach ( $prices_data['prices'] as $price_range ) {
+                        if ( $price_range['price'] < $min_price ) {
+                            $min_price = $price_range['price'];
+                        }
+                        if ( $price_range['price'] > $max_price ) {
+                            $max_price = $price_range['price'];
+                        }
+                    }
+                    $price_values['min'] = $min_price;
+                    $price_values['max'] = $max_price;
+                } else {
+                    $price_values['min'] = $prices_data['prices'];
+                }
+
+                $preparing_prices[] = array(
+                    'method' => $method_key,
+                    'prices' => $price_values,
+                );
+            }
+
+            $prepared_prices[$country] = array(
+                'courier' => null,
+                'pickup' => null,
+            );
+            foreach ( $preparing_prices as $price ) {
+                if ( $price['method'] == 'courier' ) {
+                    $prepared_prices[$country]['courier'] = $price['prices'];
+                }
+                if ( $price['method'] == 'pickup' ) {
+                    $prepared_prices[$country]['pickup'] = $price['prices'];
+                }
+            }
+        }
+
+        try {
+            $api_powerbi = new OmnivaPowerBi(
+                $this->clean($this->omnivalt_settings['api_user']),
+                $this->clean($this->omnivalt_settings['api_pass']),
+            );
+            $api_powerbi
+                ->setPluginVersion($shipments_data['plugin_version'])
+                ->setPlatform('Wordpress v' . $shipments_data['wordpress_version'] . ' WooCommerce v' . $shipments_data['woocommerce_version'])
+                ->setSenderName($shipments_data['client_name'])
+                ->setSenderCountry($shipments_data['client_country'])
+                ->setDateTimeStamp($shipments_data['track_since'])
+                ->setOrderCountCourier((isset($shipments_data['total_orders']['courier'])) ? $shipments_data['total_orders']['courier'] : 0)
+                ->setOrderCountTerminal((isset($shipments_data['total_orders']['pickup'])) ? $shipments_data['total_orders']['pickup'] : 0);
+            foreach ( $prepared_prices as $country => $prices ) {
+                if ( $prices['courier'] !== null ) {
+                    $api_powerbi->setCourierPrice($country, $prices['courier']['min'], $prices['courier']['max']);
+                }
+                if ( $prices['pickup'] !== null ) {
+                    $api_powerbi->setTerminalPrice($country, $prices['pickup']['min'], $prices['pickup']['max']);
+                }
+            }
+
+            $result = $api_powerbi->send();
+            if ( $result ) {
+                $output['status'] = true;
+            }
         } catch (OmnivaException $e) {
             $output['msg'] = $e->getMessage();
             $output['debug'] = $e->getData();
