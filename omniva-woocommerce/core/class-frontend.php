@@ -55,17 +55,17 @@ class OmnivaLt_Frontend
       }
     }
 
-    $current_position = 0;
+    $total_positions = count($new_positions) + count($rates);
     foreach ( $rates as $rate_key => $rate ) {
       if ( ! in_array($rate_key, $new_positions) ) {
-        for ( $i = 0; $i <= $current_position + 1; $i++) {
+        for ( $i = 0; $i <= $total_positions + 1; $i++) {
           if ( ! isset($new_positions[sprintf($replaced_key, $i)]) ) {
             $new_positions[sprintf($replaced_key, $i)] = $rate_key;
             break;
           }
         }
       }
-      $current_position++;
+      $total_positions++;
     }
     ksort($new_positions);
 
