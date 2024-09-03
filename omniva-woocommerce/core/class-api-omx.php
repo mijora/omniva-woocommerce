@@ -206,6 +206,9 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
         ->setPersonName($shop->name);
       $api_call = new CallCourier();
       $this->set_auth($api_call);
+
+      //TODO: Panaudoti $this->get_timezone_string(), kad gauti laiko juosta ir ja perduoti i API biblioteka
+
       $api_call
         ->setSender($api_sender)
         ->setEarliestPickupTime($pickStart)
@@ -224,8 +227,8 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
         return array(
           'status' => true,
           'call_id' => $result_data['courierOrderNumber'],
-          'start_time' => date('Y-m-d H:i:s', strtotime($result_data['startTime'])),
-          'end_time' => date('Y-m-d H:i:s', strtotime($result_data['endTime'])),
+          'start_time' => get_date_from_gmt($result_data['startTime'], 'Y-m-d H:i:s'),
+          'end_time' => get_date_from_gmt($result_data['endTime'], 'Y-m-d H:i:s'),
           'debug' => array(
             'request' => json_encode($debug_request),
             'response' => json_encode($result_data),
@@ -237,6 +240,17 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
     }
 
     return array('status' => false, 'msg' => __('Failed to call courier', 'omnivalt'));
+  }
+
+  private function get_timezone_string()
+  {
+    $timezone_string = get_option('timezone_string');
+    if ( ! empty( $timezone_string ) ) {
+      return $timezone_string;
+    }
+    $offset = get_option('gmt_offset');
+    $hours = (int) $offset;
+    return timezone_name_from_abbr("", $hours * 3600, false);
   }
 
   public function cancel_courier_call( $call_id )
