@@ -206,10 +206,12 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
         ->setPersonName($shop->name);
       $api_call = new CallCourier();
       $this->set_auth($api_call);
+
       $api_call
         ->setSender($api_sender)
         ->setEarliestPickupTime($pickStart)
         ->setLatestPickupTime($pickFinish)
+        ->setTimezone('Europe/Tallinn')
         ->setComment($shop->courier_comment)
         ->setIsHeavyPackage($params['heavy'])
         ->setIsTwoManPickup($params['twoman'])
@@ -224,8 +226,8 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
         return array(
           'status' => true,
           'call_id' => $result_data['courierOrderNumber'],
-          'start_time' => date('Y-m-d H:i:s', strtotime($result_data['startTime'])),
-          'end_time' => date('Y-m-d H:i:s', strtotime($result_data['endTime'])),
+          'start_time' => get_date_from_gmt($result_data['startTime'], 'Y-m-d H:i:s'),
+          'end_time' => get_date_from_gmt($result_data['endTime'], 'Y-m-d H:i:s'),
           'debug' => array(
             'request' => json_encode($debug_request),
             'response' => json_encode($result_data),

@@ -604,6 +604,24 @@ class OmnivaLt_Helper
     return $html;
   }
 
+  public static function get_local_timezone_string()
+  {
+    $timezone_string = get_option('timezone_string');
+    if ( ! empty( $timezone_string ) ) {
+      return $timezone_string;
+    }
+    $offset = get_option('gmt_offset');
+    $hours = (int) $offset;
+
+    return timezone_name_from_abbr("", $hours * 3600, true);
+  }
+
+  public static function get_timezone_offset( $timezone_string )
+  {
+    $date = new DateTime('now', new DateTimeZone($timezone_string));
+    return $date->format('P');
+  }
+
   public static function get_mobile_regex( $country )
   {
     $all_regex = array(
