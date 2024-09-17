@@ -421,6 +421,7 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-order.php';
     require_once $core_dir . 'class-omniva-order.php';
     require_once $core_dir . 'class-frontend.php';
+    require_once $core_dir . 'class-statistics.php';
   }
 
   private static function default_configs()
@@ -453,6 +454,8 @@ class OmnivaLt_Core
         'dimmensions' => '_omnivalt_dimmensions',
         'total_shipments' => '_omnivalt_total_shipments',
         'courier_calls' => '_omnivalt_courier_calls',
+        'order_tracked' => '_omnivalt_order_tracked',
+        'last_track_date' => '_omnivalt_last_track_date',
       ),
     );
   }

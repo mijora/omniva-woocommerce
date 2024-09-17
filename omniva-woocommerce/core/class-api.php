@@ -68,4 +68,9 @@ class OmnivaLt_Api
     {
         return $this->api->cancel_courier_call($call_id);
     }
+
+    public function send_statistics()
+    {
+        return $this->api->send_statistics();
+    }
 }
