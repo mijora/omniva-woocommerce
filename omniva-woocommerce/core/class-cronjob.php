@@ -94,11 +94,10 @@ class OmnivaLt_Cronjob
 
   public static function send_statistic_data()
   {
-    $configs = OmnivaLt_Core::get_configs();
-    $settings = get_option($configs['plugin']['settings_key']);
-    $test_mode = (isset($settings['debug_develop_mode']) && $settings['debug_develop_mode'] == 'yes') ? true : false;
+    $meta_keys = OmnivaLt_Core::get_configs('meta_keys');
+    $test_mode = (OmnivaLt_Debug::is_development_mode_enabled()) ? true : false;
 
-    $last_track_date = get_option($configs['meta_keys']['last_track_date'], current_time('Y-m-d H:i:s'));
+    $last_track_date = get_option($meta_keys['last_track_date'], current_time('Y-m-d H:i:s'));
     $date_minus_month = date('Y-m-d', strtotime('-1 month', strtotime(current_time('Y-m-d'))));
     if ( current_time('j') == 2 || $last_track_date < $date_minus_month || $test_mode ) {
       self::log('Sending statistics to Omniva...', true, true);
@@ -109,7 +108,7 @@ class OmnivaLt_Cronjob
       } else {
         self::log('Failed.', false);
       }
-      update_option($configs['meta_keys']['last_track_date'], current_time('Y-m-d H:i:s'));
+      update_option($meta_keys['last_track_date'], current_time('Y-m-d H:i:s'));
     }
   }
 

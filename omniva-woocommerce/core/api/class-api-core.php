@@ -192,7 +192,7 @@ class OmnivaLt_Api_Core
             'debug' => ''
         );
         $shipments_data = OmnivaLt_Statistics::collect_data();
-        $test_mode = (isset($this->omnivalt_settings['debug_develop_mode']) && $this->omnivalt_settings['debug_develop_mode'] == 'yes') ? true : false;
+        $test_mode = (OmnivaLt_Debug::is_development_mode_enabled()) ? true : false;
 
         $prepared_prices = array();
         foreach ( $shipments_data['shipping_prices'] as $country => $methods_prices ) {

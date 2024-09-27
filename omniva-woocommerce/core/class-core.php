@@ -21,6 +21,10 @@ class OmnivaLt_Core
       self::load_conditional_hooks();
       OmnivaLt_Cronjob::init();
     }
+
+    if ( OmnivaLt_Debug::is_development_mode_enabled() ) {
+      OmnivaLt_Helper::add_msg(sprintf(__('Development mode is activated! When no longer needed, disable it in %s.', 'omnivalt'), '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=shipping&section=omnivalt' ) . '">' . __('Omniva settings page', 'omnivalt') . '</a>'), 'warning', 'Omniva');
+    }
   }
 
   public static function allow_activate_plugin()

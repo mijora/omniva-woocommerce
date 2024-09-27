@@ -14,6 +14,19 @@ class OmnivaLt_Debug
         return false;
     }
 
+    public static function is_development_mode_enabled()
+    {
+        if ( ! self::check_debug_enabled() ) {
+            return false;
+        }
+        $settings = get_option(OmnivaLt_Core::get_configs('plugin')['settings_key']);
+        if ( isset($settings['debug_develop_mode']) && $settings['debug_develop_mode'] === 'yes' ) {
+            return true;
+        }
+
+        return false;
+    }
+
     public static function debug_request( $request , $method = 'print_r' )
     {
         if ( ! self::check_debug_enabled() ) {

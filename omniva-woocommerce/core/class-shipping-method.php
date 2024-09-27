@@ -507,11 +507,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'class' => 'omniva_debug'
       );
       $fields['debug_develop_mode'] = array(
-        'title' => __('Development mode', 'omnivalt'),
+        'title' => __('Enable development mode', 'omnivalt'),
         'type' => 'checkbox',
         'description' => __('Enable testing mode for features that provide this capability', 'omnivalt') . '.<br/><b>' . __('It is not recommended to use on a website that is already LIVE, as the website data related to the Omniva plugin may be changed', 'omnivalt') . '.</b>',
         'default' => '',
-        'class' => 'omniva_debug'
+        'class' => 'omniva_debug',
       );
       $fields['debugview_request'] = array(
         'type' => 'debug_window',
