@@ -192,6 +192,7 @@ class OmnivaLt_Api_Core
             'debug' => ''
         );
         $shipments_data = OmnivaLt_Statistics::collect_data();
+        $test_mode = (isset($this->omnivalt_settings['debug_develop_mode']) && $this->omnivalt_settings['debug_develop_mode'] == 'yes') ? true : false;
 
         $prepared_prices = array();
         foreach ( $shipments_data['shipping_prices'] as $country => $methods_prices ) {
@@ -242,10 +243,7 @@ class OmnivaLt_Api_Core
         }
 
         try {
-            $api_powerbi = new OmnivaPowerBi(
-                $this->clean($this->omnivalt_settings['api_user']),
-                $this->clean($this->omnivalt_settings['api_pass']),
-            );
+            $api_powerbi = new OmnivaPowerBi($this->clean($this->omnivalt_settings['api_user']), $test_mode);
             $api_powerbi
                 ->setPluginVersion($shipments_data['plugin_version'])
                 ->setPlatform('Wordpress v' . $shipments_data['wordpress_version'] . ' WooCommerce v' . $shipments_data['woocommerce_version'])

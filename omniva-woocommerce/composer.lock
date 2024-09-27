@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "327d01bc75724e78c11798c68aa9d11b",
+    "content-hash": "2cf7d2656b09e142f53056d7473f95f6",
     "packages": [
         {
             "name": "mijora/omniva-api",
-            "version": "dev-master",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/omniva-baltic/omniva-api-lib.git",
-                "reference": "a1785881060d8ed9fa180ba19adcf5eea29f5ac9"
+                "reference": "8491e199a7efed9c32519b16638ea421dbee7533"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/a1785881060d8ed9fa180ba19adcf5eea29f5ac9",
-                "reference": "a1785881060d8ed9fa180ba19adcf5eea29f5ac9",
+                "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/8491e199a7efed9c32519b16638ea421dbee7533",
+                "reference": "8491e199a7efed9c32519b16638ea421dbee7533",
                 "shasum": ""
             },
             "require": {
@@ -48,7 +48,7 @@
                 }
             ],
             "description": "Omniva API wrapper",
-            "time": "2024-08-13T12:01:02+00:00"
+            "time": "2024-09-25T13:12:14+00:00"
         },
         {
             "name": "setasign/fpdf",
@@ -95,16 +95,16 @@
         },
         {
             "name": "setasign/fpdi",
-            "version": "v2.6.0",
+            "version": "v2.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Setasign/FPDI.git",
-                "reference": "a6db878129ec6c7e141316ee71872923e7f1b7ad"
+                "reference": "09a816004fcee9ed3405bd164147e3fdbb79a56f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Setasign/FPDI/zipball/a6db878129ec6c7e141316ee71872923e7f1b7ad",
-                "reference": "a6db878129ec6c7e141316ee71872923e7f1b7ad",
+                "url": "https://api.github.com/repos/Setasign/FPDI/zipball/09a816004fcee9ed3405bd164147e3fdbb79a56f",
+                "reference": "09a816004fcee9ed3405bd164147e3fdbb79a56f",
                 "shasum": ""
             },
             "require": {
@@ -159,7 +159,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-11T16:03:32+00:00"
+            "time": "2024-09-02T10:17:15+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -233,9 +233,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "mijora/omniva-api": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
