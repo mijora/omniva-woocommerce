@@ -15,7 +15,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     private $shipping_sets;
     private $methods_asociations;
     private $destinations_countries = array();
-    private $max_coupons_per_page = 1000;
 
     public function __construct()
     {
@@ -369,7 +368,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'short' => __('Parcel terminal', 'omnivalt'),
         )
       );
-      $fields['custom_label'] = array(
+      $fields['custom_label'] = array( // The parameter is no longer used. Need delete in 2026.
         'title' => __('Custom label names', 'omnivalt'),
         'type' => 'label_name',
         'description' => __('Use custom shipping method name.', 'omnivalt') . ' ' . __('Values is not translatable.', 'omnivalt'),
@@ -563,60 +562,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $box_key = $this->get_field_key($key);
       $html = '';
       if ( isset($value['lang']) ) {
-        $flag_img_url = OMNIVALT_URL . 'assets/img/flags/' . strtolower($value['lang']) . '.png';
-        if ( isset($this->omnivalt_configs['shipping_params'][$value['lang']]) ) {
-          $shipping_methods = $this->omnivalt_configs['shipping_params'][$value['lang']]['methods'];
-          $shipping_keys = array();
-          foreach ( $shipping_methods as $ship_method ) {
-            $shipping_keys[] = OmnivaLt_Helper::convert_method_name_to_short($this->methods_asociations, $ship_method);
-          }
-        } else {
-          $shipping_keys = array_keys($this->methods_asociations);
-        }
-        $fields = array();
-        foreach ( $shipping_keys as $ship_key ) {
-          $fields[$ship_key . '_enable'] = $ship_key . '_enable_' . $value['lang'];
-          $fields[$ship_key . '_price_type'] = $ship_key . '_price_type_' . $value['lang'];
-          $fields[$ship_key . '_price_single'] = $ship_key . '_price_' . $value['lang'];
-          $fields[$ship_key . '_price_by_weight'] = $ship_key . '_price_by_weight_' . $value['lang'];
-          $fields[$ship_key . '_price_by_amount'] = $ship_key . '_price_by_amount_' . $value['lang'];
-          $fields[$ship_key . '_enable_free_from'] = $ship_key . '_price_' . $value['lang'] . '_enFree';
-          $fields[$ship_key . '_free_from'] = $ship_key . '_price_' . $value['lang'] . '_FREE';
-          $fields[$ship_key . '_enable_coupon'] = $ship_key . '_price_' . $value['lang'] . '_enCoupon';
-          $fields[$ship_key . '_coupon'] = $ship_key . '_price_' . $value['lang'] . '_coupon';
-          $fields[$ship_key . '_description'] = $ship_key . '_description_' . $value['lang'];
-        }
-        /* START Fields only for parcel terminal */
-        $fields['pt_price_by_boxsize'] = 'pt_price_by_box_' . $value['lang'];
-        /* END Fields only for parcel terminal */
-        $saved_values = json_decode($this->get_option($key));
-        $values = array();
-        foreach ( $fields as $id => $field ) {
-          $cur_value = (isset($saved_values->{$id})) ? $saved_values->{$id} : '';
-          /* -Compatibility with old data- */
-          $old_value = $this->get_option($field);
-          $is_old = false;
-          if ($cur_value === '' && (!empty($old_value) || $old_value === 0 || $old_value === '0')) {
-            $cur_value = $old_value;
-            $is_old = true;
-          }
-          /* -End of Compatibility with old data- */
-          $values[$id] = array(
-            'id' => $field,
-            'key' => $this->get_field_key($field),
-            'value' => $cur_value,
-            'is_old' => $is_old,
-          );
-        }
-
-        $args = array(
-          'posts_per_page'   => $this->max_coupons_per_page,
-          'orderby'          => 'title',
-          'order'            => 'asc',
-          'post_type'        => 'shop_coupon',
-          'post_status'      => 'publish',
-        );  
-        $coupons = get_posts($args);
+        $shipping_country = new OmnivaLt_Shipping_Method_Country($value['lang'], $key);
+        $shipping_methods = $shipping_country->getMethods();
 
         ob_start();
         ?>
@@ -624,67 +571,64 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           <td colspan="2">
             <div class="prices_box" data-country="<?php echo $value['lang']; ?>">
               <div class="pb-lang">
-                <img src="<?php echo $flag_img_url; ?>" alt="[<?php echo $value['lang']; ?>]">
-                <span><?php echo OmnivaLt_Wc::get_country_name($value['lang']) . ' ' . __('prices','omnivalt'); ?></span>
+                <img src="<?php echo $shipping_country->getImgUrl(); ?>" alt="[<?php echo $value['lang']; ?>]">
+                <span><?php echo $shipping_country->getTitle(); ?></span>
               </div>
               <div class="pb-content">
-                <?php foreach ($shipping_keys as $ship_key) : ?>
-                  <?php if (isset($values[$ship_key . '_enable'])) : ?>
-                    <?php
-                    $params = array(
-                      'box_key' => $box_key,
-                      'enable' => array(
-                        'id' => $values[$ship_key . '_enable']['key'],
-                        'name' => $ship_key . '_enable',
-                        'checked' => ($values[$ship_key . '_enable']['value']) ? 'checked' : '',
-                        'class' => $ship_key . '_enable',
-                      ),
-                      'prices' => array(
-                        'type' => (isset($values[$ship_key . '_price_type'])) ? $values[$ship_key . '_price_type'] : false,
-                        'type_name' => $ship_key . '_price_type',
-                        'single' => (isset($values[$ship_key . '_price_single'])) ? $values[$ship_key . '_price_single'] : false,
-                        'single_name' => $ship_key . '_price_single',
-                        'weight' => (isset($values[$ship_key . '_price_by_weight'])) ? $values[$ship_key . '_price_by_weight'] : false,
-                        'weight_name' => $ship_key . '_price_by_weight',
-                        'amount' => (isset($values[$ship_key . '_price_by_amount'])) ? $values[$ship_key . '_price_by_amount'] : false,
-                        'amount_name' => $ship_key . '_price_by_amount',
-                        'free_enable' => (isset($values[$ship_key . '_enable_free_from'])) ? $values[$ship_key . '_enable_free_from'] : false,
-                        'free_enable_name' => $ship_key . '_enable_free_from',
-                        'free_enable_class' => $ship_key . '_enable_free',
-                        'free' => (isset($values[$ship_key . '_free_from'])) ? $values[$ship_key . '_free_from'] : false,
-                        'free_name' => $ship_key . '_free_from',
-                        'coupon' => (isset($values[$ship_key . '_coupon'])) ? $values[$ship_key . '_coupon'] : false,
-                        'coupon_name' => $ship_key . '_coupon',
-                        'coupon_enable' => (isset($values[$ship_key . '_enable_coupon'])) ? $values[$ship_key . '_enable_coupon'] : false,
-                        'coupon_enable_name' => $ship_key . '_enable_coupon',
-                        'coupon_enable_class' => $ship_key . '_enable_coupon',
-                      ),
-                      'data' => array(
-                        'coupons' => $coupons,
-                      ),
-                      'other' => array(
-                        'desc' => (isset($values[$ship_key . '_description'])) ? $values[$ship_key . '_description'] : false,
-                        'desc_name' => $ship_key . '_description',
-                      ),
-                    );
-                    foreach ( $this->omnivalt_configs['method_params_new'] as $method_name => $method_values ) {
-                      if ($ship_key === $method_values['key']) {
-                        $params['type'] = $method_name;
-                        $params['title'] = $method_values['title'];
-                        if ( ! empty($method_values['display_by_country'][$value['lang']]) ) {
-                          $params['title'] = $method_values['display_by_country'][$value['lang']]['title'];
-                        }
-                        $params['enable']['title'] = sprintf(__('Enable %s','omnivalt'), strtolower($params['title']));
-                        break;
-                      }
-                    }
-                    if ( $ship_key === 'pt' ) {
-                      $params['prices']['boxsize'] = (isset($values[$ship_key . '_price_by_boxsize'])) ? $values[$ship_key . '_price_by_boxsize'] : false;
-                      $params['prices']['boxsize_name'] = $ship_key . '_price_by_boxsize';
-                    }
-                    echo $this->omnivalt_build_prices_block($params);
-                    ?>
-                  <?php endif; ?>
+                <?php foreach ($shipping_methods as $method_key => $method) : ?>
+                  <?php
+                  if ( empty($method['fields']) ) continue;
+                  
+                  $method_fields = $method['fields'];
+                  $field_builder = new OmnivaLt_Shipping_Method_Field($method['key'], $value['lang']);
+
+                  $params = array(
+                    'type' => $method_key,
+                    'box_key' => $box_key,
+                    'title' => $method['title'],
+                    'enable' => array(
+                      'id' => $this->get_field_key($field_builder->buildIdFull('enable')),
+                      'name' => $field_builder->buildIdPrefix('enable'),
+                      'checked' => ($method_fields['enable']) ? 'checked' : '',
+                      'class' => $field_builder->buildIdPrefix('enable'),
+                      'title' => sprintf(__('Enable %s','omnivalt'), strtolower($method['title']))
+                    ),
+                    'prices' => array(
+                      'type' => $this->omnivalt_build_price_field($field_builder->buildIdFull('price_type'), $method_fields['price_type']),
+                      'type_name' => $field_builder->buildIdPrefix('price_type'),
+                      'single' => $this->omnivalt_build_price_field($field_builder->buildIdFull('price'), $method_fields['price_single']),
+                      'single_name' => $field_builder->buildIdPrefix('price_single'),
+                      'weight' => $this->omnivalt_build_price_field($field_builder->buildIdFull('price_by_weight'), $method_fields['price_by_weight']),
+                      'weight_name' => $field_builder->buildIdPrefix('price_by_weight'),
+                      'amount' => $this->omnivalt_build_price_field($field_builder->buildIdFull('price_by_amount'), $method_fields['price_by_amount']),
+                      'amount_name' => $field_builder->buildIdPrefix('price_by_amount'),
+                      'free_enable' => $this->omnivalt_build_price_field($field_builder->buildIdFull('enable_free_from'), $method_fields['enable_free_from']),
+                      'free_enable_name' => $field_builder->buildIdPrefix('enable_free_from'),
+                      'free_enable_class' => $field_builder->buildIdPrefix('enable_free'),
+                      'free' => $this->omnivalt_build_price_field($field_builder->buildIdFull('free_from'), $method_fields['free_from']),
+                      'free_name' => $field_builder->buildIdPrefix('free_from'),
+                      'coupon' => $this->omnivalt_build_price_field($field_builder->buildIdFull('coupon'), $method_fields['coupon']),
+                      'coupon_name' => $field_builder->buildIdPrefix('coupon'),
+                      'coupon_enable' => $this->omnivalt_build_price_field($field_builder->buildIdFull('enable_coupon'), $method_fields['enable_coupon']),
+                      'coupon_enable_name' => $field_builder->buildIdPrefix('enable_coupon'),
+                      'coupon_enable_class' => $field_builder->buildIdPrefix('enable_coupon'),
+                    ),
+                    'data' => array(
+                      'coupons' => OmnivaLt_Wc::get_coupons(OmnivaLt_Filters::settings_coupon_args()),
+                    ),
+                    'other' => array(
+                      'label' => $this->omnivalt_build_price_field($field_builder->buildIdFull('label'), $method_fields['label']),
+                      'label_name' => $field_builder->buildIdPrefix('label'),
+                      'desc' => $this->omnivalt_build_price_field($field_builder->buildIdFull('description'), $method_fields['description']),
+                      'desc_name' => $field_builder->buildIdPrefix('description'),
+                    )
+                  );
+                  if ( array_key_exists('price_by_boxsize', $method_fields) ) {
+                    $params['prices']['boxsize'] = $this->omnivalt_build_price_field($field_builder->buildIdFull('price_by_boxsize'), $method_fields['price_by_boxsize']);
+                    $params['prices']['boxsize_name'] = $field_builder->buildIdPrefix('price_by_boxsize');
+                  }
+                  echo $shipping_country->setCurrentMethodKey($method_key)->buildSettingsBlock($params);
+                  ?>
                 <?php endforeach; ?>
               </div>
             </div>
@@ -697,289 +641,12 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       return $html;
     }
 
-    private function omnivalt_build_prices_block( $params ) {
-      $params = array(
-        'type' => (isset($params['type'])) ? $params['type'] : '',
-        'title' => (isset($params['title'])) ? $params['title'] : __('Shipping','omnivalt'),
-        'box_key' => (isset($params['box_key'])) ? $params['box_key'] : '',
-        'enable' => array(
-          'title' => (isset($params['enable']['title'])) ? $params['enable']['title'] : __('Enable','omnivalt'),
-          'id' => (isset($params['enable']['id'])) ? $params['enable']['id'] : '',
-          'name' => (isset($params['enable']['name'])) ? $params['enable']['name'] : '',
-          'checked' => (isset($params['enable']['checked'])) ? $params['enable']['checked'] : '',
-          'class' => (isset($params['enable']['class'])) ? $params['enable']['class'] : '',
-        ),
-        'prices' => array(
-          'type' => (isset($params['prices']['type'])) ? $params['prices']['type'] : false,
-          'type_name' => (isset($params['prices']['type_name'])) ? $params['prices']['type_name'] : '',
-          'single' => (isset($params['prices']['single'])) ? $params['prices']['single'] : false,
-          'single_name' => (isset($params['prices']['single_name'])) ? $params['prices']['single_name'] : '',
-          'single_title' => (isset($params['prices']['single_title'])) ? $params['prices']['single_title'] : __('Price','omnivalt'),
-          'weight' => (isset($params['prices']['weight'])) ? $params['prices']['weight'] : false,
-          'weight_name' => (isset($params['prices']['weight_name'])) ? $params['prices']['weight_name'] : '',
-          'weight_title' => (isset($params['prices']['weight_title'])) ? $params['prices']['weight_title'] : __('Weight','omnivalt'),
-          'amount' => (isset($params['prices']['amount'])) ? $params['prices']['amount'] : false,
-          'amount_name' => (isset($params['prices']['amount_name'])) ? $params['prices']['amount_name'] : '',
-          'amount_title' => (isset($params['prices']['amount_title'])) ? $params['prices']['amount_title'] : __('Cart amount','omnivalt'),
-          'boxsize' => (isset($params['prices']['boxsize'])) ? $params['prices']['boxsize'] : false,
-          'boxsize_name' => (isset($params['prices']['boxsize_name'])) ? $params['prices']['boxsize_name'] : '',
-          'boxsize_title' => (isset($params['prices']['boxsize_title'])) ? $params['prices']['boxsize_title'] : __('Box size','omnivalt'),
-          'free_enable' => (isset($params['prices']['free_enable'])) ? $params['prices']['free_enable'] : false,
-          'free_enable_name' => (isset($params['prices']['free_enable_name'])) ? $params['prices']['free_enable_name'] : '',
-          'free_enable_class' => (isset($params['prices']['free_enable_class'])) ? $params['prices']['free_enable_class'] : '',
-          'free' => (isset($params['prices']['free'])) ? $params['prices']['free'] : false,
-          'free_name' => (isset($params['prices']['free_name'])) ? $params['prices']['free_name'] : '',
-          'free_title' => (isset($params['prices']['free_title'])) ? $params['prices']['free_title'] : __('Free from','omnivalt'),
-          'coupon' => (isset($params['prices']['coupon'])) ? $params['prices']['coupon'] : false,
-          'coupon_name' => (isset($params['prices']['coupon_name'])) ? $params['prices']['coupon_name'] : '',
-          'coupon_title' => (isset($params['prices']['coupon_title'])) ? $params['prices']['coupon_title'] : __('Free with coupon','omnivalt'),
-          'coupon_enable' => (isset($params['prices']['coupon_enable'])) ? $params['prices']['coupon_enable'] : false,
-          'coupon_enable_name' => (isset($params['prices']['coupon_enable_name'])) ? $params['prices']['coupon_enable_name'] : '',
-          'coupon_enable_class' => (isset($params['prices']['coupon_enable_class'])) ? $params['prices']['coupon_enable_class'] : '',
-        ),
-        'data' => array(
-          'coupons' => (isset($params['data']['coupons'])) ? $params['data']['coupons'] : array(),
-        ),
-        'other' => array(
-          'desc' => (isset($params['other']['desc'])) ? $params['other']['desc'] : false,
-          'desc_name' => (isset($params['other']['desc_name'])) ? $params['other']['desc_name'] : '',
-          'desc_title' => (isset($params['other']['desc_title'])) ? $params['other']['desc_title'] : __('Description','omnivalt'),
-        ),
+    private function omnivalt_build_price_field( $field_key, $field_value ) {
+      return array(
+        'id' => $field_key,
+        'key' => $this->get_field_key($field_key),
+        'value' => $field_value,
       );
-
-      if ( empty($params['type']) || empty($params['box_key']) ) {
-        return '';
-      }
-
-      ob_start();
-      ?>
-      <div class="block-prices <?php echo $params['type']; ?> <?php echo ($params['type'] == 'terminal') ? 'pickup' : ''; ?>">
-        <div class="sec-title">
-          <?php
-          /* -Compatibility with old data- */
-          if ( $params['prices']['single']['is_old'] && isset($params['prices']['single']['value']) && $params['prices']['single']['value'] !== '' ) {
-            $params['enable']['checked'] = 'checked';
-          }
-          /* -End of Compatibility with old data- */
-          $html_params = array(
-            'label' => $params['title'],
-            'title' => $params['enable']['title'],
-            'id' => $params['enable']['id'],
-            'name' => $params['box_key'] . '[' . $params['enable']['name'] . ']',
-            'class' => $params['enable']['class'],
-            'checked' => ($params['enable']['checked'] === 'checked') ? true : false,
-          );
-          echo OmnivaLt_Admin_Html::buildSwitcher($html_params);
-          ?>
-        </div>
-        <div class="sec-prices">
-          <?php if ( $params['prices']['type'] !== false ) : ?>
-            <?php
-            $html_params = array(
-              'field_id' => $params['prices']['type']['key'],
-              'field_name' => $params['box_key'] . '[' . $params['prices']['type_name'] . ']',
-              'field_value' => $params['prices']['type']['value'],
-            );
-            if ( $params['prices']['boxsize'] !== false ) {
-              $html_params['add_select_options'] = array(
-                'boxsize' => __('By box size','omnivalt'),
-              );
-            }
-            echo OmnivaLt_Admin_Html::buildPriceType($html_params);
-            ?>
-          <?php endif; ?>
-          <?php if ( $params['prices']['single'] !== false ) : ?>
-            <div class="prices-single">
-              <?php
-              $field_value = $params['prices']['single']['value'];
-              if ( empty($field_value) && $field_value !== 0 && $field_value !== '0' ) {
-                $field_value = 2;
-              }
-              $html_params = array(
-                'label' => $params['prices']['single_title'] . ':',
-                'id' => $params['prices']['single']['key'],
-                'type' => 'number',
-                'name' => $params['box_key'] . '[' . $params['prices']['single_name'] . ']',
-                'value' => $field_value,
-                'step' => 0.01,
-                'min' => 0,
-              );
-              echo OmnivaLt_Admin_Html::buildSimpleField($html_params);
-              ?>
-            </div>
-          <?php endif; ?>
-          <?php if ( $params['prices']['weight'] !== false ) : ?>
-            <?php
-            $html_params = array(
-              'type' => 'weight',
-              'field_id' => $params['prices']['weight']['key'],
-              'field_name' => $params['box_key'] . '[' . $params['prices']['weight_name'] . ']',
-              'values' => $params['prices']['weight']['value'],
-              'c1_title' => $params['prices']['weight_title'] . ' (kg)',
-              'c1_step' => 0.001,
-            );
-            echo OmnivaLt_Admin_Html::buildPricesTable($html_params);
-            ?>
-          <?php endif; ?>
-          <?php if ( $params['prices']['amount'] !== false ) : ?>
-            <?php
-            $html_params = array(
-              'type' => 'amount',
-              'field_id' => $params['prices']['amount']['key'],
-              'field_name' => $params['box_key'] . '[' . $params['prices']['amount_name'] . ']',
-              'values' => $params['prices']['amount']['value'],
-              'c1_title' => $params['prices']['amount_title'],
-              'c1_step' => 0.01,
-            );
-            echo OmnivaLt_Admin_Html::buildPricesTable($html_params);
-            ?>
-          <?php endif; ?>
-          <?php if ( $params['prices']['boxsize'] !== false ) : ?>
-            <?php
-            $method_params = $this->omnivalt_configs['method_params'];
-            $box_sizes = array();
-            if ( isset($method_params[$params['type']]['sizes']) ) {
-              foreach ( $method_params[$params['type']]['sizes'] as $key => $sizes ) {
-                if ( $key !== 'min' ) {
-                  $box_sizes[] = $key;
-                }
-              }
-            }
-            if ( empty($params['prices']['boxsize']['value']) ) {
-              $default_values = array();
-              for ( $i=0;$i<count($box_sizes);$i++ ) {
-                $default_values[] = (object) array(
-                  'value' => $box_sizes[$i],
-                  'price' => 2,
-                );
-              }
-              $params['prices']['boxsize']['value'] = (object) $default_values;
-            } else {
-              $i = 0;
-              foreach ( $params['prices']['boxsize']['value'] as $value ) {
-                if ( isset($box_sizes[$i]) ) {
-                  $value->value = $box_sizes[$i];
-                }
-                $i++;
-              }
-            }
-            $box_titles = $method_params[$params['type']]['titles'];
-            foreach ( $box_titles as $key => $title ) {
-              $h = $method_params[$params['type']]['sizes'][$key][0];
-              $w = $method_params[$params['type']]['sizes'][$key][1];
-              $l = $method_params[$params['type']]['sizes'][$key][2];
-              $text = sprintf(__('Max %s cm', 'omnivalt'), $h . '×' . $w . '×' . $l);
-              $box_titles[$key] = $title . '<br/><small>' . $text . '</small>';
-            }
-            $html_params = array(
-              'type' => 'boxsize',
-              'field_id' => $params['prices']['boxsize']['key'],
-              'field_name' => $params['box_key'] . '[' . $params['prices']['boxsize_name'] . ']',
-              'values' => $params['prices']['boxsize']['value'],
-              'c1_title' => $params['prices']['boxsize_title'],
-              'allow_add' => false,
-              'c1_text' => $box_titles,
-              'desc' => __('NOTE', 'omnivalt') . ': ' . __('If at least one item in the cart does not have the specified size, then this shipping method will not be displayed', 'omnivalt'),
-            );
-            echo OmnivaLt_Admin_Html::buildPricesTable($html_params);
-            ?>
-          <?php endif; ?>
-          <?php if ( $params['prices']['free'] !== false ) : ?>
-            <div class="prices-free">
-              <?php
-              $field_checked = ($params['prices']['free_enable']['value']) ? 'checked' : '';
-              /* -Compatibility with old data- */
-              if ( $params['prices']['free']['is_old'] && isset($params['prices']['free']['value']) && $params['prices']['free']['value'] !== '' ) {
-                $field_checked = 'checked';
-              }
-              /* -End of Compatibility with old data- */
-              $html_params = array(
-                'label' => $params['prices']['free_title'] . ':',
-                'label_position' => 'after',
-                'id' => $params['prices']['free_enable']['key'],
-                'class' => $params['prices']['free_enable_class'],
-                'name' => $params['box_key'] . '[' . $params['prices']['free_enable_name'] . ']',
-                'checked' => ($field_checked === 'checked') ? true : false,
-                'value' => 1,
-              );
-              echo OmnivaLt_Admin_Html::buildCheckbox($html_params);
-
-              $field_value = $params['prices']['free']['value'];
-              if ( empty($field_value) && $field_value != 0 ) {
-                $field_value = 100;
-              }
-              $html_params = array(
-                'id' => $params['prices']['free']['key'],
-                'type' => 'number',
-                'name' => $params['box_key'] . '[' . $params['prices']['free_name'] . ']',
-                'value' => $field_value,
-                'step' => 0.01,
-                'min' => 0,
-                'class' => 'input-text regular-input price_free',
-              );
-              echo ' ' . OmnivaLt_Admin_Html::buildSimpleField($html_params);
-              ?>
-            </div>
-          <?php endif; ?>
-          <?php if ( $params['prices']['coupon'] !== false ) : ?>
-            <div class="prices-coupon">
-              <?php
-              $field_checked = ($params['prices']['coupon']['value']) ? 'checked' : '';
-              $html_params = array(
-                'label' => $params['prices']['coupon_title'] . ':',
-                'label_position' => 'after',
-                'id' => $params['prices']['coupon_enable']['key'],
-                'class' => $params['prices']['coupon_enable_class'],
-                'name' => $params['box_key'] . '[' . $params['prices']['coupon_enable_name'] . ']',
-                'checked' => ($field_checked === 'checked') ? true : false,
-                'value' => 1,
-              );
-              echo OmnivaLt_Admin_Html::buildCheckbox($html_params);
-
-              $options = array();
-              foreach( $params['data']['coupons'] as $coupon ) {
-                $options[] = array(
-                  'value' => strtolower($coupon->post_title),
-                  'title' => $coupon->post_title,
-                );
-              }
-              $selected = (empty($params['prices']['coupon']['value'])) ? 'selected' : '';
-              $html_params = array(
-                'name' => $params['box_key'] . '[' . $params['prices']['coupon_name'] . ']',
-                'id' => $params['prices']['coupon']['key'],
-                'class' => 'price_coupon',
-                'options' => $options,
-                'selected' => $params['prices']['coupon']['value'],
-              );
-              echo ' ' . OmnivaLt_Admin_Html::buildSelectField($html_params);
-              ?>
-              <?php if ( count($params['data']['coupons']) >= $this->max_coupons_per_page ) : ?>
-                <p class="description"><?php echo __('NOTE', 'omnivalt') . ': ' . sprintf(__('The website has too many coupons, so only the first %d coupons are displayed', 'omnivalt'), $this->max_coupons_per_page); ?></p>
-              <?php endif; ?>
-            </div>
-          <?php endif; ?>
-        </div>
-        <div class="sec-other">
-          <?php if ( $params['other']['desc'] !== false ) : ?>
-            <div class="other-description">
-              <?php
-              $html_params = array(
-                'label' => $params['other']['desc_title'] . ':',
-                'id' => $params['other']['desc']['key'],
-                'name' => $params['box_key'] . '[' . $params['other']['desc_name'] . ']',
-                'value' => $params['other']['desc']['value'],
-              );
-              echo OmnivaLt_Admin_Html::buildTextareaField($html_params);
-              ?>
-            </div>
-          <?php endif; ?>
-        </div>
-      </div>
-      <?php
-      $html = ob_get_contents();
-      ob_end_clean();
-
-      return $html;
     }
 
     public function validate_prices_box_field( $key, $value ) {
@@ -1056,7 +723,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
 
       ob_start();
       ?>
-      <tr valign="top">
+      <tr valign="top" style="display:none;">
         <th scope="row" class="titledesc">
           <label><?php echo esc_html($value['title']); ?></label>
         </th>
@@ -1073,7 +740,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
                   <?php foreach ( $methods_row as $method_key => $method_values ) : ?>
                     <?php $current_value = (isset($field_values[$method_values['key']])) ? $field_values[$method_values['key']] : ""; ?>
                     <td>
-                      <input type="text" name="<?php echo esc_html($field_key); ?>[<?php echo esc_html($method_values['key']); ?>]" value="<?php echo esc_html($current_value); ?>">
+                      <input type="text" name="<?php echo esc_html($field_key); ?>[<?php echo esc_html($method_values['key']); ?>]" value="">
                     </td>
                   <?php endforeach; ?>
                 </tr>
@@ -1319,97 +986,82 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
      */
     public function calculate_shipping( $package = array() )
     {
-      $weight = 0;
-      $cost = 0;
       $country = $package["destination"]["country"];
 
-      global $woocommerce;
-      if ( ! property_exists($woocommerce, 'cart') || empty($woocommerce->cart->cart_contents) ) {
+      $cart = OmnivaLt_Wc::get_cart();
+      if ( empty($cart) || empty($cart->cart_contents) ) {
         return;
       }
-      $cart_amount = $woocommerce->cart->cart_contents_total + $woocommerce->cart->tax_total;
-
-      $products_for_dim = array();
-      foreach ( $package['contents'] as $item_id => $values ) {
-        $_product = $values['data'];
-        if ( $_product->get_weight() ) {
-          $weight = $weight + $_product->get_weight() * $values['quantity'];
-        }
-        for ( $i=0;$i<$values['quantity'];$i++ ) {
-          array_push($products_for_dim, $_product);
-        }
-      }
-
-      $weight = wc_get_weight($weight, 'kg');
+      $cart_amount = $cart->cart_contents_total + $cart->tax_total;
 
       $prices_key = (array_key_exists($country, $this->omnivalt_configs['shipping_params'])) ? 'prices_' . $country : 'prices_LT';
-      $prices = (isset($this->settings[$prices_key])) ? json_decode($this->settings[$prices_key]) : array();
-
-      $shipping_methods = OmnivaLt_Shipmethod_Helper::get_available_shipping_methods($this->omnivalt_configs);
-      foreach ( $shipping_methods as $method_key => $method_values ) {
-        $prods_dim = ($method_values['key'] == 'pt') ? $products_for_dim : false;
-        $this->add_shipping_rate($method_values['key'], $prods_dim, $weight, $country, $cart_amount, $prices, $package);
+      $shipping_country = new OmnivaLt_Shipping_Method_Country($country, $prices_key);
+      foreach ( $shipping_country->getMethods() as $method_key => $method ) {
+        $shipping_country->setCurrentMethodKey($method_key);
+        $this->add_shipping_rate($package, $shipping_country, $cart_amount);
       }
     }
 
-    private function add_shipping_rate( $rate_key, $products_for_dim, $weight, $country, $cart_amount, $prices, $package )
+    private function add_shipping_rate( $package, $shipping_method, $cart_amount )
     {
-      $method_params = OmnivaLt_Shipmethod_Helper::get_current_method_params($this->omnivalt_configs['method_params_new'], $rate_key);
-      if ( empty($method_params) ) {
+      $weight = 0;
+      $products_for_dim = array();
+      $show = true;
+      $method = $shipping_method->getCurrentMethod();
+      $prices = $shipping_method->getSettings();
+      $country = $shipping_method->getKey();
+
+      if ( empty($method['key'])
+        || ! $method['fields']['enable']
+        || ! OmnivaLt_Shipmethod_Helper::is_rate_allowed($method['key'], $country, $this->settings)
+        || $this->settings['method_' . $method['key']] != 'yes'
+      ) {
+        return;
+      }
+      
+      foreach ( $package['contents'] as $item_id => $values ) {
+        $product = $values['data'];
+        if ( $product->get_weight() ) {
+          $weight = $weight + $product->get_weight() * $values['quantity'];
+        }
+        for ( $i = 0; $i < $values['quantity']; $i++ ) {
+          array_push($products_for_dim, $product);
+        }
+      }
+      $weight = OmnivaLt_Wc::get_weight($weight, 'kg');
+
+      $check_restrictions = OmnivaLt_Shipmethod_Helper::check_restrictions($this->settings, $method['key'], $weight, $products_for_dim);
+
+      if ( ! $check_restrictions ) {
         return;
       }
 
-      $check_restrictions = OmnivaLt_Shipmethod_Helper::check_restrictions($this->settings, $rate_key, $weight, $products_for_dim);
+      $amount_data = $shipping_method->getCartMethodAmount($weight, $cart_amount, false);
+      $amount = $amount_data['amount'];
 
-      if ( $this->settings['method_' . $rate_key] == 'yes' && $check_restrictions ) {
-        $show = true;
-        $amount_data = OmnivaLt_Shipmethod_Helper::get_amount($rate_key, $prices, $weight, $cart_amount);
-        $amount = $amount_data['amount'];
-        $meta_data = array(
-          __('Carrier', 'omnivalt') => 'Omniva',
-        );
-        $meta_data = array_merge($meta_data, $amount_data['meta_data']);
-
-        if ( empty($amount) && $amount !== 0 && $amount !== '0' ) {
-          $show = false;
-        }
-        if ( ! isset($prices->{$rate_key . '_enable'}) ) {
-          $show = false;
-        }
-
-        $amount = OmnivaLt_Shipmethod_Helper::check_amount_free($rate_key, $prices, $amount, $cart_amount);
-        $amount = OmnivaLt_Shipmethod_Helper::check_coupon($rate_key, $prices, $amount, $package['applied_coupons']);
-
-        $rate_name = $method_params['front_title'];
-        $prefix = $method_params['prefix'];
-        if ( isset($method_params['display_by_country'][$country]) ) {
-          $rate_name = $method_params['display_by_country'][$country]['front_title'];
-          $prefix = $method_params['display_by_country'][$country]['prefix'];
-        }
-        $show_prefix_on = array('classic', 'full');
-        if ( ! isset($this->settings['label_design']) || (isset($this->settings['label_design']) && in_array($this->settings['label_design'], $show_prefix_on)) ) {
-          $rate_name = $prefix . ' ' . strtolower($rate_name);
-        }
-        if ( ! empty($this->settings['custom_label']) ) {
-          $custom_labels = json_decode($this->settings['custom_label']);
-          $rate_name = (!empty($custom_labels->{$rate_key})) ? $custom_labels->{$rate_key} : $rate_name;
-        }
-
-        $rate = array(
-          'id' => 'omnivalt_' . $rate_key,
-          'label' => $rate_name,
-          'cost' => $amount,
-          'meta_data' => $meta_data,
-        );
-
-        if ( ! OmnivaLt_Shipmethod_Helper::is_rate_allowed($rate_key, $country, $this->settings) ) {
-          $show = false;
-        }
-
-        if ($show) {
-          $this->add_rate($rate);
-        }
+      if ( empty($amount) && $amount !== 0 && $amount !== '0' ) {
+        return;
       }
+      
+      $meta_data = array(
+        __('Carrier', 'omnivalt') => 'Omniva',
+      );
+      $meta_data = array_merge($meta_data, $amount_data['meta_data']);
+      
+      if ( $shipping_method->isCartMethodFreeByValue($cart_amount)
+        || $shipping_method->isCartMethodFreeByCoupon($package['applied_coupons'])
+      ) {
+        $amount = 0.0;
+      }
+
+      $rate = array(
+        'id' => 'omnivalt_' . $method['key'],
+        'label' => OmnivaLt_Shipmethod_Helper::get_rate_name($method, $country, $this->settings),
+        'cost' => $amount,
+        'meta_data' => $meta_data,
+      );
+
+      $this->add_rate($rate);
     }
   }
 }

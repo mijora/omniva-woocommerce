@@ -6,11 +6,12 @@
 004 'The service does not exist for the specified method' - There is no desired key in configs 'shipping_sets' section subsection
 
 == Hooks ==
-omnivalt_label_register_successfully - args: $order_id - shipment successfully registered
-omnivalt_label_register_failed - args: $order_id - failed to register shipment
+omnivalt_label_register_successfully - args: (integer) $order_id - shipment successfully registered
+omnivalt_label_register_failed - args: (integer) $order_id - failed to register shipment
 
 == Filters ==
-omnivalt_orders_list_per_page - args: $per_page - allows to change the number of orders displayed on the Omniva Orders page. Default value: 25.
+omnivalt_orders_list_per_page - args: (integer) $per_page - allows to change the number of orders displayed on the Omniva Orders page. Default value: 25.
+omnivalt_settings_coupons_args - args: (array) $args - can change the attributes by which receiving list of coupons.
 
 == Changelog ==
 

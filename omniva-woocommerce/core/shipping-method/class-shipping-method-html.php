@@ -1,5 +1,7 @@
 <?php
-class OmnivaLt_Admin_Html
+defined('OMNIVALT_VERSION') or die();
+
+class OmnivaLt_Shipping_Method_Html
 {
   public static function buildPriceType($params = array())
   {
@@ -49,7 +51,7 @@ class OmnivaLt_Admin_Html
     $col_2_decimal = strlen(substr(strrchr((float)$col_2_step, "."), 1));
     $col_1_text = (isset($params['c1_text'])) ? $params['c1_text'] : array();
     $allow_add = (isset($params['allow_add'])) ? $params['allow_add'] : true;
-    $values = (isset($params['values']) && is_object($params['values'])) ? $params['values'] : array();
+    $values = (isset($params['values']) && is_array($params['values'])) ? $params['values'] : array();
     $description = (isset($params['desc'])) ? $params['desc'] : '';
 
     $row_actions = array();
@@ -76,15 +78,15 @@ class OmnivaLt_Admin_Html
           <tr class="row-values">
             <td class="column-value">
               <?php if (!empty($col_1_text)) : ?>
-                <input class="input-text regular-input" type="hidden" name="<?php echo $field_name . '[' . $i . '][value]'; ?>" id="<?php echo $field_id . '_value_' . $i; ?>" <?php if (isset($value->value)) : ?>value="<?php echo $value->value; ?>"<?php endif;?>>
-                <span class="row-from"><?php echo $col_1_text[$value->value]; ?></span>
+                <input class="input-text regular-input" type="hidden" name="<?php echo $field_name . '[' . $i . '][value]'; ?>" id="<?php echo $field_id . '_value_' . $i; ?>" <?php if (isset($value['value'])) : ?>value="<?php echo $value['value']; ?>"<?php endif;?>>
+                <span class="row-from"><?php echo $col_1_text[$value['value']]; ?></span>
               <?php else : ?>
                 <span class="row-from"><span class="value-from" data-step="<?php echo $col_1_step; ?>"><?php echo ($prev_value == 0) ? number_format((float)$prev_value, $col_1_decimal, '.', '') : number_format((float)$prev_value + (float)$params['c1_step'], $col_1_decimal, '.', ''); ?></span> - </span>
-                <input class="input-text regular-input" type="number" name="<?php echo $field_name . '[' . $i . '][value]'; ?>" id="<?php echo $field_id . '_value_' . $i; ?>" <?php if (isset($value->value)) : ?>value="<?php echo $value->value; ?>"<?php endif;?> step="<?php echo $col_1_step; ?>" min="0" placeholder="...">
+                <input class="input-text regular-input" type="number" name="<?php echo $field_name . '[' . $i . '][value]'; ?>" id="<?php echo $field_id . '_value_' . $i; ?>" <?php if (isset($value['value'])) : ?>value="<?php echo $value['value']; ?>"<?php endif;?> step="<?php echo $col_1_step; ?>" min="0" placeholder="...">
               <?php endif; ?>
             </td>
             <td class="column-price">
-              <input class="input-text regular-input" type="number" name="<?php echo $field_name . '[' . $i . '][price]'; ?>" id="<?php echo $field_id . '_price_' . $i; ?>" value="<?php echo $value->price; ?>" step="<?php echo $col_2_step; ?>" min="0">
+              <input class="input-text regular-input" type="number" name="<?php echo $field_name . '[' . $i . '][price]'; ?>" id="<?php echo $field_id . '_price_' . $i; ?>" value="<?php echo $value['price']; ?>" step="<?php echo $col_2_step; ?>" min="0">
             </td>
             <?php if (!empty($row_actions)) : ?>
               <td class="column-actions">
@@ -95,7 +97,7 @@ class OmnivaLt_Admin_Html
             <?php endif; ?>
           </tr>
           <?php
-          $prev_value = $value->value;
+          $prev_value = $value['value'];
           $i++;
           ?>
         <?php endforeach; ?>

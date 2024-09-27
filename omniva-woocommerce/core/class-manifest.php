@@ -149,7 +149,7 @@ class OmnivaLt_Manifest
         'completed_orders' => __('Completed orders', 'omnivalt'),
       ),
       'filter_keys' => array('customer', 'status', 'barcode', 'id', 'start_date', 'end_date'),
-      'per_page' => apply_filters('omnivalt_orders_list_per_page', 25),
+      'per_page' => OmnivaLt_Filters::orders_list_per_page(),
     );
   }
 

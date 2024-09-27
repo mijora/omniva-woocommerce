@@ -187,6 +187,14 @@
 .woocommerce table.omniva-settings .prices_box .block-prices .sec-other > div {
   margin-bottom: 5px;
 }
+.woocommerce table.omniva-settings .prices_box .block-prices .other-label label {
+  display: inline-block;
+  width: 24%;
+}
+.woocommerce table.omniva-settings .prices_box .block-prices .other-label input {
+  display: inline-block;
+  width: 75%;
+}
 .woocommerce table.omniva-settings .prices_box .block-prices .other-description label {
   display: inline-block;
   width: 24%;

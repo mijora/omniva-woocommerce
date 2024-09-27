@@ -74,6 +74,10 @@ class OmnivaLt_Order
     $settings = get_option($configs['plugin']['settings_key']);
     $cart_categories_ids = array();
 
+    if ( ! $settings ) {
+      return $rates;
+    }
+
     foreach( $woocommerce->cart->get_cart() as $cart_item ) {
       $cats = get_the_terms($cart_item['product_id'], 'product_cat');
       if ( empty($cats) ) {
