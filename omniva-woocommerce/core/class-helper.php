@@ -358,7 +358,16 @@ class OmnivaLt_Helper
     if ( ! isset($_SESSION['omnivalt_notices']) ) {
       $_SESSION['omnivalt_notices'] = array();
     }
-    $_SESSION['omnivalt_notices'][] = array('msg' => $message, 'type' => $type, 'prefix' => $prefix, 'dismissible' => $dismissible);
+    $new_message_data = array('msg' => $message, 'type' => $type, 'prefix' => $prefix, 'dismissible' => $dismissible);
+    $message_exists = false;
+    foreach ( $_SESSION['omnivalt_notices'] as $notice ) {
+      if ( $notice['msg'] === $new_message_data['msg'] && $notice['type'] === $new_message_data['type'] ) {
+        $message_exists = true;
+      }
+    }
+    if ( ! $message_exists ) {
+      $_SESSION['omnivalt_notices'][] = array('msg' => $message, 'type' => $type, 'prefix' => $prefix, 'dismissible' => $dismissible);
+    }
   }
 
   /**
