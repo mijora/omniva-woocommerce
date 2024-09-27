@@ -438,8 +438,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'select',
         'options' => array(
           'all' => __('Add to SMS and email', 'omnivalt'),
-          'sms' => __('Add to SMS', 'omnivalt'),
-          'email' => __('Add to email', 'omnivalt'),
+          //'sms' => __('Add to SMS', 'omnivalt'),
+          //'email' => __('Add to email', 'omnivalt'),
           'dont' => __('Do not send', 'omnivalt'),
         ),
         'default' => 'all',

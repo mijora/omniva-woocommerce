@@ -37,13 +37,11 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
       $data_packages = $this->get_packages_data($order);
 
       $label_comment = $this->fill_comment_variables($data_settings->label_comment, $data_settings->comment_variables, $order );
+      $send_return_code = ($data_settings->send_return_code->email || $data_settings->send_return_code->sms) ? true : false;
 
       /* Create shipment */
       $api_shipment = new Shipment();
-      $api_shipment
-        ->setComment($label_comment)
-        ->setShowReturnCodeEmail($data_settings->send_return_code->email)
-        ->setShowReturnCodeSms($data_settings->send_return_code->sms);
+      $api_shipment->setComment($label_comment);
       $this->set_auth($api_shipment);
 
       /* Prepare shipment header */
@@ -71,7 +69,8 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
         $api_package = new Package();
         $api_package
           ->setId($data_package->id)
-          ->setService($shipment_service);
+          ->setService($shipment_service)
+          ->setReturnAllowed($send_return_code);
 
         /* Set additional services */
         $additional_services = $this->get_additional_services($order, $shipment_service);
