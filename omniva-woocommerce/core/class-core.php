@@ -335,7 +335,6 @@ class OmnivaLt_Core
 
   public static function init_shipping_method()
   {
-    require_once OMNIVALT_DIR . 'core/class-shipping-method-helper.php';
     include OMNIVALT_DIR . 'core/class-shipping-method.php';
     
     OmnivaLt_Terminals::check_terminals_json_file();
@@ -391,28 +390,28 @@ class OmnivaLt_Core
     $core_dir = self::get_core_dir();
     require_once $core_dir . 'class-debug.php';
     require_once $core_dir . 'class-configs.php';
+    require_once $core_dir . 'class-filters.php';
     require_once $core_dir . 'class-helper.php';
-    require_once $core_dir . 'class-wc.php';
-    require_once $core_dir . 'class-wc-order.php';
-    require_once $core_dir . 'class-wc-product.php';
-    require_once $core_dir . 'class-wc-blocks.php';
-    require_once $core_dir . 'class-method-core.php';
-    require_once $core_dir . 'class-method-terminal.php';
-    require_once $core_dir . 'class-method-courier.php';
-    require_once $core_dir . 'class-method-courierplus.php';
-    require_once $core_dir . 'class-method-privatecustomer.php';
-    require_once $core_dir . 'class-method-postnear.php';
-    require_once $core_dir . 'class-method-postspecific.php';
-    require_once $core_dir . 'class-method-logistic.php';
+    require_once $core_dir . 'wc/' . 'class-wc.php';
+    require_once $core_dir . 'wc/' . 'class-wc-order.php';
+    require_once $core_dir . 'wc/' . 'class-wc-product.php';
+    require_once $core_dir . 'wc/' . 'class-wc-blocks.php';
+    require_once $core_dir . 'methods/' . 'class-method-core.php';
+    require_once $core_dir . 'methods/' . 'class-method-terminal.php';
+    require_once $core_dir . 'methods/' . 'class-method-courier.php';
+    require_once $core_dir . 'methods/' . 'class-method-courierplus.php';
+    require_once $core_dir . 'methods/' . 'class-method-privatecustomer.php';
+    require_once $core_dir . 'methods/' . 'class-method-postnear.php';
+    require_once $core_dir . 'methods/' . 'class-method-postspecific.php';
+    require_once $core_dir . 'methods/' . 'class-method-logistic.php';
     require_once $core_dir . 'class-calc-size.php';
     require_once $core_dir . 'class-compatibility.php';
     require_once $core_dir . 'class-emails.php';
     require_once $core_dir . 'class-labels.php';
     require_once $core_dir . 'class-api.php';
-    require_once $core_dir . 'class-api-core.php';
-    require_once $core_dir . 'class-api-xml.php';
-    require_once $core_dir . 'class-api-omx.php';
-    require_once $core_dir . 'class-admin-html.php';
+    require_once $core_dir . 'api/' . 'class-api-core.php';
+    require_once $core_dir . 'api/' . 'class-api-xml.php';
+    require_once $core_dir . 'api/' . 'class-api-omx.php';
     require_once $core_dir . 'class-packer.php';
     require_once $core_dir . 'class-product.php';
     require_once $core_dir . 'class-cronjob.php';
@@ -422,6 +421,11 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-omniva-order.php';
     require_once $core_dir . 'class-frontend.php';
     require_once $core_dir . 'class-statistics.php';
+    require_once $core_dir . 'shipping-method/' . 'class-shipping-method-helper.php';
+    require_once $core_dir . 'shipping-method/' . 'class-shipping-method-core.php';
+    require_once $core_dir . 'shipping-method/' . 'class-shipping-method-country.php';
+    require_once $core_dir . 'shipping-method/' . 'class-shipping-method-field.php';
+    require_once $core_dir . 'shipping-method/' . 'class-shipping-method-html.php';
   }
 
   private static function default_configs()

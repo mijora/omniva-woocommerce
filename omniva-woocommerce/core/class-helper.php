@@ -573,21 +573,9 @@ class OmnivaLt_Helper
     return $array[$key] ?? $value_if_not;
   }
 
-  public static function get_units( $get_as_object = true )
-  {
-    $units = array(
-      'weight' => get_option('woocommerce_weight_unit'),
-      'dimension' => get_option('woocommerce_dimension_unit'),
-      'currency' => get_option('woocommerce_currency'),
-      'currency_symbol' => get_woocommerce_currency_symbol(),
-    );
-
-    return ($get_as_object) ? (object) $units : $units;
-  }
-
   public static function convert_unit( $value, $new_unit, $current_unit = false, $unit_type = 'weight' )
   {
-    $woo_units = self::get_units(false);
+    $woo_units = OmnivaLt_Wc::get_units(false);
     if ( ! isset($woo_units[$unit_type]) ) {
       return $value;
     }
@@ -597,13 +585,13 @@ class OmnivaLt_Helper
         if ( ! $current_unit ) {
           $current_unit = $woo_units['weight'];
         }
-        return wc_get_weight($value, $new_unit, $current_unit);
+        return OmnivaLt_Wc::get_weight($value, $new_unit, $current_unit);
         break;
       case 'dimension':
         if ( ! $current_unit ) {
           $current_unit = $woo_units['dimension'];
         }
-        return wc_get_dimension($value, $new_unit, $current_unit);
+        return OmnivaLt_Wc::get_dimension($value, $new_unit, $current_unit);
         break;
     }
 

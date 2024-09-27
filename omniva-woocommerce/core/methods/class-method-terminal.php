@@ -3,7 +3,7 @@ class OmnivaLt_Method_Terminal extends OmnivaLt_Method_Core
 {
     public function __construct()
     {
-        $this->setId('terminal');
+        $this->setId('pickup');
         $this->setKey('pt');
         $this->setTitle(__('Parcel terminal', 'omnivalt'));
         $this->setDisplayByCountry(array(

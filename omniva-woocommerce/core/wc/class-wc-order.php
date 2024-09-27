@@ -137,7 +137,7 @@ class OmnivaLt_Wc_Order
             $data['meta_data'] = OmnivaLt_Helper::purge_meta_data($wc_order->get_meta_data());
         }
 
-        $data['units'] = OmnivaLt_Helper::get_units();
+        $data['units'] = OmnivaLt_Wc::get_units();
 
         return (object) $data;
     }

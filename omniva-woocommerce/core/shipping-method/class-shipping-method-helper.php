@@ -62,78 +62,26 @@ class OmnivaLt_Shipmethod_Helper
     return true;
   }
 
-  public static function get_amount($key, $prices, $weight, $cart_amount, $get_only_amount = false)
+  public static function get_rate_name($method, $country, $settings)
   {
-    $keys = array(
-      'single' => $key . '_price_single',
-      'type' => $key . '_price_type',
-      'weight' => $key . '_price_by_weight',
-      'amount' => $key . '_price_by_amount',
-      'boxsize' => $key . '_price_by_boxsize',
-    );
-    $meta_data = array();
-    $amount = (isset($prices->{$keys['single']})) ? $prices->{$keys['single']} : '';
+    $rate_name = $method['front_title'];
+    $prefix = $method['prefix'];
     
-    if ( isset($prices->{$keys['type']}) ) {
-      if ( $prices->{$keys['type']} == 'weight' && isset($prices->{$keys['weight']}) ) {
-        $amount = self::get_price_from_table($prices->{$keys['weight']}, $weight, $amount);
-        $meta_data[__('Weight', 'omnivalt')] = $weight;
-      }
-      if ( $prices->{$keys['type']} == 'amount' && isset($prices->{$keys['amount']}) ) {
-        $amount = self::get_price_from_table($prices->{$keys['amount']}, $cart_amount, $amount);
-      }
-      if ( $prices->{$keys['type']} == 'boxsize' && isset($prices->{$keys['boxsize']}) ) {
-        $box = self::check_omniva_box_size();
-        $amount = self::get_price_from_table($prices->{$keys['boxsize']}, $box, '');
-        $meta_data[__('Size', 'omnivalt')] = $box;
-      }
+    if ( isset($method['display_by_country'][$country]) ) {
+      $rate_name = $method['display_by_country'][$country]['front_title'];
+      $prefix = $method['display_by_country'][$country]['prefix'];
     }
 
-    if ( $get_only_amount ) {
-      return $amount;
+    $show_prefix_on = array('classic', 'full');
+    if ( ! isset($settings['label_design']) || (isset($settings['label_design']) && in_array($settings['label_design'], $show_prefix_on)) ) {
+      $rate_name = $prefix . ' ' . strtolower($rate_name);
     }
 
-    return array(
-      'amount' => $amount,
-      'meta_data' => $meta_data,
-    );
-  }
-
-  public static function check_amount_free($key, $prices, $amount, $cart_amount)
-  {
-    $keys = array(
-      'enable' => $key . '_enable_free_from',
-      'from' => $key . '_free_from',
-    );
-
-    if ( ! isset($prices->{$keys['enable']}) ) {
-      return $amount;
+    if ( ! empty($method['fields']['label']) ) {
+      $rate_name = $method['fields']['label'];
     }
 
-    $amount_free = (isset($prices->{$keys['from']})) ? $prices->{$keys['from']} : 100;
-    if ( $cart_amount >= $amount_free ) $amount = 0.0;
-
-    return $amount;
-  }
-
-  public static function check_coupon($key, $prices, $amount, $applied_coupons)
-  {
-    $keys = array(
-      'enable' => $key . '_enable_coupon',
-      'coupon' => $key . '_coupon',
-    );
-
-    if ( ! isset($prices->{$keys['enable']}) ) {
-      return $amount;
-    }
-
-    if ( isset($prices->{$keys['coupon']}) && ! empty($applied_coupons) ) {
-      foreach ( $applied_coupons as $coupon ) {
-        if ( mb_strtolower($prices->{$keys['coupon']}) == mb_strtolower($coupon) ) $amount = 0.0;
-      }
-    }
-
-    return $amount;
+    return $rate_name;
   }
 
   public static function is_rate_allowed($key, $country, $settings) {
@@ -234,23 +182,7 @@ class OmnivaLt_Shipmethod_Helper
     return true;
   }
 
-  private static function get_price_from_table($table_values, $cart_value, $default_value)
-  {
-    foreach ( $table_values as $values ) {
-      if ( empty($values->value) && ! empty($values->price) ) {
-        return $values->price;
-      }
-      if ( is_numeric($cart_value) && $cart_value < $values->value ) {
-        return $values->price;
-      } elseif ( $cart_value === $values->value ) {
-        return $values->price;
-      }
-    }
-
-    return $default_value;
-  }
-
-  private static function check_omniva_box_size()
+  public static function check_omniva_box_size()
   {
     OmnivaLt_Core::add_required_directories();
 
