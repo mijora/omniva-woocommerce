@@ -4,6 +4,7 @@
 .gitignore export-ignore
 #readme, etc
 nbproject export-ignore
+omniva-blocks-builder export-ignore
 README.md export-ignore
 CHANGELOG.md export-ignore
 build_release.sh export-ignore
