@@ -15,6 +15,16 @@ omnivalt_settings_coupons_args - args: (array) $args - can change the attributes
 
 == Changelog ==
 
+= 1.17.1 =
+- fixed the positions function to not remove display of other delivery methods
+- fixed courier call time
+- fixed "send return code" parameter on OMX
+- added possibility to send statistical data
+- in plugin settings moved custom shipping method label field to each method
+- structurally rebuilded shipping method pricing block
+- added a new parameter for feature testing in settings (dedicated for developers)
+- updated Omniva API library to v1.2.0
+
 = 1.17.0 =
 - added changes based on updated Omniva API OMX library
 - added the possibility to log the data submitted from the Checkout page to the plugin
