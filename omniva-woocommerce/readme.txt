@@ -6,13 +6,24 @@
 004 'The service does not exist for the specified method' - There is no desired key in configs 'shipping_sets' section subsection
 
 == Hooks ==
-omnivalt_label_register_successfully - args: $order_id - shipment successfully registered
-omnivalt_label_register_failed - args: $order_id - failed to register shipment
+omnivalt_label_register_successfully - args: (integer) $order_id - shipment successfully registered
+omnivalt_label_register_failed - args: (integer) $order_id - failed to register shipment
 
 == Filters ==
-omnivalt_orders_list_per_page - args: $per_page - allows to change the number of orders displayed on the Omniva Orders page. Default value: 25.
+omnivalt_orders_list_per_page - args: (integer) $per_page - allows to change the number of orders displayed on the Omniva Orders page. Default value: 25.
+omnivalt_settings_coupons_args - args: (array) $args - can change the attributes by which receiving list of coupons.
 
 == Changelog ==
+
+= 1.17.1 =
+- fixed the positions function to not remove display of other delivery methods
+- fixed courier call time
+- fixed "send return code" parameter on OMX
+- added possibility to send statistical data
+- in plugin settings moved custom shipping method label field to each method
+- structurally rebuilded shipping method pricing block
+- added a new parameter for feature testing in settings (dedicated for developers)
+- updated Omniva API library to v1.2.0
 
 = 1.17.0 =
 - added changes based on updated Omniva API OMX library

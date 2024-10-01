@@ -266,7 +266,7 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         $method_key = \OmnivaLt_Omniva_Order::get_method_key_from_id($woo_method_id);
         $terminals_type = \OmnivaLt_Configs::get_method_terminals_type($method_key);
         $omniva_methods = OmnivaLt_Core::get_configs('method_params_new');
-        $omniva_method = ($terminals_type == 'post') ? $omniva_methods['post_specific'] : $omniva_methods['terminal'];
+        $omniva_method = ($terminals_type == 'post') ? $omniva_methods['post_specific'] : $omniva_methods['pickup'];
 
         $provider = 'omniva';
         $map_icon = $omniva_method['map_marker'];

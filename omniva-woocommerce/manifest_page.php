@@ -21,6 +21,8 @@ $manifest_enabled = (!isset($shipping_settings['manifest_enable']) || $shipping_
 $active_omx = ($configs['api']['type'] === 'omx');
 $current_courier_calls = OmnivaLt_Helper::get_courier_calls();
 
+$is_wrong_timezone = (OmnivaLt_Helper::get_timezone_offset(OmnivaLt_Helper::get_local_timezone_string()) !== OmnivaLt_Helper::get_timezone_offset('Europe/Tallinn'));
+$timezone_alert = __('The offset of the timezone of your website is different from the offset of the timezone of the Omniva server, so the courier call time is displayed differently than specified in the settings', 'omnivalt');
 
 // Append custom css and js
 do_action('omniva_admin_manifest_head');
@@ -39,6 +41,13 @@ do_action('omniva_admin_manifest_head');
                   <?php echo __('Scheduled courier arrivals', 'omnivalt') . OmnivaLt_Helper::custom_tip(__('After arrival time expires, the record is automatically removed', 'omnivalt')); ?>
                 </th>
               </tr>
+              <?php if ( $is_wrong_timezone ) : ?>
+              <tr>
+                <td colspan="2">
+                  <span class="timezone_alert"><?php echo __('The timezone is different!', 'omnivalt') . OmnivaLt_Helper::custom_tip($timezone_alert . '. ' . __('This table shows the real courier call time converted to the timezone of your website', 'omnivalt') . '.'); ?></span>
+                </td>
+              </tr>
+              <?php endif; ?>
               <?php foreach( $current_courier_calls as $call ) : ?>
                 <?php
                 $call_start_date = date('Y-m-d', strtotime($call['start']));
@@ -349,6 +358,13 @@ do_action('omniva_admin_manifest_head');
                   </label>
                 </td>
               </tr>
+              <?php if ( $is_wrong_timezone ) : ?>
+                <tr>
+                  <td colspan="2">
+                    <span class="alert timezone_alert"><?php echo __('The timezone is different!', 'omnivalt') . OmnivaLt_Helper::custom_tip($timezone_alert); ?></span>
+                  </td>
+                </tr>
+              <?php endif; ?>
             </table>
             <div class="modal-footer">
               <button type="submit" id="omniva-call-confirm-btn" class="button action"><?php _e('Call Omniva courier', 'omnivalt') ?></button>

@@ -211,7 +211,7 @@
   }
 
   .modal-content .alert-info p span,
-  .modal-content div span {
+  .modal-content div span:not(.tip-text) {
       font-weight: 900;
   }
 
@@ -226,6 +226,17 @@
   
   .modal-content td {
     padding: 0;
+  }
+
+  .modal-content table span.alert {
+    display: block;
+    padding: 10px 0;
+    font-weight: bold;
+    color: #a00;
+  }
+
+  .modal-content table span.alert .tip-text {
+    min-width: 200px;
   }
 
   .modal-footer {
@@ -444,6 +455,15 @@
 
 .call-courier-container .current_calls button {
   cursor: pointer;
+}
+
+.call-courier-container .current_calls .timezone_alert {
+  color: #a00;
+  font-weight: bold;
+}
+
+.call-courier-container .current_calls .timezone_alert .tip-text {
+  min-width: 200px;
 }
 
 .call-courier-container .current_calls .date {

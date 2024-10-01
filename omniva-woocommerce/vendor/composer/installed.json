@@ -1,17 +1,17 @@
 [
     {
         "name": "mijora/omniva-api",
-        "version": "1.1.0",
-        "version_normalized": "1.1.0.0",
+        "version": "1.2.0",
+        "version_normalized": "1.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/omniva-baltic/omniva-api-lib.git",
-            "reference": "4452637367fa7a898404f7101d3d4ecf86e138d7"
+            "reference": "8491e199a7efed9c32519b16638ea421dbee7533"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/4452637367fa7a898404f7101d3d4ecf86e138d7",
-            "reference": "4452637367fa7a898404f7101d3d4ecf86e138d7",
+            "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/8491e199a7efed9c32519b16638ea421dbee7533",
+            "reference": "8491e199a7efed9c32519b16638ea421dbee7533",
             "shasum": ""
         },
         "require": {
@@ -19,7 +19,7 @@
             "setasign/fpdi": "^2.3",
             "tecnickcom/tcpdf": "^6.3"
         },
-        "time": "2024-08-06T10:59:24+00:00",
+        "time": "2024-09-25T13:12:14+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -92,17 +92,17 @@
     },
     {
         "name": "setasign/fpdi",
-        "version": "v2.6.0",
-        "version_normalized": "2.6.0.0",
+        "version": "v2.6.1",
+        "version_normalized": "2.6.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Setasign/FPDI.git",
-            "reference": "a6db878129ec6c7e141316ee71872923e7f1b7ad"
+            "reference": "09a816004fcee9ed3405bd164147e3fdbb79a56f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Setasign/FPDI/zipball/a6db878129ec6c7e141316ee71872923e7f1b7ad",
-            "reference": "a6db878129ec6c7e141316ee71872923e7f1b7ad",
+            "url": "https://api.github.com/repos/Setasign/FPDI/zipball/09a816004fcee9ed3405bd164147e3fdbb79a56f",
+            "reference": "09a816004fcee9ed3405bd164147e3fdbb79a56f",
             "shasum": ""
         },
         "require": {
@@ -122,7 +122,7 @@
         "suggest": {
             "setasign/fpdf": "FPDI will extend this class but as it is also possible to use TCPDF or tFPDF as an alternative. There's no fixed dependency configured."
         },
-        "time": "2023-12-11T16:03:32+00:00",
+        "time": "2024-09-02T10:17:15+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

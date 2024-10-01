@@ -119,6 +119,14 @@ jQuery('document').ready(function($){
           }
         }
       }
+    },
+
+    show_dev_params: function( show = true ) {
+      if ( show || $(".omniva_dev").is(":checked") ) {
+        $(".omniva_dev").closest("tr").show();
+      } else {
+        $(".omniva_dev").closest("tr").hide();
+      }
     }
   }
 
@@ -150,6 +158,16 @@ jQuery('document').ready(function($){
       $(this).addClass("active");
     }
   });
+
+  $(window).bind('hashchange', function () {
+    var hash = window.location.hash.slice(1);
+    if (hash === 'dev') {
+      omnivalt_settings.show_dev_params(true);
+    } else {
+      omnivalt_settings.show_dev_params(false);
+    }
+  });
+  $(window).trigger('hashchange');
 
   /** Old functions **/
   function omnivalt_load_shipping_method(key, name, all_keys) {
