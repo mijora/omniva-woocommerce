@@ -21,6 +21,10 @@ class OmnivaLt_Omniva_Order
                     return true;
                 }
             }
+            if ( OmnivaLt_Helper::is_omniva_international_method($ship_method) ) {
+                OmnivaLt_Wc_Order::update_meta($order_id, $configs['meta_keys']['method'], $ship_method);
+                return true;
+            }
         }
 
         return false;

@@ -102,6 +102,7 @@ function omnivalt_configs($section_name = false) {
    */
   $params['shipping_params'] = array(
     'LT' => array(
+      'type' => 'country',
       'methods' => array('pickup', 'courier'),
       'shipping_sets' => array(
         'LT' => 'baltic',
@@ -114,6 +115,7 @@ function omnivalt_configs($section_name = false) {
       'tracking_url' => 'https://www.omniva.lt/verslo/siuntos_sekimas?barcode=',
     ),
     'LV' => array(
+      'type' => 'country',
       'methods' => array('pickup', 'courier'),
       'shipping_sets' => array(
         'LT' => 'baltic',
@@ -126,6 +128,7 @@ function omnivalt_configs($section_name = false) {
       'tracking_url' => 'https://www.omniva.lv/privats/sutijuma_atrasanas_vieta?barcode=',
     ),
     'EE' => array(
+      'type' => 'country',
       'methods' => array('pickup', 'courier', 'courier_plus', 'post_near', 'post_specific'),
       'shipping_sets' => array(
         'LT' => 'estonia',
@@ -138,6 +141,7 @@ function omnivalt_configs($section_name = false) {
       'tracking_url' => 'https://www.omniva.ee/era/jalgimine?barcode=',
     ),
     'FI' => array(
+      'type' => 'country',
       'methods' => array('pickup', 'courier_plus', 'private_customer'),
       'shipping_sets' => array(
         'LT' => 'estonia',

@@ -20,6 +20,9 @@ class OmnivaLt_Api
             case 'omx':
                 $this->api = new OmnivaLt_Api_Omx();
                 break;
+            case 'international':
+                $this->api = new OmnivaLt_Api_Omx_International();
+                break;
             default:
                 $this->api = new OmnivaLt_Api_Xml();
                 break;
@@ -28,7 +31,7 @@ class OmnivaLt_Api
 
     public function set_api_type( $api_type )
     {
-        $allowed_types = array('xml', 'omx');
+        $allowed_types = array('xml', 'omx', 'international');
         $this->api_type = (in_array($api_type, $allowed_types)) ? $api_type : 'xml';
 
         return $this;
@@ -37,6 +40,11 @@ class OmnivaLt_Api
     public function get_api_type()
     {
         return $this->api_type;
+    }
+
+    public function change_api_type( $new_api_type )
+    {
+        $this->set_api_type($new_api_type)->load_api();
     }
 
     public function get_tracking_number( $id_order )
