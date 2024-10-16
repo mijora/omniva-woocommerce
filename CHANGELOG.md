@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+### Improved
+- added 3 new shipping methods dedicated for sending international shipments (not only Baltic countries and Finland)
+- added missing translations into Lithuanian
+
 ## [1.17.1]
 ### Fixed
 - fixed the positions function to not remove display of other delivery methods

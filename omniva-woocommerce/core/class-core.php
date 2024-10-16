@@ -416,6 +416,8 @@ class OmnivaLt_Core
     require_once $core_dir . 'api/' . 'class-api-core.php';
     require_once $core_dir . 'api/' . 'class-api-xml.php';
     require_once $core_dir . 'api/' . 'class-api-omx.php';
+    require_once $core_dir . 'api/' . 'class-api-international.php';
+    require_once $core_dir . 'api/' . 'class-api-omx-international.php';
     require_once $core_dir . 'class-packer.php';
     require_once $core_dir . 'class-product.php';
     require_once $core_dir . 'class-cronjob.php';
@@ -428,6 +430,7 @@ class OmnivaLt_Core
     require_once $core_dir . 'shipping-method/' . 'class-shipping-method-helper.php';
     require_once $core_dir . 'shipping-method/' . 'class-shipping-method-core.php';
     require_once $core_dir . 'shipping-method/' . 'class-shipping-method-country.php';
+    require_once $core_dir . 'shipping-method/' . 'class-shipping-method-international.php';
     require_once $core_dir . 'shipping-method/' . 'class-shipping-method-field.php';
     require_once $core_dir . 'shipping-method/' . 'class-shipping-method-html.php';
   }

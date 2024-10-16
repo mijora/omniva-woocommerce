@@ -630,6 +630,38 @@ class OmnivaLt_Helper
     return ($method_key == 'pt' || $method_key == 'ps');
   }
 
+  public static function is_omniva_international_method( $method_id, $add_prefix = true )
+  {
+    $all_keys = self::get_all_international_methods_keys($add_prefix);
+    foreach ( $all_keys as $key ) {
+      if ( $method_id == $key ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static function get_all_international_methods_keys( $add_prefix = true )
+  {
+    $methods_keys = [];
+    $prefix = 'omnivalt_';
+    $api = new OmnivaLt_Api_International();
+    foreach ( $api->get_available_packages() as $package_key => $package_zones ) {
+      foreach ( $package_zones as $zone => $zone_countries ) {
+        $international_data = array(
+          'key' => $package_key,
+          'title' => $api->get_package_title($package_key),
+        );
+        $shipping_international = new OmnivaLt_Shipping_Method_International($international_data, '');
+        $shipping_international->setCurrentMethodKey($zone);
+        $method = $shipping_international->getCurrentMethod();
+        $methods_keys[] = ($add_prefix) ? $prefix . $method['key'] : $method['key'];
+      }
+    }
+
+    return $methods_keys;
+  }
+
   public static function get_omniva_method_shipping_id( $key )
   {
     $found_key = $key;
