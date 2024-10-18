@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.18.0]
 ### Improved
 - added 3 new shipping methods dedicated for sending international shipments (not only Baltic countries and Finland)
 - added missing translations into Lithuanian
