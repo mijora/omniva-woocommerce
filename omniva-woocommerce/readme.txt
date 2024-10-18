@@ -15,6 +15,10 @@ omnivalt_settings_coupons_args - args: (array) $args - can change the attributes
 
 == Changelog ==
 
+= 1.18.0 =
+- added 3 new shipping methods dedicated for sending international shipments (not only Baltic countries and Finland)
+- added missing translations into Lithuanian
+
 = 1.17.1 =
 - fixed the positions function to not remove display of other delivery methods
 - fixed courier call time

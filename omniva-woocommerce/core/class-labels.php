@@ -7,6 +7,8 @@ class OmnivaLt_Labels
   private $omnivalt_configs;
   
   private $send_methods = array();
+  private $send_methods_international = array();
+  private $is_international = false;
 
   public function __construct()
   {
@@ -18,6 +20,9 @@ class OmnivaLt_Labels
     foreach ( $this->omnivalt_configs['method_params'] as $method_name => $method_values ) {
       if ( ! $method_values['is_shipping_method'] ) continue;
       $this->send_methods[$method_values['key']] = 'omnivalt_' . $method_values['key'];
+    }
+    foreach ( OmnivaLt_Helper::get_all_international_methods_keys(false) as $method_key ) {
+      $this->send_methods_international[$method_key] = 'omnivalt_' . $method_key;
     }
   }
 
@@ -32,15 +37,24 @@ class OmnivaLt_Labels
 
     $all_barcodes = array();
     foreach ( array_unique($orderIds) as $orderId ) {
+      $this->is_international = false;
       $order = OmnivaLt_Wc_Order::get_data($orderId, array('shipment', 'shipping', 'billing'));
       if ( ! $order ) {
         continue;
       }
       
       $send_method = $order->shipment->method;
-      if ( ! in_array($send_method, $this->send_methods) ) {
+      if ( ! in_array($send_method, $this->send_methods) && ! in_array($send_method, $this->send_methods_international) ) {
         OmnivaLt_Helper::add_msg($order->number . ' - ' . __('Shipping method is not Omniva', 'omnivalt'), 'error');
         continue;
+      }
+
+      if ( in_array($send_method, $this->send_methods_international) ) {
+        $this->is_international = true;
+        $this->omnivalt_api->change_api_type('international');
+      }
+      if ( ! $this->is_international && $this->omnivalt_api->get_api_type() == 'international' ) {
+        $this->omnivalt_api->change_api_type($this->omnivalt_configs['api']['type']);
       }
       
       if ( $regenerate ) {

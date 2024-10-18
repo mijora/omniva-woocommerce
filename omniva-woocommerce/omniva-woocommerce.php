@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.17.1
+ * Version: 1.18.0
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 
@@ -21,7 +21,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVALT_VERSION', '1.17.1');
+define('OMNIVALT_VERSION', '1.18.0');
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));
@@ -102,6 +102,7 @@ function omnivalt_configs($section_name = false) {
    */
   $params['shipping_params'] = array(
     'LT' => array(
+      'type' => 'country',
       'methods' => array('pickup', 'courier'),
       'shipping_sets' => array(
         'LT' => 'baltic',
@@ -114,6 +115,7 @@ function omnivalt_configs($section_name = false) {
       'tracking_url' => 'https://www.omniva.lt/verslo/siuntos_sekimas?barcode=',
     ),
     'LV' => array(
+      'type' => 'country',
       'methods' => array('pickup', 'courier'),
       'shipping_sets' => array(
         'LT' => 'baltic',
@@ -126,6 +128,7 @@ function omnivalt_configs($section_name = false) {
       'tracking_url' => 'https://www.omniva.lv/privats/sutijuma_atrasanas_vieta?barcode=',
     ),
     'EE' => array(
+      'type' => 'country',
       'methods' => array('pickup', 'courier', 'courier_plus', 'post_near', 'post_specific'),
       'shipping_sets' => array(
         'LT' => 'estonia',
@@ -138,6 +141,7 @@ function omnivalt_configs($section_name = false) {
       'tracking_url' => 'https://www.omniva.ee/era/jalgimine?barcode=',
     ),
     'FI' => array(
+      'type' => 'country',
       'methods' => array('pickup', 'courier_plus', 'private_customer'),
       'shipping_sets' => array(
         'LT' => 'estonia',

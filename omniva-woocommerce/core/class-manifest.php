@@ -190,6 +190,10 @@ class OmnivaLt_Manifest
 
       $shipping_methods[] = 'omnivalt_' . $method['key'];
     }
+    $international_methods_keys = OmnivaLt_Helper::get_all_international_methods_keys();
+    foreach ( $international_methods_keys as $international_method_key ) {
+      $shipping_methods[] = $international_method_key;
+    }
 
     $args = array(
       'paginate' => true,

@@ -427,6 +427,9 @@ class OmnivaLt_Order
     $order = OmnivaLt_Wc_Order::get_data($wc_order_id);
     $send_method = $order->omniva->method;
     $omnivalt_labels = new OmnivaLt_Labels();
+    $api_international = new OmnivaLt_Api_International();
+    $international_methods_keys = OmnivaLt_Helper::get_all_international_methods_keys();
+    $international_method = array('key' => '', 'zone' => '');
 
     $is_omniva = false;
     foreach ( $configs['method_params'] as $ship_method => $ship_values ) {
@@ -434,6 +437,15 @@ class OmnivaLt_Order
       if ( $send_method == $ship_values['key'] ) {
         $is_omniva = true;
       }
+    }
+    
+    $is_omniva_interational = false;
+    if ( OmnivaLt_Helper::is_omniva_international_method($send_method, false) ) {
+      $is_omniva = true;
+      $is_omniva_interational = true;
+      $exploded_method = explode('_', $send_method);
+      $international_method['key'] = $exploded_method[0];
+      $international_method['zone'] = $exploded_method[1];
     }
     
     if ( $send_method !== false && ! $is_omniva ) {
@@ -463,12 +475,29 @@ class OmnivaLt_Order
       echo '<p><strong class="title">' . $ship_values['title'] . ':</strong> ' . $field_value . '</p>';
     }
 
+    if ( $is_omniva_interational ) {
+      $international_data = array(
+        'key' => $international_method['key'],
+        'title' => $api_international->get_package_title($international_method['key']),
+        'country' => $order->shipping->country,
+      );
+      $shipping_international = new OmnivaLt_Shipping_Method_International($international_data, 'prices_' . $international_method['key']);
+      $shipping_international->setCurrentMethodKey($international_method['zone']);
+      $international_method = $shipping_international->getCurrentMethod();
+      $field_value = $order->shipment->formated_shipping_address;
+
+      echo '<p><strong class="title">' . $international_method['front_title'] . ':</strong> ' . $field_value . '</p>';
+    }
+
     if ( self::is_admin_order_edit_page($order->id) ) {
       echo self::build_total_shipments_text($order->shipment->total_shipments);
       echo self::build_shipment_size_text($order->shipment->size);
     }
 
     $services = OmnivaLt_Helper::get_order_services($order);
+    if ( $is_omniva_interational ) {
+      $services = array();
+    }
 
     if ( ! empty($services) ) {
       echo '<p><strong class="title">' . __('Services', 'omnivalt') . ':</strong> ';
@@ -524,7 +553,9 @@ class OmnivaLt_Order
 
     echo self::build_total_shipments_field($order->shipment->total_shipments);
     echo self::build_shipment_size_fields($order->shipment->size);
-    echo self::build_additional_services_fields($configs['additional_services'], $services);
+    if ( ! $is_omniva_interational ) {
+      echo self::build_additional_services_fields($configs['additional_services'], $services);
+    }
 
     echo '</div>';
     echo '<hr style="margin-top:20px;">';
@@ -668,6 +699,14 @@ class OmnivaLt_Order
   private static function add_Omniva_manually()
   {
     $configs = OmnivaLt_Core::get_configs();
+    
+    $api_international = new OmnivaLt_Api_International();
+    $international_methods_keys = OmnivaLt_Helper::get_all_international_methods_keys(false);
+    $international_methods = array();
+    foreach ( $international_methods_keys as $method_key ) {
+      $exploded = explode('_', $method_key);
+      $international_methods[$method_key] = $api_international->get_package_title($exploded[0]) . ' - ' . $api_international->get_region_title($exploded[1]);
+    }
 
     echo '<div class="edit_address">';
     $field_id = 'omnivalt_add_manual';
@@ -675,10 +714,17 @@ class OmnivaLt_Order
     echo '<label for="' . $field_id . '">' . __('Omniva shipping method', 'omnivalt') . ':</label>';
     echo '<select id="' . $field_id . '" class="select short" name="' . $field_id . '">';
     echo '<option>' . __('Not Omniva', 'omnivalt') . '</option>';
+    echo '<optgroup label="' . __('Baltic countries and Finland', 'omnivalt') . '">';
     foreach ( $configs['method_params'] as $method_key => $method_values ) {
       if ( ! $method_values['is_shipping_method'] ) continue;
       echo '<option value="' . $method_values['key'] . '">' . $method_values['title'] . '</option>';
     }
+    echo '</optgroup>';
+    echo '<optgroup label="' . __('International', 'omnivalt') . '">';
+    foreach ( $international_methods as $method_key => $method_title ) {
+      echo '<option value="' . $method_key . '">' . $method_title . '</option>';
+    }
+    echo '</optgroup>';
     echo '</select>';
     echo '</p>';
     echo '</div>';

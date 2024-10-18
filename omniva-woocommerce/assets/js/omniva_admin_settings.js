@@ -6,7 +6,9 @@ jQuery('document').ready(function($){
     "cp":"courier_plus",
     "pc":"private_customer",
     "pn":"post_near",
-    "ps":"post_specific"
+    "ps":"post_specific",
+    "eu":"",
+    "non":"",
   };
   var enable_only = { //Enable shipping method only in specified countries in array. If array empty, enable for all countries.
     "pt":[],
@@ -67,7 +69,7 @@ jQuery('document').ready(function($){
       let country, i;
       let available_blocks = omnivalt_settings.get_available_prices_blocks();
       
-      $('.block-prices').addClass('disabled');
+      $('.block-prices:not(.cant_disable)').addClass('disabled');
 
       for ( country in available_blocks ) {
         for ( i = 0; i < available_blocks[country].length; i++ ) {
