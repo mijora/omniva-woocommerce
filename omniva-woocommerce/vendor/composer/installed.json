@@ -1,17 +1,17 @@
 [
     {
         "name": "mijora/omniva-api",
-        "version": "1.2.0",
-        "version_normalized": "1.2.0.0",
+        "version": "1.2.1",
+        "version_normalized": "1.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/omniva-baltic/omniva-api-lib.git",
-            "reference": "8491e199a7efed9c32519b16638ea421dbee7533"
+            "reference": "098783cd5f1c994da4cc476e867513bca808a9e0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/8491e199a7efed9c32519b16638ea421dbee7533",
-            "reference": "8491e199a7efed9c32519b16638ea421dbee7533",
+            "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/098783cd5f1c994da4cc476e867513bca808a9e0",
+            "reference": "098783cd5f1c994da4cc476e867513bca808a9e0",
             "shasum": ""
         },
         "require": {
@@ -19,7 +19,7 @@
             "setasign/fpdi": "^2.3",
             "tecnickcom/tcpdf": "^6.3"
         },
-        "time": "2024-09-25T13:12:14+00:00",
+        "time": "2024-10-30T14:14:43+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -162,23 +162,23 @@
     },
     {
         "name": "tecnickcom/tcpdf",
-        "version": "6.7.5",
-        "version_normalized": "6.7.5.0",
+        "version": "6.7.7",
+        "version_normalized": "6.7.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/tecnickcom/TCPDF.git",
-            "reference": "951eabf0338ec2522bd0d5d9c79b08a3a3d36b36"
+            "reference": "cfbc0028cc23f057f2baf9e73bdc238153c22086"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/951eabf0338ec2522bd0d5d9c79b08a3a3d36b36",
-            "reference": "951eabf0338ec2522bd0d5d9c79b08a3a3d36b36",
+            "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/cfbc0028cc23f057f2baf9e73bdc238153c22086",
+            "reference": "cfbc0028cc23f057f2baf9e73bdc238153c22086",
             "shasum": ""
         },
         "require": {
             "php": ">=5.5.0"
         },
-        "time": "2024-04-20T17:25:10+00:00",
+        "time": "2024-10-26T12:15:02+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
