@@ -33,6 +33,7 @@ class ComposerStaticInit398a32df51a36dadc5fb5956e2f53305
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'FPDF' => __DIR__ . '/..' . '/setasign/fpdf/fpdf.php',
         'Mijora\\Omniva\\Helper' => __DIR__ . '/..' . '/mijora/omniva-api/src/Helper.php',
@@ -49,7 +50,11 @@ class ComposerStaticInit398a32df51a36dadc5fb5956e2f53305
         'Mijora\\Omniva\\Shipment\\AdditionalService\\DocumentReturnService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/DocumentReturnService.php',
         'Mijora\\Omniva\\Shipment\\AdditionalService\\FragileService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/FragileService.php',
         'Mijora\\Omniva\\Shipment\\AdditionalService\\InsuranceService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/InsuranceService.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\LetterDeliveryToASpecificPersonService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/LetterDeliveryToASpecificPersonService.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\RegisteredAdviceOfDeliveryService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/RegisteredAdviceOfDeliveryService.php',
         'Mijora\\Omniva\\Shipment\\AdditionalService\\SameDayDeliveryService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/SameDayDeliveryService.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\SecondDeliveryAttemptOnSaturdayService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/SecondDeliveryAttemptOnSaturdayService.php',
+        'Mijora\\Omniva\\Shipment\\AdditionalService\\StandardAdviceOfDeliveryService' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/AdditionalService/StandardAdviceOfDeliveryService.php',
         'Mijora\\Omniva\\Shipment\\CallCourier' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/CallCourier.php',
         'Mijora\\Omniva\\Shipment\\Label' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Label.php',
         'Mijora\\Omniva\\Shipment\\Manifest' => __DIR__ . '/..' . '/mijora/omniva-api/src/Shipment/Manifest.php',

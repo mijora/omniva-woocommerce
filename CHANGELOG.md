@@ -5,7 +5,7 @@
 - added double quotes support for sender name in labels
 
 ### Updated
-- updated Omniva API library to v1.2.1
+- updated Omniva API library to v1.3.1
 
 ## [1.18.0]
 ### Improved

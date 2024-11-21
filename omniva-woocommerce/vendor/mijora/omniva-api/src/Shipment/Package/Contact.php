@@ -10,7 +10,7 @@ class Contact
      * @var string
      */
     private $personName;
-    
+
     /**
      * @var string
      */
@@ -103,7 +103,7 @@ class Contact
      */
     public function getPhone()
     {
-        return $this->phone;
+        return $this->convertPhoneNumberToInternational($this->phone, $this->getCountryCode());
     }
 
     /**
@@ -121,7 +121,7 @@ class Contact
      */
     public function getMobile()
     {
-        return $this->mobile;
+        return $this->convertPhoneNumberToInternational($this->mobile, $this->getCountryCode());
     }
 
     /**
@@ -175,12 +175,14 @@ class Contact
     }
 
     /**
+     * @param bool $offloadPostcodeFormat if set to TRUE will address formated for offloadPostcode 
+     * 
      * @return array
      */
-    public function getAddresseeForOmx($delivery_channel = null)
+    public function getAddresseeForOmx($offloadPostcodeFormat = false)
     {
         $addressee = [
-            'address' => $this->getAddress()->getAddressForOmx($delivery_channel),
+            'address' => $this->getAddress()->getAddressForOmx($offloadPostcodeFormat),
             'contactEmail' => Helper::escapeForApi($this->getEmail(), Helper::ESCAPE_FOR_API_TYPE_EMAIL),
             'contactMobile' => Helper::escapeForApi($this->getMobile()),
             'personName' => $this->getPersonName(),
@@ -201,5 +203,25 @@ class Contact
         }
 
         return $addressee;
+    }
+
+    private function getCountryCode()
+    {
+        return $this->getAddress() ? $this->getAddress()->getCountry() : null;
+    }
+
+    private function convertPhoneNumberToInternational($phoneNumber, $countryCode)
+    {
+        if (empty($phoneNumber) || empty($countryCode)) {
+            return $phoneNumber;
+        }
+        $formatedPhoneNumber = preg_replace('/[^\d+]/', '', $phoneNumber);
+        
+        switch (strtoupper($countryCode)) {
+            case 'LT':
+                return preg_replace('/^(8|0|370|00370)?(\d{8})$/', '+370$2', $formatedPhoneNumber);
+        }
+
+        return $phoneNumber;
     }
 }
