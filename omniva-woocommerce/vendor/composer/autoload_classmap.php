@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Datamatrix' => $vendorDir . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
     'FPDF' => $vendorDir . '/setasign/fpdf/fpdf.php',
     'Mijora\\Omniva\\Helper' => $vendorDir . '/mijora/omniva-api/src/Helper.php',
@@ -22,7 +23,11 @@ return array(
     'Mijora\\Omniva\\Shipment\\AdditionalService\\DocumentReturnService' => $vendorDir . '/mijora/omniva-api/src/Shipment/AdditionalService/DocumentReturnService.php',
     'Mijora\\Omniva\\Shipment\\AdditionalService\\FragileService' => $vendorDir . '/mijora/omniva-api/src/Shipment/AdditionalService/FragileService.php',
     'Mijora\\Omniva\\Shipment\\AdditionalService\\InsuranceService' => $vendorDir . '/mijora/omniva-api/src/Shipment/AdditionalService/InsuranceService.php',
+    'Mijora\\Omniva\\Shipment\\AdditionalService\\LetterDeliveryToASpecificPersonService' => $vendorDir . '/mijora/omniva-api/src/Shipment/AdditionalService/LetterDeliveryToASpecificPersonService.php',
+    'Mijora\\Omniva\\Shipment\\AdditionalService\\RegisteredAdviceOfDeliveryService' => $vendorDir . '/mijora/omniva-api/src/Shipment/AdditionalService/RegisteredAdviceOfDeliveryService.php',
     'Mijora\\Omniva\\Shipment\\AdditionalService\\SameDayDeliveryService' => $vendorDir . '/mijora/omniva-api/src/Shipment/AdditionalService/SameDayDeliveryService.php',
+    'Mijora\\Omniva\\Shipment\\AdditionalService\\SecondDeliveryAttemptOnSaturdayService' => $vendorDir . '/mijora/omniva-api/src/Shipment/AdditionalService/SecondDeliveryAttemptOnSaturdayService.php',
+    'Mijora\\Omniva\\Shipment\\AdditionalService\\StandardAdviceOfDeliveryService' => $vendorDir . '/mijora/omniva-api/src/Shipment/AdditionalService/StandardAdviceOfDeliveryService.php',
     'Mijora\\Omniva\\Shipment\\CallCourier' => $vendorDir . '/mijora/omniva-api/src/Shipment/CallCourier.php',
     'Mijora\\Omniva\\Shipment\\Label' => $vendorDir . '/mijora/omniva-api/src/Shipment/Label.php',
     'Mijora\\Omniva\\Shipment\\Manifest' => $vendorDir . '/mijora/omniva-api/src/Shipment/Manifest.php',
