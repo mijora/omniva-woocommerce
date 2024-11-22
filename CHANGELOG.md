@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.18.1]
 ### Improved
 - added double quotes support for sender name in labels
 
