@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.1]
+### Improved
+- added double quotes support for sender name in labels
+
+### Updated
+- updated Omniva API library to v1.3.1
+
 ## [1.18.0]
 ### Improved
 - added 3 new shipping methods dedicated for sending international shipments (not only Baltic countries and Finland)

@@ -1,3 +1,16 @@
+## [1.3.1]
+- added phone number conversion to international format for Lithuania
+
+## [1.3.0]
+- **Breaking change**: changed how Package::isOffloadPostcodeRequired() function works, now it expects to be given Package object, with main service, channel and servicePackage (if applied)
+- if offloadPostcode is set on receiver Address object, when getting receiver address for registration it will return array with offloadPostcode format
+- enabled LETTER main service, most validations left for Omniva API side
+- added additional services for LETTER main service
+
+## [1.2.1]
+- changed default date time for PowerBi to be 1990-01-01 00:00:00
+- Contact personName, altName and companyName fields now allows double quotes
+
 ## [1.2.0]
 - created the ability to send statistical data to Omniva PowerBi
 - added that after the formatting function, the type of the measurement values is changed to string to avoid the problem when some servers provide a value with many numbers after the decimal point when converting to json

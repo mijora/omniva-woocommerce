@@ -15,6 +15,10 @@ omnivalt_settings_coupons_args - args: (array) $args - can change the attributes
 
 == Changelog ==
 
+= 1.18.1 =
+- added double quotes support for sender name in labels
+- updated Omniva API library to v1.3.1
+
 = 1.18.0 =
 - added 3 new shipping methods dedicated for sending international shipments (not only Baltic countries and Finland)
 - added missing translations into Lithuanian

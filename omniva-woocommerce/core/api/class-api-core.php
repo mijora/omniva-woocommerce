@@ -588,6 +588,6 @@ class OmnivaLt_Api_Core
 
     private function clean( $string )
     {
-        return str_replace('"', "'", trim($string));
+        return trim($string);
     }
 }
