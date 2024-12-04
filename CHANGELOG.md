@@ -1,8 +1,11 @@
 # Changelog
 
-## [Unreleased]
+## [1.18.2]
 ### Fixed
 - fixed shipment registration error when plugin installed in a new shop
+
+### Improved
+- changelog moved to separate file
 
 ## [1.18.1]
 ### Improved
