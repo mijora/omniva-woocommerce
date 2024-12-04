@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed shipment registration error when plugin installed in a new shop
+
 ## [1.18.1]
 ### Improved
 - added double quotes support for sender name in labels

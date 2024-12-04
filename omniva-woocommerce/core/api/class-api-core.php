@@ -26,6 +26,16 @@ class OmnivaLt_Api_Core
         $this->omnivalt_settings = get_option($this->omnivalt_configs['plugin']['settings_key']);
     }
 
+    protected function get_settings()
+    {
+        return $this->omnivalt_settings;
+    }
+
+    protected function get_configs()
+    {
+        return $this->omnivalt_configs;
+    }
+
     public function register_shipment( $id_order )
     {
         return array('status' => false, 'barcodes' => array(), 'msg' => __('The used API cant get register shipment', 'omnivalt'));
@@ -279,7 +289,7 @@ class OmnivaLt_Api_Core
             $object->setAuth(
                 $this->clean($this->omnivalt_settings['api_user']),
                 $this->clean($this->omnivalt_settings['api_pass']),
-                $this->clean($this->clear_api_url($this->omnivalt_settings['api_url'])),
+                '',
                 OmnivaLt_Debug::check_debug_enabled()
             );
         }
@@ -520,17 +530,6 @@ class OmnivaLt_Api_Core
         return $order_number . $kontrollnr;
     }
 
-    private function clear_api_url( $api_url )
-    {
-        $api_url = esc_url(preg_replace('{/$}', '', $api_url));
-        $url_path = '/epmx/services/messagesService.wsdl';
-        if ( ! str_contains($api_url, $url_path) ) {
-            //$api_url .= $url_path; // Disabled because the API library puts it on itself
-        }
-
-        return $api_url;
-    }
-
     private function prepare_package_size( $shipment_size, $units )
     {
         foreach ( $shipment_size as $size_key => $size_value ) {
@@ -576,7 +575,7 @@ class OmnivaLt_Api_Core
         );
     }
 
-    private function fix_postcode( $country, $postcode )
+    protected function fix_postcode( $country, $postcode )
     {
         $postcode = preg_replace("/[^0-9]/", "", $postcode);
         if ($country == 'LV') {
@@ -586,7 +585,7 @@ class OmnivaLt_Api_Core
         return $postcode;
     }
 
-    private function clean( $string )
+    protected function clean( $string )
     {
         return trim($string);
     }

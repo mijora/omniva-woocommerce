@@ -16,6 +16,19 @@ use \Mijora\Omniva\Shipment\Package\Measures;
 
 class OmnivaLt_Api_Xml extends OmnivaLt_Api_Core
 {
+    protected function set_auth( $object )
+    {
+        if( method_exists($object, 'setAuth') ) {
+            $settings = $this->get_settings();
+            $object->setAuth(
+                $this->clean($settings['api_user']),
+                $this->clean($settings['api_pass']),
+                $this->clean($this->clear_api_url($settings['api_url'])),
+                OmnivaLt_Debug::check_debug_enabled()
+            );
+        }
+    }
+
     public function register_shipment( $id_order )
     {
         $output = array(
@@ -216,5 +229,16 @@ class OmnivaLt_Api_Xml extends OmnivaLt_Api_Core
         }
 
         return array('status' => false, 'msg' => __('Failed to call courier', 'omnivalt'));
+    }
+
+    private function clear_api_url( $api_url )
+    {
+        $api_url = esc_url(preg_replace('{/$}', '', $api_url));
+        $url_path = '/epmx/services/messagesService.wsdl';
+        if ( ! str_contains($api_url, $url_path) ) {
+            //$api_url .= $url_path; // Disabled because the API library puts it on itself
+        }
+
+        return $api_url;
     }
 }
