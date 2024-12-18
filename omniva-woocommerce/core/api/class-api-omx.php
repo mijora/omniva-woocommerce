@@ -10,6 +10,7 @@ use \Mijora\Omniva\Shipment\Package\Contact;
 use \Mijora\Omniva\Shipment\Package\AdditionalService;
 use \Mijora\Omniva\Shipment\Package\Cod;
 use \Mijora\Omniva\Shipment\Package\Measures;
+use \Mijora\Omniva\Shipment\Package\ServicePackage;
 use \Mijora\Omniva\Shipment\AdditionalService\CodService;
 use \Mijora\Omniva\Shipment\AdditionalService\DeliveryToAnAdultService;
 use \Mijora\Omniva\Shipment\AdditionalService\DeliveryToSpecificPersonService;
@@ -24,15 +25,38 @@ use \Mijora\Omniva\Shipment\AdditionalService\StandardAdviceOfDeliveryService;
 
 class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
 {
-  public function get_service_code( ...$args )
+  private function get_channels()
   {
-    $shipping_method = (isset($args[0])) ? $args[0] : false;
-
-    $channels = array(
+    return array(
       'terminal' => (defined(Package::class . '::CHANNEL_PARCEL_MACHINE')) ? Package::CHANNEL_PARCEL_MACHINE : false,
       'courier' => (defined(Package::class . '::CHANNEL_COURIER')) ? Package::CHANNEL_COURIER : false,
       'post' => (defined(Package::class . '::CHANNEL_POST_OFFICE')) ? Package::CHANNEL_POST_OFFICE : false,
     );
+  }
+
+  private function get_shipment_types()
+  {
+    return array(
+      'parcel' => (defined(Package::class . '::MAIN_SERVICE_PARCEL')) ? Package::MAIN_SERVICE_PARCEL : false,
+      'letter' => (defined(Package::class . '::MAIN_SERVICE_LETTER')) ? Package::MAIN_SERVICE_LETTER : false,
+      'pallet' => (defined(Package::class . '::MAIN_SERVICE_PALLET')) ? Package::MAIN_SERVICE_PALLET : false,
+    );
+  }
+
+  private function get_letter_service_codes()
+  {
+    return array(
+      'document' => (defined(ServicePackage::class . '::CODE_PROCEDURAL_DOCUMENT')) ? ServicePackage::CODE_PROCEDURAL_DOCUMENT : false,
+      'letter' => (defined(ServicePackage::class . '::CODE_REGISTERED_LETTER')) ? ServicePackage::CODE_REGISTERED_LETTER : false,
+      'maxiletter' => (defined(ServicePackage::class . '::CODE_REGISTERED_MAXILETTER')) ? ServicePackage::CODE_REGISTERED_MAXILETTER : false,
+    );
+  }
+  
+  public function get_service_code( ...$args )
+  {
+    $shipping_method = (isset($args[0])) ? $args[0] : false;
+
+    $channels = $this->get_channels();
 
     $methods_channels = array(
       'pickup' => $channels['terminal'],
@@ -53,20 +77,28 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
     return (isset($methods_channels[$method['id']])) ? $methods_channels[$method['id']] : false;
   }
 
-  private function get_shipment_type_code( $shipping_method )
+  private function get_shipment_type_key( $shipping_method )
   {
-    $types = array(
-      'parcel' => (defined(Package::class . '::MAIN_SERVICE_PARCEL')) ? Package::MAIN_SERVICE_PARCEL : false,
-      'letter' => (defined(Package::class . '::MAIN_SERVICE_LETTER')) ? Package::MAIN_SERVICE_LETTER : false,
-      'pallet' => (defined(Package::class . '::MAIN_SERVICE_PALLET')) ? Package::MAIN_SERVICE_PALLET : false,
-    );
-
     $method = OmnivaLt_Method::get_by_key($shipping_method);
     if ( ! $method || ! isset($method['type']) ) {
-      return $types['parcel'];
+      return 'parcel';
     }
 
-    return (isset($types[$method['type']])) ? $types[$method['type']] : false;
+    return (isset($method['type'])) ? $method['type'] : 'parcel';
+  }
+
+  private function get_shipment_type_code( $type_key )
+  {
+    $types = $this->get_shipment_types();
+
+    return (isset($types[$type_key])) ? $types[$type_key] : false;
+  }
+
+  private function get_letter_service_code( $type_key )
+  {
+    $codes = $this->get_letter_service_codes();
+
+    return (isset($codes[$type_key])) ? $codes[$type_key] : false;
   }
 
   public static function get_additional_services()
@@ -229,7 +261,8 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
       $packages = array();
       $package_counter = 0;
       foreach ( $data_packages as $data_package ) {
-        $shipment_main_service = $this->get_shipment_type_code($data_package->method);
+        $shipment_type_key = $this->get_shipment_type_key($data_package->method);
+        $shipment_main_service = $this->get_shipment_type_code($shipment_type_key);
         if ( ! $shipment_main_service ) {
           throw new OmnivaException(__('Failed to get shipment service', 'omnivalt'));
         }
@@ -266,7 +299,7 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
             $api_additional_service
               ->setCodAmount($data_package->amount)
               ->setCodIban($data_settings->bank_account)
-              ->setCodReference($api_additional_service::calculateReferenceNumber(2/*$order->id*/))
+              ->setCodReference($api_additional_service::calculateReferenceNumber($order->id))
               ->setCodReceiver($data_settings->company);
           }
           if ( $additional_service_key == 'insurance' ) {
@@ -277,13 +310,15 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
         }
 
         /* Set measures */
-        $api_measures = new Measures();
-        $api_measures
-          ->setWeight($data_package->weight)
-          ->setLength($data_package->length)
-          ->setHeight($data_package->height)
-          ->setWidth($data_package->width);
-        $api_package->setMeasures($api_measures);
+        if ( $shipment_type_key != 'letter' ) {
+          $api_measures = new Measures();
+          $api_measures
+            ->setWeight($data_package->weight)
+            ->setLength($data_package->length)
+            ->setHeight($data_package->height)
+            ->setWidth($data_package->width);
+          $api_package->setMeasures($api_measures);
+        }
 
         /* Set receiver */
         $api_receiver_address = new Address();
@@ -318,6 +353,12 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
           ->setMobile($data_shop->mobile)
           ->setPersonName($data_shop->name);
         $api_package->setSenderContact($api_sender_contact);
+
+        if ( $shipment_type_key == 'letter' ) {
+          $letter_service_code = $this->get_letter_service_code('letter'); //Always use "Local registered standard letter"
+          $api_service_package = new ServicePackage($letter_service_code);
+          $api_package->setServicePackage($api_service_package);
+        }
 
         $packages[] = $api_package;
       }
