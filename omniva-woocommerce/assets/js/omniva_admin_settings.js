@@ -7,16 +7,10 @@ jQuery('document').ready(function($){
     "pc":"private_customer",
     "pn":"post_near",
     "ps":"post_specific",
+    "lc":"letter_courier",
+    "lp":"letter_post",
     "eu":"",
     "non":"",
-  };
-  var enable_only = { //Enable shipping method only in specified countries in array. If array empty, enable for all countries.
-    "pt":[],
-    "c":[],
-    "cp":["EE"],
-    "pn":[],
-    "ps":[],
-    "pc":["EE"]
   };
 
   /** Functions **/

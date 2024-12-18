@@ -264,8 +264,8 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         $woo_method_id = esc_attr($_GET['method']);
 
         $method_key = \OmnivaLt_Omniva_Order::get_method_key_from_id($woo_method_id);
-        $terminals_type = \OmnivaLt_Configs::get_method_terminals_type($method_key);
-        $omniva_methods = OmnivaLt_Core::get_configs('method_params_new');
+        $terminals_type = \OmnivaLt_Method::get_terminal_type($method_key);
+        $omniva_methods = \OmnivaLt_Method::get_all();
         $omniva_method = ($terminals_type == 'post') ? $omniva_methods['post_specific'] : $omniva_methods['pickup'];
 
         $provider = 'omniva';

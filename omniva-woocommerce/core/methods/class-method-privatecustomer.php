@@ -14,6 +14,8 @@ class OmnivaLt_Method_PrivateCustomer extends OmnivaLt_Method_Core
         ));
         $this->setDescription(__('Activate this service, when you want to send parcels to private persons in Finland.', 'omnivalt')  . ' ' . __('Available for Estonian customers only.', 'omnivalt'));
         $this->setIsShippingMethod(true);
-        $this->setDefaultWeight(100);
+        $this->setMaxWeight(100);
+        $this->setRestrictApi(array('EE'));
+        $this->setRestrictCountry(array('FI'));
     }
 }

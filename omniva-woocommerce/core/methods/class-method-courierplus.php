@@ -8,6 +8,8 @@ class OmnivaLt_Method_CourierPlus extends OmnivaLt_Method_Core
         $this->setTitle(__('Courier', 'omnivalt'));
         $this->setDescription(__('Activate this service, when your e-shop customers would like to receive parcels in Estonia.', 'omnivalt') . ' ' . __('Available for Estonian customers only.', 'omnivalt'));
         $this->setIsShippingMethod(true);
-        $this->setDefaultWeight(100);
+        $this->setMaxWeight(100);
+        $this->setRestrictApi(array('EE'));
+        $this->setRestrictCountry(array('EE', 'FI'));
     }
 }

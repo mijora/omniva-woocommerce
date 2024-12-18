@@ -114,6 +114,7 @@ class OmnivaLt_Wc_Order
                 'total_shipments' => $order_total_shipments,
                 'size' => $order_size,
                 'formated_shipping_address' => $wc_order->get_formatted_shipping_address(),
+                'country' => $wc_order->get_shipping_country()
             );
         }
 

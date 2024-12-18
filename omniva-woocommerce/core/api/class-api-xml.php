@@ -29,6 +29,283 @@ class OmnivaLt_Api_Xml extends OmnivaLt_Api_Core
         }
     }
 
+    /**
+     * Gets the service code based on provided parameters.
+     *
+     * @param mixed ...$args The arguments for the service code. Expected in the following order:
+     *                       - $args[0] (sender_country): The country of the sender (string).
+     *                       - $args[1] (receiver_country): The country of the receiver (string).
+     *                       - $args[2] (shipping_type): The type of shipping, expected format: "pt c" (string).
+     * @throws Exception Error if the service code could not be received.
+     * @return string Service code
+     */
+    public function get_service_code( ...$args )
+    {
+        $sender_country = (isset($args[0])) ? $args[0] : false;
+        $receiver_country = (isset($args[1])) ? $args[1] : false;
+        $shipping_type = (isset($args[2])) ? $args[2] : false;
+        if ( $sender_country === false || $receiver_country === false || $shipping_type === false ) {
+            throw new \Exception(__('Missing required parameter', 'omnivalt'));
+        }
+
+        $shipping_set = OmnivaLt_Helper::get_shipping_set($sender_country, $receiver_country);
+        if ( ! $shipping_set ) {
+            throw new \Exception(__('Failed to get service set', 'omnivalt'));
+        }
+        
+        $services = self::get_services_by_shipping_set($shipping_set);
+        if ( empty($services) ) {
+            throw new \Exception(__('Failed to get available services list', 'omnivalt'));
+        }
+
+        if ( ! isset($services[$shipping_type]) ) {
+            throw new \Exception($this->build_not_found_type_error_msg($shipping_type, $sender_country, $receiver_country));
+        }
+
+        return $services[$shipping_type];
+    }
+
+    /**
+     * Retrieves the shipping services for a specified shipping set.
+     *
+     * @param string|false $shipping_set The name of the shipping set to retrieve services for. 
+     *                                   If not provided (or set to `false`), all shipping sets are returned.
+     *
+     * @return array An associative array of shipping services for the specified shipping set. 
+     *               If the shipping set does not exist, an empty array is returned. 
+     *               If no shipping set is provided, all shipping sets are returned.
+     */
+    public static function get_services_by_shipping_set( $shipping_set = false )
+    {
+        $shipping_sets = array(
+            'baltic' => array(
+                'pt pt' => 'PA',
+                'pt c' => 'PK',
+                'c pt' => 'PU',
+                'c c' => 'QH',
+                'c pn' => 'DD',
+                'c ps' => 'DE',
+                'courier_call' => 'QH',
+            ),
+            'estonia' => array(
+                'pt pt' => 'PA',
+                'pt pn' => 'PO',
+                'pt c' => 'PK',
+                'c pt' => 'PU',
+                'c c' => 'CI',
+                'c cp' => 'LX', //not sure
+                'c pn' => 'DD',
+                'c ps' => 'DE',
+                'po cp' => 'LH',
+                'po pt' => 'PV',
+                'po pn' => 'CD',
+                'po c' => 'CE',
+                'lg pt' => 'PP',
+                'courier_call' => 'CI',
+            ),
+            'finland' => array(
+                'pt pt' => 'CD', //Matkahulto
+                'c pt' => 'CD', //Matkahulto
+                'c pc' => 'QB', //QB in documentation
+                'c pn' => 'CD', //not sure
+                'c cp' => 'CE', //not sure
+                'po pt' => 'CD', //Matkahulto
+                'lg pt' => 'CD', //Matkahulto
+                'courier_call' => 'CE',
+            ),
+        );
+
+        if ( ! $shipping_set ) {
+            return $shipping_sets;
+        }
+
+        return (isset($shipping_sets[$shipping_set])) ? $shipping_sets[$shipping_set] : array();
+    }
+
+    private function build_not_found_type_error_msg( $shipping_type, $sender_country, $receiver_country )
+    {
+        $exploded_shipping_type = $this->explode_shipping_type($shipping_type);
+
+        return sprintf(
+            __('Shipping from %1$s (%2$s) to %3$s (%4$s) is not available', 'omnivalt'),
+            ($exploded_shipping_type['send']) ? OmnivaLt_Method::get_title($exploded_shipping_type['send']) : '-',
+            OmnivaLt_Wc::get_country_name($sender_country),
+            ($exploded_shipping_type['receive']) ? OmnivaLt_Method::get_title($exploded_shipping_type['receive']) : '-',
+            OmnivaLt_Wc::get_country_name($receiver_country)
+        );
+    }
+
+    private function explode_shipping_type( $shipping_type )
+    {
+        $shipping_types = array(
+            'send' => false,
+            'receive' => false,
+        );
+
+        if ( strpos($shipping_type, ' ') === false ) {
+            return $shipping_types;
+        }
+
+        $exploded = explode(' ', $shipping_type);
+
+        if ( ! empty($exploded[0]) ) {
+            $shipping_types['send'] = $exploded[0];
+        }
+        if ( ! empty($exploded[1]) ) {
+            $shipping_types['receive'] = $exploded[1];
+        }
+
+        return $shipping_types;
+    }
+
+    public static function get_additional_services()
+    {
+        return array(
+            'arrival_sms' => array(
+                'title' => __('Arrival SMS', 'omnivalt'),
+                'code' => 'ST',
+                'in_product' => false,
+                'in_order' => false,
+                'add_always' => true,
+                'required_fields' => array('receiver_phone'),
+            ),
+            'arrival_email' => array(
+                'title' => __('Arrival email', 'omnivalt'),
+                'code' => 'SF',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+                'required_fields' => array('receiver_email'),
+            ),
+            'cod' => array(
+                'title' => __('Cash on delivery', 'omnivalt'),
+                'code' => 'BP',
+                'in_product' => false,
+                'in_order' => false,
+                'add_always' => false,
+            ),
+            'fragile' => array(
+                'title' => __('Fragile', 'omnivalt'),
+                'code' => 'BC',
+                'in_product' => 'checkbox',
+                'in_order' => 'checkbox',
+                'add_always' => false,
+                'desc_product' => __('If this item will be added to the shipment, mark that shipment as fragile', 'omnivalt'),
+            ),
+            'private_customer' => array(
+                'title' => __('Delivery to private customer', 'omnivalt'),
+                'code' => 'CL',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+            ),
+            'doc_return' => array(
+                'title' => __('Document return', 'omnivalt'),
+                'code' => 'XT',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+            ),
+            'paid_by_receiver' => array(
+                'title' => __('Paid by receiver', 'omnivalt'),
+                'code' => 'BS',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+            ),
+            'insurance' => array(
+                'title' => __('Insurance', 'omnivalt'),
+                'code' => 'BI',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+            ),
+            'personal_delivery' => array(
+                'title' => __('Personal delivery', 'omnivalt'),
+                'code' => 'BK',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+            ),
+            'paid_parcel_sms' => array(
+                'title' => __('Paid parcel SMS', 'omnivalt'),
+                'code' => 'GN',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+            ),
+            'paid_parcel_email' => array(
+                'title' => __('Paid parcel email', 'omnivalt'),
+                'code' => 'GM',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+            ),
+            'return_notification_sms' => array(
+                'title' => __('Return notification SMS', 'omnivalt'),
+                'code' => 'SB',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+            ),
+            'return_notification_email' => array(
+                'title' => __('Return notification email', 'omnivalt'),
+                'code' => 'SG',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+            ),
+            'persons_over_18' => array(
+                'title' => __('Issue to persons at the age of 18+', 'omnivalt'),
+                'code' => 'PC',
+                'in_product' => 'checkbox',
+                'in_order' => 'checkbox',
+                'add_always' => false,
+                'desc_product' => __('If this item will be added to the shipment, the shipment receiver will have to show the document before picking up the shipment', 'omnivalt'),
+            ),
+            'delivery_confirmation_sms' => array(
+                'title' => __('Delivery confirmation SMS to sender', 'omnivalt'),
+                'code' => 'SS',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+                'required_fields' => array('sender_phone'),
+            ),
+            'delivery_confirmation_email' => array(
+                'title' => __('Delivery confirmation e-mail to sender', 'omnivalt'),
+                'code' => 'SE',
+                'in_product' => false,
+                'in_order' => 'checkbox',
+                'add_always' => false,
+                'required_fields' => array('sender_email'),
+            ),
+        );
+    }
+
+    protected function get_additional_services_for_shipment( $order, $shipment_service )
+    {
+        $order_services = OmnivaLt_Helper::get_order_services($order);
+        $service_additional_services = Shipment::getAdditionalServicesForShipment($shipment_service);
+        $additional_services = array();
+
+        foreach ( $this->get_additional_services() as $service_key => $service_values ) {
+            $add_service = (in_array($service_key, $order_services)) ? true : false;
+
+            if ( $service_values['add_always'] ) {
+                $add_service = true;
+            }
+            if ( ! in_array($service_values['code'], $service_additional_services) ) {
+                $add_service = false;
+            }
+            
+            if ( $add_service ) {
+                $additional_services[$service_key] = $service_values['code'];
+            }
+        }
+
+        return $additional_services;
+    }
+
     public function register_shipment( $id_order )
     {
         $output = array(
@@ -72,11 +349,8 @@ class OmnivaLt_Api_Xml extends OmnivaLt_Api_Core
             $packages = array();
             foreach ( $data_packages as $data_package ) {
                 /* Create package */
-                $shipment_service = OmnivaLt_Helper::get_shipping_service_code($data_shop->country, $data_client->country, $data_settings->pickup_method . ' ' . $data_package->method);
+                $shipment_service = $this->get_service_code($data_shop->country, $data_client->country, $data_settings->pickup_method . ' ' . $data_package->method);
                 if ( ! is_string($shipment_service) ) {
-                    if ( isset($shipment_service['msg']) ) {
-                        throw new OmnivaException($shipment_service['msg']);
-                    }
                     throw new OmnivaException(__('Failed to get shipment service', 'omnivalt'));
                 }
 
@@ -86,7 +360,7 @@ class OmnivaLt_Api_Xml extends OmnivaLt_Api_Core
                     ->setService($shipment_service);
 
                 /* Set additional services */
-                $additional_services = $this->get_additional_services($order, $shipment_service);
+                $additional_services = $this->get_additional_services_for_shipment($order, $shipment_service);
                 $all_api_additional_services = array();
                 foreach ( $additional_services as $additional_service_key => $additional_service_code ) {
                     $service_conditions = Shipment::getAdditionalServiceConditionsForShipment($shipment_service, $additional_service_code);
@@ -128,7 +402,7 @@ class OmnivaLt_Api_Xml extends OmnivaLt_Api_Core
                     ->setPostcode($data_client->postcode)
                     ->setDeliverypoint($data_client->city)
                     ->setStreet($data_client->street);
-                if ( OmnivaLt_Configs::get_method_terminals_type($data_package->method) ) {
+                if ( OmnivaLt_Method::is_omniva_domestic_terminal($data_package->method) ) {
                     $api_receiver_address->setOffloadPostcode($data_package->terminal);
                 }
                 $api_receiver_contact = new Contact();
@@ -210,7 +484,7 @@ class OmnivaLt_Api_Xml extends OmnivaLt_Api_Core
                 ->setSender($api_sender)
                 ->setEarliestPickupTime($pickStart)
                 ->setLatestPickupTime($pickFinish)
-                ->setDestinationCountry(OmnivaLt_Helper::get_shipping_service($shop->api_country, 'call'))
+                ->setDestinationCountry(OmnivaLt_Helper::get_shipping_set($shop->api_country, 'call'))
                 ->setParcelsNumber($parcels_number);
 
             $api_call->callCourier();

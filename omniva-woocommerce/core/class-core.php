@@ -61,10 +61,14 @@ class OmnivaLt_Core
       }
     }
 
-    $configs['method_params_new'] = self::load_methods();
+    $configs['method_params'] = self::load_methods();
 
+    $api_type = isset($configs['api']['type']) ? $configs['api']['type'] : null;
+    $api = OmnivaLt_Api::get_api_class($api_type, true);
+    $configs['additional_services'] = (method_exists($api, 'get_additional_services')) ? $api::get_additional_services() : array();
+  
     if ( $section_name && isset($configs[$section_name]) ) {
-      $configs = $configs[$section_name];
+      return $configs[$section_name];
     }
 
     return $configs;
@@ -85,6 +89,8 @@ class OmnivaLt_Core
       new OmnivaLt_Method_PostNear(),
       new OmnivaLt_Method_PostSpecific(),
       new OmnivaLt_Method_Logistic(),
+      new OmnivaLt_Method_LetterCourier(),
+      new OmnivaLt_Method_LetterPost()
     );
 
     $methods = array();
@@ -94,7 +100,6 @@ class OmnivaLt_Core
         continue;
       }
       $method_id = $class_data['id'];
-      unset($class_data['id']);
       $methods[$method_id] = $class_data;
     }
 
@@ -314,13 +319,8 @@ class OmnivaLt_Core
       wp_enqueue_style('omnivalt_admin_settings', plugins_url($folder_css . 'omniva_admin_settings.css', self::$main_file_path), array(), OMNIVALT_VERSION);
       wp_enqueue_script('omnivalt_admin_settings', plugins_url($folder_js . 'omniva_admin_settings.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
 
-      $available_methods = self::get_configs('shipping_available');
-      $available_methods_js = array();
-      foreach ( $available_methods as $plan => $methods ) {
-        $available_methods_js[OmnivaLt_Helper::get_api_plan($plan, true)] = $methods;
-      }
       wp_localize_script('omnivalt_admin_settings', 'omnivalt_params', array(
-        'available_methods' => $available_methods_js,
+        'available_methods' => self::get_configs('available_methods')
       ));
     }
   }
@@ -400,6 +400,7 @@ class OmnivaLt_Core
     require_once $core_dir . 'wc/' . 'class-wc-order.php';
     require_once $core_dir . 'wc/' . 'class-wc-product.php';
     require_once $core_dir . 'wc/' . 'class-wc-blocks.php';
+    require_once $core_dir . 'class-method.php';
     require_once $core_dir . 'methods/' . 'class-method-core.php';
     require_once $core_dir . 'methods/' . 'class-method-terminal.php';
     require_once $core_dir . 'methods/' . 'class-method-courier.php';
@@ -408,6 +409,8 @@ class OmnivaLt_Core
     require_once $core_dir . 'methods/' . 'class-method-postnear.php';
     require_once $core_dir . 'methods/' . 'class-method-postspecific.php';
     require_once $core_dir . 'methods/' . 'class-method-logistic.php';
+    require_once $core_dir . 'methods/' . 'class-method-lettercourier.php';
+    require_once $core_dir . 'methods/' . 'class-method-letterpost.php';
     require_once $core_dir . 'class-calc-size.php';
     require_once $core_dir . 'class-compatibility.php';
     require_once $core_dir . 'class-emails.php';
@@ -443,7 +446,7 @@ class OmnivaLt_Core
         'title' => 'Omniva',
         'settings_key' => 'woocommerce_omnivalt_settings',
       ),
-      'shipping_sets' => array(),
+      'available_methods' => array(),
       'shipping_params' => array(),
       'method_params' => array(),
       'additional_services' => array(),
@@ -454,7 +457,7 @@ class OmnivaLt_Core
         'type' => 'xml',
       ),
       'debug' => array(
-        'delete_after' => 30,
+        'delete_after' => 30, //Days
       ),
       'meta_keys' => array(
         'method' => '_omnivalt_method',
