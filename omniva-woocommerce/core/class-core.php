@@ -393,7 +393,6 @@ class OmnivaLt_Core
     
     $core_dir = self::get_core_dir();
     require_once $core_dir . 'class-debug.php';
-    require_once $core_dir . 'class-configs.php';
     require_once $core_dir . 'class-filters.php';
     require_once $core_dir . 'class-helper.php';
     require_once $core_dir . 'wc/' . 'class-wc.php';
