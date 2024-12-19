@@ -73,6 +73,7 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
                 'terminal_omniva' => 'omnivalt_pt',
                 'terminal_matkahoulto' => 'omnivalt_pt',
                 'post_omniva' => 'omnivalt_ps',
+                'letter_post_omniva' => 'omnivalt_lp'
             ),
             'show_map' => $show_map,
             'autoselect' => $autoselect,
