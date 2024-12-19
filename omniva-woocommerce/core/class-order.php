@@ -415,6 +415,11 @@ class OmnivaLt_Order
     if ( is_object($wc_order_id) ) {
       $wc_order_id = $wc_order_id->get_id();
     }
+
+    if ( ! OmnivaLt_Omniva_Order::have_omniva_shipping($wc_order_id) ) {
+      return;
+    }
+
     $configs = OmnivaLt_Core::get_configs();
     $order = OmnivaLt_Wc_Order::get_data($wc_order_id);
     $send_method = $order->omniva->method;
@@ -435,7 +440,7 @@ class OmnivaLt_Order
       $international_method['key'] = $exploded_method[0];
       $international_method['zone'] = $exploded_method[1];
     }
-    
+
     if ( $send_method !== false && ! $is_omniva ) {
       self::add_Omniva_manually();
     }
@@ -774,6 +779,17 @@ class OmnivaLt_Order
 
     remove_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Temporary fix to avoid infinity loop
 
+    if ( isset($_POST['omnivalt_add_manual']) ) {
+      $method = array('omnivalt_' . $_POST['omnivalt_add_manual']);
+      OmnivaLt_Omniva_Order::set_method($post_id, $method);
+    }
+
+    $method = OmnivaLt_Omniva_Order::get_method($post_id);
+    if ( ! $method ) {
+      add_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Restore hook
+      return $post_id;
+    }
+
     $configs = OmnivaLt_Core::get_configs();
 
     if ( isset($_POST['omnivalt_terminal_id']) ) {
@@ -799,11 +815,6 @@ class OmnivaLt_Order
       } else {
         OmnivaLt_Wc_Order::update_meta($post_id, '_omnivalt_' . $service_key, 'no');
       }
-    }
-
-    if ( isset($_POST['omnivalt_add_manual']) ) {
-      $method = array('omnivalt_' . $_POST['omnivalt_add_manual']);
-      OmnivaLt_Omniva_Order::set_method($post_id, $method);
     }
 
     add_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Restore hook
