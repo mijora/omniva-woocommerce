@@ -8,6 +8,8 @@ class OmnivaLt_Method_PostNear extends OmnivaLt_Method_Core
         $this->setTitle(__('Nearest post office', 'omnivalt'));
         $this->setDescription(__('Activate this service, when you want to send parcels to nearest post office.', 'omnivalt'));
         $this->setIsShippingMethod(true);
-        $this->setDefaultWeight(100);
+        $this->setMaxWeight(100);
+        $this->setRestrictApi(array('EE'));
+        $this->setRestrictCountry(array('EE'));
     }
 }

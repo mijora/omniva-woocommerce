@@ -17,13 +17,8 @@ class OmnivaLt_Labels
     $this->omnivalt_configs = OmnivaLt_Core::get_configs();
     $this->omnivalt_settings = OmnivaLt_Core::get_settings();
     
-    foreach ( $this->omnivalt_configs['method_params'] as $method_name => $method_values ) {
-      if ( ! $method_values['is_shipping_method'] ) continue;
-      $this->send_methods[$method_values['key']] = 'omnivalt_' . $method_values['key'];
-    }
-    foreach ( OmnivaLt_Helper::get_all_international_methods_keys(false) as $method_key ) {
-      $this->send_methods_international[$method_key] = 'omnivalt_' . $method_key;
-    }
+    $this->send_methods = OmnivaLt_Method::get_all_wc_methods_domestic_keys();
+    $this->send_methods_international = OmnivaLt_Method::get_all_wc_methods_international_keys();
   }
 
   public function print_labels( $orderIds = false, $download = true, $regenerate = false )
@@ -91,7 +86,7 @@ class OmnivaLt_Labels
     $status = $this->omnivalt_api->get_tracking_number($order->id);
 
     if ( ! empty($status['debug']) && isset($this->omnivalt_settings['debug_notice']) && $this->omnivalt_settings['debug_notice'] === 'yes' ) {
-      OmnivaLt_Helper::add_msg('<b>OMNIVA RESPONSE DEBUG:</b><br/><pre style="white-space:pre-wrap;">' . htmlspecialchars($status['debug']) . '</pre>', 'notice');
+      OmnivaLt_Helper::add_msg('<b>OMNIVA RESPONSE DEBUG:</b><br/><pre style="white-space:pre-wrap;">' . htmlspecialchars(json_encode($status['debug'],JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) . '</pre>', 'notice');
     }
 
     if ( isset($status['status']) && $status['status'] === true ) {

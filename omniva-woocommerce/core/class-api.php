@@ -13,20 +13,21 @@ class OmnivaLt_Api
 
     private function load_api()
     {
-        switch ($this->get_api_type()) {
-            case 'xml':
-                $this->api = new OmnivaLt_Api_Xml();
-                break;
-            case 'omx':
-                $this->api = new OmnivaLt_Api_Omx();
-                break;
-            case 'international':
-                $this->api = new OmnivaLt_Api_Omx_International();
-                break;
-            default:
-                $this->api = new OmnivaLt_Api_Xml();
-                break;
-        }
+        $this->api = self::get_api_class($this->get_api_type());
+        
+        return $this;
+    }
+
+    public static function get_api_class( $api_type, $use_static = false )
+    {
+        $api_classes = [
+            'xml' => 'OmnivaLt_Api_Xml',
+            'omx' => 'OmnivaLt_Api_Omx',
+            'international' => 'OmnivaLt_Api_Omx_International',
+        ];
+
+        $class = isset($api_classes[$api_type]) ? $api_classes[$api_type] : 'OmnivaLt_Api_Xml';
+        return ($use_static) ? $class : new $class();
     }
 
     public function set_api_type( $api_type )

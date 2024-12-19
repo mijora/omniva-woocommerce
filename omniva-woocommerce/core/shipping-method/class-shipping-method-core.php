@@ -306,7 +306,7 @@ class OmnivaLt_Shipping_Method_Core
                         'field_name' => $params['box_key'] . '[' . $field_data['name'] . ']',
                         'field_value' => $field_data['value'],
                     );
-                    if ( $params['prices']['boxsize'] !== false ) {
+                    if ( ! empty($params['prices']['boxsize']['key']) ) {
                         $html_params['add_select_options'] = array(
                             'boxsize' => __('By box size','omnivalt'),
                         );
