@@ -1,6 +1,19 @@
 <?php
 class OmnivaLt_Omniva_Order
 {
+    public static function have_omniva_shipping( $order_id )
+    {
+        $send_methods = OmnivaLt_Wc_Order::get_shipping_methods($order_id);
+
+        foreach ( $send_methods as $method ) {
+            if ( $method == 'omnivalt' ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static function set_method( $order_id, $order_methods_list )
     {
         if ( empty($order_id) || empty($order_methods_list) ) {
@@ -14,14 +27,8 @@ class OmnivaLt_Omniva_Order
         $configs = OmnivaLt_Core::get_configs();
 
         foreach ( $order_methods_list as $ship_method ) {
-            foreach ( $configs['method_params'] as $method_name => $method_values ) {
-                if ( ! $method_values['is_shipping_method'] ) continue;
-                if ( $ship_method == "omnivalt_" . $method_values['key'] ) {
-                    OmnivaLt_Wc_Order::update_meta($order_id, $configs['meta_keys']['method'], $ship_method);
-                    return true;
-                }
-            }
-            if ( OmnivaLt_Helper::is_omniva_international_method($ship_method) ) {
+            $method_key = self::get_method_key_from_id($ship_method);
+            if ( OmnivaLt_Method::is_omniva_domestic($method_key) || OmnivaLt_Method::is_omniva_international($method_key) ) {
                 OmnivaLt_Wc_Order::update_meta($order_id, $configs['meta_keys']['method'], $ship_method);
                 return true;
             }
@@ -32,13 +39,9 @@ class OmnivaLt_Omniva_Order
 
     public static function get_method( $order_id )
     {
-        $meta_keys = OmnivaLt_Core::get_configs('meta_keys');
-        $send_methods = OmnivaLt_Wc_Order::get_shipping_methods($order_id);
-        
-        foreach ( $send_methods as $method ) {
-            if ( $method == 'omnivalt' ) {
-                return OmnivaLt_Wc_Order::get_meta($order_id, $meta_keys['method']);
-            }
+        if ( self::have_omniva_shipping($order_id) ) {
+            $meta_keys = OmnivaLt_Core::get_configs('meta_keys');
+            return OmnivaLt_Wc_Order::get_meta($order_id, $meta_keys['method']);
         }
 
         return false;

@@ -3,16 +3,19 @@ class OmnivaLt_Method_Core
 {
     protected $_id = '';
     protected $_key = '';
+    protected $_type = 'parcel';
     protected $_title = '';
     protected $_front_title = '';
     protected $_title_logo = 'omniva_horizontal_s.png';
     protected $_prefix = 'Omniva';
     protected $_map_marker = 'omnivalt_icon.png';
+    protected $_restrict_api = array();
+    protected $_restrict_country = array();
     protected $_display_by_country = array();
     protected $_description = '';
     protected $_is_shipping_method =  false;
     protected $_terminals_type = '';
-    protected $_default_weight = 0;
+    protected $_max_weight = 0;
     protected $_params = array();
 
     public function __construct()
@@ -25,16 +28,19 @@ class OmnivaLt_Method_Core
         return array(
             'id' => $this->_id,
             'key' => $this->_key,
+            'type' => $this->_type,
             'title' => $this->_title,
             'front_title' => $this->getFrontTitle(),
             'title_logo' => $this->_title_logo,
             'prefix' => $this->_prefix,
             'map_marker' => $this->_map_marker,
+            'restrict_api' => $this->_restrict_api,
+            'restrict_country' => $this->_restrict_country,
             'display_by_country' => $this->getDisplayByCountry(),
             'description' => $this->_description,
             'is_shipping_method' => $this->_is_shipping_method,
             'terminals_type' => $this->_terminals_type,
-            'default_weight' => $this->_default_weight,
+            'max_weight' => $this->_max_weight,
             'params' => $this->_params,
         );
     }
@@ -48,6 +54,12 @@ class OmnivaLt_Method_Core
     public function setKey($key)
     {
         $this->_key = $key;
+        return $this;
+    }
+
+    public function setType($type)
+    {
+        $this->_type = $type;
         return $this;
     }
 
@@ -86,6 +98,38 @@ class OmnivaLt_Method_Core
         return $this;
     }
 
+    /**
+     * Set for which country's API users are allowed to use this method.
+     * If this value is not set, the method is allowed for all countries API users.
+     * 
+     * @param array|string $restrict_api List of API countries
+     * @return OmnivaLt_Method_Core
+     */
+    public function setRestrictApi($restrict_api)
+    {
+        $this->_restrict_api = (is_array($restrict_api)) ? $restrict_api : array($restrict_api);
+        return $this;
+    }
+
+    /**
+     * Set for which countries to load this method.
+     * If this value is not set, the method is allowed for all countries.
+     * 
+     * @param array|string $restrict_country List of countries
+     * @return OmnivaLt_Method_Core
+     */
+    public function setRestrictCountry($restrict_country)
+    {
+        $this->_restrict_country = (is_array($restrict_country)) ? $restrict_country : array($restrict_country);
+        return $this;
+    }
+
+    /**
+     * Overwrite this method information for a specific recipient country (when a method needs to be displayed differently for a specific country)
+     * 
+     * @param array $param An array whose key is the recipient country to overwrite and array element is an array listing the values to overwrite
+     * @return OmnivaLt_Method_Core
+     */
     public function setDisplayByCountry($params)
     {
         $this->_display_by_country = $params;
@@ -126,9 +170,9 @@ class OmnivaLt_Method_Core
         return $this;
     }
 
-    public function setDefaultWeight($default_weight)
+    public function setMaxWeight($max_weight)
     {
-        $this->_default_weight = $default_weight;
+        $this->_max_weight = $max_weight;
         return $this;
     }
 

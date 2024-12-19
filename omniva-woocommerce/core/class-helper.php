@@ -68,140 +68,10 @@ class OmnivaLt_Helper
     return false;
   }
 
-  public static function get_all_api_plans()
+  public static function get_api_plan()
   {
-    $available_shippings = OmnivaLt_Core::get_configs('shipping_available');
-
-    return array_keys($available_shippings);
-  }
-
-  public static function get_api_plan( $api_country = false, $get_by_plan = false )
-  {
-    $associations = array(
-      'LT' => 'baltic',
-      'LV' => 'latvia',
-      'EE' => 'estonia',
-    );
-    $default_country = 'LT';
-
-    if ( $get_by_plan ) {
-      foreach ( $associations as $country => $plan ) {
-        if ( $api_country == $plan ) {
-          return $country;
-        }
-      }
-
-      return $default_country;
-    }
-
-    if ( ! $api_country ) {
-      $settings = OmnivaLt_Core::get_settings();
-      $api_country = (! empty($settings['api_country'])) ? $settings['api_country'] : $default_country;
-    }
-
-    return $associations[$api_country] ?? $associations[$default_country];
-
-    switch ( $api_country ) {
-      case 'LT':
-        $api_plan = 'baltic';
-        break;
-      case 'EE':
-        $api_plan = 'estonia';
-        break;
-      default:
-        $api_plan = 'baltic';
-    }
-
-    return $api_plan;
-  }
-
-  public static function get_available_methods()
-  {
-    $configs = OmnivaLt_Core::get_configs();
     $settings = OmnivaLt_Core::get_settings();
-
-    $api_plan = self::get_api_plan();
-    $all_countries = array_keys($configs['shipping_params']);
-
-    $available_methods = array();
-    foreach ( $all_countries as $country ) {
-      $available_methods[$country] = $configs['shipping_params'][$country];
-      unset($available_methods[$country]['methods']);
-      $available_methods[$country]['all_methods'] = $configs['shipping_params'][$country]['methods'];
-      $available_methods[$country]['available_methods'] = array();
-      if ( isset($configs['shipping_available'][$api_plan][$country]) ) {
-        $available_methods[$country]['available_methods'] = $configs['shipping_available'][$api_plan][$country];
-      }
-      
-      $shipping_sets = array();
-      foreach ( $configs['shipping_params'][$country]['shipping_sets'] as $shipping_set_country => $shipping_set_plan ) {
-        if ( $shipping_set_country == 'call' ) {
-          continue;
-        }
-        $shipping_sets[$shipping_set_country] = $configs['shipping_sets'][$shipping_set_plan];
-      }
-      $available_methods[$country]['shipping_sets'] = $shipping_sets;
-    }
-
-    return $available_methods;
-  }
-
-  public static function get_methods_asociations()
-  {
-    $asociations = array();
-    $shipping_methods = OmnivaLt_Core::get_configs('method_params');
-    foreach ( $shipping_methods as $method_name => $method_params ) {
-      if ( ! isset($method_params['key']) || ! $method_params['is_shipping_method'] ) continue;
-      if ( $method_name === 'terminal' ) $method_name = 'pickup'; //Fix old value
-
-      $asociations[$method_params['key']] = $method_name;
-    }
-
-    return $asociations;
-  }
-
-  public static function explode_shipping_set( $shipping_set )
-  {
-    $shipping_sets = array(
-      'send' => false,
-      'receive' => false,
-    );
-
-    if ( strpos($shipping_set, ' ') === false ) {
-      return false;
-    }
-
-    $exploded = explode(' ', $shipping_set);
-
-    if ( ! empty($exploded[0]) ) {
-      $shipping_sets['send'] = $exploded[0];
-    }
-    if ( ! empty($exploded[1]) ) {
-      $shipping_sets['receive'] = $exploded[1];
-    }
-
-    return $shipping_sets;
-  }
-
-  public static function get_allowed_methods( $set_name )
-  {
-    $configs = OmnivaLt_Core::get_configs();
-
-    if ( ! isset($configs['shipping_sets'][$set_name]) ) {
-      return array('status' => 'error', 'error_code' => '003');
-    }
-
-    $allowed_methods = array();
-    foreach ( $configs['shipping_sets'][$set_name] as $combination => $service ) {
-      if ( $combination === 'courier_call' ) continue;
-      $exploded = explode(' ', $combination);
-      if ( ! isset($exploded[1]) ) continue;
-      if ( ! in_array($exploded[1], $allowed_methods) ) {
-        $allowed_methods[] = $exploded[1];
-      }
-    }
-
-    return $allowed_methods;
+    return (! empty($settings['api_country'])) ? $settings['api_country'] : 'LT';
   }
 
   public static function get_shipping_methods_prices()
@@ -209,7 +79,6 @@ class OmnivaLt_Helper
     $settings = OmnivaLt_Core::get_settings();
     $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
     $shipping_countries = array_keys($shipping_params);
-    $methods_asociations = self::get_methods_asociations();
     $shipping_prices = array();
 
     foreach ( $shipping_countries as $country ) {
@@ -218,7 +87,8 @@ class OmnivaLt_Helper
       
       $prices = array();
       foreach ( $shipping_params[$country]['methods'] as $method_name ) {
-        $method_key = self::convert_method_name_to_short($methods_asociations, $method_name);
+        $method = OmnivaLt_Method::get_by_key($method_name, true);
+        $method_key = ($method) ? $method['key'] : '';
         $prices[$method_name] = self::parse_shipping_methods_prices($method_key, $prices_data);
       }
       $shipping_prices[$country] = $prices;
@@ -431,7 +301,7 @@ class OmnivaLt_Helper
     return preg_replace("/[^a-zA-Z0-9\.\-\_]+/", "", $file_name);
   }
 
-  public static function get_shipping_service( $sender_country, $receiver_country )
+  public static function get_shipping_set( $sender_country, $receiver_country )
   {
     $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
 
@@ -444,37 +314,6 @@ class OmnivaLt_Helper
     }
 
     return $shipping_params[$sender_country]['shipping_sets'][$receiver_country];
-  }
-
-  public static function get_shipping_service_code( $sender_country, $receiver_country, $get_for )
-  {
-    $shipping_sets = OmnivaLt_Core::get_configs('shipping_sets');
-
-    $service_set = self::get_shipping_service($sender_country, $receiver_country);
-    if ( ! $service_set ) {
-      return array('status' => 'error', 'msg' => __('Failed to get service set', 'omnivalt'));
-    }
-    
-    if ( ! isset($shipping_sets[$service_set]) ) {
-      return array('status' => 'error', 'msg' => OmnivaLt_Core::get_error_text('003'));
-    }
-
-    if ( ! isset($shipping_sets[$service_set][$get_for]) ) {
-      $shipping_set = self::explode_shipping_set($get_for);
-      if ( ! $shipping_set ) {
-        $shipping_set = array('send' => $get_for, 'receive' => $get_for);
-      }
-
-      return array('status' => 'error', 'error_code' => '004', 'msg' => sprintf(
-        __('Shipping from %1$s (%2$s) to %3$s (%4$s) is not available', 'omnivalt'),
-        OmnivaLt_Configs::get_method_title($shipping_set['send']),
-        WC()->countries->countries[$sender_country],
-        OmnivaLt_Configs::get_method_title($shipping_set['receive']),
-        WC()->countries->countries[$receiver_country]
-      ));
-    }
-    
-    return $shipping_sets[$service_set][$get_for];
   }
 
   public static function get_shipping_sets( $sender_country, $exclude_additional = true )
@@ -491,23 +330,6 @@ class OmnivaLt_Helper
     }
 
     return $shipping_sets;
-  }
-
-  public static function convert_method_name_to_short( $asociations, $method_name, $reverse = false )
-  {
-    foreach ( $asociations as $key => $value ) {
-      if ( ! $reverse ) {
-        if ( $method_name === $value ) {
-          return $key;
-        }
-      } else {
-        if ( $method_name === $key ) {
-          return $value;
-        }
-      }
-    }
-
-    return $method_name;
   }
 
   public static function predict_order_size( $items_data, $max_dimension = array() )
@@ -605,88 +427,6 @@ class OmnivaLt_Helper
     }
 
     return $value;
-  }
-
-  public static function is_omniva_method( $method_id )
-  {
-    $all_methods = OmnivaLt_Core::get_configs('method_params');
-
-    foreach ( $all_methods as $method_key => $method_values ) {
-      if ( $method_id == self::get_omniva_method_shipping_id($method_values['key']) ) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  public static function is_omniva_terminal_method( $method_id )
-  {
-    if ( ! self::is_omniva_method( $method_id ) ) {
-      return false;
-    }
-    $method_key = OmnivaLt_Omniva_Order::get_method_key_from_id($method_id);
-
-    return ($method_key == 'pt' || $method_key == 'ps');
-  }
-
-  public static function is_omniva_international_method( $method_id, $add_prefix = true )
-  {
-    $all_keys = self::get_all_international_methods_keys($add_prefix);
-    foreach ( $all_keys as $key ) {
-      if ( $method_id == $key ) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public static function get_all_international_methods_keys( $add_prefix = true )
-  {
-    $methods_keys = [];
-    $prefix = 'omnivalt_';
-    $api = new OmnivaLt_Api_International();
-    foreach ( $api->get_available_packages() as $package_key => $package_zones ) {
-      foreach ( $package_zones as $zone => $zone_countries ) {
-        $international_data = array(
-          'key' => $package_key,
-          'title' => $api->get_package_title($package_key),
-        );
-        $shipping_international = new OmnivaLt_Shipping_Method_International($international_data, '');
-        $shipping_international->setCurrentMethodKey($zone);
-        $method = $shipping_international->getCurrentMethod();
-        $methods_keys[] = ($add_prefix) ? $prefix . $method['key'] : $method['key'];
-      }
-    }
-
-    return $methods_keys;
-  }
-
-  public static function get_omniva_method_shipping_id( $key )
-  {
-    $found_key = $key;
-
-    $all_methods = OmnivaLt_Core::get_configs('method_params');
-    foreach ( $all_methods as $method_key => $method ) {
-      if ( $key == $method_key || $key == $method['key'] ) {
-        $found_key = 'omnivalt_' . $method['key'];
-        break;
-      }
-    }
-
-    return $found_key;
-  }
-
-  public static function get_omniva_method_by_key( $key )
-  {
-    $all_methods = OmnivaLt_Core::get_configs('method_params_new');
-    foreach ( $all_methods as $method_key => $method ) {
-      if ( $key == $method['key'] ) {
-        return $method;
-      }
-    }
-
-    return false;
   }
 
   public static function convert_array_to_meta_query_param( $meta_key, $array, $compare = 'LIKE' ) //TODO: The function is not used, but maybe it can be used
