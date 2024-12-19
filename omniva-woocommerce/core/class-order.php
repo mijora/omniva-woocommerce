@@ -796,6 +796,8 @@ class OmnivaLt_Order
     foreach ( $configs['additional_services'] as $service_key => $service_values ) {
       if ( isset($_POST['omnivalt_' . $service_key]) ) {
         OmnivaLt_Wc_Order::update_meta($post_id, '_omnivalt_' . $service_key, wc_clean($_POST['omnivalt_' . $service_key]));
+      } else {
+        OmnivaLt_Wc_Order::update_meta($post_id, '_omnivalt_' . $service_key, 'no');
       }
     }
 

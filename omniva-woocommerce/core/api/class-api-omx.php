@@ -66,7 +66,7 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
       'post_near' => $channels['post'],
       'post_specific' => $channels['post'],
       'letter_courier' => $channels['courier'],
-      'letter_post' => $channels['courier'],
+      'letter_post' => $channels['post'],
     );
 
     $method = OmnivaLt_Method::get_by_key($shipping_method);

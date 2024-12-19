@@ -213,6 +213,33 @@ class OmnivaLt_Wc_Order
         return $wc_order->get_meta($meta_key, true);
     }
 
+    public static function meta_exists( $wc_order_id, $meta_key )
+    {
+        $wc_order = self::get_order($wc_order_id);
+        if ( ! $wc_order ) {
+            return false;
+        }
+
+        $meta_value = self::get_meta($wc_order_id, $meta_key);
+        return $meta_value !== '' && $meta_value !== null && $meta_value !== array();
+    }
+
+    public static function remove_meta( $wc_order_id, $meta_key )
+    {
+        $wc_order = self::get_order($wc_order_id);
+        if ( ! $wc_order ) {
+            return false;
+        }
+        if ( ! self::meta_exists($wc_order_id, $meta_key) ) {
+            return true;
+        }
+
+        $wc_order->delete_meta_data($meta_key);
+        $wc_order->save();
+
+        return true;
+    }
+
     public static function add_note( $wc_order_id, $note )
     {
         $wc_order = self::get_order($wc_order_id);
