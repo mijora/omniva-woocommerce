@@ -6,7 +6,7 @@ class OmnivaLt_Method_LetterPost extends OmnivaLt_Method_Core
         $this->setId('letter_post');
         $this->setKey('lp');
         $this->setType('letter');
-        $this->setTitle(__('Letter (Post office)', 'omnivalt'));
+        $this->setTitle(__('Letter', 'omnivalt') . ' (' . __('Post office', 'omnivalt') . ')');
         $this->setDescription(__('Activate this service, when you want to send letters.', 'omnivalt') . ' ' . __('Available for Estonian customers only.', 'omnivalt'));
         $this->setIsShippingMethod(true);
         $this->setTerminalsType('post');

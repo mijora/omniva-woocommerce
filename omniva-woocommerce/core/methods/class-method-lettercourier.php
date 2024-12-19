@@ -6,7 +6,7 @@ class OmnivaLt_Method_LetterCourier extends OmnivaLt_Method_Core
         $this->setId('letter_courier');
         $this->setKey('lc');
         $this->setType('letter');
-        $this->setTitle(__('Letter (Courier)', 'omnivalt'));
+        $this->setTitle(__('Letter', 'omnivalt') . ' (' . __('Courier', 'omnivalt') . ')');
         $this->setDescription(__('Activate this service, when you want to send letters.', 'omnivalt') . ' ' . __('Available for Estonian customers only.', 'omnivalt'));
         $this->setIsShippingMethod(true);
         $this->setMaxWeight(2);
