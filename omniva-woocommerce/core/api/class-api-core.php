@@ -19,6 +19,7 @@ class OmnivaLt_Api_Core
 {
     private $omnivalt_settings;
     private $omnivalt_configs;
+    private $need_convert = false;
 
     public function __construct()
     {
@@ -34,6 +35,17 @@ class OmnivaLt_Api_Core
     protected function get_configs()
     {
         return $this->omnivalt_configs;
+    }
+
+    public function set_need_convert( $need_convert )
+    {
+        $this->need_convert = (bool) $need_convert;
+        return $this;
+    }
+
+    public function is_need_convert()
+    {
+        return $this->need_convert;
     }
 
     public function get_service_code( ...$args )

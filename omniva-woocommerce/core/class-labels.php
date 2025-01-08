@@ -9,6 +9,7 @@ class OmnivaLt_Labels
   private $send_methods = array();
   private $send_methods_international = array();
   private $is_international = false;
+  private $force_domestic_to_international_countries = array('FI');
 
   public function __construct()
   {
@@ -47,6 +48,10 @@ class OmnivaLt_Labels
       if ( in_array($send_method, $this->send_methods_international) ) {
         $this->is_international = true;
         $this->omnivalt_api->change_api_type('international');
+      }
+      if ( in_array($order->shipment->country, $this->force_domestic_to_international_countries) ) {
+        $this->is_international = true;
+        $this->omnivalt_api->convert_domestic_order_to_international();
       }
       if ( ! $this->is_international && $this->omnivalt_api->get_api_type() == 'international' ) {
         $this->omnivalt_api->change_api_type($this->omnivalt_configs['api']['type']);

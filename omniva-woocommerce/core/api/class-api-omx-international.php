@@ -58,6 +58,13 @@ class OmnivaLt_Api_Omx_International extends OmnivaLt_Api_Omx
 
         /* Get package key and zone */
         $method_exploded = explode('_', $data_package->method);
+        if ( $this->is_need_convert() ) {
+          $country_options = ServicePackageHelper::getCountryOptions($data_client->country);
+          if ( empty($country_options) || ! $country_options['eu'] ) {
+            throw new OmnivaException(__('Cant convert shipment to international', 'omnivalt'));
+          }
+          $method_exploded = array('standard', 'eu');
+        }
         $method_package = $method_exploded[0];
         $method_zone = $method_exploded[1];
 
@@ -94,6 +101,9 @@ class OmnivaLt_Api_Omx_International extends OmnivaLt_Api_Omx
           ->setPostcode($data_client->postcode)
           ->setDeliverypoint($data_client->city)
           ->setStreet($data_client->street);
+        if ( ! empty($data_package->terminal) ) {
+          $api_receiver_address->setOffloadPostcode($data_package->terminal);
+        }
         $api_receiver_contact = new Contact();
         $api_receiver_contact
           ->setAddress($api_receiver_address)

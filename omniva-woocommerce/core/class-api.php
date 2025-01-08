@@ -48,6 +48,14 @@ class OmnivaLt_Api
         $this->set_api_type($new_api_type)->load_api();
     }
 
+    public function convert_domestic_order_to_international()
+    {
+        $this->change_api_type('international');
+        $this->api->set_need_convert(true);
+
+        return $this;
+    }
+
     public function get_tracking_number( $id_order )
     {
         return $this->api->register_shipment($id_order);
