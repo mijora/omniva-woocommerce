@@ -117,7 +117,7 @@ class OmnivaLt_Terminals
     if ( ! isset($omniva_settings['show_map']) || isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == 'yes' ) {
       $button = '<button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn" style = "display: none;">' . __('Show in map', 'omnivalt') . '<img src = "' . OMNIVALT_URL . 'assets/img/sasi.png" title = "' . $list_options['txt_show_map'] . '"/></button>';
     }
-    return '<div class="terminal-container"><select class="omnivalt_terminal" name="omnivalt_terminal">' . $parcel_terminals . '</select>
+    return '<div class="omnivalt_terminal_container old"><select class="omnivalt_terminal" name="omnivalt_terminal">' . $parcel_terminals . '</select>
       ' . $button . ' </div>' . $script;
   }
 
