@@ -168,7 +168,7 @@ class OmnivaLt_Terminals
 
     $nonce = wp_create_nonce("omniva_terminals_json_nonce");
     $omniva_settings = get_option(OmnivaLt_Core::get_configs('plugin')['settings_key']);
-    $omniva_methods = OmnivaLt_Core::get_configs('method_params_new');
+    $omniva_methods = OmnivaLt_Method::get_all();
     $omniva_method = ($get_list == 'post') ? $omniva_methods['post_specific'] : $omniva_methods['pickup'];
     $parcel_terminals = '<option value = "">' . $list_options['txt_select'] . '</option>' . $parcel_terminals;
     $set_autoselect = (isset($omniva_settings['auto_select'])) ? $omniva_settings['auto_select'] : 'yes';

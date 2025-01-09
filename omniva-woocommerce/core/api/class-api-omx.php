@@ -10,10 +10,216 @@ use \Mijora\Omniva\Shipment\Package\Contact;
 use \Mijora\Omniva\Shipment\Package\AdditionalService;
 use \Mijora\Omniva\Shipment\Package\Cod;
 use \Mijora\Omniva\Shipment\Package\Measures;
+use \Mijora\Omniva\Shipment\Package\ServicePackage;
+use \Mijora\Omniva\Shipment\AdditionalService\CodService;
+use \Mijora\Omniva\Shipment\AdditionalService\DeliveryToAnAdultService;
+use \Mijora\Omniva\Shipment\AdditionalService\DeliveryToSpecificPersonService;
+use \Mijora\Omniva\Shipment\AdditionalService\DocumentReturnService;
+use \Mijora\Omniva\Shipment\AdditionalService\FragileService;
 use \Mijora\Omniva\Shipment\AdditionalService\InsuranceService;
+use \Mijora\Omniva\Shipment\AdditionalService\LetterDeliveryToASpecificPersonService;
+use \Mijora\Omniva\Shipment\AdditionalService\RegisteredAdviceOfDeliveryService;
+use \Mijora\Omniva\Shipment\AdditionalService\SameDayDeliveryService;
+use \Mijora\Omniva\Shipment\AdditionalService\SecondDeliveryAttemptOnSaturdayService;
+use \Mijora\Omniva\Shipment\AdditionalService\StandardAdviceOfDeliveryService;
 
 class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
 {
+  private function get_channels()
+  {
+    return array(
+      'terminal' => (defined(Package::class . '::CHANNEL_PARCEL_MACHINE')) ? Package::CHANNEL_PARCEL_MACHINE : false,
+      'courier' => (defined(Package::class . '::CHANNEL_COURIER')) ? Package::CHANNEL_COURIER : false,
+      'post' => (defined(Package::class . '::CHANNEL_POST_OFFICE')) ? Package::CHANNEL_POST_OFFICE : false,
+    );
+  }
+
+  private function get_shipment_types()
+  {
+    return array(
+      'parcel' => (defined(Package::class . '::MAIN_SERVICE_PARCEL')) ? Package::MAIN_SERVICE_PARCEL : false,
+      'letter' => (defined(Package::class . '::MAIN_SERVICE_LETTER')) ? Package::MAIN_SERVICE_LETTER : false,
+      'pallet' => (defined(Package::class . '::MAIN_SERVICE_PALLET')) ? Package::MAIN_SERVICE_PALLET : false,
+    );
+  }
+
+  private function get_letter_service_codes()
+  {
+    return array(
+      'document' => (defined(ServicePackage::class . '::CODE_PROCEDURAL_DOCUMENT')) ? ServicePackage::CODE_PROCEDURAL_DOCUMENT : false,
+      'letter' => (defined(ServicePackage::class . '::CODE_REGISTERED_LETTER')) ? ServicePackage::CODE_REGISTERED_LETTER : false,
+      'maxiletter' => (defined(ServicePackage::class . '::CODE_REGISTERED_MAXILETTER')) ? ServicePackage::CODE_REGISTERED_MAXILETTER : false,
+    );
+  }
+  
+  public function get_service_code( ...$args )
+  {
+    $shipping_method = (isset($args[0])) ? $args[0] : false;
+
+    $channels = $this->get_channels();
+
+    $methods_channels = array(
+      'pickup' => $channels['terminal'],
+      'courier' => $channels['courier'],
+      'courier_plus' => $channels['courier'],
+      'private_customer' => $channels['courier'],
+      'post_near' => $channels['post'],
+      'post_specific' => $channels['post'],
+      'letter_courier' => $channels['courier'],
+      'letter_post' => $channels['post'],
+    );
+
+    $method = OmnivaLt_Method::get_by_key($shipping_method);
+    if ( ! $method || ! isset($method['id']) ) {
+      return false;
+    }
+
+    return (isset($methods_channels[$method['id']])) ? $methods_channels[$method['id']] : false;
+  }
+
+  private function get_shipment_type_key( $shipping_method )
+  {
+    $method = OmnivaLt_Method::get_by_key($shipping_method);
+    if ( ! $method || ! isset($method['type']) ) {
+      return 'parcel';
+    }
+
+    return (isset($method['type'])) ? $method['type'] : 'parcel';
+  }
+
+  private function get_shipment_type_code( $type_key )
+  {
+    $types = $this->get_shipment_types();
+
+    return (isset($types[$type_key])) ? $types[$type_key] : false;
+  }
+
+  private function get_letter_service_code( $type_key )
+  {
+    $codes = $this->get_letter_service_codes();
+
+    return (isset($codes[$type_key])) ? $codes[$type_key] : false;
+  }
+
+  public static function get_additional_services()
+  {
+    return array(
+      'cod' => array(
+        'title' => __('Cash on delivery', 'omnivalt'),
+        'code' => (new CodService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\CodService',
+        'in_product' => false,
+        'in_order' => false,
+        'add_always' => false,
+      ),
+      'persons_over_18' => array(
+        'title' => __('Issue to persons at the age of 18+', 'omnivalt'),
+        'code' => (new DeliveryToAnAdultService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\DeliveryToAnAdultService',
+        'in_product' => 'checkbox',
+        'in_order' => 'checkbox',
+        'add_always' => false,
+        'desc_product' => __('If this item will be added to the shipment, the shipment receiver will have to show the document before picking up the shipment', 'omnivalt'),
+      ),
+      'personal_delivery' => array(
+        'title' => __('Personal delivery', 'omnivalt'),
+        'code' => (new DeliveryToSpecificPersonService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\DeliveryToSpecificPersonService',
+        'in_product' => false,
+        'in_order' => 'checkbox',
+        'add_always' => false,
+      ),
+      'personal_delivery_letter' => array(
+        'title' => __('Personal delivery', 'omnivalt') . ' (' . __('Letter', 'omnivalt') . ')',
+        'code' => (new LetterDeliveryToASpecificPersonService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\LetterDeliveryToASpecificPersonService',
+        'in_product' => false,
+        'in_order' => 'checkbox',
+        'add_always' => false,
+      ),
+      'doc_return' => array(
+        'title' => __('Document return', 'omnivalt'),
+        'code' => (new DocumentReturnService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\DocumentReturnService',
+        'in_product' => false,
+        'in_order' => 'checkbox',
+        'add_always' => false,
+      ),
+      'fragile' => array(
+        'title' => __('Fragile', 'omnivalt'),
+        'code' => (new FragileService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\FragileService',
+        'in_product' => 'checkbox',
+        'in_order' => 'checkbox',
+        'add_always' => false,
+        'desc_product' => __('If this item will be added to the shipment, mark that shipment as fragile', 'omnivalt'),
+      ),
+      'insurance' => array(
+        'title' => __('Insurance', 'omnivalt'),
+        'code' => (new InsuranceService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\InsuranceService',
+        'in_product' => false,
+        'in_order' => 'checkbox',
+        'add_always' => false,
+      ),
+      'standard_advice_delivery' => array(
+        'title' => __('Standard Advice Of Delivery', 'omnivalt'),
+        'code' => (new StandardAdviceOfDeliveryService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\StandardAdviceOfDeliveryService',
+        'in_product' => false,
+        'in_order' => 'checkbox',
+        'add_always' => false,
+      ),
+      'registered_advice_delivery' => array(
+        'title' => __('Registered Advice Of Delivery', 'omnivalt'),
+        'code' => (new RegisteredAdviceOfDeliveryService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\RegisteredAdviceOfDeliveryService',
+        'in_product' => false,
+        'in_order' => 'checkbox',
+        'add_always' => false,
+      ),
+      'same_day_delivery' => array(
+        'title' => __('Same day delivery', 'omnivalt'),
+        'code' => (new SameDayDeliveryService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\SameDayDeliveryService',
+        'in_product' => false,
+        'in_order' => 'checkbox',
+        'add_always' => false,
+      ),
+      'second_delivery_saturday' => array(
+        'title' => __('Second delivery attempt on Saturday', 'omnivalt'),
+        'code' => (new SecondDeliveryAttemptOnSaturdayService())->getServiceCode(),
+        'class' => '\Mijora\Omniva\Shipment\AdditionalService\SecondDeliveryAttemptOnSaturdayService',
+        'in_product' => false,
+        'in_order' => 'checkbox',
+        'add_always' => false,
+      ),
+    );
+  }
+
+  protected function get_additional_services_for_shipment( $order, $shipment_service )
+  {
+    $order_services = OmnivaLt_Helper::get_order_services($order);
+    $additional_services = array();
+
+    foreach ( $this->get_additional_services() as $service_key => $service_values ) {
+      $add_service = (in_array($service_key, $order_services)) ? true : false;
+
+      if ( $service_values['add_always'] ) {
+        $add_service = true;
+      }
+
+      if ( $add_service ) {
+        $additional_services[$service_key] = array(
+          'code' => $service_values['code'],
+          'class' => $service_values['class']
+        );
+      }
+    }
+
+    return $additional_services;
+  }
+
   public function register_shipment( $id_order )
   {
     $output = array(
@@ -55,13 +261,14 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
       $packages = array();
       $package_counter = 0;
       foreach ( $data_packages as $data_package ) {
-        /* Create package */
-        $shipment_service = OmnivaLt_Helper::get_shipping_service_code($data_shop->country, $data_client->country, $data_settings->pickup_method . ' ' . $data_package->method);
-        if ( ! is_string($shipment_service) ) {
-          if ( isset($shipment_service['msg']) ) {
-            throw new OmnivaException($shipment_service['msg']);
-          }
+        $shipment_type_key = $this->get_shipment_type_key($data_package->method);
+        $shipment_main_service = $this->get_shipment_type_code($shipment_type_key);
+        if ( ! $shipment_main_service ) {
           throw new OmnivaException(__('Failed to get shipment service', 'omnivalt'));
+        }
+        $shipment_delivery_service = $this->get_service_code($data_package->method);
+        if ( ! $shipment_delivery_service ) {
+          throw new OmnivaException(__('Failed to get delivery service', 'omnivalt'));
         }
 
         $package_counter++;
@@ -69,58 +276,49 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
         $api_package = new Package();
         $api_package
           ->setId($data_package->id)
-          ->setService($shipment_service)
+          ->setService($shipment_main_service, $shipment_delivery_service)
           ->setReturnAllowed($send_return_code);
 
         /* Set additional services */
-        $additional_services = $this->get_additional_services($order, $shipment_service);
+        $additional_services = $this->get_additional_services_for_shipment($order, $shipment_main_service);
         
         $use_consolidation = (isset($additional_services['cod']) || isset($additional_services['doc_return'])) ? true : false;
         if ( ! $use_consolidation && count($data_packages) > 1 ) {
           $api_package->setId($data_package->id . '_' . $package_counter);
         }
 
-        $all_api_additional_services = array();
         foreach ( $additional_services as $additional_service_key => $additional_service_code ) {
-          $service_conditions = Shipment::getAdditionalServiceConditionsForShipment($shipment_service, $additional_service_code);
-          if ( ! empty($service_conditions) ) {
-            if ( isset($service_conditions->only_countries) && ! in_array($data_client->country, $service_conditions->only_countries) ) {
-              continue;
-            }
-          }
-          $api_additional_service = new AdditionalService();
-          $api_additional_service
-            ->setServiceCode($additional_service_code);
+          $api_additional_service = new $additional_service_code['class']();
+
           if ( $package_counter > 1 && $use_consolidation && $additional_service_key != 'fragile' ) {
             continue;
           }
-          $all_api_additional_services[] = $api_additional_service;
+
           /* Add additional service data */
           if ( $additional_service_key == 'cod' ) {
-            $api_cod = new Cod();
-            $api_cod
-              ->setAmount($data_package->amount)
-              ->setBankAccount($data_settings->bank_account)
-              ->setReceiverName($data_settings->company)
-              ->setReferenceNumber($this->get_reference_number($order->id));
-            $api_package->setCod($api_cod);
+            $api_additional_service
+              ->setCodAmount($data_package->amount)
+              ->setCodIban($data_settings->bank_account)
+              ->setCodReference($api_additional_service::calculateReferenceNumber($order->id))
+              ->setCodReceiver($data_settings->company);
           }
           if ( $additional_service_key == 'insurance' ) {
-            $api_insurance = new InsuranceService();
-            $api_insurance->setInsuranceValue(55);
-            $api_package->setAdditionalServiceOmx($api_insurance);
+            $api_additional_service
+              ->setInsuranceValue($order->payment->subtotal);
           }
+          $api_package->setAdditionalServiceOmx($api_additional_service);
         }
-        $api_package->setAdditionalServices($all_api_additional_services);
 
         /* Set measures */
-        $api_measures = new Measures();
-        $api_measures
-          ->setWeight($data_package->weight)
-          ->setLength($data_package->length)
-          ->setHeight($data_package->height)
-          ->setWidth($data_package->width);
-        $api_package->setMeasures($api_measures);
+        if ( $shipment_type_key != 'letter' ) {
+          $api_measures = new Measures();
+          $api_measures
+            ->setWeight($data_package->weight)
+            ->setLength($data_package->length)
+            ->setHeight($data_package->height)
+            ->setWidth($data_package->width);
+          $api_package->setMeasures($api_measures);
+        }
 
         /* Set receiver */
         $api_receiver_address = new Address();
@@ -129,7 +327,7 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
           ->setPostcode($data_client->postcode)
           ->setDeliverypoint($data_client->city)
           ->setStreet($data_client->street);
-        if ( OmnivaLt_Configs::get_method_terminals_type($data_package->method) ) {
+        if ( OmnivaLt_Method::is_omniva_domestic_terminal($data_package->method) ) {
           $api_receiver_address->setOffloadPostcode($data_package->terminal);
         }
         $api_receiver_contact = new Contact();
@@ -155,6 +353,12 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
           ->setMobile($data_shop->mobile)
           ->setPersonName($data_shop->name);
         $api_package->setSenderContact($api_sender_contact);
+
+        if ( $shipment_type_key == 'letter' ) {
+          $letter_service_code = $this->get_letter_service_code('letter'); //Always use "Local registered standard letter"
+          $api_service_package = new ServicePackage($letter_service_code);
+          $api_package->setServicePackage($api_service_package);
+        }
 
         $packages[] = $api_package;
       }

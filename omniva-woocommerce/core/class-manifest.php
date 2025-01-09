@@ -184,16 +184,8 @@ class OmnivaLt_Manifest
       }
     }
 
-    $shipping_methods = array('omnivalt');
-    foreach ( $configs['method_params'] as $method ) {
-      if ( ! $method['is_shipping_method'] ) continue;
-
-      $shipping_methods[] = 'omnivalt_' . $method['key'];
-    }
-    $international_methods_keys = OmnivaLt_Helper::get_all_international_methods_keys();
-    foreach ( $international_methods_keys as $international_method_key ) {
-      $shipping_methods[] = $international_method_key;
-    }
+    $shipping_methods = array_values(OmnivaLt_Method::get_all_wc_methods_keys());
+    $shipping_methods[] = 'omnivalt';
 
     $args = array(
       'paginate' => true,
@@ -281,6 +273,8 @@ class OmnivaLt_Manifest
           'value' => '',
         );
         $args['orderby'] = 'meta_value';
+        $args['meta_key'] = $configs['meta_keys']['manifest_date'];
+        $args['meta_type'] = 'DATETIME';
         $args['order'] = 'DESC';
         break;
       case 'completed_orders':

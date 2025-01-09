@@ -19,6 +19,7 @@ class OmnivaLt_Api_Core
 {
     private $omnivalt_settings;
     private $omnivalt_configs;
+    private $need_convert = false;
 
     public function __construct()
     {
@@ -34,6 +35,27 @@ class OmnivaLt_Api_Core
     protected function get_configs()
     {
         return $this->omnivalt_configs;
+    }
+
+    public function set_need_convert( $need_convert )
+    {
+        $this->need_convert = (bool) $need_convert;
+        return $this;
+    }
+
+    public function is_need_convert()
+    {
+        return $this->need_convert;
+    }
+
+    public function get_service_code( ...$args )
+    {
+        return false;
+    }
+
+    public static function get_additional_services()
+    {
+        return array();
     }
 
     public function register_shipment( $id_order )
@@ -491,29 +513,9 @@ class OmnivaLt_Api_Core
         return $comment;
     }
 
-    protected function get_additional_services( $order, $shipment_service )
+    protected function get_additional_services_for_shipment( $order, $shipment_service )
     {
-        $order_services = OmnivaLt_Helper::get_order_services($order);
-        $active_omx = ($this->omnivalt_configs['api']['type'] === 'omx');
-        $service_additional_services = Shipment::getAdditionalServicesForShipment($shipment_service);
-        $additional_services = array();
-
-        foreach ( $this->omnivalt_configs['additional_services'] as $service_key => $service_values ) {
-            $add_service = (in_array($service_key, $order_services)) ? true : false;
-
-            if ( ! $add_service && $service_values['add_always'] ) {
-                $add_service = true;
-            }
-            if ( ! $active_omx && ! in_array($service_values['code'], $service_additional_services) ) {
-                $add_service = false;
-            }
-            
-            if ( $add_service ) {
-                $additional_services[$service_key] = $service_values['code'];
-            }
-        }
-
-        return $additional_services;
+        return array();
     }
 
     protected function get_reference_number( $order_number )

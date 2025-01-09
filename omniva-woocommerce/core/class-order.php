@@ -11,11 +11,11 @@ class OmnivaLt_Order
     }
   }
 
-  public static function after_rate_description( $method, $index )
+  public static function after_rate_description( $wc_method, $index )
   {
     if ( is_cart() ) return; // Exit on cart page
 
-    $customer = WC()->session->get('customer');
+    $customer = OmnivaLt_Wc::get_session('customer');
     if ( ! isset($customer['country']) ) {
       return;
     }
@@ -26,14 +26,9 @@ class OmnivaLt_Order
     }
 
     $rate_settings = json_decode($shipping_settings['prices_' . $customer['country']]);
-    $shipping_methods = OmnivaLt_Core::get_configs('method_params');
-
-    foreach ( $shipping_methods as $ship_method => $ship_method_values ) {
-      if ( ! $ship_method_values['is_shipping_method'] ) continue;
-
-      if ( ! empty($rate_settings->{$ship_method_values['key'] . "_description"}) && $method->id === 'omnivalt_' . $ship_method_values['key'] ) {
-        echo '<span class="omnivalt-shipping-description">' . $rate_settings->{$ship_method_values['key'] . "_description"} . '</span>';
-      }
+    $method = OmnivaLt_Method::get_by_key(OmnivaLt_Omniva_Order::get_method_key_from_id($wc_method->id));
+    if ( $method && ! empty($rate_settings->{$method['key'] . "_description"}) ) {
+      echo '<span class="omnivalt-shipping-description">' . $rate_settings->{$method['key'] . "_description"} . '</span>';
     }
   }
 
@@ -58,7 +53,7 @@ class OmnivaLt_Order
     }
 
     $method_key = OmnivaLt_Omniva_Order::get_method_key_from_id($method->id);
-    $terminals_type = OmnivaLt_Configs::get_method_terminals_type($method_key);
+    $terminals_type = OmnivaLt_Method::get_terminal_type($method_key);
     if ( $terminals_type && in_array($method->id, $selected_shipping_method) ) {
       echo OmnivaLt_Terminals::get_terminals_options($termnal_id, $country, $terminals_type);
     }
@@ -99,9 +94,8 @@ class OmnivaLt_Order
 
     foreach ( $cart_categories_ids as $cart_product_categories_id ) {
       if ( in_array($cart_product_categories_id, $restricted_categories) ) {
-        foreach ( $configs['method_params'] as $ship_method => $ship_method_values ) {
-          if ( ! $ship_method_values['is_shipping_method'] ) continue;
-          unset($rates['omnivalt_' . $ship_method_values['key']]);
+        foreach ( OmnivaLt_Method::get_all_wc_methods_keys() as $method_wc_key ) {
+          unset($rates[$method_wc_key]);
         }
         break;
       }
@@ -138,9 +132,8 @@ class OmnivaLt_Order
 
     foreach ( $cart_classes_ids as $cart_product_class_id ) {
       if ( in_array($cart_product_class_id, $restricted_shipclass) ) {
-        foreach ( $configs['method_params'] as $ship_method => $ship_method_values ) {
-          if ( ! $ship_method_values['is_shipping_method'] ) continue;
-          unset($rates['omnivalt_' . $ship_method_values['key']]);
+        foreach ( OmnivaLt_Method::get_all_wc_methods_keys() as $method_wc_key ) {
+          unset($rates[$method_wc_key]);
         }
         break;
       }
@@ -174,7 +167,7 @@ class OmnivaLt_Order
 
     $omniva_method = OmnivaLt_Omniva_Order::get_method($order_id);
     if ( ! isset($_POST['omnivalt_terminal']) && $omniva_method ) {
-      if ( OmnivaLt_Helper::is_omniva_terminal_method($omniva_method) && isset($_COOKIE['omniva_terminal']) ) {
+      if ( OmnivaLt_Method::is_omniva_domestic_terminal($omniva_method) && isset($_COOKIE['omniva_terminal']) ) {
         $_POST['omnivalt_terminal'] = $_COOKIE['omniva_terminal'];
       }
     }
@@ -242,8 +235,8 @@ class OmnivaLt_Order
     $order = OmnivaLt_Wc_Order::get_data($wc_order->get_id(), array('omniva'));
     $method_key = $order->omniva->method;
 
-    if ( OmnivaLt_Configs::get_method_terminals_type($method_key) ) {
-      $method_name = 'Omniva ' . strtolower(OmnivaLt_Configs::get_method_title($method_key));
+    if ( OmnivaLt_Method::is_omniva_domestic_terminal($method_key) ) {
+      $method_name = 'Omniva ' . strtolower(OmnivaLt_Method::get_title($method_key));
       $terminal_name = OmnivaLt_Terminals::get_terminal_address($order->omniva->terminal_id);
 
       echo apply_filters('omnivalt_order_show_selected_terminal',
@@ -271,16 +264,15 @@ class OmnivaLt_Order
     $configs = OmnivaLt_Core::get_configs();
     $order = OmnivaLt_Wc_Order::get_data($wc_order->get_id(), array('omniva'));
 
-    foreach ( $configs['method_params'] as $method_key => $method_values ) {
-      if ( ! $method_values['is_shipping_method'] ) continue;
-      if ( $order->omniva->method != $method_values['key'] ) continue;
-
-      if ( $method_values['key'] == 'pt' || $method_values['key'] == 'ps' ) {
-        $data['shipping_via'] = 'Omniva ' . strtolower($method_values['title']) . ": " . OmnivaLt_Terminals::get_terminal_address($order->omniva->terminal_id);
-      }
+    if ( ! $order->omniva->method ) {
+      return $data;
     }
 
-    if ($order->omniva->method) {
+    if ( OmnivaLt_Method::is_omniva_domestic_terminal($order->omniva->method) ) {
+      $data['shipping_via'] = $data['shipping_via'] . ': ' . OmnivaLt_Terminals::get_terminal_address($order->omniva->terminal_id);
+    }
+
+    if ( ! empty($order->omniva->barcodes) ) {
       $shipping_settings = OmnivaLt_Core::get_settings();
       $omnivalt_labels = new OmnivaLt_Labels();
       $country_code = $shipping_settings['shop_countrycode'];
@@ -359,7 +351,7 @@ class OmnivaLt_Order
     $omnivalt_labels->print_manifest($_REQUEST['post']);
   }
 
-  /*public static function order_actions($order) //Disabled because not found where to using (possible junk from old plugin versions)
+  /*public static function order_actions($order) //Disabled because disabled hook and this function use old structure
   {
     $order_id = $order->get_id();
     $send_method = get_post_meta($order_id, '_shipping_method', true);
@@ -423,35 +415,41 @@ class OmnivaLt_Order
     if ( is_object($wc_order_id) ) {
       $wc_order_id = $wc_order_id->get_id();
     }
+
+    if ( ! OmnivaLt_Omniva_Order::have_omniva_shipping($wc_order_id) ) {
+      return;
+    }
+
     $configs = OmnivaLt_Core::get_configs();
     $order = OmnivaLt_Wc_Order::get_data($wc_order_id);
     $send_method = $order->omniva->method;
     $omnivalt_labels = new OmnivaLt_Labels();
     $api_international = new OmnivaLt_Api_International();
-    $international_methods_keys = OmnivaLt_Helper::get_all_international_methods_keys();
+    $international_methods_keys = OmnivaLt_Method::get_all_international_keys();
     $international_method = array('key' => '', 'zone' => '');
-
     $is_omniva = false;
-    foreach ( $configs['method_params'] as $ship_method => $ship_values ) {
-      if ( ! $ship_values['is_shipping_method'] ) continue;
-      if ( $send_method == $ship_values['key'] ) {
-        $is_omniva = true;
-      }
-    }
-    
     $is_omniva_interational = false;
-    if ( OmnivaLt_Helper::is_omniva_international_method($send_method, false) ) {
+    $ship_method = false;
+
+    if ( OmnivaLt_Method::is_omniva_domestic($send_method) ) {
+      $is_omniva = true;
+    } else if ( OmnivaLt_Method::is_omniva_international($send_method) ) {
       $is_omniva = true;
       $is_omniva_interational = true;
       $exploded_method = explode('_', $send_method);
       $international_method['key'] = $exploded_method[0];
       $international_method['zone'] = $exploded_method[1];
     }
-    
+
     if ( $send_method !== false && ! $is_omniva ) {
       self::add_Omniva_manually();
     }
     if ( ! $is_omniva ) return;
+
+    if ( ! $is_omniva_interational ) {
+      $ship_method = OmnivaLt_Method::get_by_key($send_method);
+      if ( ! $ship_method ) return;
+    }
 
     if ( self::is_admin_order_edit_page($order->id) ) {
       echo '<br class="clear"/>';
@@ -460,22 +458,17 @@ class OmnivaLt_Order
     }
     
     echo '<div class="address">';
-    foreach ( $configs['method_params'] as $ship_method => $ship_values ) {
-      if ( ! $ship_values['is_shipping_method'] ) continue;
-      if ( $send_method != $ship_values['key'] ) continue;
-
-      $field_value = $order->shipment->formated_shipping_address;
-      if ( $ship_values['key'] == 'pt' || $ship_values['key'] == 'ps' ) {
+    $field_title = __('Unknown', 'omnivalt');
+    $field_value = $order->shipment->formated_shipping_address;
+    if ( ! $is_omniva_interational ) {
+      $field_title = $ship_method['title'];
+      if ( OmnivaLt_Method::is_omniva_domestic_terminal($send_method) ) {
         $with_country = (! self::is_admin_order_edit_page($order->id));
         $field_value = OmnivaLt_Terminals::get_terminal_address($order->omniva->terminal_id, $with_country);
-      } else {
+      } else if ( strpos($field_value, OmnivaLt_Wc::get_country_name($order->shipping->country)) === false ) {
         $field_value .= '<br/>' . OmnivaLt_Wc::get_country_name($order->shipping->country);
       }
-      
-      echo '<p><strong class="title">' . $ship_values['title'] . ':</strong> ' . $field_value . '</p>';
-    }
-
-    if ( $is_omniva_interational ) {
+    } else {
       $international_data = array(
         'key' => $international_method['key'],
         'title' => $api_international->get_package_title($international_method['key']),
@@ -484,19 +477,19 @@ class OmnivaLt_Order
       $shipping_international = new OmnivaLt_Shipping_Method_International($international_data, 'prices_' . $international_method['key']);
       $shipping_international->setCurrentMethodKey($international_method['zone']);
       $international_method = $shipping_international->getCurrentMethod();
+      $field_title = $international_method['front_title'];
       $field_value = $order->shipment->formated_shipping_address;
-
-      echo '<p><strong class="title">' . $international_method['front_title'] . ':</strong> ' . $field_value . '</p>';
     }
+    echo '<p><strong class="title">' . $field_title . ':</strong> ' . $field_value . '</p>';
 
     if ( self::is_admin_order_edit_page($order->id) ) {
       echo self::build_total_shipments_text($order->shipment->total_shipments);
       echo self::build_shipment_size_text($order->shipment->size);
     }
 
-    $services = OmnivaLt_Helper::get_order_services($order);
-    if ( $is_omniva_interational ) {
-      $services = array();
+    $services = array();
+    if ( ! $is_omniva_interational ) {
+      $services = OmnivaLt_Helper::get_order_services($order);
     }
 
     if ( ! empty($services) ) {
@@ -521,10 +514,10 @@ class OmnivaLt_Order
     }
 
     echo '<div class="edit_address">';
-    if ( $send_method == 'pt' || $send_method == 'ps' ) {
+    if ( OmnivaLt_Method::is_omniva_domestic_terminal($send_method) ) {
       $values = array(
-        'terminal_key' => OmnivaLt_Configs::get_method_terminals_type($send_method),
-        'change_title' => sprintf(__('Change %s', 'omnivalt'), strtolower(OmnivaLt_Configs::get_method_title($send_method))),
+        'terminal_key' => OmnivaLt_Method::get_terminal_type($send_method),
+        'change_title' => sprintf(__('Change %s', 'omnivalt'), strtolower(OmnivaLt_Method::get_title($send_method))),
       );
 
       $all_terminals = OmnivaLt_Terminals::get_terminals_list('ALL', $values['terminal_key']);
@@ -682,13 +675,18 @@ class OmnivaLt_Order
       
       $output .= '<p class="form-field-wide omnivalt-additional_service">';
       $field_id = 'omnivalt_' . $service_key;
-      $output .= '<label for="' . $field_id . '">' . $service_values['title'] . '</label>';
       if ($service_values['in_order'] === 'checkbox') {
-        $output .= '<select id="' . $field_id . '" class="select short" name="' . $field_id . '">';
+        $checked = (in_array($service_key, $selected_order_services)) ? 'checked' : '';
+        $output .= '<input type="checkbox" id="' . $field_id . '" class="select short" name="' . $field_id . '" value="yes" ' . $checked . '/>';
+      }
+      $output .= '<label for="' . $field_id . '" class="noselect">' . $service_values['title'] . '</label>';
+      if ($service_values['in_order'] === 'select') {
+        //TODO: Need to do
+        /*$output .= '<select id="' . $field_id . '" class="select short" name="' . $field_id . '">';
         $output .= '<option value="no">' . __('No', 'omnivalt') . '</option>';
         $selected = (in_array($service_key, $selected_order_services)) ? 'selected' : '';
         $output .= '<option value="yes" ' . $selected . '>' . __('Yes', 'omnivalt') . '</option>';
-        $output .= '</select>';
+        $output .= '</select>';*/
       }
       $output .= '</p>';
     }
@@ -701,7 +699,7 @@ class OmnivaLt_Order
     $configs = OmnivaLt_Core::get_configs();
     
     $api_international = new OmnivaLt_Api_International();
-    $international_methods_keys = OmnivaLt_Helper::get_all_international_methods_keys(false);
+    $international_methods_keys = OmnivaLt_Method::get_all_international_keys();
     $international_methods = array();
     foreach ( $international_methods_keys as $method_key ) {
       $exploded = explode('_', $method_key);
@@ -715,8 +713,7 @@ class OmnivaLt_Order
     echo '<select id="' . $field_id . '" class="select short" name="' . $field_id . '">';
     echo '<option>' . __('Not Omniva', 'omnivalt') . '</option>';
     echo '<optgroup label="' . __('Baltic countries and Finland', 'omnivalt') . '">';
-    foreach ( $configs['method_params'] as $method_key => $method_values ) {
-      if ( ! $method_values['is_shipping_method'] ) continue;
+    foreach ( OmnivaLt_Method::get_all_shipping_methods() as $method_key => $method_values ) {
       echo '<option value="' . $method_values['key'] . '">' . $method_values['title'] . '</option>';
     }
     echo '</optgroup>';
@@ -782,6 +779,17 @@ class OmnivaLt_Order
 
     remove_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Temporary fix to avoid infinity loop
 
+    if ( isset($_POST['omnivalt_add_manual']) ) {
+      $method = array('omnivalt_' . $_POST['omnivalt_add_manual']);
+      OmnivaLt_Omniva_Order::set_method($post_id, $method);
+    }
+
+    $method = OmnivaLt_Omniva_Order::get_method($post_id);
+    if ( ! $method ) {
+      add_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Restore hook
+      return $post_id;
+    }
+
     $configs = OmnivaLt_Core::get_configs();
 
     if ( isset($_POST['omnivalt_terminal_id']) ) {
@@ -804,12 +812,9 @@ class OmnivaLt_Order
     foreach ( $configs['additional_services'] as $service_key => $service_values ) {
       if ( isset($_POST['omnivalt_' . $service_key]) ) {
         OmnivaLt_Wc_Order::update_meta($post_id, '_omnivalt_' . $service_key, wc_clean($_POST['omnivalt_' . $service_key]));
+      } else {
+        OmnivaLt_Wc_Order::update_meta($post_id, '_omnivalt_' . $service_key, 'no');
       }
-    }
-
-    if ( isset($_POST['omnivalt_add_manual']) ) {
-      $method = array('omnivalt_' . $_POST['omnivalt_add_manual']);
-      OmnivaLt_Omniva_Order::set_method($post_id, $method);
     }
 
     add_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Restore hook
