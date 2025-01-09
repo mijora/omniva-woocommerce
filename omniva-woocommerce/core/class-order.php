@@ -776,7 +776,10 @@ class OmnivaLt_Order
     if ( ! self::is_admin_order_edit_page($post_id) ) {
       return $post_id;
     }
-
+    
+    if ( has_action('init', 'OmnivaLt_Order::saved') ) { //Allow save only one time
+      return $post_id;
+    }
     remove_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Temporary fix to avoid infinity loop
 
     if ( isset($_POST['omnivalt_add_manual']) ) {
@@ -818,8 +821,14 @@ class OmnivaLt_Order
     }
 
     add_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Restore hook
+    add_action('init', 'OmnivaLt_Order::saved'); //Mark as saved
 
     return $post_id;
+  }
+
+  public static function saved()
+  {
+    return true;
   }
 
   public static function checkout_validate_terminal()
