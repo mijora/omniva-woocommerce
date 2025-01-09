@@ -11,6 +11,11 @@ function omnivalt_init_map() {
 }
 
 (function($) {
+    $(document).ready(function() {
+        $(document.body).on( 'updated_wc_div', function(){
+            omnivalt_init_map();
+        });
+    });
     
     window.omnivaltMap = {
         lib: null,
@@ -161,9 +166,9 @@ jQuery('document').ready(function($){
     $('input.shipping_method').on('click',function(){
         var current_method = $(this);
         if (current_method.val() == "omnivalt_pt"){
-            $('.terminal-container').show();
+            $('.omnivalt_terminal_container.old').show();
         } else {
-            $('.terminal-container').hide();
+            $('.omnivalt_terminal_container.old').hide();
         }
     });
     $('input.shipping_method:checked').trigger('click');
@@ -171,8 +176,8 @@ jQuery('document').ready(function($){
     $(document.body).on( 'updated_wc_div', function(){
         if ($(".woocommerce-shipping-calculator").length) {
             $("select.shipping_method, :input[name^=shipping_method]:checked").trigger('change'); //TODO: Need better solution for dropdown update when in cart change country
-        } else {
-            if (omnivalt_settings.show_map) {
+        } else if ( $('.omnivalt_terminal_container.old').length ) {
+            if ( typeof omnivalt_settings !== 'undefined' && omnivalt_settings.show_map) {
                 omnivalt_init_map();
             } else {
                 $('.omnivalt_terminal').omniva(); //TODO: Not working when country select is enabled in cart
@@ -283,7 +288,7 @@ var omniva_addrese_change = false;
             e.preventDefault();            
             showModal();
         });
-        $('.terminal-container').on('click','#show-omniva-map',function(e){
+        $('.omnivalt_terminal_container.old').on('click','#show-omniva-map',function(e){
             e.preventDefault();            
             showModal();
         });

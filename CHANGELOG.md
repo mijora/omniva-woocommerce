@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- fixed loading of the parcel terminal selection on the Cart page
+
 ### Improved
 - removed dependency on XML API structure
 - removed duplicate functions and optimized functions usage
