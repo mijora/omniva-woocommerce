@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.19.0]
 ### Fixed
 - fixed loading of the parcel terminal selection on the Cart page
 - fixed that when saving an order, data would only be saved once
