@@ -14,28 +14,6 @@ class OmnivaLt_Shipmethod_Helper
     return $method_params;
   }
 
-  public static function get_available_shipping_methods($configs)
-  {
-    $available_methods = array();
-
-    foreach ( $configs['method_params'] as $method_name => $method_values ) {
-      if ($method_values['is_shipping_method'] === false) continue;
-
-      $available = false;
-      foreach ( $configs['shipping_params'] as $ship_params ) {
-        $method_key = ($method_name === 'terminal') ? 'pickup' : $method_name;
-        if ( in_array($method_key, $ship_params['methods']) ) {
-          $available = true;
-        }
-      }
-      if ( ! $available ) continue;
-
-      $available_methods[$method_name] = $method_values;
-    }
-
-    return $available_methods;
-  }
-
   public static function check_restrictions($settings, $key, $weight = false, $products_for_dim = false)
   {
     $settings_keys = array(
@@ -84,34 +62,20 @@ class OmnivaLt_Shipmethod_Helper
     return $rate_name;
   }
 
-  public static function is_rate_allowed($key, $country, $settings) {
-    $shipping_params = OmnivaLt_Core::get_configs('shipping_params');
-    $asociations = OmnivaLt_Helper::get_methods_asociations();
-    $available_methods = OmnivaLt_Helper::get_available_methods();
-    
-    if ( ! isset($shipping_params[$settings['api_country']]) ) {
+  public static function is_rate_allowed($key, $country) {
+    $available_methods = OmnivaLt_Method::get_all_available_shipping_methods();
+
+    if ( ! isset($available_methods[$country]) ) {
       return false;
     }
 
-    $shipping_sets = $shipping_params[$settings['api_country']]['shipping_sets'];
-    if ( ! isset($shipping_sets[$country]) ) {
-      return false;
+    $method_exists = false;
+    foreach ( $available_methods[$country] as $method ) {
+      if ( $key === $method['key'] ) {
+        $method_exists = true;
+      }
     }
-
-    $methods = OmnivaLt_Helper::get_allowed_methods($shipping_sets[$country]);
-    if ( empty($methods) ) {
-      return false;
-    }
-
-    $allowed_methods = $available_methods[$country]['available_methods'];
-    foreach ( $allowed_methods as $method_key => $method ) {
-      $allowed_methods[$method_key] = OmnivaLt_Helper::convert_method_name_to_short($asociations, $method);
-    }
-    foreach ( $methods as $method_key => $method ) {
-      $method = OmnivaLt_Helper::convert_method_name_to_short($asociations, $method, true);
-    }
-
-    if ( ! in_array($key, $methods) || ! in_array($key, $allowed_methods) ) {
+    if ( ! $method_exists ) {
       return false;
     }
 

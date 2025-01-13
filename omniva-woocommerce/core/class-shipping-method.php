@@ -13,8 +13,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     private $omnivalt_api;
     private $omnivalt_api_int;
     private $omnivalt_configs;
-    private $shipping_sets;
-    private $methods_asociations;
+    private $shipping_methods;
     private $destinations_countries = array();
 
     public function __construct()
@@ -26,7 +25,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $this->omnivalt_api = new OmnivaLt_Api();
       $this->omnivalt_api_int = new OmnivaLt_Api_International();
       $this->omnivalt_configs = OmnivaLt_Core::get_configs();
-      $this->methods_asociations = OmnivaLt_Helper::get_methods_asociations();
+      $this->shipping_methods = OmnivaLt_Method::get_all_shipping_methods();
 
       // Destination countries
       foreach ( $this->omnivalt_configs['shipping_params'] as $ship_params ) {
@@ -55,13 +54,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       if ( empty($this->settings['api_country']) ) {
         $this->settings['api_country'] = 'LT';
       }
-      foreach ( $this->methods_asociations as $key => $name ) {
-        if ( empty($this->settings['method_' . $key]) ) {
-          $this->settings['method_' . $key] = 'no';
+      foreach ( $this->shipping_methods as $method_key => $method ) {
+        if ( empty($this->settings['method_' . $method['key']]) ) {
+          $this->settings['method_' . $method['key']] = 'no';
         }
       }
-
-      $this->shipping_sets = OmnivaLt_Helper::get_shipping_sets($this->settings['api_country']);
     }
 
     /**
@@ -201,10 +198,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'text',
         'description' => __('The value of this field is used only if the mobile number is not entered.', 'omnivalt'),
       );
+      $desc = (isset($this->omnivalt_configs['additional_services']['delivery_confirmation_sms'])) ? sprintf(__('Required mobile phone number if want use service "%s".', 'omnivalt'), $this->omnivalt_configs['additional_services']['delivery_confirmation_sms']['title']) : false;
       $fields['shop_mobile'] = array(
         'title' => __('Shop mobile number', 'omnivalt'),
         'type' => 'text',
-        'description' => sprintf(__('Required mobile phone number if want use service "%s".', 'omnivalt'), $this->omnivalt_configs['additional_services']['delivery_confirmation_sms']['title']),
+        'description' => $desc,
       );
       $fields['shop_email'] = array(
         'title' => __('Shop email', 'omnivalt'),
@@ -237,26 +235,21 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'hr',
         'title' => __('Shipping methods', 'omnivalt'),
       );
-      foreach ($this->omnivalt_configs['method_params'] as $ship_method => $ship_method_values) {
-        if ($ship_method_values['is_shipping_method'] === false) continue;
-
+      foreach ( OmnivaLt_Method::get_all_shipping_methods() as $method_key => $method ) {
         $exists = false;
         foreach ( $this->omnivalt_configs['shipping_params'] as $ship_params ) {
-          $method_key = ($ship_method === 'terminal') ? 'pickup' : $ship_method;
           if ( in_array($method_key, $ship_params['methods']) ) {
             $exists = true;
           }
         }
         if ( ! $exists ) continue;
 
-        //$description = sprintf(__('Show %s method in checkout.', 'omnivalt'), strtolower($ship_method_values['title']));
-
-        $fields['method_' . $ship_method_values['key']] = array(
-          'title' => $ship_method_values['title'],
+        $fields['method_' . $method['key']] = array(
+          'title' => $method['title'],
           'type' => 'checkbox',
-          'description' => $ship_method_values['description'],
+          'description' => $method['description'],
           'custom_attributes' => array(
-            'data-method' => $ship_method,
+            'data-method' => $method_key,
           ),
         );
       }
@@ -286,24 +279,17 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'hr',
         'title' => __('Shipping methods settings', 'omnivalt'),
       );
-      foreach ( $this->omnivalt_configs['method_params'] as $ship_method => $ship_method_values ) {
-        if ($ship_method_values['is_shipping_method'] === false) continue;
-
-        $field_key = 'weight_' . $ship_method_values['key'];
-        if ( $ship_method_values['key'] === 'pt' ) {
-          $field_key = 'weight';
-        }
-
-        $fields[$field_key] = array(
-          'title' => sprintf(__('Max cart weight (%1$s) for %2$s', 'omnivalt'), 'kg', strtolower($ship_method_values['title'])),
+      foreach ( OmnivaLt_Method::get_all_shipping_methods() as $method_key => $method ) {
+        $fields['weight_' . $method['key']] = array(
+          'title' => sprintf(__('Max cart weight (%1$s) for %2$s', 'omnivalt'), 'kg', strtolower($method['title'])),
           'type' => 'number',
           'custom_attributes' => array(
             'step' => 0.001,
             'min' => 0
           ),
-          'description' => sprintf(__('Maximum allowed all cart products weight for %s.', 'omnivalt'), strtolower($ship_method_values['title'])),
-          'default' => $ship_method_values['weight']['default'],
-          'class' => 'omniva_' . $ship_method,
+          'description' => sprintf(__('Maximum allowed all cart products weight for %s.', 'omnivalt'), strtolower($method['title'])),
+          'default' => $method['max_weight'],
+          'class' => 'omniva_' . $method_key,
         );
       }
       $fields['size_pt'] = array(
@@ -377,11 +363,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'logo' => 'LOGO ' . __('Parcel terminal', 'omnivalt'),
           'short' => __('Parcel terminal', 'omnivalt'),
         )
-      );
-      $fields['custom_label'] = array( // The parameter is no longer used. Need delete in 2026.
-        'title' => __('Custom label names', 'omnivalt'),
-        'type' => 'label_name',
-        'description' => __('Use custom shipping method name.', 'omnivalt') . ' ' . __('Values is not translatable.', 'omnivalt'),
       );
       $fields['position'] = array(
         'title' => __('Positions', 'omnivalt'),
@@ -796,60 +777,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       return $values;
     }
 
-    public function generate_label_name_html( $key, $value ) {
-      $field_key = $this->get_field_key($key);
-      $field_class = (isset($value['class'])) ? $value['class'] : '';
-      $field_values = array();
-
-      if ( $this->get_option($key) !== '' ) {
-        $field_values = $this->get_option($key);
-        if ( is_string($field_values) ) {
-          $field_values = json_decode($this->get_option($key), true);
-        }
-      }
-
-      $avalable_methods = OmnivaLt_Shipmethod_Helper::get_available_shipping_methods($this->omnivalt_configs);
-      $splited_methods = array_chunk($avalable_methods, 3, true);
-
-      ob_start();
-      ?>
-      <tr valign="top" style="display:none;">
-        <th scope="row" class="titledesc">
-          <label><?php echo esc_html($value['title']); ?></label>
-        </th>
-        <td class="forminp">
-          <fieldset class="field-custom_label <?php echo $field_class; ?>">
-            <table>
-              <?php foreach ( $splited_methods as $methods_row) : ?>
-                <tr>
-                  <?php foreach ( $methods_row as $method_key => $method_values ) : ?>
-                    <th><?php echo $method_values['title']; ?></th>
-                  <?php endforeach; ?>
-                </tr>
-                <tr>
-                  <?php foreach ( $methods_row as $method_key => $method_values ) : ?>
-                    <?php $current_value = (isset($field_values[$method_values['key']])) ? $field_values[$method_values['key']] : ""; ?>
-                    <td>
-                      <input type="text" name="<?php echo esc_html($field_key); ?>[<?php echo esc_html($method_values['key']); ?>]" value="">
-                    </td>
-                  <?php endforeach; ?>
-                </tr>
-              <?php endforeach; ?>
-            </table>
-            <p class="description"><?php echo $value['description']; ?></p>
-          </fieldset>
-        </td>
-      </tr>
-      <?php
-      $html = ob_get_contents();
-      ob_end_clean();
-      return $html;
-    }
-    public function validate_label_name_field( $key, $value ) {
-      $values = wp_json_encode($value);
-      return $values;
-    }
-
     public function generate_position_html( $key, $value ) {
       $field_key = $this->get_field_key($key);
       $field_class = (isset($value['class'])) ? $value['class'] : '';
@@ -862,8 +789,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         }
       }
 
-      $avalable_methods = OmnivaLt_Shipmethod_Helper::get_available_shipping_methods($this->omnivalt_configs);
-      $splited_methods = array_chunk($avalable_methods, 5, true);
+      $methods = OmnivaLt_Method::get_all_shipping_methods();
+      $splited_methods = array_chunk($methods, 5, true);
 
       ob_start();
       ?>
@@ -1087,7 +1014,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $prices_key = (array_key_exists($country, $this->omnivalt_configs['shipping_params'])) ? 'prices_' . $country : 'prices_LT';
       $shipping_country = new OmnivaLt_Shipping_Method_Country($country, $prices_key);
       foreach ( $shipping_country->getMethods() as $method_key => $method ) {
-        if ( ! OmnivaLt_Shipmethod_Helper::is_rate_allowed($method['key'], $country, $this->settings) || $this->settings['method_' . $method['key']] != 'yes' ) {
+        if ( ! OmnivaLt_Shipmethod_Helper::is_rate_allowed($method['key'], $country) || $this->settings['method_' . $method['key']] != 'yes' ) {
           continue;
         }
         $shipping_country->setCurrentMethodKey($method_key);
@@ -1165,7 +1092,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       }
 
       $rate = array(
-        'id' => 'omnivalt_' . $method['key'],
+        'id' => OmnivaLt_Omniva_Order::get_method_id_from_key($method['key']),
         'label' => OmnivaLt_Shipmethod_Helper::get_rate_name($method, $country, $this->settings),
         'cost' => $amount,
         'meta_data' => $meta_data,

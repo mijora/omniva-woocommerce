@@ -5,7 +5,6 @@ class OmnivaLt_Statistics
     {
         $settings = OmnivaLt_Core::get_settings();
         $configs = OmnivaLt_Core::get_configs();
-        $methods_asociations = OmnivaLt_Helper::get_methods_asociations();
         $wc_orders = self::get_orders();
         $orders_data = array();
 
@@ -45,11 +44,8 @@ class OmnivaLt_Statistics
     private static function get_orders()
     {
         $configs = OmnivaLt_Core::get_configs();
-        $shipping_methods = array('omnivalt');
-        foreach ( $configs['method_params'] as $method ) {
-            if ( ! $method['is_shipping_method'] ) continue;
-            $shipping_methods[] = 'omnivalt_' . $method['key'];
-        }
+        $shipping_methods = array_values(OmnivaLt_Method::get_all_wc_methods_keys());
+        $shipping_methods[] = 'omnivalt';
 
         $args = array(
             'limit' => -1,
@@ -72,15 +68,15 @@ class OmnivaLt_Statistics
 
     private static function add_to_counter( &$counter, $key, $increase_value )
     {
-        $methods_asociations = OmnivaLt_Helper::get_methods_asociations();
-        $key = OmnivaLt_Helper::convert_method_name_to_short($methods_asociations, $key, true);
+        $method = OmnivaLt_Method::get_by_key($key);
+        $method_key = ($method) ? $method['key'] : 'unknown';
         
         if ( ! is_array($counter) ) {
             $counter = array();
         }
-        if ( ! isset($counter[$key]) ) {
-            $counter[$key] = 0;
+        if ( ! isset($counter[$method_key]) ) {
+            $counter[$method_key] = 0;
         }
-        $counter[$key] += $increase_value;
+        $counter[$method_key] += $increase_value;
     }
 }

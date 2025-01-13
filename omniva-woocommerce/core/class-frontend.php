@@ -13,7 +13,7 @@ class OmnivaLt_Frontend
     $label_design = $settings['label_design'] ?? 'classic';
     if ( $label_design == 'full' || $label_design == 'logo' ) {
       $method_key = OmnivaLt_Omniva_Order::get_method_key_from_id($method->id);
-      $method_params = OmnivaLt_Helper::get_omniva_method_by_key($method_key);
+      $method_params = OmnivaLt_Method::get_by_key($method_key);
       if ( ! $method_params ) {
         return $label;
       }
@@ -95,14 +95,15 @@ class OmnivaLt_Frontend
       return $available_gateways;
     }
 
-    $omniva_methods_ids = array(
-      'terminal' => OmnivaLt_Helper::get_omniva_method_shipping_id('terminal'),
-    );
+    $omniva_methods_ids = array();
+    foreach ( OmnivaLt_Method::get_all_shipping_methods() as $method_key => $method ) {
+      $omniva_methods_ids[$method_key] = OmnivaLt_Omniva_Order::get_method_id_from_key($method['key']);
+    }
 
     /*** Payment methods changing ***/
     /* Disable COD for FI Matkahulto */
-    if ( $chosen_country == 'FI' && in_array($omniva_methods_ids['terminal'], $chosen_shipping_methods) ) {
-      $disable_payment_methods = array('cod');
+    if ( $chosen_country == 'FI' && in_array($omniva_methods_ids['pickup'], $chosen_shipping_methods) ) {
+      $disable_payment_methods = OmnivaLt_Core::get_configs('cod');
       
       foreach ( $disable_payment_methods as $payment_method_key ) {
         unset($available_gateways[$payment_method_key]);
@@ -125,7 +126,7 @@ class OmnivaLt_Frontend
     
     $is_omniva_method = false;
     foreach ( $_POST['shipping_method'] as $method ) {
-      if ( OmnivaLt_Helper::is_omniva_method($method) ) {
+      if ( OmnivaLt_Method::is_omniva_domestic($method) ) {
         $is_omniva_method = true;
       }
     }

@@ -117,7 +117,7 @@ class OmnivaLt_Terminals
     if ( ! isset($omniva_settings['show_map']) || isset($omniva_settings['show_map']) && $omniva_settings['show_map'] == 'yes' ) {
       $button = '<button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn" style = "display: none;">' . __('Show in map', 'omnivalt') . '<img src = "' . OMNIVALT_URL . 'assets/img/sasi.png" title = "' . $list_options['txt_show_map'] . '"/></button>';
     }
-    return '<div class="terminal-container"><select class="omnivalt_terminal" name="omnivalt_terminal">' . $parcel_terminals . '</select>
+    return '<div class="omnivalt_terminal_container old"><select class="omnivalt_terminal" name="omnivalt_terminal">' . $parcel_terminals . '</select>
       ' . $button . ' </div>' . $script;
   }
 
@@ -168,7 +168,7 @@ class OmnivaLt_Terminals
 
     $nonce = wp_create_nonce("omniva_terminals_json_nonce");
     $omniva_settings = get_option(OmnivaLt_Core::get_configs('plugin')['settings_key']);
-    $omniva_methods = OmnivaLt_Core::get_configs('method_params_new');
+    $omniva_methods = OmnivaLt_Method::get_all();
     $omniva_method = ($get_list == 'post') ? $omniva_methods['post_specific'] : $omniva_methods['pickup'];
     $parcel_terminals = '<option value = "">' . $list_options['txt_select'] . '</option>' . $parcel_terminals;
     $set_autoselect = (isset($omniva_settings['auto_select'])) ? $omniva_settings['auto_select'] : 'yes';

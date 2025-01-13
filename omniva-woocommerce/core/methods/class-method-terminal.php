@@ -17,7 +17,7 @@ class OmnivaLt_Method_Terminal extends OmnivaLt_Method_Core
         $this->setDescription(__('Activate this service, when you want to send parcels to parcel terminals.', 'omnivalt'));
         $this->setIsShippingMethod(true);
         $this->setTerminalsType('terminal');
-        $this->setDefaultWeight(30);
+        $this->setMaxWeight(30);
         $this->setParams(array(
             'sizes' => array(
                 'min' => array(2, 9, 14),

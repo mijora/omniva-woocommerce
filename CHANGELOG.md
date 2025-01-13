@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.19.0]
+### Fixed
+- fixed loading of the parcel terminal selection on the Cart page
+- fixed that when saving an order, data would only be saved once
+
+### Improved
+- removed dependency on XML API structure
+- removed duplicate functions and optimized functions usage
+- created the possibility to specify the type of shipment
+- new shipping methods added for Estonia: Letter (Courier) and Letter (Post office)
+
 ## [1.18.2]
 ### Fixed
 - fixed shipment registration error when plugin installed in a new shop
