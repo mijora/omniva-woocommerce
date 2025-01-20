@@ -90,7 +90,7 @@ function omnivalt_configs($section_name = false) {
         'call' => 'baltic',
       ),
       'comment_lang' => 'lav',
-      'tracking_url' => 'https://www.omniva.lv/privats/sutijuma_atrasanas_vieta?barcode=',
+      'tracking_url' => 'https://mana.omniva.lv/track/',
     ),
     'EE' => array(
       'type' => 'country',
