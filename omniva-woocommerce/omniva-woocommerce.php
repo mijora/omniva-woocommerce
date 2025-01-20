@@ -77,7 +77,7 @@ function omnivalt_configs($section_name = false) {
         'call' => 'baltic',
       ),
       'comment_lang' => 'lit',
-      'tracking_url' => 'https://www.omniva.lt/verslo/siuntos_sekimas?barcode=',
+      'tracking_url' => 'https://mano.omniva.lt/track/',
     ),
     'LV' => array(
       'type' => 'country',
@@ -103,7 +103,7 @@ function omnivalt_configs($section_name = false) {
         'call' => 'estonia',
       ),
       'comment_lang' => 'est',
-      'tracking_url' => 'https://www.omniva.ee/era/jalgimine?barcode=',
+      'tracking_url' => 'https://minu.omniva.ee/track/',
     ),
     'FI' => array(
       'type' => 'country',
@@ -116,7 +116,7 @@ function omnivalt_configs($section_name = false) {
         'call' => 'estonia',
       ),
       'comment_lang' => 'eng',
-      'tracking_url' => 'https://www.omniva.ee/business/track?barcode=',
+      'tracking_url' => 'https://minu.omniva.ee/track/',
     ),
   );
 

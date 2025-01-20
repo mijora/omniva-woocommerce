@@ -203,6 +203,21 @@ class OmnivaLt_Wc_Order
         return true;
     }
 
+    public static function update_multi_meta( $wc_order_id, $meta_values )
+    {
+        $wc_order = self::get_order($wc_order_id);
+        if ( ! $wc_order || ! is_array($meta_values) ) {
+            return false;
+        }
+
+        foreach ( $meta_values as $meta_key => $value ) {
+            $wc_order->update_meta_data($meta_key, $value);
+        }
+        $wc_order->save();
+
+        return true;
+    }
+
     public static function get_meta( $wc_order_id, $meta_key )
     {
         $wc_order = self::get_order($wc_order_id);
