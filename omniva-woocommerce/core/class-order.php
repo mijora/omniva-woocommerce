@@ -757,10 +757,14 @@ class OmnivaLt_Order
       }
     }
 
+    $meta_values = array();
     foreach ( $configs['additional_services'] as $service_key => $service_values ) {
       if ( isset($_POST['omnivalt_' . $service_key]) ) {
-        OmnivaLt_Wc_Order::update_meta($post_id, '_omnivalt_' . $service_key, wc_clean($_POST['omnivalt_' . $service_key]));
+        $meta_values['_omnivalt_' . $service_key] = wc_clean($_POST['omnivalt_' . $service_key]);
       }
+    }
+    if ( ! empty($meta_values) ) {
+      OmnivaLt_Wc_Order::update_multi_meta($post_id, $meta_values);
     }
 
     if ( isset($_POST['omnivalt_add_manual']) ) {
@@ -812,12 +816,12 @@ class OmnivaLt_Order
       OmnivaLt_Omniva_Order::set_dimmensions($post_id, wc_clean(json_encode($_POST['omnivalt_dimmensions'])));
     }
 
+    $meta_values = array();
     foreach ( $configs['additional_services'] as $service_key => $service_values ) {
-      if ( isset($_POST['omnivalt_' . $service_key]) ) {
-        OmnivaLt_Wc_Order::update_meta($post_id, '_omnivalt_' . $service_key, wc_clean($_POST['omnivalt_' . $service_key]));
-      } else {
-        OmnivaLt_Wc_Order::update_meta($post_id, '_omnivalt_' . $service_key, 'no');
-      }
+      $meta_values['_omnivalt_' . $service_key] = (isset($_POST['omnivalt_' . $service_key])) ? wc_clean($_POST['omnivalt_' . $service_key]) : 'no';
+    }
+    if ( ! empty($meta_values) ) {
+      OmnivaLt_Wc_Order::update_multi_meta($post_id, $meta_values);
     }
 
     add_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos'); //Restore hook

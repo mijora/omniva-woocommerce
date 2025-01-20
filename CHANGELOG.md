@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+### Improved
+- updated shipment tracking links
+- created a function when want to save several metadata to an order to reduce the number of requests
+
 ## [1.19.0]
 ### Fixed
 - fixed loading of the parcel terminal selection on the Cart page
