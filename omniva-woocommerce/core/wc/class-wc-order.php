@@ -150,6 +150,7 @@ class OmnivaLt_Wc_Order
         foreach ( $wc_order->get_items() as $item_id => $product_item ) {
             $item_data = array(
                 'product_id' => $product_item->get_product_id(),
+                'variation_id' => $product_item->get_variation_id(),
                 'quantity' => $product_item->get_quantity(),
                 'weight' => 0,
                 'length' => 0,
@@ -166,6 +167,12 @@ class OmnivaLt_Wc_Order
                 if ( ! empty($product->get_width()) ) $item_data['width'] = (float) $product->get_width();
                 if ( ! empty($product->get_height()) ) $item_data['height'] = (float) $product->get_height();
                 $item_data['product_meta_data'] = OmnivaLt_Helper::purge_meta_data($product->get_meta_data());
+                if ( $item_data['variation_id'] ) {
+                    $parent_product = OmnivaLt_Wc_Product::get_product($item_data['product_id']);
+                    if ( $parent_product ) {
+                        $item_data['product_meta_data'] = OmnivaLt_Helper::purge_meta_data($parent_product->get_meta_data());
+                    }
+                }
             }
 
             $order_items[$item_id] = $item_data;
