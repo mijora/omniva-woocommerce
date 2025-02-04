@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- fixed receiving additional services for variable products
+
 ### Improved
 - updated shipment tracking links
 - created a function when want to save several metadata to an order to reduce the number of requests
