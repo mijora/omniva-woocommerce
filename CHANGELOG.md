@@ -7,6 +7,10 @@
 ### Improved
 - updated shipment tracking links
 - created a function when want to save several metadata to an order to reduce the number of requests
+- added platform and version identification to all requests to the Omniva server
+
+### Updated
+- updated Omniva API library to v1.3.2
 
 ## [1.19.0]
 ### Fixed
