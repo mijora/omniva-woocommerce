@@ -563,7 +563,7 @@ class OmnivaLt_Order
       'width' => $current_values['width'] ?? 0,
       'height' => $current_values['height'] ?? 0,
     );
-    $dimm_unit = get_option('woocommerce_dimension_unit');
+    $units = OmnivaLt_Wc::get_units();
 
     $first = true;
     foreach ( $dimm_values as $value ) {
@@ -573,7 +573,7 @@ class OmnivaLt_Order
       $output .= $value;
       $first = false;
     }
-    $output .= ' ' . $dimm_unit;
+    $output .= ' ' . $units->dimension;
 
     return $output;
   }
@@ -581,9 +581,9 @@ class OmnivaLt_Order
   public static function get_weight_text( $current_values )
   {
     $weight_value = $current_values['weight'] ?? 0;
-    $weight_unit = get_option('woocommerce_weight_unit');
+    $units = OmnivaLt_Wc::get_units();
 
-    return ($weight_value > 0) ? wc_format_weight($weight_value) : '0 ' . $weight_unit;
+    return ($weight_value > 0) ? wc_format_weight($weight_value) : '0 ' . $units->weight;
   }
 
   public static function get_price_text( $value )
@@ -993,16 +993,35 @@ class OmnivaLt_Order
       'height' => 0,
     );
 
-    $predicted_size = OmnivaLt_Helper::predict_order_size(self::spread_items($items_data), array(
-      'length' => 39,
-      'width' => 38,
-      'height' => 64
-    ));
+    $predicted_size = OmnivaLt_Helper::predict_order_size(self::spread_items($items_data));
     foreach ( $order_dimmension as $dim_key => $dim_value ) {
       $order_dimmension[$dim_key] = $predicted_size[$dim_key] ?? 0;
     }
 
     return $order_dimmension;
+  }
+
+  public static function organize_size_values( $values )
+  {
+    $size_values = array(
+      'length' => 0,
+      'width' => 0,
+      'height' => 0,
+    );
+
+    if ( ! is_array($values) || empty($values) ) {
+      return false;
+    }
+
+    $has_value = false;
+    foreach ( $size_values as $size_key => $size_value ) {
+      if ( isset($values[$size_key]) && $values[$size_key] !== '' ) {
+        $has_value = true;
+        $size_values[$size_key] = $values[$size_key];
+      }
+    }
+
+    return ($has_value) ? $size_values : false;
   }
 
   public static function get_order_items_size( $items_data, $saved_order_size = false )

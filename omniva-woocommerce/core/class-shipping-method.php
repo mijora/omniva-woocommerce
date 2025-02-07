@@ -1009,7 +1009,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         return;
       }
       $cart_amount = $cart->cart_contents_total + $cart->tax_total;
-      $products = $this->get_splited_cart_products($package['contents']);
+      $products = OmnivaLt_Shipmethod_Helper::get_splited_cart_products($package['contents']);
 
       $prices_key = (array_key_exists($country, $this->omnivalt_configs['shipping_params'])) ? 'prices_' . $country : 'prices_LT';
       $shipping_country = new OmnivaLt_Shipping_Method_Country($country, $prices_key);
@@ -1099,20 +1099,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       );
 
       $this->add_rate($rate);
-    }
-
-    private function get_splited_cart_products( $cart_contents )
-    {
-      $products = array();
-
-      foreach ( $cart_contents as $item_id => $values ) {
-        $product = $values['data'];
-        for ( $i = 0; $i < $values['quantity']; $i++ ) {
-          array_push($products, $product);
-        }
-      }
-
-      return $products;
     }
   }
 }

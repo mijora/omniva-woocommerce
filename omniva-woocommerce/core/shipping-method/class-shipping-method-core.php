@@ -373,7 +373,7 @@ class OmnivaLt_Shipping_Method_Core
                         $h = $method['params']['sizes'][$key][0];
                         $w = $method['params']['sizes'][$key][1];
                         $l = $method['params']['sizes'][$key][2];
-                        $text = sprintf(__('Max %s cm', 'omnivalt'), $h . '×' . $w . '×' . $l);
+                        $text = sprintf(__('Max %s cm', 'omnivalt'), $l . '×' . $w . '×' . $h);
                         $box_titles[$key] = $title . '<br/><small>' . $text . '</small>';
                     }
                     $html_params = array(
