@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.19.1]
 ### Fixed
 - fixed receiving additional services for variable products
 
@@ -8,6 +8,8 @@
 - updated shipment tracking links
 - created a function when want to save several metadata to an order to reduce the number of requests
 - added platform and version identification to all requests to the Omniva server
+- added box calculator library
+- all shipment size calculation functions have been changed to a single function that uses the box calculator library
 
 ### Updated
 - updated Omniva API library to v1.3.2
