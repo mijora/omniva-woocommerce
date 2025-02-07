@@ -410,7 +410,6 @@ class OmnivaLt_Core
     require_once $core_dir . 'methods/' . 'class-method-logistic.php';
     require_once $core_dir . 'methods/' . 'class-method-lettercourier.php';
     require_once $core_dir . 'methods/' . 'class-method-letterpost.php';
-    require_once $core_dir . 'class-calc-size.php';
     require_once $core_dir . 'class-compatibility.php';
     require_once $core_dir . 'class-emails.php';
     require_once $core_dir . 'class-labels.php';
@@ -420,7 +419,6 @@ class OmnivaLt_Core
     require_once $core_dir . 'api/' . 'class-api-omx.php';
     require_once $core_dir . 'api/' . 'class-api-international.php';
     require_once $core_dir . 'api/' . 'class-api-omx-international.php';
-    require_once $core_dir . 'class-packer.php';
     require_once $core_dir . 'class-product.php';
     require_once $core_dir . 'class-cronjob.php';
     require_once $core_dir . 'class-terminals.php';

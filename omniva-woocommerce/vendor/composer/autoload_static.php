@@ -18,6 +18,7 @@ class ComposerStaticInit398a32df51a36dadc5fb5956e2f53305
         'M' => 
         array (
             'Mijora\\Omniva\\' => 14,
+            'Mijora\\BoxCalculator\\' => 21,
         ),
     );
 
@@ -30,12 +31,21 @@ class ComposerStaticInit398a32df51a36dadc5fb5956e2f53305
         array (
             0 => __DIR__ . '/..' . '/mijora/omniva-api/src',
         ),
+        'Mijora\\BoxCalculator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mijora/box-calculator/src',
+        ),
     );
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'FPDF' => __DIR__ . '/..' . '/setasign/fpdf/fpdf.php',
+        'Mijora\\BoxCalculator\\CalculateBox' => __DIR__ . '/..' . '/mijora/box-calculator/src/CalculateBox.php',
+        'Mijora\\BoxCalculator\\Debug' => __DIR__ . '/..' . '/mijora/box-calculator/src/Debug.php',
+        'Mijora\\BoxCalculator\\Elements\\Box' => __DIR__ . '/..' . '/mijora/box-calculator/src/Elements/Box.php',
+        'Mijora\\BoxCalculator\\Elements\\Item' => __DIR__ . '/..' . '/mijora/box-calculator/src/Elements/Item.php',
+        'Mijora\\BoxCalculator\\Helper' => __DIR__ . '/..' . '/mijora/box-calculator/src/Helper.php',
         'Mijora\\Omniva\\Helper' => __DIR__ . '/..' . '/mijora/omniva-api/src/Helper.php',
         'Mijora\\Omniva\\Locations\\PickupPoints' => __DIR__ . '/..' . '/mijora/omniva-api/src/Locations/PickupPoints.php',
         'Mijora\\Omniva\\OmnivaException' => __DIR__ . '/..' . '/mijora/omniva-api/src/OmnivaException.php',
