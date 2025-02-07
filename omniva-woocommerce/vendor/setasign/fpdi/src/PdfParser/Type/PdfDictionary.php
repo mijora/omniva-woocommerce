@@ -48,12 +48,11 @@ class PdfDictionary extends PdfType
             if (!($key instanceof PdfName)) {
                 $lastToken = null;
                 // ignore all other entries and search for the closing brackets
-                while (($token = $tokenizer->getNextToken()) !== '>' && $token !== false && $lastToken !== '>') {
+                while (($token = $tokenizer->getNextToken()) !== '>' || $lastToken !== '>') {
+                    if ($token === false) {
+                        return false;
+                    }
                     $lastToken = $token;
-                }
-
-                if ($token === false) {
-                    return false;
                 }
 
                 break;
@@ -107,20 +106,15 @@ class PdfDictionary extends PdfType
      * @return PdfNull|PdfType
      * @throws PdfTypeException
      */
-    public static function get($dictionary, $key, $default = null)
+    public static function get($dictionary, $key, ?PdfType $default = null)
     {
-        if ($default !== null && !($default instanceof PdfType)) {
-            throw new \InvalidArgumentException('Default value must be an instance of PdfType or null');
-        }
         $dictionary = self::ensure($dictionary);
 
         if (isset($dictionary->value[$key])) {
             return $dictionary->value[$key];
         }
 
-        return $default === null
-            ? new PdfNull()
-            : $default;
+        return $default ?? new PdfNull();
     }
 
     /**

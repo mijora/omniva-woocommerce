@@ -1,4 +1,7 @@
 <?php
+use Mijora\BoxCalculator\Elements\Item as BoxCalcItem;
+use Mijora\BoxCalculator\CalculateBox as BoxCalcCalculate;
+
 class OmnivaLt_Helper
 {
   public static function get_order_services( $order )
@@ -332,55 +335,57 @@ class OmnivaLt_Helper
     return $shipping_sets;
   }
 
-  public static function predict_order_size( $items_data, $max_dimension = array() )
+  public static function get_products_measurements_list( $products )
   {
-    $all_order_dim_length = 0;
-    $all_order_dim_width = 0;
-    $all_order_dim_height = 0;
-    $max_dim_length = (!empty($max_dimension['length'])) ? $max_dimension['length'] : 999999;
-    $max_dim_width = (!empty($max_dimension['width'])) ? $max_dimension['width'] : 999999;
-    $max_dim_height = (!empty($max_dimension['height'])) ? $max_dimension['height'] : 999999;
-
-    foreach ( $items_data as $item ) {
-      $item_dim_length = (!empty($item['length'])) ? $item['length'] : 0;
-      $item_dim_width = (!empty($item['width'])) ? $item['width'] : 0;
-      $item_dim_height = (!empty($item['height'])) ? $item['height'] : 0;
-
-      //Add to length
-      if ( ($item_dim_length + $all_order_dim_length) <= $max_dim_length 
-        && $item_dim_width <= $max_dim_width && $item_dim_height <= $max_dim_height )
-      {
-        $all_order_dim_length = $all_order_dim_length + $item_dim_length;
-        $all_order_dim_width = ($item_dim_width > $all_order_dim_width) ? $item_dim_width : $all_order_dim_width;
-        $all_order_dim_height = ($item_dim_height > $all_order_dim_height) ? $item_dim_height : $all_order_dim_height;
-      }
-      //Add to width
-      else if ( ($item_dim_width + $all_order_dim_width) <= $max_dim_width 
-        && $item_dim_length <= $max_dim_length && $item_dim_height <= $max_dim_height )
-      {
-        $all_order_dim_length = ($item_dim_length > $all_order_dim_length) ? $item_dim_length : $all_order_dim_length;
-        $all_order_dim_width = $all_order_dim_width + $item_dim_width;
-        $all_order_dim_height = ($item_dim_height > $all_order_dim_height) ? $item_dim_height : $all_order_dim_height;
-      }
-      //Add to height
-      else if ( ($item_dim_height + $all_order_dim_height) <= $max_dim_height 
-        && $item_dim_length <= $max_dim_length && $item_dim_width <= $max_dim_width )
-      {
-        $all_order_dim_length = ($item_dim_length > $all_order_dim_length) ? $item_dim_length : $all_order_dim_length;
-        $all_order_dim_width = ($item_dim_width > $all_order_dim_width) ? $item_dim_width : $all_order_dim_width;
-        $all_order_dim_height = $all_order_dim_height + $item_dim_height;
-      }
-      //If all fails
-      else {
-        return false;
-      }
+    $products_measurements = array();
+    if ( ! is_array($products) ) {
+      return $products_measurements;
     }
 
-    return array(
-      'length' => $all_order_dim_length,
-      'width' => $all_order_dim_width,
-      'height' => $all_order_dim_height,
-    );
+    foreach ( $products as $product ) {
+      $product_data = array(
+        'length' => 0,
+        'width' => 0,
+        'height' => 0
+      );
+      if ( is_object($product) ) {
+        $product_data['length'] = (!empty($product->get_length())) ? $product->get_length() : $product_data['length'];
+        $product_data['width'] = (!empty($product->get_width())) ? $product->get_width() : $product_data['width'];
+        $product_data['height'] = (!empty($product->get_height())) ? $product->get_height() : $product_data['height'];
+      } else if ( is_array($product) ) {
+        $product_data['length'] = (!empty($product['length'])) ? $product['length'] : $product_data['length'];
+        $product_data['width'] = (!empty($product['width'])) ? $product['width'] : $product_data['width'];
+        $product_data['height'] = (!empty($product['height'])) ? $product['height'] : $product_data['height'];
+      }
+      $products_measurements[] = $product_data;
+    }
+
+    return $products_measurements;
+  }
+
+  public static function predict_order_size( $products_measurements, $max_dimension = array() )
+  {
+    $items_list = array();
+    foreach ( $products_measurements as $prod ) {
+      $items_list[] = new BoxCalcItem($prod['width'], $prod['height'], $prod['length']);
+    }
+
+    $box_calculator = new BoxCalcCalculate($items_list);
+    $box_calculator->setBoxWallThickness(0);
+    $box_calculator->enableDebug(true);
+
+    if ( ! empty($max_dimension) ) {
+      $box_calculator->setMaxBoxSize(
+        (!empty($max_dimension['width'])) ? $max_dimension['width'] : 999999,
+        (!empty($max_dimension['height'])) ? $max_dimension['height'] : 999999,
+        (!empty($max_dimension['length'])) ? $max_dimension['length'] : 999999
+      );
+      $box_size = $box_calculator->findBoxSizeUntilMaxSize();
+    } else {
+      $box_size = $box_calculator->findMinBoxSize();
+    }
+
+    return (! $box_size) ? false : array('length' => $box_size->getLength(), 'width' => $box_size->getWidth(), 'height' => $box_size->getHeight());
   }
 
   public static function purge_meta_data( $meta_data )

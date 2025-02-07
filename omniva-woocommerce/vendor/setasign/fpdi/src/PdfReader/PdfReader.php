@@ -109,7 +109,7 @@ class PdfReader
     /**
      * Get a page instance.
      *
-     * @param int $pageNumber
+     * @param int|numeric-string $pageNumber
      * @return Page
      * @throws PdfTypeException
      * @throws CrossReferenceException
@@ -219,7 +219,10 @@ class PdfReader
                 $type = PdfDictionary::get($object->value, 'Type');
 
                 if ($type->value === 'Pages') {
-                    $readPages(PdfDictionary::get($object->value, 'Kids'), PdfDictionary::get($object->value, 'Count'));
+                    $readPages(
+                        PdfType::resolve(PdfDictionary::get($object->value, 'Kids'), $this->parser),
+                        PdfType::resolve(PdfDictionary::get($object->value, 'Count'), $this->parser)
+                    );
                 } else {
                     $this->pages[] = $object;
                 }

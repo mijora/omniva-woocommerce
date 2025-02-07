@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.19.0
+ * Version: 1.19.1
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 
@@ -21,7 +21,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVALT_VERSION', '1.19.0');
+define('OMNIVALT_VERSION', '1.19.1');
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));
@@ -77,7 +77,7 @@ function omnivalt_configs($section_name = false) {
         'call' => 'baltic',
       ),
       'comment_lang' => 'lit',
-      'tracking_url' => 'https://www.omniva.lt/verslo/siuntos_sekimas?barcode=',
+      'tracking_url' => 'https://mano.omniva.lt/track/',
     ),
     'LV' => array(
       'type' => 'country',
@@ -90,7 +90,7 @@ function omnivalt_configs($section_name = false) {
         'call' => 'baltic',
       ),
       'comment_lang' => 'lav',
-      'tracking_url' => 'https://www.omniva.lv/privats/sutijuma_atrasanas_vieta?barcode=',
+      'tracking_url' => 'https://mana.omniva.lv/track/',
     ),
     'EE' => array(
       'type' => 'country',
@@ -103,7 +103,7 @@ function omnivalt_configs($section_name = false) {
         'call' => 'estonia',
       ),
       'comment_lang' => 'est',
-      'tracking_url' => 'https://www.omniva.ee/era/jalgimine?barcode=',
+      'tracking_url' => 'https://minu.omniva.ee/track/',
     ),
     'FI' => array(
       'type' => 'country',
@@ -116,7 +116,7 @@ function omnivalt_configs($section_name = false) {
         'call' => 'estonia',
       ),
       'comment_lang' => 'eng',
-      'tracking_url' => 'https://www.omniva.ee/business/track?barcode=',
+      'tracking_url' => 'https://minu.omniva.ee/track/',
     ),
   );
 

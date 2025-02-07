@@ -1,0 +1,24 @@
+{
+    "name": "mijora/box-calculator",
+    "description": "Trying to find the closest possible box size to reality",
+    "type": "library",
+    "version": "1.0.0",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Marijus K.",
+            "email": "info@markak.lt",
+            "role": "Developer"
+        },
+        {
+            "name": "UAB Mijora",
+            "email": "info@mijora.lt",
+            "homepage": "https://mijora.dev"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mijora\\BoxCalculator\\": "src/"
+        }
+    }
+}

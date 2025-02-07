@@ -1,5 +1,12 @@
 {
     "require": {
-        "mijora/omniva-api": "^1.2.0"
-    }
+        "mijora/omniva-api": "^1.2.0",
+        "mijora/box-calculator": "^1.0.0"
+    },
+    "repositories": [
+        {
+            "type" : "vcs",
+            "url" : "git@github.com:mijora/box-calculator.git"
+        }
+    ]
 }

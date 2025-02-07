@@ -31,7 +31,11 @@ class OmnivaLt_Shipmethod_Helper
 
     if ( $products_for_dim ) {
       $max_dimension = (isset($settings[$settings_keys['size']])) ? json_decode($settings[$settings_keys['size']]) : array(999999,999999,999999);
-      $pass = self::check_dimension($products_for_dim, $max_dimension);
+      $pass = self::check_dimension($products_for_dim, array(
+        'width' => (!empty($max_dimension[1])) ? $max_dimension[1] : 999999,
+        'height' => (!empty($max_dimension[2])) ? $max_dimension[2] : 999999,
+        'length' => (!empty($max_dimension[0])) ? $max_dimension[0] : 999999
+      ));
       if ( ! $pass ) {
         return false;
       }
@@ -88,172 +92,65 @@ class OmnivaLt_Shipmethod_Helper
   }
 
   private static function check_dimension($products_for_dim, $max_dimension)
-  {   
-    if ( (isset($max_dimension[0]) && ! empty($max_dimension[0]))
-      || (isset($max_dimension[1]) && ! empty($max_dimension[1]))
-      || (isset($max_dimension[2]) && ! empty($max_dimension[2])) )
-    {
-        return self::cart_size_prediction($products_for_dim, $max_dimension);
-    }
+  {
+    $products_measurements = OmnivaLt_Helper::get_products_measurements_list($products_for_dim);
+    $box_size = OmnivaLt_Helper::predict_order_size($products_measurements, $max_dimension);
 
-    return true;
+    return ($box_size) ? true : false;
   }
 
-  private static function cart_size_prediction($products, $max_dimension)
+  public static function get_omniva_box_sizes( $convert_unit = true )
   {
-    $all_cart_dim_length = 0;
-    $all_cart_dim_width = 0;
-    $all_cart_dim_height = 0;
-    $max_dim_length = (!empty($max_dimension[0])) ? $max_dimension[0] : 999999;
-    $max_dim_width = (!empty($max_dimension[1])) ? $max_dimension[1] : 999999;
-    $max_dim_height = (!empty($max_dimension[2])) ? $max_dimension[2] : 999999;
+    $box_sizes = array( // All values in cm
+      'S' => array('length' => 64,'width' => 38, 'height' => 9),
+      'M' => array('length' => 64,'width' => 38, 'height' => 19),
+      'L' => array('length' => 64,'width' => 38, 'height' => 39),
+    );
 
-    foreach ($products as $product) {
-      $prod_dim_length = (!empty($product->get_length())) ? $product->get_length() : 0;
-      $prod_dim_width = (!empty($product->get_width())) ? $product->get_width() : 0;
-      $prod_dim_height = (!empty($product->get_height())) ? $product->get_height() : 0;
-
-      //Add to length
-      if ( ($prod_dim_length + $all_cart_dim_length) <= $max_dim_length 
-        && $prod_dim_width <= $max_dim_width && $prod_dim_height <= $max_dim_height )
-      {
-        $all_cart_dim_length = $all_cart_dim_length + $prod_dim_length;
-        $all_cart_dim_width = ($prod_dim_width > $all_cart_dim_width) ? $prod_dim_width : $all_cart_dim_width;
-        $all_cart_dim_height = ($prod_dim_height > $all_cart_dim_height) ? $prod_dim_height : $all_cart_dim_height;
-      }
-      //Add to width
-      else if ( ($prod_dim_width + $all_cart_dim_width) <= $max_dim_width 
-        && $prod_dim_length <= $max_dim_length && $prod_dim_height <= $max_dim_height )
-      {
-        $all_cart_dim_length = ($prod_dim_length > $all_cart_dim_length) ? $prod_dim_length : $all_cart_dim_length;
-        $all_cart_dim_width = $all_cart_dim_width + $prod_dim_width;
-        $all_cart_dim_height = ($prod_dim_height > $all_cart_dim_height) ? $prod_dim_height : $all_cart_dim_height;
-      }
-      //Add to height
-      else if ( ($prod_dim_height + $all_cart_dim_height) <= $max_dim_height 
-        && $prod_dim_length <= $max_dim_length && $prod_dim_width <= $max_dim_width )
-      {
-        $all_cart_dim_length = ($prod_dim_length > $all_cart_dim_length) ? $prod_dim_length : $all_cart_dim_length;
-        $all_cart_dim_width = ($prod_dim_width > $all_cart_dim_width) ? $prod_dim_width : $all_cart_dim_width;
-        $all_cart_dim_height = $all_cart_dim_height + $prod_dim_height;
-      }
-      //If all fails
-      else {
-        return false;
+    if ( $convert_unit ) {
+      $units = OmnivaLt_Wc::get_units();
+      foreach ( $box_sizes as $box => $sizes ) {
+        foreach ( $sizes as $size => $value ) {
+          $box_sizes[$box][$size] = OmnivaLt_Wc::get_dimension($value, $units->dimension, 'cm');
+        }
       }
     }
-    
-    return true;
+
+    return $box_sizes;
   }
 
   public static function check_omniva_box_size()
   {
-    OmnivaLt_Core::add_required_directories();
-
-    // Check if all cart items have all dimensions
-    $dimensions_present = true;
-    $cart_items = self::get_cart_items_dimensions();
-    foreach ( $cart_items as $cart_item ) {
-      foreach ( $cart_item as $cart_item_value ) {
-        if ( empty($cart_item_value) ) {
-          file_put_contents(OMNIVALT_DIR . 'var/logs/boxsize.log', PHP_EOL . date('Y-m-d H:i:s') . ' BAD DIMMENSIONS ' . json_encode($cart_item) . PHP_EOL, FILE_APPEND);
-          $dimensions_present = false;
-          break;
-        }
-      }
-    }
-    if ( ! $dimensions_present ) {
+    $cart = OmnivaLt_Wc::get_cart();
+    if ( empty($cart) || empty($cart->cart_contents) ) {
       return false;
     }
+    $cart_items = self::get_splited_cart_products($cart->cart_contents);
+    $products_measurements = OmnivaLt_Helper::get_products_measurements_list($cart_items);
 
-    // Pack
-    $arranged_cart_items = self::arrange_cart_items($cart_items);
-    $packer = new OmnivaLt_Packer($arranged_cart_items);
-    $box_size = $packer->pack();
-
-    if ( ! $box_size ) {
-      file_put_contents(OMNIVALT_DIR . 'var/logs/boxsize.log', PHP_EOL . date('Y-m-d H:i:s') . ' NO BOX TO FIT. CART ITEMS DIMMENSIONS: ' . json_encode($cart_items) . PHP_EOL, FILE_APPEND);
+    $box_size = false;
+    foreach ( self::get_omniva_box_sizes() as $key => $values ) {
+      $result = OmnivaLt_Helper::predict_order_size($products_measurements, $values);
+      if ( $result ) {
+        $box_size = $key;
+        break;
+      }
     }
 
     return $box_size;
   }
 
-  private static function get_cart_items_dimensions()
+  public static function get_splited_cart_products( $cart_contents )
   {
-    $items_dimensions = [];
-    $dimension_unit = get_option( 'woocommerce_dimension_unit' );
+    $products = array();
 
-    // Get rate
-    switch ($dimension_unit) {
-      case 'mm':
-        $rate = 1;
-        break;
-      case 'cm':
-        $rate = pow(10, 1);
-        break;
-      case 'm':
-        $rate = pow(10, 2);
-        break;
-      default:
-        $rate = null;
-    }
-
-    foreach(WC()->cart->get_cart() as $cart_item) {
-      $product = $cart_item['data'];
-      $qty     = $cart_item['quantity'];
-
-      $length = floatval($product->get_length()) * $rate;
-      $width = floatval($product->get_width()) * $rate;
-      $height = floatval($product->get_height()) * $rate;
-
-      $items_dimensions[] = [
-        'product_id' => $product->get_id(),
-        'product_name' => $product->get_name(),
-        'length'    => $length,
-        'width'     => $width,
-        'height'    => $height,
-        'volume'    => $length * $height * $width,
-        'qty'       => $qty,
-      ];
-    }
-
-    // Sort by largest first
-    usort($items_dimensions, function($a, $b) {
-      $a = $a['volume'];
-      $b = $b['volume'];
-
-      if ($a === $b) {
-        return 0;
-      }
-
-      return ($a < $b) ? -1 : 1;
-    });
-
-    return $items_dimensions;
-  }
-
-  private static function arrange_cart_items($cart_items)
-  {
-    $arranged_cart_items = [];
-
-    foreach ($cart_items as $cart_item) {
-      if ($cart_item['qty'] > 1) {
-        for($i = 0; $i < $cart_item['qty']; $i++) {
-          $arranged_cart_items[] = [
-            'length' => $cart_item['length'],
-            'width'  => $cart_item['width'],
-            'height' => $cart_item['height'],
-          ];
-        }
-      } else {
-        $arranged_cart_items[] = [
-          'length' => $cart_item['length'],
-          'width'  => $cart_item['width'],
-          'height' => $cart_item['height'],
-        ];
+    foreach ( $cart_contents as $item_id => $values ) {
+      $product = $values['data'];
+      for ( $i = 0; $i < $values['quantity']; $i++ ) {
+        array_push($products, $product);
       }
     }
 
-    return $arranged_cart_items;
+    return $products;
   }
 }

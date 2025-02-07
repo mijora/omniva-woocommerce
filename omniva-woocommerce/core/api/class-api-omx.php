@@ -25,6 +25,16 @@ use \Mijora\Omniva\Shipment\AdditionalService\StandardAdviceOfDeliveryService;
 
 class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
 {
+  public function __construct()
+  {
+    parent::__construct();
+
+    if ( ! empty($this->get_settings()['api_user']) && ! defined('_OMNIVA_INTEGRATION_AGENT_ID_') ) {
+      $api_user = $this->clean($this->get_settings()['api_user']);
+      define('_OMNIVA_INTEGRATION_AGENT_ID_', $api_user . ' WooCommerce v' . OMNIVALT_VERSION);
+    }
+  }
+
   private function get_channels()
   {
     return array(
