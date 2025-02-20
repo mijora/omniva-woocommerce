@@ -314,13 +314,13 @@ class OmnivaLt_Core
 
     /* Overrides from theme */
     if ( is_cart() ) {
-      if ( file_exists(self::get_override_file_path('css/cart.css')) ) {
+      if ( self::get_override_file_path('css/cart.css') ) {
         wp_enqueue_style('omnivalt-theme-cart', self::get_override_file_path('css/cart.css', true), array(), OMNIVALT_VERSION);
       }
     }
 
     if ( is_checkout() ) {
-      if ( file_exists(self::get_override_file_path('css/checkout.css')) ) {
+      if ( self::get_override_file_path('css/checkout.css') ) {
         wp_enqueue_style('omnivalt-theme-checkout', self::get_override_file_path('css/checkout.css', true), array(), OMNIVALT_VERSION);
       }
     }
