@@ -3,12 +3,10 @@ class OmnivaLt_Emails
 {
 	protected $WC_mailer;
 	protected $emails_dir;
-	protected $overrides_dir;
 
 	public function __construct() {
 		$this->WC_mailer = WC()->mailer();
 		$this->emails_dir = OMNIVALT_DIR . '/templates/emails/';
-		$this->overrides_dir = OmnivaLt_Core::get_overrides_dir() . 'emails/';
 	}
 
 	public function send_label( $order, $recipient, $params=array() ) {
@@ -39,10 +37,10 @@ class OmnivaLt_Emails
 	}
 
 	private function get_file_template_dir( $file ) {
-		if (file_exists($this->overrides_dir . $file)) {
-			return $this->overrides_dir;
-		} else {
-			return $this->emails_dir;
+		$dir = 'emails/';
+		if ( OmnivaLt_Core::get_override_file_path($dir . $file) ) {
+			return OmnivaLt_Core::get_override_file_path($dir);
 		}
+		return $this->emails_dir;
 	}
 }

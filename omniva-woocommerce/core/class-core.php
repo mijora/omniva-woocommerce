@@ -171,14 +171,28 @@ class OmnivaLt_Core
     return (is_writable($directory));
   }
 
-  public static function get_overrides_dir( $get_url = false )
+  public static function get_overrides_dir( $get_url = false, $get_parent = false )
   {
     $directory = '/omniva/';
-    if ( $get_url ) {
-      return get_template_directory_uri() . $directory;
+    $base = ($get_parent) ? get_template_directory() : get_stylesheet_directory();
+    $base_url = ($get_parent) ? get_template_directory_uri() : get_stylesheet_directory_uri();
+
+    return ($get_url) ? $base_url . $directory : $base . $directory;
+  }
+
+  public static function get_override_file_path( $override_file, $get_url = false, $check_parent = true )
+  {
+    $child_path = self::get_overrides_dir(false, false) . $override_file;
+    $parent_path = self::get_overrides_dir(false, true) . $override_file;
+
+    if (file_exists($child_path)) {
+        return $get_url ? self::get_overrides_dir(true, false) . $override_file : $child_path;
+    }
+    if ($check_parent && file_exists($parent_path)) {
+        return $get_url ? self::get_overrides_dir(true, true) . $override_file : $parent_path;
     }
 
-    return get_template_directory() . $directory;
+    return false;
   }
 
   public static function check_update( $current_version = '' ) {
@@ -250,9 +264,6 @@ class OmnivaLt_Core
       if ( file_exists(OMNIVALT_DIR . $folder_css . 'custom.css') ) { //Allow custom CSS file which not include in plugin by default
         wp_enqueue_style('omnivalt-custom', plugins_url($folder_css . 'custom.css', self::$main_file_path), array(), OMNIVALT_VERSION);
       }
-      if ( file_exists(self::get_overrides_dir() . 'assets/css/front.css') ) { //Allow custom CSS file from theme 
-        wp_enqueue_style('omnivalt-theme-front', self::get_overrides_dir(true) . 'css/front.css', array(), OMNIVALT_VERSION);
-      }
 
       wp_enqueue_script('omnivalt_leaflet', plugins_url($folder_js . 'leaflet.js', self::$main_file_path), array('jquery'), null, true);
       wp_enqueue_style('omnivalt_leaflet', plugins_url($folder_css . 'leaflet.css', self::$main_file_path));    
@@ -299,6 +310,19 @@ class OmnivaLt_Core
         'text_modal_title_post' => __('Omniva post offices', 'omnivalt'),
         'text_modal_search_title_post' => __('Post offices addresses', 'omnivalt'),
       ));
+    }
+
+    /* Overrides from theme */
+    if ( is_cart() ) {
+      if ( self::get_override_file_path('css/cart.css') ) {
+        wp_enqueue_style('omnivalt-theme-cart', self::get_override_file_path('css/cart.css', true), array(), OMNIVALT_VERSION);
+      }
+    }
+
+    if ( is_checkout() ) {
+      if ( self::get_override_file_path('css/checkout.css') ) {
+        wp_enqueue_style('omnivalt-theme-checkout', self::get_override_file_path('css/checkout.css', true), array(), OMNIVALT_VERSION);
+      }
     }
   }
 

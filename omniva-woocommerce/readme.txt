@@ -12,3 +12,9 @@ omnivalt_label_register_failed - args: (integer) $order_id - failed to register 
 == Filters ==
 omnivalt_orders_list_per_page - args: (integer) $per_page - allows to change the number of orders displayed on the Omniva Orders page. Default value: 25.
 omnivalt_settings_coupons_args - args: (array) $args - can change the attributes by which receiving list of coupons.
+
+== Overrides ==
+The following Omniva plugin overrides can be added to the used theme:
+/omniva/emails/customer-created_label.php - copy file from plugin directory /templates/emails
+/omniva/css/cart.css - create file and add any CSS rules
+/omniva/css/checkout.css - create file and add any CSS rules
