@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed the working of the overrides from theme
+- fixed platform and version identification
 
 ### Improved
 - added the possibility in the theme to add or change CSS rules in the cart and checkout pages. How to do this is described in the readme.txt file.
