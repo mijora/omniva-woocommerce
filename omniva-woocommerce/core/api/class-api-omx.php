@@ -29,9 +29,8 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
   {
     parent::__construct();
 
-    if ( ! empty($this->get_settings()['api_user']) && ! defined('_OMNIVA_INTEGRATION_AGENT_ID_') ) {
-      $api_user = $this->clean($this->get_settings()['api_user']);
-      define('_OMNIVA_INTEGRATION_AGENT_ID_', $api_user . ' WooCommerce v' . OMNIVALT_VERSION);
+    if ( ! defined('_OMNIVA_INTEGRATION_AGENT_ID_') ) {
+      define('_OMNIVA_INTEGRATION_AGENT_ID_', '7005511 WooCommerce v' . OMNIVALT_VERSION);
     }
   }
 

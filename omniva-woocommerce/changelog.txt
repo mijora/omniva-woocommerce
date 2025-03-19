@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 1.19.2 =
+- fixed the working of the overrides from theme
+- fixed platform and version identification
+- added the possibility in the theme to add or change CSS rules in the cart and checkout pages. How to do this is described in the readme.txt file.
+
 = 1.19.1 =
 - fixed receiving additional services for variable products
 - updated shipment tracking links
