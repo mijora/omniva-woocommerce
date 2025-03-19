@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.19.2]
 ### Fixed
 - fixed the working of the overrides from theme
 - fixed platform and version identification
