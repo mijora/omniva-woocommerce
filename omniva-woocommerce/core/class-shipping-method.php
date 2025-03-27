@@ -67,7 +67,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
      * @access public
      * @return void
      */
-    function init()
+    public function init()
     {
 
       // Load the settings API
@@ -84,7 +84,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     /**
      * Load settings form
      */
-    function admin_options()
+    public function admin_options()
     {
       ?>
       <div class="omniva-title">
@@ -101,11 +101,17 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       </table>
       <?php
     }
+
+    private function add_required_mark( $title )
+    {
+      return $title . ' <span style="color: red;">*</span>';
+    }
+
     /**
      * Define settings field for this shipping
      * @return void
      */
-    function init_form_fields()
+    public function init_form_fields()
     {
       $countries_options = array();
       foreach ($this->omnivalt_configs['shipping_params'] as $country_code => $ship_params) {
@@ -162,7 +168,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'title' => __('Sender information', 'omnivalt'),
       );
       $fields['company'] = array(
-        'title' => __('Company name', 'omnivalt'),
+        'title' => $this->add_required_mark(__('Company name', 'omnivalt')),
         'type' => 'text',
       );
       $fields['bank_account'] = array(
@@ -170,24 +176,24 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'text',
       );
       $fields['shop_name'] = array(
-        'title' => __('Shop name', 'omnivalt'),
+        'title' => $this->add_required_mark(__('Shop name', 'omnivalt')),
         'type' => 'text',
       );
       $fields['shop_city'] = array(
-        'title' => __('Shop city', 'omnivalt'),
+        'title' => $this->add_required_mark(__('Shop city', 'omnivalt')),
         'type' => 'text',
       );
       $fields['shop_address'] = array(
-        'title' => __('Shop address', 'omnivalt'),
+        'title' => $this->add_required_mark(__('Shop address', 'omnivalt')),
         'type' => 'text',
       );
       $fields['shop_postcode'] = array(
-        'title' => __('Shop postcode', 'omnivalt'),
+        'title' => $this->add_required_mark(__('Shop postcode', 'omnivalt')),
         'type' => 'text',
         'description' => sprintf(__('Example for Latvia: %1$s. Example for other countries: %2$s.', 'omnivalt'), '<code>LV-0123</code>', '<code>01234</code>'),
       );
       $fields['shop_countrycode'] = array(
-        'title' => __('Shop country code', 'omnivalt'),
+        'title' => $this->add_required_mark(__('Shop country code', 'omnivalt')),
         'type'    => 'select',
         'class' => 'checkout-style pickup-point',
         'options' => $countries_options,
@@ -200,12 +206,12 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       );
       $desc = (isset($this->omnivalt_configs['additional_services']['delivery_confirmation_sms'])) ? sprintf(__('Required mobile phone number if want use service "%s".', 'omnivalt'), $this->omnivalt_configs['additional_services']['delivery_confirmation_sms']['title']) : false;
       $fields['shop_mobile'] = array(
-        'title' => __('Shop mobile number', 'omnivalt'),
+        'title' => $this->add_required_mark(__('Shop mobile number', 'omnivalt')),
         'type' => 'text',
         'description' => $desc,
       );
       $fields['shop_email'] = array(
-        'title' => __('Shop email', 'omnivalt'),
+        'title' => $this->add_required_mark(__('Shop email', 'omnivalt')),
         'type' => 'text',
       );
       $fields['pick_up_start'] = array(
@@ -515,6 +521,36 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'hr',
       );
       $this->form_fields = $fields;
+    }
+
+    public function process_admin_options()
+    {
+      $required_fields = array(
+        'company' => __('Company name', 'omnivalt'),
+        'shop_name' => __('Shop name', 'omnivalt'),
+        'shop_city' => __('Shop city', 'omnivalt'),
+        'shop_address' => __('Shop address', 'omnivalt'),
+        'shop_postcode' => __('Shop postcode', 'omnivalt'),
+        'shop_countrycode' => __('Shop country code', 'omnivalt'),
+        'shop_mobile' => __('Shop mobile number', 'omnivalt'),
+        'shop_email' => __('Shop email', 'omnivalt')
+      );
+
+      // Save all values
+      parent::process_admin_options();
+
+      // Add error message if required is empty
+      $errors = array();
+      foreach ( $required_fields as $field_key => $field_title ) {
+        $field_name = $this->get_field_key($field_key);
+        $value = isset($_POST[$field_name]) ? trim($_POST[$field_name]) : '';
+        if ( empty($value) ) {
+          $errors[] = $field_title;
+        }
+      }
+      if ( ! empty($errors) ) {
+        WC_Admin_Settings::add_error(__('Settings saved, but some required fields are empty', 'omnivalt') . ': ' . implode(', ', $errors));
+      }
     }
 
     public function generate_hr_html( $key, $value )
