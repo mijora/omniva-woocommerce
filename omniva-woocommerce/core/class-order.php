@@ -960,7 +960,7 @@ class OmnivaLt_Order
     foreach ( $items_data as $item ) {
       if ( ! isset($item['product_meta_data'])
         || ! isset($item['product_meta_data'][$meta_keys['total_shipments']])
-        || $item['product_meta_data'][$meta_keys['total_shipments']] == 0 ) {
+        || empty($item['product_meta_data'][$meta_keys['total_shipments']]) ) {
         $found_zero = true;
         continue;
       }
