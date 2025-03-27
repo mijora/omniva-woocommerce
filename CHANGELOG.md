@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed a bug where the product meta data value total_shipments was empty
+
 ## [1.19.2]
 ### Fixed
 - fixed the working of the overrides from theme
