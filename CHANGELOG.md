@@ -4,6 +4,10 @@
 ### Fixed
 - fixed a bug where the product meta data value total_shipments was empty
 
+### Improved
+- required parameters marked with an asterisk in the plugin settings
+- in the plugin settings, the save settings button has been pinned to the bottom of the screen
+
 ## [1.19.2]
 ### Fixed
 - fixed the working of the overrides from theme
