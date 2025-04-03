@@ -432,15 +432,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       );
       $fields['send_return_code'] = array(
         'title' => __('Send return code', 'omnivalt'),
-        'type' => 'select',
-        'options' => array(
-          'all' => __('Add to SMS and email', 'omnivalt'),
-          //'sms' => __('Add to SMS', 'omnivalt'),
-          //'email' => __('Add to email', 'omnivalt'),
-          'dont' => __('Do not send', 'omnivalt'),
-        ),
-        'default' => 'all',
-        'description' => __('Choose how to send the return code to the customer', 'omnivalt')
+        'type' => 'checkbox',
+        'description' => __("Please note that extra charges may apply. For more information, contact your Omniva`s business customer support.", 'omnivalt'),
+        'default' => '',
       );
       $fields['hr_manifest'] = array(
         'type' => 'hr',

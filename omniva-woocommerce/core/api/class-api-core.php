@@ -553,20 +553,24 @@ class OmnivaLt_Api_Core
 
     private function get_return_code_sending()
     {
-        $add_to_sms = true;
-        $add_to_email = true;
+        $add_to_sms = false;
+        $add_to_email = false;
 
         if ( isset($this->omnivalt_settings['send_return_code']) ) {
             switch ($this->omnivalt_settings['send_return_code']) {
-                case 'dont':
-                    $add_to_sms = false;
-                    $add_to_email = false;
+                case 'all':
+                    $add_to_sms = true;
+                    $add_to_email = true;
                     break;
                 case 'sms':
-                    $add_to_email = false;
+                    $add_to_sms = true;
                     break;
                 case 'email':
-                    $add_to_sms = false;
+                    $add_to_email = true;
+                    break;
+                case 'yes':
+                    $add_to_sms = true;
+                    $add_to_email = true;
                     break;
             }
         }
