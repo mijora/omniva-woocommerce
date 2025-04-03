@@ -7,6 +7,7 @@
 ### Improved
 - required parameters marked with an asterisk in the plugin settings
 - in the plugin settings, the save settings button has been pinned to the bottom of the screen
+- changed the "Send return code" parameter type to checkbox, made disabled by default and indicated that this service may be charged additionally
 
 ## [1.19.2]
 ### Fixed
