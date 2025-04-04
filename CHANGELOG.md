@@ -9,6 +9,10 @@
 - in the plugin settings, the save settings button has been pinned to the bottom of the screen
 - changed the "Send return code" parameter type to checkbox, made disabled by default and indicated that this service may be charged additionally
 
+### Updated
+- updated box-calculator library to v1.0.1
+- updated TCPDF library to v6.9.1
+
 ## [1.19.2]
 ### Fixed
 - fixed the working of the overrides from theme

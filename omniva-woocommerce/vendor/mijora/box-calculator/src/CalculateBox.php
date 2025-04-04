@@ -12,6 +12,15 @@ class CalculateBox
     public $wall_thickness = 0;
     public $box_max_size = false;
     public $debug;
+
+    private $orientations = array(
+        array('width', 'height', 'length'),
+        array('width', 'length', 'height'),
+        array('height', 'width', 'length'),
+        array('height', 'length', 'width'),
+        array('length', 'width', 'height'),
+        array('length', 'height', 'width')
+    );
     private $items_lines = array(); //TODO: In order to make more efficient use of space, items should be placed in lines when it adding in height. After filling one row as much as possible, only then create another.
 
     public function __construct($items)
@@ -92,13 +101,12 @@ class CalculateBox
             $this->debug->add('Adding item #' . $item_id . ': ' . $this->debug->obj($item, true));
             $is_placed = false;
 
-            $orientations = ['width', 'height', 'length'];
-            foreach ( $orientations as $orientation ) {
-                $this->debug->add("Rotating item by edge: " . $orientation);
-                $rotated_item = $this->rotateByEdge($item, $orientation);
+            foreach ( $this->orientations as $orientation ) {
+                $this->debug->add("Rotating item to position: " . implode(' x ', $orientation));
+                $rotated_item = $this->rotateToPosition($item, $orientation);
                 $this->debug->add("Rotated item: " . $this->debug->obj($rotated_item));
 
-                foreach ( $orientations as $add_to_edge ) {
+                foreach ( $this->orientations[0] as $add_to_edge ) {
                     $this->debug->add("Rotating box by edge: " . $add_to_edge);
                     $temp_box = $this->addItemToBox($this->box, $rotated_item, $add_to_edge);
                     $this->debug->add("Temporary box received: " . $this->debug->obj($temp_box));
@@ -303,5 +311,20 @@ class CalculateBox
         }
 
         return $object;
+    }
+
+    private function rotateToPosition($object, $position) {
+        $rotated = clone $object;
+        $values = array(
+            $object->{'get' . ucfirst($position[0])}(),
+            $object->{'get' . ucfirst($position[1])}(),
+            $object->{'get' . ucfirst($position[2])}()
+        );
+
+        $rotated->setWidth($values[0]);
+        $rotated->setHeight($values[1]);
+        $rotated->setLength($values[2]);
+
+        return $rotated;
     }
 }
