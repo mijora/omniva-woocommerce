@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "mijora/box-calculator",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:mijora/box-calculator.git",
-                "reference": "8f36ce563e6accf19259e0152b32115d343f1f96"
+                "reference": "db8172a9072041afd7227b56c32b948c2e572995"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mijora/box-calculator/zipball/8f36ce563e6accf19259e0152b32115d343f1f96",
-                "reference": "8f36ce563e6accf19259e0152b32115d343f1f96",
+                "url": "https://api.github.com/repos/mijora/box-calculator/zipball/db8172a9072041afd7227b56c32b948c2e572995",
+                "reference": "db8172a9072041afd7227b56c32b948c2e572995",
                 "shasum": ""
             },
             "type": "library",
@@ -43,10 +43,10 @@
             ],
             "description": "Trying to find the closest possible box size to reality",
             "support": {
-                "source": "https://github.com/mijora/box-calculator/tree/v1.0.0",
+                "source": "https://github.com/mijora/box-calculator/tree/v1.0.1",
                 "issues": "https://github.com/mijora/box-calculator/issues"
             },
-            "time": "2025-01-28T09:35:53+00:00"
+            "time": "2025-04-04T08:42:20+00:00"
         },
         {
             "name": "mijora/omniva-api",
@@ -216,16 +216,16 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.8.2",
+            "version": "6.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "f7a781073e1645062f163e058139e2f89355d420"
+                "reference": "ed27e28a4c478f7f4015b5e7e7b1912af9e85f2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/f7a781073e1645062f163e058139e2f89355d420",
-                "reference": "f7a781073e1645062f163e058139e2f89355d420",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/ed27e28a4c478f7f4015b5e7e7b1912af9e85f2b",
+                "reference": "ed27e28a4c478f7f4015b5e7e7b1912af9e85f2b",
                 "shasum": ""
             },
             "require": {
@@ -238,8 +238,6 @@
                     "config",
                     "include",
                     "tcpdf.php",
-                    "tcpdf_parser.php",
-                    "tcpdf_import.php",
                     "tcpdf_barcodes_1d.php",
                     "tcpdf_barcodes_2d.php",
                     "include/tcpdf_colors.php",
@@ -277,7 +275,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/TCPDF/issues",
-                "source": "https://github.com/tecnickcom/TCPDF/tree/6.8.2"
+                "source": "https://github.com/tecnickcom/TCPDF/tree/6.9.1"
             },
             "funding": [
                 {
@@ -285,7 +283,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-01-26T14:03:12+00:00"
+            "time": "2025-04-03T06:38:07+00:00"
         }
     ],
     "packages-dev": [],
