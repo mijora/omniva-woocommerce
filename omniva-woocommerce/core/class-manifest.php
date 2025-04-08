@@ -48,94 +48,144 @@ class OmnivaLt_Manifest
    * @param array $query_vars - Query vars from WC_Order_Query.
    * @return array modified $query
    */
-  public static function handle_custom_query_var( $query, $query_vars ) {
+  public static function handle_custom_query_var( $query, $query_vars )
+  {
+    $query['meta_keys'] = self::build_meta_query($query_vars);
+
+    return $query;
+  }
+
+  public static function build_meta_query( $args ) {
     $configs_meta = OmnivaLt_Core::get_configs('meta_keys');
-    if ( ! empty( $query_vars['omnivalt_method'] ) ) {
-      $query['meta_query'][] = array(
+    $meta_query = array(
+      'relation' => 'AND'
+    );
+
+    if ( ! empty( $args[$configs_meta['method']] ) ) {
+      $meta_query[] = array(
         'key' => $configs_meta['method'],
-        'value' => $query_vars['omnivalt_method']//esc_attr( $query_vars['omnivalt_method'] ),
+        'value' => $args[$configs_meta['method']],
+        'compare' => 'IN',
       );
     }
 
-    if ( isset( $query_vars['omnivalt_barcode'] ) ) {
-      $query['meta_query'][] = array(
-          'key' => $configs_meta['barcode'],
-          'value' => $query_vars['omnivalt_barcode'],
-          'compare' => 'LIKE'
-      );
+    if ( isset( $args[$configs_meta['barcodes']] ) ) {
+      if ( ! $args[$configs_meta['barcodes']] ) {
+        $meta_query[] = array(
+          'relation' => 'OR',
+          array(
+            'key' => $configs_meta['barcodes'],
+            'compare' => 'NOT EXISTS',
+          ),
+          array(
+            'key' => $configs_meta['barcodes'],
+            'compare' => '=',
+            'value' => '',
+          )
+        );
+      } else if ( $args[$configs_meta['barcodes']] === true ) {
+        $meta_query[] = array(
+          'key' => $configs_meta['barcodes'],
+          'compare' => 'EXISTS',
+        );
+        $meta_query[] = array(
+          'key' => $configs_meta['barcodes'],
+          'compare' => '!=',
+          'value' => '',
+        );
+      } else {
+        $meta_query[] = array(
+          'key' => $configs_meta['barcodes'],
+          'value' => $args[$configs_meta['barcodes']],
+          'compare' => 'LIKE',
+        );
+      }
     }
 
-    if ( isset( $query_vars['omnivalt_customer'] ) ) {
-      $query['meta_query'][] = array(
+    if ( isset( $args['omnivalt_customer'] ) ) {
+      $meta_query[] = array(
           'relation' => 'OR',
           array(
             'key' => '_billing_first_name',
-            'value' => $query_vars['omnivalt_customer'],
+            'value' => $args['omnivalt_customer'],
             'compare' => 'LIKE'
           ),
           array(
             'key' => '_billing_last_name',
-            'value' => $query_vars['omnivalt_customer'],
+            'value' => $args['omnivalt_customer'],
             'compare' => 'LIKE'
           ),
           array(
             'key' => '_billing_company',
-            'value' => $query_vars['omnivalt_customer'],
+            'value' => $args['omnivalt_customer'],
             'compare' => 'LIKE'
           ),
           array(
             'key' => '_shipping_first_name',
-            'value' => $query_vars['omnivalt_customer'],
+            'value' => $args['omnivalt_customer'],
             'compare' => 'LIKE'
           ),
           array(
             'key' => '_shipping_last_name',
-            'value' => $query_vars['omnivalt_customer'],
+            'value' => $args['omnivalt_customer'],
             'compare' => 'LIKE'
           ),
           array(
             'key' => '_shipping_company',
-            'value' => $query_vars['omnivalt_customer'],
+            'value' => $args['omnivalt_customer'],
             'compare' => 'LIKE'
+          )
+      );
+    }
+
+    if ( isset( $args[$configs_meta['manifest_date']] ) ) {
+      $value = $args[$configs_meta['manifest_date']];
+      if ( ! $value ) {
+        $meta_query[] = array(
+          'relation' => 'OR',
+          array(
+            'key' => $configs_meta['manifest_date'],
+            'compare' => 'NOT EXISTS',
           ),
-      );
-    }
-
-    if ( isset( $query_vars['omnivalt_manifest'] ) ) {
-      $query['meta_query'][] = array(
-        'key' => $configs_meta['manifest_date'],
-        'compare' => ($query_vars['omnivalt_manifest'] ? 'EXISTS' : 'NOT EXISTS'),
-      );
-    }
-
-    if ( isset( $query_vars['omnivalt_manifest_date'] ) ) {
-      $filter_by_date = false;
-      if ($query_vars['omnivalt_manifest_date'][0] && $query_vars['omnivalt_manifest_date'][1]) {
-        $filter_by_date = array(
-          'key' => $configs_meta['manifest_date'],
-          'value' => $query_vars['omnivalt_manifest_date'],
-          'compare' => 'BETWEEN'
+          array(
+            'key' => $configs_meta['manifest_date'],
+            'compare' => '=',
+            'value' => '',
+          )
         );
-      } elseif ($query_vars['omnivalt_manifest_date'][0] && !$query_vars['omnivalt_manifest_date'][1]) {
-        $filter_by_date = array(
+      } else {
+        $meta_query[] = array(
           'key' => $configs_meta['manifest_date'],
-          'value' => $query_vars['omnivalt_manifest_date'][0],
-          'compare' => '>='
+          'compare' => 'EXISTS',
         );
-      } elseif (!$query_vars['omnivalt_manifest_date'][0] && $query_vars['omnivalt_manifest_date'][1]) {
-        $filter_by_date = array(
+        $meta_query[] = array(
           'key' => $configs_meta['manifest_date'],
-          'value' => $query_vars['omnivalt_manifest_date'][1],
-          'compare' => '<='
+          'compare' => '!=',
+          'value' => '',
         );
+        if ( is_array($value) && $value[0] && $value[1] ) {
+          $meta_query[] = array(
+            'key' => $configs_meta['manifest_date'],
+            'value' => $value,
+            'compare' => 'BETWEEN'
+          );
+        } else if ( is_array($value) && $value[0] && ! $value[1] ) {
+          $meta_query[] = array(
+            'key' => $configs_meta['manifest_date'],
+            'value' => $value[0],
+            'compare' => '>='
+          );
+        } else if ( is_array($value) && ! $value[0] && $value[1] ) {
+          $meta_query[] = array(
+            'key' => $configs_meta['manifest_date'],
+            'value' => $value[1],
+            'compare' => '<='
+          );
+        }
       }
-
-      if ($filter_by_date) {
-        $query['meta_query'][] = $filter_by_date;
-      }
     }
 
-    return $query;
+    return $meta_query;
   }
 
   public static function page_params()
@@ -149,7 +199,7 @@ class OmnivaLt_Manifest
         'completed_orders' => __('Completed orders', 'omnivalt'),
       ),
       'filter_keys' => array('customer', 'status', 'barcode', 'id', 'start_date', 'end_date'),
-      'per_page' => OmnivaLt_Filters::orders_list_per_page(),
+      'per_page' => OmnivaLt_Filters::orders_list_per_page()
     );
   }
 
@@ -191,15 +241,7 @@ class OmnivaLt_Manifest
       'paginate' => true,
       'limit' => $per_page,
       'paged' => $paged,
-      'omnivalt_method' => $shipping_methods, // Compatible with old
-      'meta_query' => array(
-        'relation' => 'AND',
-        array(
-          'key' => '_omnivalt_method',
-          'value' => $shipping_methods,
-          'compare' => 'IN',
-        ),
-      ),
+      $configs['meta_keys']['method'] => $shipping_methods,
     );
 
     // Handle query variables depending on selected tab
@@ -207,71 +249,19 @@ class OmnivaLt_Manifest
       case 'new_orders':
         $page_title = $page_params['strings'][$action];
         $args['status'] = array('wc-processing', 'wc-on-hold', 'wc-pending');
-        $args[$configs['meta_keys']['manifest_date']] = false; // Compatible with old
-        $args['meta_query'][] = array(
-          'relation' => 'OR',
-          array(
-            'key' => $configs['meta_keys']['manifest_date'],
-            'compare' => 'NOT EXISTS',
-          ),
-          array(
-            'key' => $configs['meta_keys']['manifest_date'],
-            'compare' => '=',
-            'value' => '',
-          ),
-        );
-        $args['meta_query'][] = array(
-          'relation' => 'OR',
-          array(
-            'key' => $configs['meta_keys']['barcodes'],
-            'compare' => 'NOT EXISTS',
-          ),
-          array(
-            'key' => $configs['meta_keys']['barcodes'],
-            'compare' => '=',
-            'value' => '',
-          ),
-        );
+        $args[$configs['meta_keys']['manifest_date']] = false;
+        $args[$configs['meta_keys']['barcodes']] = false;
         break;
       case 'registered_orders':
         $page_title = $page_params['strings'][$action];
         $args['status'] = array('wc-processing', 'wc-on-hold', 'wc-pending');
-        $args[$configs['meta_keys']['manifest_date']] = false; // Compatible with old
-        $args['meta_query'][] = array(
-          'relation' => 'OR',
-          array(
-            'key' => $configs['meta_keys']['manifest_date'],
-            'compare' => 'NOT EXISTS',
-          ),
-          array(
-            'key' => $configs['meta_keys']['manifest_date'],
-            'compare' => '=',
-            'value' => '',
-          ),
-        );
-        $args['meta_query'][] = array(
-          'key' => $configs['meta_keys']['barcodes'],
-          'compare' => 'EXISTS',
-        );
-        $args['meta_query'][] = array(
-          'key' => $configs['meta_keys']['barcodes'],
-          'compare' => '!=',
-          'value' => '',
-        );
+        $args[$configs['meta_keys']['manifest_date']] = false;
+        $args[$configs['meta_keys']['barcodes']] = true;
         break;
       case 'manifest_orders':
         $page_title = $page_params['strings'][$action];
         $args['status'] = array('wc-processing', 'wc-on-hold', 'wc-pending');
-        $args[$configs['meta_keys']['manifest_date']] = true; // Compatible with old
-        $args['meta_query'][] = array(
-          'key' => $configs['meta_keys']['manifest_date'],
-          'compare' => 'EXISTS',
-        );
-        $args['meta_query'][] =  array(
-          'key' => $configs['meta_keys']['manifest_date'],
-          'compare' => '!=',
-          'value' => '',
-        );
+        $args[$configs['meta_keys']['manifest_date']] = true;
         $args['orderby'] = 'meta_value';
         $args['meta_key'] = $configs['meta_keys']['manifest_date'];
         $args['meta_type'] = 'DATETIME';
@@ -280,16 +270,7 @@ class OmnivaLt_Manifest
       case 'completed_orders':
         $page_title = $page_params['strings'][$action];
         $args['status'] = array('wc-completed', 'wc-cancelled', 'wc-refunded', 'wc-failed');
-        $args[$configs['meta_keys']['manifest_date']] = true; // Compatible with old
-        $args['meta_query'][] = array(
-          'key' => $configs['meta_keys']['manifest_date'],
-          'compare' => 'EXISTS',
-        );
-        $args['meta_query'][] =  array(
-          'key' => $configs['meta_keys']['manifest_date'],
-          'compare' => '!=',
-          'value' => '',
-        );
+        $args[$configs['meta_keys']['manifest_date']] = true;
         $args['orderby'] = 'meta_value';
         $args['order'] = 'DESC';
         break;
@@ -307,39 +288,48 @@ class OmnivaLt_Manifest
             $args['status'] = $filter;
             break;
           case 'barcode':
-            $args['meta_query'][] = array(
-              'key' => $configs['meta_keys']['barcodes'],
-              'value' => $filter,
-              'compare' => 'LIKE',
-            );
+            $args[$configs['meta_keys']['barcodes']] = $filter;
             break;
           case 'customer':
-            $args['field_query'][] = array(
-              'relation' => 'OR',
-              array(
-                'field' => 'billing_first_name',
-                'value' => $filter,
-                'compare' => 'LIKE'
-              ),
-              array(
-                'field' => 'billing_last_name',
-                'value' => $filter,
-                'compare' => 'LIKE'
-              ),
-            );
-            $args['omnivalt_customer'] = $filter; // Compatible with old
+            if ( OmnivaLt_Wc::is_using_hpos() ) {
+              $args['field_query'][] = array(
+                'relation' => 'OR',
+                array(
+                  'field' => 'billing_first_name',
+                  'value' => $filter,
+                  'compare' => 'LIKE'
+                ),
+                array(
+                  'field' => 'billing_last_name',
+                  'value' => $filter,
+                  'compare' => 'LIKE'
+                ),
+                array(
+                  'field' => 'shipping_first_name',
+                  'value' => $filter,
+                  'compare' => 'LIKE'
+                ),
+                array(
+                  'field' => 'shipping_last_name',
+                  'value' => $filter,
+                  'compare' => 'LIKE'
+                )
+              );
+            } else {
+              $args['omnivalt_customer'] = $filter;
+            }
             break;
         }
       }
     }
     // Date filter is a special case
     if ( $filters['start_date'] || $filters['end_date'] ) {
-      $args[$configs['meta_keys']['manifest_date']] = array($filters['start_date'], $filters['end_date']); // Compatible with old
-      $args['meta_query'][] = array(
-        'key' => $configs['meta_keys']['manifest_date'],
-        'value' => array($filters['start_date'], $filters['end_date']),
-        'compare' => 'BETWEEN',
-      );
+      $args[$configs['meta_keys']['manifest_date']] = array($filters['start_date'], $filters['end_date']);
+    }
+
+    // Add meta_query if system using HPOS
+    if ( OmnivaLt_Wc::is_using_hpos() ) {
+      $args['meta_query'] = self::build_meta_query($args);
     }
 
     // Searching by ID takes priority
@@ -361,7 +351,7 @@ class OmnivaLt_Manifest
 
     $there_is_orders = ($single_order || ($results && $results->total > 0));
 
-    // make pagination
+    // Make pagination
     $page_links = false;
     if ($results) {
       $page_links = paginate_links(array(

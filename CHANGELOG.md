@@ -3,11 +3,13 @@
 ## [Unreleased]
 ### Fixed
 - fixed a bug where the product meta data value total_shipments was empty
+- fixed that design changes would only be applied to the "Save changes" button on the Omniva settings page
 
 ### Improved
 - required parameters marked with an asterisk in the plugin settings
 - in the plugin settings, the save settings button has been pinned to the bottom of the screen
 - changed the "Send return code" parameter type to checkbox, made disabled by default and indicated that this service may be charged additionally
+- improved the orders receiving query on the "Omniva shipping" page
 
 ### Updated
 - updated box-calculator library to v1.0.1

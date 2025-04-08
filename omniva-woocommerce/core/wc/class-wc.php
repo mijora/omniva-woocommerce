@@ -86,4 +86,12 @@ class OmnivaLt_Wc
         $args = array_replace($default_args, $args);
         return get_posts($args);
     }
+
+    public static function is_using_hpos()
+    {
+        if ( method_exists('\Automattic\WooCommerce\Utilities\OrderUtil', 'custom_orders_table_usage_is_enabled') ) {
+            return \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+        }
+        return false;
+    }
 }

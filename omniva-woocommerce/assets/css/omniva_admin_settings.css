@@ -275,7 +275,7 @@
   padding: 0;
   width: 20%;
 }
-.woocommerce form p.submit {
+.woocommerce table.omniva-settings + p.submit {
   position: fixed;
   bottom: 0;
   background: #f0f0f1;
