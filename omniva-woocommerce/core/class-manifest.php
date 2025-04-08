@@ -185,6 +185,13 @@ class OmnivaLt_Manifest
       }
     }
 
+    if ( isset( $args['omnivalt_original'] ) ) {
+      $meta_query[] = array(
+        'key'     => '_parent_id',
+        'compare' => 'NOT EXISTS',
+      );
+    }
+
     return $meta_query;
   }
 
@@ -242,6 +249,7 @@ class OmnivaLt_Manifest
       'limit' => $per_page,
       'paged' => $paged,
       $configs['meta_keys']['method'] => $shipping_methods,
+      'omnivalt_original' => true // Return only original Orders
     );
 
     // Handle query variables depending on selected tab
