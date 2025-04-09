@@ -171,10 +171,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'title' => $this->add_required_mark(__('Company name', 'omnivalt')),
         'type' => 'text',
       );
-      $fields['bank_account'] = array(
-        'title' => __('Bank account', 'omnivalt'),
-        'type' => 'text',
-      );
       $fields['shop_name'] = array(
         'title' => $this->add_required_mark(__('Shop name', 'omnivalt')),
         'type' => 'text',
@@ -213,6 +209,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['shop_email'] = array(
         'title' => $this->add_required_mark(__('Shop email', 'omnivalt')),
         'type' => 'text',
+      );
+      $fields['bank_account'] = array(
+        'title' => __('Bank account', 'omnivalt'),
+        'type' => 'text',
+        'description' => __('Required if want to use the "Cash On Delivery" (COD) payment method.', 'omnivalt'),
       );
       $fields['pick_up_start'] = array(
         'title' => __('Pick up time start', 'omnivalt'),

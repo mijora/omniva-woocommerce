@@ -34,6 +34,13 @@ class OmnivaLt_Wc_Order
             return false;
         }
 
+        if ( self::is_order_type_refund($wc_order) ) {
+            return (object) array(
+                'id' => $wc_order->get_id(),
+                'type' => 'refund',
+            );
+        }
+
         $meta_keys = OmnivaLt_Core::get_configs('meta_keys');
 
         if ( empty($get_sections) || in_array('shipment', $get_sections) || in_array('items', $get_sections) ) {
@@ -68,6 +75,7 @@ class OmnivaLt_Wc_Order
         $data = array(
             'id' => $wc_order->get_id(),
             'number' => $wc_order->get_order_number(),
+            'type' => 'order',
             'status' => $wc_order->get_status(),
             'created' => (! empty($order_date)) ? $order_date->format('Y-m-d H:i:s') : '2000-01-01 00:00:00',
         );
@@ -151,6 +159,18 @@ class OmnivaLt_Wc_Order
         $data['units'] = OmnivaLt_Wc::get_units();
 
         return (object) $data;
+    }
+
+    public static function is_order_type_refund( $wc_order )
+    {
+        if ( ! is_object($wc_order) ) {
+            $wc_order = self::get_order($wc_order);
+        }
+        if ( ! $wc_order ) {
+            return false;
+        }
+
+        return $wc_order instanceof WC_Order_Refund;
     }
 
     private static function get_order_size( $order_items, $get_box_size = '' )
