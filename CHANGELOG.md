@@ -13,7 +13,7 @@
 - improved the orders receiving query on the "Omniva shipping" page
 
 ### Updated
-- updated box-calculator library to v1.0.1
+- updated box-calculator library to v1.1.0
 - updated TCPDF library to v6.9.1
 
 ## [1.19.2]
