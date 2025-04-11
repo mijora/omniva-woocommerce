@@ -26,9 +26,10 @@ composer require mijora/box-calculator
 
 ## How to use
 
-All examples can be viewed in `example/` folder. 
+All examples can be viewed in `example/` folder.
 
-## Preparing items
+
+### Preparing items
 ```php
 
 use Mijora\BoxCalculator\Elements\Item;
@@ -47,7 +48,20 @@ foreach ($products_list as $product) {
 
 ```
 
-## Calculating the smallest box
+### Selection of the calculation method
+```php
+use Mijora\BoxCalculator\CalculateBox;
+
+$box_calculator = new CalculateBox($items_list); //Initialing the calculation class and adding list of items to it
+
+$box_calculator->setMethod('AddToEdge'); //Provides the ability to change the method used for calculation. All available methods can be obtained with the function getAvailableMethods(). (Optional. Default: AddToEdge)
+```
+
+- **AddToEdge** - The simplest and fastest method that calculates the size of a box by adding the items to the box's edges. The calculation accuracy is low because the items are not added to the depth, leaving a lot of empty space in the box.
+- **Heuristic3D** - A simplified heuristic 3D brute-force placement algorithm is used, which fills the empty space efficiently. The calculation accuracy is high, but it cannot be used to calculate the smallest box (it is necessary to specify the max value of the box).
+
+
+### Calculating the smallest box
 ```php
 
 use Mijora\BoxCalculator\CalculateBox;
@@ -55,15 +69,16 @@ use Mijora\BoxCalculator\CalculateBox;
 $box_calculator = new CalculateBox($items_list); //Initialing the calculation class and adding list of items to it
 
 $min_box_size = $box_calculator //Getting calculated box
+    ->enableDebug(true) //Activating logging of performed actions. Functions called before this parameter is enabled will not be added to the log. (Optional. Default: false)
+    ->setMethod('AddToEdge') //Provides the ability to change the method used for calculation. All available methods can be obtained with the function getAvailableMethods(). (Optional. Default: AddToEdge)
     ->setBoxWallThickness(0.2) //The wall thickness of the box is specified (Optional. Default: 0)
-    ->enableDebug(true) //Activating logging of performed actions (Optional. Default: false)
     ->findMinBoxSize(); //Calculating box size
 
 $debug_data = $box_calculator->getDebugData(); //Getting logged data (if debug disabled, then this get only Items list and Box)
 
 ```
 
-## Check if the products fit in the box
+### Check if the products fit in the box
 ```php
 
 use Mijora\BoxCalculator\CalculateBox;
@@ -71,16 +86,17 @@ use Mijora\BoxCalculator\CalculateBox;
 $box_calculator = new CalculateBox($items_list); //Initialing the calculation class and adding list of items to it
 
 $min_box_size = $box_calculator //Getting calculated box
+    ->enableDebug(true) //Activating logging of performed actions. Functions called before this parameter is enabled will not be added to the log. (Optional. Default: false)
+    ->setMethod('Heuristic3D') //Provides the ability to change the method used for calculation. All available methods can be obtained with the function getAvailableMethods(). (Optional. Default: AddToEdge)
     ->setBoxWallThickness(0.2) //The wall thickness of the box is specified (Optional. Default: 0)
-    ->enableDebug(true) //Activating logging of performed actions (Optional. Default: false)
-    ->setMaxBoxSize(20, 15.5, 18) //Set max box size (width x height x length)
+    ->setMaxBoxSize(20, 15.5, 18) //Set max box size (width x height x length) (Required)
     ->findBoxSizeUntilMaxSize(); //Calculating box size and get false is reach max size
 
 $debug_data = $box_calculator->getDebugData(); //Getting logged data (if debug disabled, then this get only Items list and Box)
 
 ```
 
-## Result output
+### Result output
 ```php
 
 $box_size_inside = array( //Inside box size

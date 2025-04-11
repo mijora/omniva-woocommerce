@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "mijora/box-calculator",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:mijora/box-calculator.git",
-                "reference": "db8172a9072041afd7227b56c32b948c2e572995"
+                "reference": "7c40f5e5022aa2c31f4c76c9d8033713a998d7e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mijora/box-calculator/zipball/db8172a9072041afd7227b56c32b948c2e572995",
-                "reference": "db8172a9072041afd7227b56c32b948c2e572995",
+                "url": "https://api.github.com/repos/mijora/box-calculator/zipball/7c40f5e5022aa2c31f4c76c9d8033713a998d7e4",
+                "reference": "7c40f5e5022aa2c31f4c76c9d8033713a998d7e4",
                 "shasum": ""
             },
             "type": "library",
@@ -43,10 +43,10 @@
             ],
             "description": "Trying to find the closest possible box size to reality",
             "support": {
-                "source": "https://github.com/mijora/box-calculator/tree/v1.0.1",
+                "source": "https://github.com/mijora/box-calculator/tree/v1.1.0",
                 "issues": "https://github.com/mijora/box-calculator/issues"
             },
-            "time": "2025-04-04T08:42:20+00:00"
+            "time": "2025-04-10T11:09:13+00:00"
         },
         {
             "name": "mijora/omniva-api",
