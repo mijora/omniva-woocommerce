@@ -11,6 +11,7 @@
 - in the plugin settings, the save settings button has been pinned to the bottom of the screen
 - changed the "Send return code" parameter type to checkbox, made disabled by default and indicated that this service may be charged additionally
 - improved the orders receiving query on the "Omniva shipping" page
+- the use of Heuristic 3D algorithm has been made for the product packaging function
 
 ### Updated
 - updated box-calculator library to v1.1.0
