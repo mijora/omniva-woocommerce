@@ -29,9 +29,9 @@
             'dev_requirement' => false,
         ),
         'mijora/omniva-api' => array(
-            'pretty_version' => '1.3.2',
-            'version' => '1.3.2.0',
-            'reference' => 'a06545fee204df2f986dbb034d59ef05e1b73125',
+            'pretty_version' => '1.3.3',
+            'version' => '1.3.3.0',
+            'reference' => '52efb369a2e74f6e28fa5e6fb95633b75ffea80a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../mijora/omniva-api',
             'aliases' => array(),
