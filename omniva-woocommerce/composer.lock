@@ -50,16 +50,16 @@
         },
         {
             "name": "mijora/omniva-api",
-            "version": "1.3.2",
+            "version": "1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/omniva-baltic/omniva-api-lib.git",
-                "reference": "a06545fee204df2f986dbb034d59ef05e1b73125"
+                "reference": "52efb369a2e74f6e28fa5e6fb95633b75ffea80a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/a06545fee204df2f986dbb034d59ef05e1b73125",
-                "reference": "a06545fee204df2f986dbb034d59ef05e1b73125",
+                "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/52efb369a2e74f6e28fa5e6fb95633b75ffea80a",
+                "reference": "52efb369a2e74f6e28fa5e6fb95633b75ffea80a",
                 "shasum": ""
             },
             "require": {
@@ -92,9 +92,9 @@
             "description": "Omniva API wrapper",
             "support": {
                 "issues": "https://github.com/omniva-baltic/omniva-api-lib/issues",
-                "source": "https://github.com/omniva-baltic/omniva-api-lib/tree/v1.3.2"
+                "source": "https://github.com/omniva-baltic/omniva-api-lib/tree/v1.3.3"
             },
-            "time": "2025-02-04T14:09:27+00:00"
+            "time": "2025-04-15T08:32:59+00:00"
         },
         {
             "name": "setasign/fpdf",

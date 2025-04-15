@@ -16,6 +16,7 @@
 ### Updated
 - updated box-calculator library to v1.1.0
 - updated TCPDF library to v6.9.1
+- updated Omniva API library to v1.3.3
 
 ## [1.19.2]
 ### Fixed
