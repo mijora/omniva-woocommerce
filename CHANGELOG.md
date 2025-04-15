@@ -12,6 +12,7 @@
 - changed the "Send return code" parameter type to checkbox, made disabled by default and indicated that this service may be charged additionally
 - improved the orders receiving query on the "Omniva shipping" page
 - the use of Heuristic 3D algorithm has been made for the product packaging function
+- added new service support: Express Letter
 
 ### Updated
 - updated box-calculator library to v1.1.0
