@@ -371,10 +371,11 @@ class OmnivaLt_Helper
     }
 
     $box_calculator = new BoxCalcCalculate($items_list);
-    $box_calculator->setBoxWallThickness(0);
     $box_calculator->enableDebug(true);
+    $box_calculator->setBoxWallThickness(0);
 
     if ( ! empty($max_dimension) ) {
+      $box_calculator->setMethod('Heuristic3D');
       $box_calculator->setMaxBoxSize(
         (!empty($max_dimension['width'])) ? $max_dimension['width'] : 999999,
         (!empty($max_dimension['height'])) ? $max_dimension['height'] : 999999,
