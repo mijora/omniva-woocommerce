@@ -37,27 +37,29 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
   private function get_channels()
   {
     return array(
-      'terminal' => (defined(Package::class . '::CHANNEL_PARCEL_MACHINE')) ? Package::CHANNEL_PARCEL_MACHINE : false,
-      'courier' => (defined(Package::class . '::CHANNEL_COURIER')) ? Package::CHANNEL_COURIER : false,
-      'post' => (defined(Package::class . '::CHANNEL_POST_OFFICE')) ? Package::CHANNEL_POST_OFFICE : false,
+      'terminal' => $this->get_constant_value('Package', 'CHANNEL_PARCEL_MACHINE'),
+      'courier' => $this->get_constant_value('Package', 'CHANNEL_COURIER'),
+      'post' => $this->get_constant_value('Package', 'CHANNEL_POST_OFFICE'),
+      'postbox' => $this->get_constant_value('Package', 'CHANNEL_POST_BOX'),
     );
   }
 
   private function get_shipment_types()
   {
     return array(
-      'parcel' => (defined(Package::class . '::MAIN_SERVICE_PARCEL')) ? Package::MAIN_SERVICE_PARCEL : false,
-      'letter' => (defined(Package::class . '::MAIN_SERVICE_LETTER')) ? Package::MAIN_SERVICE_LETTER : false,
-      'pallet' => (defined(Package::class . '::MAIN_SERVICE_PALLET')) ? Package::MAIN_SERVICE_PALLET : false,
+      'parcel' => $this->get_constant_value('Package', 'MAIN_SERVICE_PARCEL'),
+      'letter' => $this->get_constant_value('Package', 'MAIN_SERVICE_LETTER'),
+      'pallet' => $this->get_constant_value('Package', 'MAIN_SERVICE_PALLET'),
     );
   }
 
   private function get_letter_service_codes()
   {
     return array(
-      'document' => (defined(ServicePackage::class . '::CODE_PROCEDURAL_DOCUMENT')) ? ServicePackage::CODE_PROCEDURAL_DOCUMENT : false,
-      'letter' => (defined(ServicePackage::class . '::CODE_REGISTERED_LETTER')) ? ServicePackage::CODE_REGISTERED_LETTER : false,
-      'maxiletter' => (defined(ServicePackage::class . '::CODE_REGISTERED_MAXILETTER')) ? ServicePackage::CODE_REGISTERED_MAXILETTER : false,
+      'document' => $this->get_constant_value('ServicePackage', 'CODE_PROCEDURAL_DOCUMENT'),
+      'letter' => $this->get_constant_value('ServicePackage', 'CODE_REGISTERED_LETTER'),
+      'maxiletter' => $this->get_constant_value('ServicePackage', 'CODE_REGISTERED_MAXILETTER'),
+      'expressletter' => $this->get_constant_value('ServicePackage', 'CODE_EXPRESS_LETTER'),
     );
   }
   
@@ -74,6 +76,7 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
       'private_customer' => $channels['courier'],
       'post_near' => $channels['post'],
       'post_specific' => $channels['post'],
+      'post_box' => $channels['postbox'],
       'letter_courier' => $channels['courier'],
       'letter_post' => $channels['post'],
     );
@@ -86,6 +89,22 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
     return (isset($methods_channels[$method['id']])) ? $methods_channels[$method['id']] : false;
   }
 
+  private function get_constant_value( $class_name, $constant_key, $on_fail = false )
+  {
+    $all_classes = array(
+      'Package' => Package::class,
+      'ServicePackage' => ServicePackage::class
+    );
+    if ( ! isset($all_classes[$class_name]) ) {
+      return $on_fail;
+    }
+
+    if ( defined($all_classes[$class_name] . '::' . $constant_key) ) {
+      return constant($all_classes[$class_name] . '::' . $constant_key);
+    }
+    return $on_fail;
+  }
+
   private function get_shipment_type_key( $shipping_method )
   {
     $method = OmnivaLt_Method::get_by_key($shipping_method);
@@ -94,6 +113,13 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
     }
 
     return (isset($method['type'])) ? $method['type'] : 'parcel';
+  }
+
+  private function get_channel_code( $channel_key )
+  {
+    $codes = $this->get_channels();
+
+    return (isset($codes[$channel_key])) ? $codes[$channel_key] : false;
   }
 
   private function get_shipment_type_code( $type_key )
@@ -365,6 +391,9 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
 
         if ( $shipment_type_key == 'letter' ) {
           $letter_service_code = $this->get_letter_service_code('letter'); //Always use "Local registered standard letter"
+          if ( $shipment_delivery_service == $this->get_channel_code('postbox') ) {
+            $letter_service_code = $this->get_letter_service_code('expressletter');
+          }
           $api_service_package = new ServicePackage($letter_service_code);
           $api_package->setServicePackage($api_service_package);
         }

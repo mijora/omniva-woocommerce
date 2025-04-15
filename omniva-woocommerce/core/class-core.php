@@ -88,6 +88,7 @@ class OmnivaLt_Core
       new OmnivaLt_Method_PrivateCustomer(),
       new OmnivaLt_Method_PostNear(),
       new OmnivaLt_Method_PostSpecific(),
+      new OmnivaLt_Method_PostBox(),
       new OmnivaLt_Method_Logistic(),
       new OmnivaLt_Method_LetterCourier(),
       new OmnivaLt_Method_LetterPost()
@@ -431,6 +432,7 @@ class OmnivaLt_Core
     require_once $core_dir . 'methods/' . 'class-method-privatecustomer.php';
     require_once $core_dir . 'methods/' . 'class-method-postnear.php';
     require_once $core_dir . 'methods/' . 'class-method-postspecific.php';
+    require_once $core_dir . 'methods/' . 'class-method-postbox.php';
     require_once $core_dir . 'methods/' . 'class-method-logistic.php';
     require_once $core_dir . 'methods/' . 'class-method-lettercourier.php';
     require_once $core_dir . 'methods/' . 'class-method-letterpost.php';
