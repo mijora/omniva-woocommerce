@@ -5,14 +5,14 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://iskiepiai.omnivasiunta.lt/
- * Version: 1.19.2
+ * Version: 1.20.0
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 
  * Requires at least: 5.1
- * Tested up to: 6.6.2
+ * Tested up to: 6.8
  * WC requires at least: 6.0.0
- * WC tested up to: 8.5.2
+ * WC tested up to: 9.8.1
  * Requires PHP: 7.2
  * PHP tested up to: 8.1.13
  */
@@ -21,7 +21,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVALT_VERSION', '1.19.2');
+define('OMNIVALT_VERSION', '1.20.0');
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));

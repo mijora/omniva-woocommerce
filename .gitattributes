@@ -8,3 +8,5 @@ omniva-blocks-builder export-ignore
 README.md export-ignore
 CHANGELOG.md export-ignore
 build_release.sh export-ignore
+# fix line endings
+* text=auto eol=lf

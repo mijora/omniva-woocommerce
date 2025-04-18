@@ -231,15 +231,22 @@ class OmnivaLt_Helper
     if ( ! isset($_SESSION['omnivalt_notices']) ) {
       $_SESSION['omnivalt_notices'] = array();
     }
-    $new_message_data = array('msg' => $message, 'type' => $type, 'prefix' => $prefix, 'dismissible' => $dismissible);
+    
+    $message_data = array(
+      'msg' => $message,
+      'type' => $type,
+      'prefix' => $prefix,
+      'dismissible' => $dismissible
+    );
+
     $message_exists = false;
     foreach ( $_SESSION['omnivalt_notices'] as $notice ) {
-      if ( $notice['msg'] === $new_message_data['msg'] && $notice['type'] === $new_message_data['type'] ) {
+      if ( $notice['msg'] === $message_data['msg'] && $notice['type'] === $message_data['type'] ) {
         $message_exists = true;
       }
     }
     if ( ! $message_exists ) {
-      $_SESSION['omnivalt_notices'][] = array('msg' => $message, 'type' => $type, 'prefix' => $prefix, 'dismissible' => $dismissible);
+      $_SESSION['omnivalt_notices'][] = $message_data;
     }
   }
 
@@ -256,7 +263,7 @@ class OmnivaLt_Helper
       foreach ( $_SESSION['omnivalt_notices'] as $notice ) {
         $prefix = isset($notice['prefix']) ? $notice['prefix'] : false;
         $dismissible = isset($notice['dismissible']) ? $notice['dismissible'] : false;
-        echo self::build_notice($notice['msg'], $notice['type'], $notice['prefix'], $notice['dismissible']);
+        echo self::build_notice($notice['msg'], $notice['type'], $prefix, $dismissible);
       }
       unset( $_SESSION['omnivalt_notices'] );
     }
@@ -371,10 +378,11 @@ class OmnivaLt_Helper
     }
 
     $box_calculator = new BoxCalcCalculate($items_list);
-    $box_calculator->setBoxWallThickness(0);
     $box_calculator->enableDebug(true);
+    $box_calculator->setBoxWallThickness(0);
 
     if ( ! empty($max_dimension) ) {
+      $box_calculator->setMethod('Heuristic3D');
       $box_calculator->setMaxBoxSize(
         (!empty($max_dimension['width'])) ? $max_dimension['width'] : 999999,
         (!empty($max_dimension['height'])) ? $max_dimension['height'] : 999999,

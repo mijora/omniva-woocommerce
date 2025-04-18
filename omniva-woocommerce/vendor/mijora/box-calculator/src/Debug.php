@@ -3,12 +3,21 @@ namespace Mijora\BoxCalculator;
 
 class Debug
 {
+    private static $instance;
     private $debug = false;
     private $debug_actions = array();
 
     public function __construct()
     {
         //Nothing
+    }
+
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new Debug();
+        }
+        return self::$instance;
     }
 
     public function enable( $enable )

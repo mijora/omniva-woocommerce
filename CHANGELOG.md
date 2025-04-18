@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.20.0]
+### Fixed
+- fixed a bug where the product meta data value total_shipments was empty
+- fixed that design changes would only be applied to the "Save changes" button on the Omniva settings page
+- fixed an error on the "Omniva shipping" page when there are orders with type WC_Order_Refund
+- fixed the loading order of hooks
+
+### Improved
+- required parameters marked with an asterisk in the plugin settings
+- in the plugin settings, the save settings button has been pinned to the bottom of the screen
+- changed the "Send return code" parameter type to checkbox, made disabled by default and indicated that this service may be charged additionally
+- improved the orders receiving query on the "Omniva shipping" page
+- the use of Heuristic 3D algorithm has been made for the product packaging function
+- added new service support: Express Letter
+
+### Updated
+- updated box-calculator library to v1.1.0
+- updated TCPDF library to v6.9.1
+- updated Omniva API library to v1.3.3
+
 ## [1.19.2]
 ### Fixed
 - fixed the working of the overrides from theme

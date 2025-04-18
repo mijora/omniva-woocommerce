@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit398a32df51a36dadc5fb5956e2f53305
+class ComposerStaticInit6485e643636984b9a243680f8d215a71
 {
     public static $files = array (
         'e1af0acb87348aa51d89cfb77fc80e82' => __DIR__ . '/..' . '/mijora/omniva-api/overrides/tcpdf/tcpdf_config.php',
@@ -46,6 +46,9 @@ class ComposerStaticInit398a32df51a36dadc5fb5956e2f53305
         'Mijora\\BoxCalculator\\Elements\\Box' => __DIR__ . '/..' . '/mijora/box-calculator/src/Elements/Box.php',
         'Mijora\\BoxCalculator\\Elements\\Item' => __DIR__ . '/..' . '/mijora/box-calculator/src/Elements/Item.php',
         'Mijora\\BoxCalculator\\Helper' => __DIR__ . '/..' . '/mijora/box-calculator/src/Helper.php',
+        'Mijora\\BoxCalculator\\Methods\\AddToEdge' => __DIR__ . '/..' . '/mijora/box-calculator/src/Methods/AddToEdge.php',
+        'Mijora\\BoxCalculator\\Methods\\Core' => __DIR__ . '/..' . '/mijora/box-calculator/src/Methods/Core.php',
+        'Mijora\\BoxCalculator\\Methods\\Heuristic3D' => __DIR__ . '/..' . '/mijora/box-calculator/src/Methods/Heuristic3D.php',
         'Mijora\\Omniva\\Helper' => __DIR__ . '/..' . '/mijora/omniva-api/src/Helper.php',
         'Mijora\\Omniva\\Locations\\PickupPoints' => __DIR__ . '/..' . '/mijora/omniva-api/src/Locations/PickupPoints.php',
         'Mijora\\Omniva\\OmnivaException' => __DIR__ . '/..' . '/mijora/omniva-api/src/OmnivaException.php',
@@ -97,8 +100,6 @@ class ComposerStaticInit398a32df51a36dadc5fb5956e2f53305
         'TCPDF_FONTS' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_fonts.php',
         'TCPDF_FONT_DATA' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_font_data.php',
         'TCPDF_IMAGES' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_images.php',
-        'TCPDF_IMPORT' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_import.php',
-        'TCPDF_PARSER' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_parser.php',
         'TCPDF_STATIC' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_static.php',
         'setasign\\Fpdi\\FpdfTpl' => __DIR__ . '/..' . '/setasign/fpdi/src/FpdfTpl.php',
         'setasign\\Fpdi\\FpdfTplTrait' => __DIR__ . '/..' . '/setasign/fpdi/src/FpdfTplTrait.php',
@@ -156,9 +157,9 @@ class ComposerStaticInit398a32df51a36dadc5fb5956e2f53305
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit398a32df51a36dadc5fb5956e2f53305::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit398a32df51a36dadc5fb5956e2f53305::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit398a32df51a36dadc5fb5956e2f53305::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6485e643636984b9a243680f8d215a71::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6485e643636984b9a243680f8d215a71::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit6485e643636984b9a243680f8d215a71::$classMap;
 
         }, null, ClassLoader::class);
     }
