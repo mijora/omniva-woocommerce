@@ -261,9 +261,9 @@ class OmnivaLt_Helper
     }
     if ( is_array($_SESSION) && array_key_exists('omnivalt_notices', $_SESSION) ) {
       foreach ( $_SESSION['omnivalt_notices'] as $notice ) {
-        $prefix = isset($notice['prefix']) ? gettext($notice['prefix']) : false;
+        $prefix = isset($notice['prefix']) ? $notice['prefix'] : false;
         $dismissible = isset($notice['dismissible']) ? $notice['dismissible'] : false;
-        echo self::build_notice($notice['msg'], $notice['type'], __($prefix, 'omnivalt'), $dismissible);
+        echo self::build_notice($notice['msg'], $notice['type'], $prefix, $dismissible);
       }
       unset( $_SESSION['omnivalt_notices'] );
     }
