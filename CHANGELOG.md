@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.20.0]
 ### Fixed
 - fixed a bug where the product meta data value total_shipments was empty
 - fixed that design changes would only be applied to the "Save changes" button on the Omniva settings page
