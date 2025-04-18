@@ -7,29 +7,34 @@ class OmnivaLt_Core
   public static function init()
   {
     self::load_classes();
-    if ( ! self::allow_activate_plugin() ) {
-      OmnivaLt_Helper::show_notices();
-      return;
-    }
-    self::load_init_hooks();
+    self::load_pre_init_hooks();
 
-    if ( ! function_exists('is_plugin_active') ) {
-      include_once(ABSPATH . 'wp-admin/includes/plugin.php');
-    }
-    if ( is_plugin_active('woocommerce/woocommerce.php') ) {
-      self::load_launch_hooks();
-      self::load_conditional_hooks();
-      OmnivaLt_Cronjob::init();
-    }
+    add_action('init', function() {
+      if ( ! self::allow_activate_plugin() ) {
+        OmnivaLt_Helper::show_notices();
+        return;
+      }
+      self::load_init_hooks();
 
-    if ( OmnivaLt_Debug::is_development_mode_enabled() ) {
-      OmnivaLt_Helper::add_msg(sprintf(__('Development mode is activated! When no longer needed, disable it in %s.', 'omnivalt'), '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=shipping&section=omnivalt' ) . '">' . __('Omniva settings page', 'omnivalt') . '</a>'), 'warning', 'Omniva');
-    }
+      if ( ! function_exists('is_plugin_active') ) {
+        include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+      }
+      if ( is_plugin_active('woocommerce/woocommerce.php') ) {
+        self::load_launch_hooks();
+        self::load_conditional_hooks();
+        OmnivaLt_Cronjob::init();
+      }
+
+      if ( OmnivaLt_Debug::is_development_mode_enabled() ) {
+        OmnivaLt_Helper::add_msg(sprintf(__('Development mode is activated! When no longer needed, disable it in %s.', 'omnivalt'), '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=shipping&section=omnivalt' ) . '">' . __('Omniva settings page', 'omnivalt') . '</a>'), 'warning', 'Omniva');
+      }
+    });
   }
 
   public static function allow_activate_plugin()
   {
     $error_prefix = __('Omniva plugin not working', 'omnivalt');
+
     if ( version_compare(PHP_VERSION, '7.0.0', '<') ) {
       OmnivaLt_Helper::add_msg(__('The website is using too low a PHP version', 'omnivalt'), 'error', $error_prefix);
       return false;
@@ -497,75 +502,83 @@ class OmnivaLt_Core
     );
   }
 
+  private static function load_pre_init_hooks()
+  {
+    add_action('before_woocommerce_init', array('OmnivaLt_Compatibility', 'declare_wc_hpos_compatibility'));
+    add_action('before_woocommerce_init', array('OmnivaLt_Compatibility', 'declare_wc_blocks_compatibility'));
+    add_action('init', array('OmnivaLt_Core', 'textdomain'));
+    add_action('woocommerce_blocks_loaded', array('OmnivaLt_Wc_Blocks', 'init'));
+  }
+
   private static function load_init_hooks()
   {
-    add_action('before_woocommerce_init', 'OmnivaLt_Compatibility::declare_wc_hpos_compatibility');
-    add_action('before_woocommerce_init', 'OmnivaLt_Compatibility::declare_wc_blocks_compatibility');
-    add_action('woocommerce_shipping_init', 'OmnivaLt_Core::init_shipping_method');
-    add_action('init', 'OmnivaLt_Core::textdomain');
-    add_action('admin_notices', 'OmnivaLt_Core::admin_notices');
-    add_action('after_plugin_row_' . OMNIVALT_BASENAME, 'OmnivaLt_Core::update_message', 10, 3);
+    add_action('woocommerce_shipping_init', array('OmnivaLt_Core', 'init_shipping_method'));
+    add_action('admin_notices', array('OmnivaLt_Core', 'admin_notices'));
+    add_action('after_plugin_row_' . OMNIVALT_BASENAME, array('OmnivaLt_Core', 'update_message'), 10, 3);
 
-    add_filter('plugin_action_links_' . OMNIVALT_BASENAME, 'OmnivaLt_Core::settings_link');
+    add_filter('plugin_action_links_' . OMNIVALT_BASENAME, array('OmnivaLt_Core', 'settings_link'));
   }
 
   private static function load_launch_hooks()
   {
-    add_action('init', 'OmnivaLt_Product::init');
-    add_action('wp_enqueue_scripts', 'OmnivaLt_Core::load_front_scripts', 99);
-    add_action('omniva_admin_manifest_head', 'OmnivaLt_Manifest::load_admin_scripts');
-    add_action('admin_enqueue_scripts', 'OmnivaLt_Core::load_admin_global_scripts');
-    add_action('admin_enqueue_scripts', 'OmnivaLt_Core::load_admin_settings_scripts');
-    add_action('admin_enqueue_scripts', 'OmnivaLt_Order::load_admin_scripts');
-    add_action('wp_footer', 'OmnivaLt_Core::add_to_footer');
-    add_action('wp_ajax_nopriv_add_terminal_to_session', 'OmnivaLt_Terminals::add_terminal_to_session');
-    add_action('wp_ajax_add_terminal_to_session', 'OmnivaLt_Terminals::add_terminal_to_session');
-    add_action('wp_ajax_omniva_terminals_json', 'OmnivaLt_Terminals::get_terminals_json');
-    add_action('wp_ajax_nopriv_omniva_terminals_json', 'OmnivaLt_Terminals::get_terminals_json');
-    add_action('admin_menu', 'OmnivaLt_Manifest::register_menu_pages');
-    add_action('woocommerce_after_shipping_rate', 'OmnivaLt_Order::after_rate_description', 20, 2);
-    add_action('woocommerce_after_shipping_rate', 'OmnivaLt_Order::after_rate_terminals');
-    add_action('woocommerce_checkout_update_order_meta', 'OmnivaLt_Order::add_terminal_id_to_order');
-    add_action('woocommerce_review_order_before_cart_contents', 'OmnivaLt_Order::validate_order', 10);
-    add_action('woocommerce_after_checkout_validation', 'OmnivaLt_Order::validate_order', 10);
-    add_action('woocommerce_checkout_order_created', 'OmnivaLt_Order::check_terminal_id_in_order');
-    add_action('woocommerce_order_details_after_order_table', 'OmnivaLt_Order::show_selected_terminal', 10, 1);
-    add_action('woocommerce_order_details_after_order_table', 'OmnivaLt_Order::show_tracking_link', 10, 1);
-    add_action('woocommerce_email_after_order_table', 'OmnivaLt_Order::show_selected_terminal', 10, 1);
-    add_action('woocommerce_admin_order_preview_end', 'OmnivaLt_Order::display_order_data_in_admin');
-    add_action('wp_ajax_generate_omnivalt_label', 'OmnivaLt_Order::generate_label');
-    add_action('woocommerce_checkout_update_order_meta', 'OmnivaLt_Order::add_cart_weight');
-    add_action('print_omniva_tracking_url', 'OmnivaLt_Order::print_tracking_url_action', 10, 2);
-    add_action('woocommerce_admin_order_data_after_shipping_address', 'OmnivaLt_Order::admin_order_display', 10, 2);
-    add_action('save_post', 'OmnivaLt_Order::admin_order_save');
-    add_action('woocommerce_update_order', 'OmnivaLt_Order::admin_order_save_hpos');
-    add_action('woocommerce_checkout_process', 'OmnivaLt_Order::checkout_validate_terminal');
-    add_action('wp_ajax_nopriv_remove_courier_call', 'OmnivaLt_Labels::ajax_remove_courier_call');
-    add_action('wp_ajax_remove_courier_call', 'OmnivaLt_Labels::ajax_remove_courier_call');
-    add_action('woocommerce_after_save_address_validation','OmnivaLt_Frontend::validate_phone_number', 1, 2);
-    add_action('woocommerce_checkout_process', 'OmnivaLt_Frontend::validate_phone_number');
-    add_action('woocommerce_blocks_loaded', 'OmnivaLt_Wc_Blocks::init');
-    add_action('block_categories_all', 'OmnivaLt_Wc_Blocks::register_block_categories', 10, 2 );
+    add_action('wp_enqueue_scripts', array('OmnivaLt_Core', 'load_front_scripts'), 99);
+    add_action('omniva_admin_manifest_head', array('OmnivaLt_Manifest', 'load_admin_scripts'));
+    add_action('admin_enqueue_scripts', array('OmnivaLt_Core', 'load_admin_global_scripts'));
+    add_action('admin_enqueue_scripts', array('OmnivaLt_Core', 'load_admin_settings_scripts'));
+    add_action('admin_enqueue_scripts', array('OmnivaLt_Order', 'load_admin_scripts'));
+    add_action('wp_footer', array('OmnivaLt_Core', 'add_to_footer'));
+    add_action('wp_ajax_nopriv_add_terminal_to_session', array('OmnivaLt_Terminals', 'add_terminal_to_session'));
+    add_action('wp_ajax_add_terminal_to_session', array('OmnivaLt_Terminals', 'add_terminal_to_session'));
+    add_action('wp_ajax_omniva_terminals_json', array('OmnivaLt_Terminals', 'get_terminals_json'));
+    add_action('wp_ajax_nopriv_omniva_terminals_json', array('OmnivaLt_Terminals', 'get_terminals_json'));
+    add_action('admin_menu', array('OmnivaLt_Manifest', 'register_menu_pages'));
+    add_action('woocommerce_after_shipping_rate', array('OmnivaLt_Order', 'after_rate_description'), 20, 2);
+    add_action('woocommerce_after_shipping_rate', array('OmnivaLt_Order', 'after_rate_terminals'));
+    add_action('woocommerce_checkout_update_order_meta', array('OmnivaLt_Order', 'add_terminal_id_to_order'));
+    add_action('woocommerce_review_order_before_cart_contents', array('OmnivaLt_Order', 'validate_order'), 10);
+    add_action('woocommerce_after_checkout_validation', array('OmnivaLt_Order', 'validate_order'), 10);
+    add_action('woocommerce_checkout_order_created', array('OmnivaLt_Order', 'check_terminal_id_in_order'));
+    add_action('woocommerce_order_details_after_order_table', array('OmnivaLt_Order', 'show_selected_terminal'), 10, 1);
+    add_action('woocommerce_order_details_after_order_table', array('OmnivaLt_Order', 'show_tracking_link'), 10, 1);
+    add_action('woocommerce_email_after_order_table', array('OmnivaLt_Order', 'show_selected_terminal'), 10, 1);
+    add_action('woocommerce_admin_order_preview_end', array('OmnivaLt_Order', 'display_order_data_in_admin'));
+    add_action('wp_ajax_generate_omnivalt_label', array('OmnivaLt_Order', 'generate_label'));
+    add_action('woocommerce_checkout_update_order_meta', array('OmnivaLt_Order', 'add_cart_weight'));
+    add_action('print_omniva_tracking_url', array('OmnivaLt_Order', 'print_tracking_url_action'), 10, 2);
+    add_action('woocommerce_admin_order_data_after_shipping_address', array('OmnivaLt_Order', 'admin_order_display'), 10, 2);
+    add_action('save_post', array('OmnivaLt_Order', 'admin_order_save'));
+    add_action('woocommerce_update_order', array('OmnivaLt_Order', 'admin_order_save_hpos'));
+    add_action('woocommerce_checkout_process', array('OmnivaLt_Order', 'checkout_validate_terminal'));
+    add_action('wp_ajax_nopriv_remove_courier_call', array('OmnivaLt_Labels', 'ajax_remove_courier_call'));
+    add_action('wp_ajax_remove_courier_call', array('OmnivaLt_Labels', 'ajax_remove_courier_call'));
+    add_action('woocommerce_after_save_address_validation', array('OmnivaLt_Frontend', 'validate_phone_number'), 1, 2);
+    add_action('woocommerce_checkout_process', array('OmnivaLt_Frontend', 'validate_phone_number'));
+    add_action('block_categories_all', array('OmnivaLt_Wc_Blocks', 'register_block_categories'), 10, 2 );
+    add_action('admin_head', array('OmnivaLt_Product', 'tabs_styles'));
+    add_action('woocommerce_process_product_meta_simple', array('OmnivaLt_Product', 'save_options_fields'));
+    add_action('woocommerce_process_product_meta_variable', array('OmnivaLt_Product', 'save_options_fields'));
 
-    add_filter('script_loader_tag', 'OmnivaLt_Core::add_asyncdefer_by_handle', 10, 2);
-    add_filter('woocommerce_shipping_methods', 'OmnivaLt_Core::add_shipping_method');
-    add_filter('admin_post_omnivalt_call_courier', 'OmnivaLt_Labels::post_call_courier_actions');
-    add_filter('admin_post_omnivalt_cancel_courier', 'OmnivaLt_Labels::post_cancel_courier_actions');
-    add_filter('woocommerce_order_data_store_cpt_get_orders_query', 'OmnivaLt_Manifest::handle_custom_query_var', 10, 2);
-    add_filter('woocommerce_package_rates', 'OmnivaLt_Order::restrict_shipping_methods_by_cats', 10, 1);
-    add_filter('woocommerce_package_rates', 'OmnivaLt_Order::restrict_shipping_methods_by_shipclass', 10, 1);
-    add_filter('woocommerce_admin_order_preview_get_order_details', 'OmnivaLt_Order::admin_order_add_custom_meta_data', 10, 2);
-    add_filter('bulk_actions-edit-shop_order', 'OmnivaLt_Order::bulk_actions', 20);
-    add_filter('handle_bulk_actions-edit-shop_order', 'OmnivaLt_Order::handle_bulk_actions', 20, 3);
-    add_filter('bulk_actions-woocommerce_page_wc-orders', 'OmnivaLt_Order::bulk_actions', 20); //HPOS
-    add_filter('handle_bulk_actions-woocommerce_page_wc-orders', 'OmnivaLt_Order::handle_bulk_actions', 20, 3); //HPOS
-    add_filter('admin_post_omnivalt_labels', 'OmnivaLt_Order::post_label_actions', 20, 3);
-    add_filter('admin_post_omnivalt_manifest', 'OmnivaLt_Order::post_manifest_actions', 20, 3);
-    //add_filter('woocommerce_admin_order_actions_end', 'OmnivaLt_Order::order_actions', 10, 1);
-    add_filter('woocommerce_cart_shipping_method_full_label', 'OmnivaLt_Frontend::add_logo_to_method', 10, 2);
-    add_filter('woocommerce_package_rates' , 'OmnivaLt_Frontend::change_methods_position', 99, 2);
-    add_filter('woocommerce_available_payment_gateways', 'OmnivaLt_Frontend::change_payment_list_by_shipping_method');
-    add_filter('woocommerce_process_registration_errors', 'OmnivaLt_Frontend::validate_phone_number', 10, 4);
+    add_filter('script_loader_tag', array('OmnivaLt_Core', 'add_asyncdefer_by_handle'), 10, 2);
+    add_filter('woocommerce_shipping_methods', array('OmnivaLt_Core', 'add_shipping_method'));
+    add_filter('admin_post_omnivalt_call_courier', array('OmnivaLt_Labels', 'post_call_courier_actions'));
+    add_filter('admin_post_omnivalt_cancel_courier', array('OmnivaLt_Labels', 'post_cancel_courier_actions'));
+    add_filter('woocommerce_order_data_store_cpt_get_orders_query', array('OmnivaLt_Manifest', 'handle_custom_query_var'), 10, 2);
+    add_filter('woocommerce_package_rates', array('OmnivaLt_Order', 'restrict_shipping_methods_by_cats'), 10, 1);
+    add_filter('woocommerce_package_rates', array('OmnivaLt_Order', 'restrict_shipping_methods_by_shipclass'), 10, 1);
+    add_filter('woocommerce_admin_order_preview_get_order_details', array('OmnivaLt_Order', 'admin_order_add_custom_meta_data'), 10, 2);
+    add_filter('bulk_actions-edit-shop_order', array('OmnivaLt_Order', 'bulk_actions'), 20);
+    add_filter('handle_bulk_actions-edit-shop_order', array('OmnivaLt_Order', 'handle_bulk_actions'), 20, 3);
+    add_filter('bulk_actions-woocommerce_page_wc-orders', array('OmnivaLt_Order', 'bulk_actions'), 20); //HPOS
+    add_filter('handle_bulk_actions-woocommerce_page_wc-orders', array('OmnivaLt_Order', 'handle_bulk_actions'), 20, 3); //HPOS
+    add_filter('admin_post_omnivalt_labels', array('OmnivaLt_Order', 'post_label_actions'), 20, 3);
+    add_filter('admin_post_omnivalt_manifest', array('OmnivaLt_Order', 'post_manifest_actions'), 20, 3);
+    //add_filter('woocommerce_admin_order_actions_end', array('OmnivaLt_Order', 'order_actions'), 10, 1);
+    add_filter('woocommerce_cart_shipping_method_full_label', array('OmnivaLt_Frontend', 'add_logo_to_method'), 10, 2);
+    add_filter('woocommerce_package_rates' , array('OmnivaLt_Frontend', 'change_methods_position'), 99, 2);
+    add_filter('woocommerce_available_payment_gateways', array('OmnivaLt_Frontend', 'change_payment_list_by_shipping_method'));
+    add_filter('woocommerce_process_registration_errors', array('OmnivaLt_Frontend', 'validate_phone_number'), 10, 4);
+    add_filter('woocommerce_product_data_tabs', array('OmnivaLt_Product', 'add_product_tabs'));
+    add_filter('woocommerce_product_data_panels', array('OmnivaLt_Product', 'options_content'));
   }
 
   private static function load_conditional_hooks()
@@ -575,7 +588,7 @@ class OmnivaLt_Core
     $track_info_in_emails = (isset($settings['track_info_in_email'])) ? $settings['track_info_in_email'] : 'yes';
     
     if ( $track_info_in_emails === 'yes' ) {
-      add_action('woocommerce_email_after_order_table', 'OmnivaLt_Order::show_tracking_link', 10, 1);
+      add_action('woocommerce_email_after_order_table', array('OmnivaLt_Order', 'show_tracking_link'), 10, 1);
     }
   }
 

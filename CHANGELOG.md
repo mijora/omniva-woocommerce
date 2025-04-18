@@ -5,6 +5,7 @@
 - fixed a bug where the product meta data value total_shipments was empty
 - fixed that design changes would only be applied to the "Save changes" button on the Omniva settings page
 - fixed an error on the "Omniva shipping" page when there are orders with type WC_Order_Refund
+- fixed the loading order of hooks
 
 ### Improved
 - required parameters marked with an asterisk in the plugin settings

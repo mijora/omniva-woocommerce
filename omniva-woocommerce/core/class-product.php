@@ -1,16 +1,6 @@
 <?php
 class OmnivaLt_Product
 {
-  public static function init()
-  {
-    add_filter('woocommerce_product_data_tabs', array(__CLASS__, 'add_product_tabs'));
-    add_filter('woocommerce_product_data_panels', array(__CLASS__, 'options_content'));
-    
-    add_action('admin_head', array(__CLASS__, 'tabs_styles'));
-    add_action('woocommerce_process_product_meta_simple', array(__CLASS__, 'save_options_fields'));
-    add_action('woocommerce_process_product_meta_variable', array(__CLASS__, 'save_options_fields'));
-  }
-
   /**
    * Add a custom product tab
    *
