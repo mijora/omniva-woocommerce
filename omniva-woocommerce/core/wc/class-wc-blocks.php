@@ -21,7 +21,7 @@ class OmnivaLt_Wc_Blocks
                 'schema_type' => ARRAY_A,
             ));
         }
-        add_action('woocommerce_store_api_checkout_update_order_from_request', 'OmnivaLt_Wc_Blocks::update_block_order_meta', 10, 2);
+        add_action('woocommerce_store_api_checkout_update_order_from_request', array('OmnivaLt_Wc_Blocks', 'update_block_order_meta'), 10, 2);
 
         add_filter(
             '__experimental_woocommerce_blocks_add_data_attributes_to_namespace',

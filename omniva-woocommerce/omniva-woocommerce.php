@@ -10,9 +10,9 @@
  * Text Domain: omnivalt
  * 
  * Requires at least: 5.1
- * Tested up to: 6.6.2
+ * Tested up to: 6.8
  * WC requires at least: 6.0.0
- * WC tested up to: 9.7.1
+ * WC tested up to: 9.8.1
  * Requires PHP: 7.2
  * PHP tested up to: 8.1.13
  */
