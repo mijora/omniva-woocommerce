@@ -50,7 +50,7 @@ class OmnivaLt_Manifest
    */
   public static function handle_custom_query_var( $query, $query_vars )
   {
-    $query['meta_keys'] = self::build_meta_query($query_vars);
+    $query['meta_query'] = self::build_meta_query($query_vars);
 
     return $query;
   }

@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed display of only Omniva orders on the Omniva orders page when the HPOS data structure is not used
+
 ## [1.20.0]
 ### Fixed
 - fixed a bug where the product meta data value total_shipments was empty
