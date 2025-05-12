@@ -144,7 +144,7 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
         'code' => (new CodService())->getServiceCode(),
         'class' => '\Mijora\Omniva\Shipment\AdditionalService\CodService',
         'in_product' => false,
-        'in_order' => false,
+        'in_order' => 'checkbox',
         'add_always' => false,
       ),
       'persons_over_18' => array(
