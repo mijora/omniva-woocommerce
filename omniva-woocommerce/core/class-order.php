@@ -675,7 +675,7 @@ class OmnivaLt_Order
       
       $output .= '<p class="form-field-wide omnivalt-additional_service">';
       $field_id = 'omnivalt_' . $service_key;
-      if ($service_values['in_order'] === 'checkbox') {
+      if ($service_values['in_order'] === 'checkbox' || $service_values['in_order'] === 'price') {
         $checked = (in_array($service_key, $selected_order_services)) ? 'checked' : '';
         $output .= '<input type="checkbox" id="' . $field_id . '" class="select short" name="' . $field_id . '" value="yes" ' . $checked . '/>';
       }
@@ -687,6 +687,10 @@ class OmnivaLt_Order
         $selected = (in_array($service_key, $selected_order_services)) ? 'selected' : '';
         $output .= '<option value="yes" ' . $selected . '>' . __('Yes', 'omnivalt') . '</option>';
         $output .= '</select>';*/
+      }
+      if ($service_values['in_order'] === 'price') {
+        //TODO: Need to do value get and save
+        //$output .= '<input type="number" id="' . $field_id . '_value" class="short inline-number" name="' . $field_id . '_value" value="" min="0" step="0.01">';
       }
       $output .= '</p>';
     }
