@@ -50,6 +50,10 @@ class OmnivaLt_Manifest
    */
   public static function handle_custom_query_var( $query, $query_vars )
   {
+    if ( ! is_admin() ) {
+      return $query;
+    }
+    
     $query['meta_query'] = self::build_meta_query($query_vars);
 
     return $query;
