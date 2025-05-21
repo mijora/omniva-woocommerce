@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.20.2]
 ### Fixed
 - fixed display of orders in user account
 
