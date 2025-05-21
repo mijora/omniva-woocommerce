@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.20.2]
+### Fixed
+- fixed display of orders in user account
+
 ## [1.20.1]
 ### Fixed
 - fixed display of only Omniva orders on the Omniva orders page when the HPOS data structure is not used
