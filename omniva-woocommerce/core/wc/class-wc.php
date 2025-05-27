@@ -23,7 +23,11 @@ class OmnivaLt_Wc
         }
 
         $screen = get_current_screen();
-        return $screen->id ?? false;
+        if ( is_object($screen) && isset($screen->id) && ! empty($screen->id) ) {
+            return $screen->id;
+        }
+
+        return false;
     }
 
     public static function is_endpoint_url( $endpoint )

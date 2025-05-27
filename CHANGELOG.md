@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- removed loading of Omniva JS and CSS files on pages where they should not be loaded
+
 ## [1.20.2]
 ### Fixed
 - fixed display of orders in user account
