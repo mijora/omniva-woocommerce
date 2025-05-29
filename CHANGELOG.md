@@ -4,6 +4,10 @@
 ### Fixed
 - removed loading of Omniva JS and CSS files on pages where they should not be loaded
 
+### Updated
+- updated TCPDF library to v6.10.0
+- updated Omniva API library to v1.3.4
+
 ## [1.20.2]
 ### Fixed
 - fixed display of orders in user account
