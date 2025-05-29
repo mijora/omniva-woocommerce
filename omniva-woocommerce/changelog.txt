@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 1.20.3 =
+- removed loading of Omniva JS and CSS files on pages where they should not be loaded
+- updated TCPDF library to v6.10.0
+- updated Omniva API library to v1.3.4
+
 = 1.20.2 =
 - fixed display of orders in user account
 

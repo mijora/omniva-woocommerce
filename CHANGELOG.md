@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.20.3]
 ### Fixed
 - removed loading of Omniva JS and CSS files on pages where they should not be loaded
 
