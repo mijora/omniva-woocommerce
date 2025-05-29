@@ -29,11 +29,28 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
      */
     public function initialize() {
         require_once OmnivaLt_Core::get_core_dir() . 'wc-blocks/class-blocks-extend-store-endpoint.php';
-        $this->register_external_scripts();
-        $this->register_block_frontend_scripts();
+
         $this->register_block_editor_scripts();
         $this->register_main_integration();
         $this->register_additional_actions();
+
+        add_action('wp', array($this, 'late_initialize'));
+    }
+
+    public function late_initialize() {
+        $is_cart_page = OmnivaLt_Wc_Blocks::is_cart_page();
+        $is_checkout_page = OmnivaLt_Wc_Blocks::is_checkout_page();
+        $is_cart_editor = OmnivaLt_Wc_Blocks::is_cart_page_editor();
+        $is_checkout_editor = OmnivaLt_Wc_Blocks::is_checkout_page_editor();
+
+        if ( ! $is_cart_page && ! $is_checkout_page && ! $is_cart_editor && ! $is_checkout_editor ) {
+            return;
+        }
+
+        if ( $is_cart_page || $is_checkout_page ) {
+            $this->register_external_scripts();
+            $this->register_block_frontend_scripts();
+        }
     }
 
     /**

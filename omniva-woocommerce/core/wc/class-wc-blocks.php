@@ -82,4 +82,81 @@ class OmnivaLt_Wc_Blocks
             ),
         );
     }
+
+    public static function is_admin_page_has_block( $block_name )
+    {
+        if ( ! isset($_GET['post']) ) {
+            return false;
+        }
+
+        $post_id = absint($_GET['post']);
+        $post = get_post( $post_id );
+
+        if ( ! $post || ! has_blocks( $post ) ) {
+            return false;
+        }
+
+        $blocks = parse_blocks( $post->post_content );
+
+        foreach ( $blocks as $block ) {
+            if ( isset($block['blockName']) && $block['blockName'] === $block_name ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function is_front_page_has_block( $block_name ) {
+        $post = get_queried_object();
+
+        if ( ! $post instanceof WP_Post ) {
+            return false;
+        }
+
+        if ( has_block( $block_name, $post ) ) {
+            return true;
+        }
+
+        if ( ! has_blocks( $post ) ) {
+            return false;
+        }
+
+        $blocks = parse_blocks( $post->post_content );
+        return self::search_blocks_recursive( $blocks, $block_name );
+    }
+
+    private static function search_blocks_recursive( $blocks, $block_name ) {
+        foreach ( $blocks as $block ) {
+            if ( isset( $block['blockName'] ) && $block['blockName'] === $block_name ) {
+                return true;
+            }
+            if ( ! empty( $block['innerBlocks'] ) ) {
+                if ( self::search_blocks_recursive( $block['innerBlocks'], $block_name ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static function is_cart_page_editor()
+    {
+        return (self::is_admin_page_has_block('woocommerce/cart'));
+    }
+
+    public static function is_checkout_page_editor()
+    {
+        return (self::is_admin_page_has_block('woocommerce/checkout'));
+    }
+
+    public static function is_cart_page()
+    {
+        return (self::is_front_page_has_block('woocommerce/cart'));
+    }
+
+    public static function is_checkout_page()
+    {
+        return (self::is_front_page_has_block('woocommerce/checkout'));
+    }
 }

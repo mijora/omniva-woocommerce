@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6485e643636984b9a243680f8d215a71",
+    "content-hash": "ebd2e07a58b166af5cb7534da545e54c",
     "packages": [
         {
             "name": "mijora/box-calculator",
@@ -50,16 +50,16 @@
         },
         {
             "name": "mijora/omniva-api",
-            "version": "1.3.3",
+            "version": "1.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/omniva-baltic/omniva-api-lib.git",
-                "reference": "52efb369a2e74f6e28fa5e6fb95633b75ffea80a"
+                "reference": "0908bdb9ca16add1e95a5989a2af3bb0b50627b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/52efb369a2e74f6e28fa5e6fb95633b75ffea80a",
-                "reference": "52efb369a2e74f6e28fa5e6fb95633b75ffea80a",
+                "url": "https://api.github.com/repos/omniva-baltic/omniva-api-lib/zipball/0908bdb9ca16add1e95a5989a2af3bb0b50627b8",
+                "reference": "0908bdb9ca16add1e95a5989a2af3bb0b50627b8",
                 "shasum": ""
             },
             "require": {
@@ -92,9 +92,9 @@
             "description": "Omniva API wrapper",
             "support": {
                 "issues": "https://github.com/omniva-baltic/omniva-api-lib/issues",
-                "source": "https://github.com/omniva-baltic/omniva-api-lib/tree/v1.3.3"
+                "source": "https://github.com/omniva-baltic/omniva-api-lib/tree/v1.3.4"
             },
-            "time": "2025-04-15T08:32:59+00:00"
+            "time": "2025-05-29T07:40:14+00:00"
         },
         {
             "name": "setasign/fpdf",
@@ -216,16 +216,16 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.9.1",
+            "version": "6.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "ed27e28a4c478f7f4015b5e7e7b1912af9e85f2b"
+                "reference": "ca5b6de294512145db96bcbc94e61696599c391d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/ed27e28a4c478f7f4015b5e7e7b1912af9e85f2b",
-                "reference": "ed27e28a4c478f7f4015b5e7e7b1912af9e85f2b",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/ca5b6de294512145db96bcbc94e61696599c391d",
+                "reference": "ca5b6de294512145db96bcbc94e61696599c391d",
                 "shasum": ""
             },
             "require": {
@@ -275,15 +275,15 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/TCPDF/issues",
-                "source": "https://github.com/tecnickcom/TCPDF/tree/6.9.1"
+                "source": "https://github.com/tecnickcom/TCPDF/tree/6.10.0"
             },
             "funding": [
                 {
-                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tcpdf%20project",
+                    "url": "https://www.paypal.com/donate/?hosted_button_id=NZUEC5XS8MFBJ",
                     "type": "custom"
                 }
             ],
-            "time": "2025-04-03T06:38:07+00:00"
+            "time": "2025-05-27T18:02:28+00:00"
         }
     ],
     "packages-dev": [],
