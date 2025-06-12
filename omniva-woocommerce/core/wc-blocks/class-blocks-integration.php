@@ -106,9 +106,14 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
                 'select_post' => __('Select post office', 'omnivalt'),
                 'error_post' => __('Please select post office', 'omnivalt'),
                 'cart_post_info' => __('You can choose the post office on the Checkout page', 'omnivalt'),
+                'error_field_value_format' => __('Invalid format', 'omnivalt'),
                 'providers' => array(
                     'omniva' => __('Omniva', 'omnivalt'),
                     'matkahuolto' => __('Matkahuolto', 'omnivalt')
+                ),
+                'errors' => array(
+                    'invalid_format' => __('Invalid format', 'omnivalt'),
+                    'invalid_phone_format' => __('The phone format specified in the Shipping address is not valid for this shipping method', 'omnivalt')
                 ),
                 'map' => array(
                     'modal_title_post' => __('post offices', 'omnivalt'),
@@ -281,6 +286,7 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         $country = esc_attr($_GET['country']);
         $woo_method_id = esc_attr($_GET['method']);
 
+        $settings = \OmnivaLt_Core::get_settings();
         $method_key = \OmnivaLt_Omniva_Order::get_method_key_from_id($woo_method_id);
         $terminals_type = \OmnivaLt_Method::get_terminal_type($method_key);
         $omniva_methods = \OmnivaLt_Method::get_all();
@@ -293,10 +299,18 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
             $map_icon = $omniva_method['display_by_country'][$country]['map_marker'];
         }
 
+        $phone_regex = '';
+        if ( isset($settings['verify_phone']) && $settings['verify_phone'] === 'yes' ) {
+            $phone_regex_raw = \OmnivaLt_Helper::get_mobile_regex(strtoupper($country));
+            $phone_regex_clean = trim($phone_regex_raw, '/');
+            $phone_regex = json_decode(json_encode($phone_regex_clean));
+        }
+
         wp_send_json_success(array(
             'terminals_type' => $terminals_type,
             'provider' => $provider,
             'map_icon' => $map_icon,
+            'phone_regex' => $phone_regex
         ));
     }
 

@@ -2,7 +2,8 @@
  * External dependencies
  */
 import { useEffect, useState, useCallback, useRef } from '@wordpress/element';
-import { SelectControl, TextareaControl } from '@wordpress/components';
+import { SelectControl, TextareaControl, Icon } from '@wordpress/components';
+import { warning } from '@wordpress/icons';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { debounce } from 'lodash';
 
@@ -18,6 +19,7 @@ import { debug, enableStateDebug } from '../global/debug';
 
 export const Block = ({ checkoutExtensionData, extensions }) => {
     const terminalValidationErrorId = 'omnivalt_terminal';
+    const phoneValidationErrorId = 'shipping_phone';
     const { setExtensionData } = checkoutExtensionData;
     const [mapValues, setMapValues] = useState({
         country: 'LT',
@@ -70,14 +72,31 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         'wc/store/validation'
     );
 
-    const validationError = useSelect((select) => {
-        const store = select('wc/store/validation');
-        return store.getValidationError(terminalValidationErrorId);
+    const terminalValidationError = useSelect((select) => {
+        const storeValidation = select('wc/store/validation');
+        return storeValidation.getValidationError(terminalValidationErrorId);
+    });
+
+    const phoneValidationError = useSelect((select) => {
+        const storeValidation = select('wc/store/validation');
+        return storeValidation.getValidationError(phoneValidationErrorId);
     });
 
     const shippingRates = useSelect((select) => {
-        const store = select('wc/store/cart');
-        return store.getCartData().shippingRates;
+        const storeCart = select('wc/store/cart');
+        return storeCart.getCartData().shippingRates;
+    });
+
+    const customerData = useSelect((select) => {
+        const storeCart = select('wc/store/cart');
+        const billingAddress = storeCart.getCartData().billingAddress;
+        const shippingAddress = storeCart.getCartData().shippingAddress;
+        
+        const phone = ((shippingAddress.phone && shippingAddress.phone.trim() !== '') ? shippingAddress.phone : billingAddress.phone) || '';
+        
+        return {
+            phone: phone
+        };
     });
 
     useEffect(() => {
@@ -284,9 +303,41 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         terminalsOptions
     ]);
 
+    /* Validate phone */
+    useEffect(() => {
+        clearValidationError(phoneValidationErrorId);
+
+        if (!isOmnivaTerminalMethod(selectedRateId)) {
+            return;
+        }
+
+        if (!omnivaData.phone_regex || omnivaData.phone_regex.trim() === '') {
+            debug('Phone regex empty. Skipped validation.');
+            return;
+        }
+
+        const regex = new RegExp(omnivaData.phone_regex);
+
+        if (!regex.test(customerData.phone)) {
+            debug('Incorrect phone number');
+            setValidationErrors({
+                [phoneValidationErrorId]: {
+                    message: txt.errors.invalid_format,
+                    hidden: false
+                }
+            });
+        } else {
+            debug('Phone number is correct');
+        }
+    }, [
+        customerData,
+        omnivaData,
+        selectedRateId
+    ]);
+
     /* Handle changing the select's value */
     useEffect(() => {
-        if ( validationError ) {
+        if ( terminalValidationError ) {
             debug('Clearing terminal validation error...');
             clearValidationError(terminalValidationErrorId);
             setContainerErrorClass('');
@@ -334,23 +385,34 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     }
 
     return (
-        <div className={`omnivalt-terminal-select-container provider-${containerParams.provider} type-${containerParams.type} ${containerErrorClass}`}>
-            <div id="omnivalt-terminal-container-org" className="omnivalt-org-select">
-                <SelectControl
-                    id="omnivalt-terminal-select-field"
-                    label={blockText.title}
-                    value={selectedOmnivaTerminal}
-                    options={terminalsOptions}
-                    onChange={(value) => setSelectedOmnivaTerminal(value)}
-                    ref={elemTerminalSelectField}
-                />
-                {(validationError?.hidden || selectedOmnivaTerminal !== '') ? null : (
-                    <div className="wc-block-components-validation-error omnivalt-terminal-error">
-                        <span>{validationError?.message}</span>
+        <div className="omnivalt-container">
+            <div className="omnivalt-general-errors">
+                {(phoneValidationError && !phoneValidationError.hidden) && (
+                    <div className="wc-block-components-validation-error omnivalt-phone-error">
+                        <Icon icon={warning} size={20} className="omnivalt-error-icon" />
+                        <span>{txt.errors.invalid_phone_format}</span>
                     </div>
                 )}
             </div>
-            <div id="omnivalt-terminal-container-map" className="omnivalt-map-select" ref={elemMapContainer}><div class="omnivalt-loader"></div></div>
+            <div className={`omnivalt-terminal-select-container provider-${containerParams.provider} type-${containerParams.type} ${containerErrorClass}`}>
+                <div id="omnivalt-terminal-container-org" className="omnivalt-org-select">
+                    <SelectControl
+                        id="omnivalt-terminal-select-field"
+                        label={blockText.title}
+                        value={selectedOmnivaTerminal}
+                        options={terminalsOptions}
+                        onChange={(value) => setSelectedOmnivaTerminal(value)}
+                        ref={elemTerminalSelectField}
+                    />
+                    {(terminalValidationError?.hidden || selectedOmnivaTerminal !== '') ? null : (
+                        <div className="wc-block-components-validation-error omnivalt-terminal-error">
+                            <Icon icon={warning} size={20} className="omnivalt-error-icon" />
+                            <span>{terminalValidationError?.message}</span>
+                        </div>
+                    )}
+                </div>
+                <div id="omnivalt-terminal-container-map" className="omnivalt-map-select" ref={elemMapContainer}><div class="omnivalt-loader"></div></div>
+            </div>
         </div>
     );
 };
