@@ -14,6 +14,7 @@ class OmnivaLt_Core
         OmnivaLt_Helper::show_notices();
         return;
       }
+      OmnivaLt_Terminals::check_terminals_json_file();
       self::load_init_hooks();
 
       if ( ! function_exists('is_plugin_active') ) {
@@ -370,8 +371,6 @@ class OmnivaLt_Core
   public static function init_shipping_method()
   {
     include OMNIVALT_DIR . 'core/class-shipping-method.php';
-    
-    OmnivaLt_Terminals::check_terminals_json_file();
   }
 
   public static function add_shipping_method( $methods )
@@ -508,11 +507,11 @@ class OmnivaLt_Core
     add_action('before_woocommerce_init', array('OmnivaLt_Compatibility', 'declare_wc_blocks_compatibility'));
     add_action('init', array('OmnivaLt_Core', 'textdomain'));
     add_action('woocommerce_blocks_loaded', array('OmnivaLt_Wc_Blocks', 'init'));
+    add_action('woocommerce_shipping_init', array('OmnivaLt_Core', 'init_shipping_method'));
   }
 
   private static function load_init_hooks()
   {
-    add_action('woocommerce_shipping_init', array('OmnivaLt_Core', 'init_shipping_method'));
     add_action('admin_notices', array('OmnivaLt_Core', 'admin_notices'));
     add_action('after_plugin_row_' . OMNIVALT_BASENAME, array('OmnivaLt_Core', 'update_message'), 10, 3);
 

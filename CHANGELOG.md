@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed so that the shipping method class would be loaded earlier
+
 ## [1.20.3]
 ### Fixed
 - removed loading of Omniva JS and CSS files on pages where they should not be loaded
