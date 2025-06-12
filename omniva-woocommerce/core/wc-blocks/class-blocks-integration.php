@@ -309,6 +309,7 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
             'terminals_type' => $terminals_type,
             'provider' => $provider,
             'map_icon' => $map_icon,
+            'country' => $country,
             'phone_regex' => $phone_regex
         ));
     }

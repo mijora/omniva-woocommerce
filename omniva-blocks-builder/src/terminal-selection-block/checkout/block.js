@@ -11,7 +11,7 @@ import { debounce } from 'lodash';
  * Internal dependencies
  */
 import { getDestination, getActiveShippingRates } from '../global/wc-cart';
-import { getOmnivaData, getDynamicOmnivaData, isOmnivaTerminalMethod } from '../global/omniva';
+import { getOmnivaData, getDynamicOmnivaData, isOmnivaMethod, isOmnivaTerminalMethod } from '../global/omniva';
 import { getTerminalsByCountry, loadMap, removeMap, loadCustomSelect } from '../global/terminals';
 import { txt } from '../global/text';
 import { addTokenToValue, isObjectEmpty, findArrayElemByObjProp} from '../global/utils';
@@ -95,7 +95,8 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         const phone = ((shippingAddress.phone && shippingAddress.phone.trim() !== '') ? shippingAddress.phone : billingAddress.phone) || '';
         
         return {
-            phone: phone
+            phone: phone,
+            country: shippingAddress.country
         };
     });
 
@@ -129,11 +130,9 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     ]);
 
     useEffect(() => {
-        if ( showBlock.value ) {
-            setDestination(getDestination(shippingRates));
-        }
+        setDestination(getDestination(shippingRates));
     }, [
-        showBlock
+        selectedRateId
     ]);
 
     useEffect(() => {
@@ -153,16 +152,16 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     ]);
 
     useEffect(() => {
-        if ( ! isOmnivaTerminalMethod(selectedRateId) ) {
-            debug('The selected delivery method is not delivery to the Omniva terminal');
-            return;
-        }
         if ( ! selectedRateId ) {
             debug('Skipped retrieving dynamic Omniva data because the value of the selected rate ID is not received');
             return;
         }
+        if ( ! destination ) {
+            debug('Skipped retrieving dynamic Omniva data because the destination is still empty');
+            return;
+        }
 
-        getDynamicOmnivaData(mapValues.country, selectedRateId).then(response => {
+        getDynamicOmnivaData(destination.country, selectedRateId).then(response => {
             if ( response.data ) {
                 const data = response.data;
                 setOmnivaData(data);
@@ -171,7 +170,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             }
         });
     }, [
-        mapValues,
+        destination,
         selectedRateId
     ]);
 
@@ -307,7 +306,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     useEffect(() => {
         clearValidationError(phoneValidationErrorId);
 
-        if (!isOmnivaTerminalMethod(selectedRateId)) {
+        if (!isOmnivaMethod(selectedRateId)) {
             return;
         }
 
@@ -319,7 +318,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         const regex = new RegExp(omnivaData.phone_regex);
 
         if (!regex.test(customerData.phone)) {
-            debug('Incorrect phone number');
+            debug('Incorrect phone number. Regex: ' + omnivaData.phone_regex);
             setValidationErrors({
                 [phoneValidationErrorId]: {
                     message: txt.errors.invalid_format,
