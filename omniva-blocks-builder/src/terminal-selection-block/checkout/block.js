@@ -379,8 +379,8 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         selectedRateId
     ]);
 
-    if ( ! showBlock.value ) {
-        return <></>
+    if ( ! isOmnivaMethod(selectedRateId) ) {
+        return null;
     }
 
     return (
@@ -393,25 +393,27 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
                     </div>
                 )}
             </div>
-            <div className={`omnivalt-terminal-select-container provider-${containerParams.provider} type-${containerParams.type} ${containerErrorClass}`}>
-                <div id="omnivalt-terminal-container-org" className="omnivalt-org-select">
-                    <SelectControl
-                        id="omnivalt-terminal-select-field"
-                        label={blockText.title}
-                        value={selectedOmnivaTerminal}
-                        options={terminalsOptions}
-                        onChange={(value) => setSelectedOmnivaTerminal(value)}
-                        ref={elemTerminalSelectField}
-                    />
-                    {(terminalValidationError?.hidden || selectedOmnivaTerminal !== '') ? null : (
-                        <div className="wc-block-components-validation-error omnivalt-terminal-error">
-                            <Icon icon={warning} size={20} className="omnivalt-error-icon" />
-                            <span>{terminalValidationError?.message}</span>
-                        </div>
-                    )}
+            {showBlock.value && (
+                <div className={`omnivalt-terminal-select-container provider-${containerParams.provider} type-${containerParams.type} ${containerErrorClass}`}>
+                    <div id="omnivalt-terminal-container-org" className="omnivalt-org-select">
+                        <SelectControl
+                            id="omnivalt-terminal-select-field"
+                            label={blockText.title}
+                            value={selectedOmnivaTerminal}
+                            options={terminalsOptions}
+                            onChange={(value) => setSelectedOmnivaTerminal(value)}
+                            ref={elemTerminalSelectField}
+                        />
+                        {(terminalValidationError?.hidden || selectedOmnivaTerminal !== '') ? null : (
+                            <div className="wc-block-components-validation-error omnivalt-terminal-error">
+                                <Icon icon={warning} size={20} className="omnivalt-error-icon" />
+                                <span>{terminalValidationError?.message}</span>
+                            </div>
+                        )}
+                    </div>
+                    <div id="omnivalt-terminal-container-map" className="omnivalt-map-select" ref={elemMapContainer}><div class="omnivalt-loader"></div></div>
                 </div>
-                <div id="omnivalt-terminal-container-map" className="omnivalt-map-select" ref={elemMapContainer}><div class="omnivalt-loader"></div></div>
-            </div>
+            )}
         </div>
     );
 };
