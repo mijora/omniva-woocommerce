@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.20.4]
 ### Fixed
 - fixed so that the shipping method class would be loaded earlier
 
