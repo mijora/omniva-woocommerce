@@ -106,7 +106,6 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
                 'select_post' => __('Select post office', 'omnivalt'),
                 'error_post' => __('Please select post office', 'omnivalt'),
                 'cart_post_info' => __('You can choose the post office on the Checkout page', 'omnivalt'),
-                'error_field_value_format' => __('Invalid format', 'omnivalt'),
                 'providers' => array(
                     'omniva' => __('Omniva', 'omnivalt'),
                     'matkahuolto' => __('Matkahuolto', 'omnivalt')
