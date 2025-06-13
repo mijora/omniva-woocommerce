@@ -29,6 +29,14 @@ export const getDynamicOmnivaData = (country, method) => {
     });
 };
 
+export const isOmnivaMethod = (methodKey) => {
+    if ( methodKey.startsWith("omnivalt") ) {
+        return true;
+    }
+
+    return false;
+};
+
 export const isOmnivaTerminalMethod = (methodKey) => {
     for ( let [key, value] of Object.entries(getOmnivaData().methods) ) {
         if ( methodKey == value ) {

@@ -25,7 +25,7 @@ export const Edit = ({ attributes, setAttributes }) => {
 			</InspectorControls>
 			<div>
 				<RichText
-					value={text || txt.title_terminal}
+					value={(text || txt.title_terminal) + ' <small><i>(' + txt.providers.omniva + ')</i></small>'}
 					onChange={(value) => setAttributes({ text: value })}
 				/>
 			</div>

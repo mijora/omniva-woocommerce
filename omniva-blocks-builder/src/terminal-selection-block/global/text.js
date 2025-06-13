@@ -20,6 +20,10 @@ export const txt_json = {
         omniva: __('Omniva', 'omnivalt'),
         matkahuolto: __('Matkahuolto', 'omnivalt')
     },
+    errors: {
+        invalid_format: __('Invalid format', 'omnivalt'),
+        invalid_phone_format: __('The phone format specified in the Shipping address is not valid for this shipping method', 'omnivalt')
+    },
     map: {
         modal_title_post: __('post offices', 'omnivalt'),
         modal_title_terminal: __('parcel terminals', 'omnivalt'),

@@ -39,6 +39,21 @@
     display: none !important;
 }
 
+.omnivalt-container .omnivalt-error-icon {
+    margin-right: 4px;
+}
+
+.omnivalt-container .wc-block-components-validation-error {
+    border: 1px solid #d63638;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.omnivalt-container .wc-block-components-validation-error span {
+    vertical-align: middle;
+}
+
 /*** GLOBAL: Matkahuolto ***/
 .provider-matkahuolto .omnivalt-loader,
 .provider-matkahuolto .omnivalt-loader:before,
