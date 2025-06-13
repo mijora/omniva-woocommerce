@@ -3,9 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed phone number validation on block-based Checkout page
-
-### Improved
-- optimized loading of the plugin settings page so as not to slow down the website
+- fixed so that the settings page is only loaded when needed
 
 ## [1.20.4]
 ### Fixed
