@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed phone number validation on block-based Checkout page
+- fixed so that the settings page is only loaded when needed
 
 ## [1.20.4]
 ### Fixed

@@ -69,16 +69,20 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
      */
     public function init()
     {
-
-      // Load the settings API
-
-      $this->init_form_fields();
       $this->init_settings();
 
-      //$this->title = $this->get_option('title');
+      // Execute next code only in admin area
+      if ( ! is_admin() ) {
+        return;
+      }
+
+      // Load settings page
+      if ( isset($_REQUEST['section']) && $_REQUEST['section'] === $this->id ) {
+        $this->init_form_fields();
       
-      // Save settings in admin if you have any defined
-      add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
+        // Save settings
+        add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
+      }
     }
 
     /**
