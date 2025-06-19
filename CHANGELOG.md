@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.20.5]
 ### Fixed
 - fixed phone number validation on block-based Checkout page
 - fixed so that the settings page is only loaded when needed
