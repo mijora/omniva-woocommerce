@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- fixed admin order edit page recognition function
+
 ## [1.20.5]
 ### Fixed
 - fixed phone number validation on block-based Checkout page
