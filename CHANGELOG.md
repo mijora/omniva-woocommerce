@@ -4,6 +4,9 @@
 ### Fixed
 - fixed admin order edit page recognition function
 
+### Improved
+- changed to allow values with many decimal places to be entered into the shipping price fields in the settings (for more accurate price rounding when using taxes)
+
 ## [1.20.5]
 ### Fixed
 - fixed phone number validation on block-based Checkout page

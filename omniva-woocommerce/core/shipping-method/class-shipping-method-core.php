@@ -328,7 +328,7 @@ class OmnivaLt_Shipping_Method_Core
                             'type' => 'number',
                             'name' => $params['box_key'] . '[' . $field_data['name'] . ']',
                             'value' => $field_value,
-                            'step' => 0.01,
+                            'step' => 'any',
                             'min' => 0,
                         );
                         echo OmnivaLt_Shipping_Method_Html::buildSimpleField($html_params);
@@ -346,6 +346,7 @@ class OmnivaLt_Shipping_Method_Core
                         'c1_title' => $field_data['title'] . ' (kg)',
                         'c1_step' => 0.001,
                         'c2_title' => __('Price','omnivalt') . ' (' . $units->currency_symbol . ')',
+                        'c2_step' => 'any',
                     );
                     echo OmnivaLt_Shipping_Method_Html::buildPricesTable($html_params);
                     ?>
@@ -360,6 +361,7 @@ class OmnivaLt_Shipping_Method_Core
                         'values' => $field_data['value'],
                         'c1_title' => $field_data['title'],
                         'c1_step' => 0.01,
+                        'c2_step' => 'any',
                     );
                     echo OmnivaLt_Shipping_Method_Html::buildPricesTable($html_params);
                     ?>
@@ -384,6 +386,7 @@ class OmnivaLt_Shipping_Method_Core
                         'c1_title' => $field_data['title'],
                         'allow_add' => false,
                         'c1_text' => $box_titles,
+                        'c2_step' => 'any',
                         'desc' => __('NOTE', 'omnivalt') . ': ' . __('If at least one item in the cart does not have the specified size, then this shipping method will not be displayed', 'omnivalt'),
                     );
                     echo OmnivaLt_Shipping_Method_Html::buildPricesTable($html_params);
