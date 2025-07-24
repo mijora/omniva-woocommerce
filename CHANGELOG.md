@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - fixed admin order edit page recognition function
+- fixed so that the plugin settings save function is called forcibly if WooCommerce did not call it automatically
 
 ### Improved
 - changed to allow values with many decimal places to be entered into the shipping price fields in the settings (for more accurate price rounding when using taxes)

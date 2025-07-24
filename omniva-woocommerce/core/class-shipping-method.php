@@ -82,6 +82,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       
         // Save settings
         add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
+
+        // Fix in some websites, when process_admin_options not called automatically
+        if ( isset($_POST['save']) && ! did_action('woocommerce_update_options_shipping_' . $this->id) ) {
+          $this->process_admin_options();
+        }
       }
     }
 
