@@ -403,6 +403,17 @@ class OmnivaLt_Order
 
     $available_screens = OmnivaLt_Wc::get_page_recognition_ids('admin_order_edit');
     $screen_id = OmnivaLt_Wc::get_current_screen_id();
+    
+    if ( ! $screen_id ) {
+      return false;
+    }
+
+    if ( $screen_id === 'woocommerce_page_wc-orders' ) {
+      if ( isset($_GET['action'], $_GET['id']) && $_GET['action'] === 'edit' ) {
+        return (in_array($screen_id, $available_screens));
+      }
+      return false;
+    }
 
     return (in_array($screen_id, $available_screens));
   }
