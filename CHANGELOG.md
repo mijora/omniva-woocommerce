@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Improved
+- added a parameter that allows to specify which cart price to use to calculate the shipping price
+
 ## [1.20.6]
 ### Fixed
 - fixed admin order edit page recognition function
