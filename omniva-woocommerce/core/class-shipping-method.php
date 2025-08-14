@@ -295,6 +295,18 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'hr',
         'title' => __('Shipping methods settings', 'omnivalt'),
       );
+      $fields['price_based_on'] = array(
+        'title' => __('Shipping cost based on', 'omnivalt'),
+        'type' => 'select',
+        'description' => __('Select which cart price you want to use to calculate the shipping cost.', 'omnivalt'),
+        'options' => array(
+          'subtotal_tax' => __('Cart subtotal with tax', 'omnivalt'),
+          'subtotal_no_tax' => __('Cart subtotal without tax', 'omnivalt'),
+          'total_tax' => __('Cart total with tax (default)', 'omnivalt'),
+          'total_no_tax' => __('Cart total without tax', 'omnivalt'),
+        ),
+        'default' => 'total_tax'
+      );
       foreach ( OmnivaLt_Method::get_all_shipping_methods() as $method_key => $method ) {
         $fields['weight_' . $method['key']] = array(
           'title' => sprintf(__('Max cart weight (%1$s) for %2$s', 'omnivalt'), 'kg', strtolower($method['title'])),
@@ -1048,7 +1060,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       if ( empty($cart) || empty($cart->cart_contents) ) {
         return;
       }
-      $cart_amount = $cart->cart_contents_total + $cart->tax_total;
+      $cart_amount = $this->get_cart_amount($cart);
       $products = OmnivaLt_Shipmethod_Helper::get_splited_cart_products($package['contents']);
 
       $prices_key = (array_key_exists($country, $this->omnivalt_configs['shipping_params'])) ? 'prices_' . $country : 'prices_LT';
@@ -1080,6 +1092,38 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           }
         }
       }
+    }
+
+    private function get_cart_amount( $cart )
+    {
+      $based_on = (isset($this->settings['price_based_on'])) ? $this->settings['price_based_on'] : 'total_tax';
+      $value = 0;
+
+      $subtotal_ex_tax = (float) $cart->get_subtotal();
+      $subtotal_inc_tax = (float) $cart->get_subtotal_tax();
+      $cart_total_ex_tax = (float) $cart->get_cart_contents_total();
+      $cart_total_inc_tax = (float) $cart->get_total('edit');
+      $shipping_total = (float) $cart->get_shipping_total() + (float) $cart->get_shipping_tax();
+
+      switch ( $based_on ) {
+        case 'subtotal_tax':
+          $value = $subtotal_ex_tax + $subtotal_inc_tax;
+          break;
+        case 'subtotal_no_tax':
+          $value = $subtotal_ex_tax;
+          break;
+        case 'total_tax':
+          $value = $cart_total_inc_tax - $shipping_total;
+          break;
+        case 'total_no_tax':
+          $value = $cart_total_ex_tax;
+          break;
+        default:
+          $value = $cart_total_inc_tax - $shipping_total;
+          break;
+      }
+
+      return round($value, 2);
     }
 
     private function add_shipping_rate( $package, $country, $shipping_method, $cart_amount )
