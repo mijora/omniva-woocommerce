@@ -1,6 +1,6 @@
 {
     "require": {
-        "mijora/omniva-api": "^1.3.3",
+        "mijora/omniva-api": "^1.3.5",
         "mijora/box-calculator": "^1.1.0"
     },
     "repositories": [
