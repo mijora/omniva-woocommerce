@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.20.7]
 ### Improved
 - added a parameter that allows to specify which cart price to use to calculate the shipping price
 - added description of shipment contents when registering a shipment
