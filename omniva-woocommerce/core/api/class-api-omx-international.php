@@ -128,7 +128,8 @@ class OmnivaLt_Api_Omx_International extends OmnivaLt_Api_Omx
           ->setReceiverContact($api_receiver_contact)
           ->setSenderContact($api_sender_contact)
           ->setReturnAllowed($send_return_code)
-          ->setServicePackage($api_service_package);
+          ->setServicePackage($api_service_package)
+          ->setContentDescription($data_package->content_desc);
 
         $packages[] = $api_package;
       }

@@ -194,6 +194,7 @@ class OmnivaLt_Wc_Order
             $item_data = array(
                 'product_id' => $product_item->get_product_id(),
                 'variation_id' => $product_item->get_variation_id(),
+                'name' => $product_item->get_name(),
                 'quantity' => $product_item->get_quantity(),
                 'weight' => 0,
                 'length' => 0,

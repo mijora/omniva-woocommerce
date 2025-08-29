@@ -471,6 +471,7 @@ class OmnivaLt_Api_Core
 
         for ( $i = 0; $i < $order->shipment->total_shipments; $i++ ) { // Preparing for multiple packages
             $shipment_size = $this->prepare_package_size($order->shipment->size, $order->units);
+            $content_description = $this->prepare_package_content_description($order->items);
 
             $shipment_data = array(
                 'id' => $order->id,
@@ -481,6 +482,7 @@ class OmnivaLt_Api_Core
                 'width' => $shipment_size['width'],
                 'height' => $shipment_size['height'],
                 'amount' => $order->payment->total,
+                'content_desc' => $content_description
             );
 
             $data[] = (object) $shipment_data;
@@ -549,6 +551,19 @@ class OmnivaLt_Api_Core
         }
 
         return $shipment_size;
+    }
+
+    private function prepare_package_content_description( $items )
+    {
+        $items_names = array();
+        foreach ( $items as $item ) {
+            $qty = (isset($item['quantity'])) ? $item['quantity'] : 1;
+            $name = (! empty($item['name'])) ? $item['name'] : __('Unknown product', 'omnivalt');
+            $name = substr($name, 0, 22);
+            $items_names[] = $qty . '×' . trim($name);
+        }
+
+        return implode('; ', $items_names);
     }
 
     private function get_return_code_sending()
