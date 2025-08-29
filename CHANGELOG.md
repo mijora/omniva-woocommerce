@@ -3,6 +3,11 @@
 ## [Unreleased]
 ### Improved
 - added a parameter that allows to specify which cart price to use to calculate the shipping price
+- added description of shipment contents when registering a shipment
+
+### Updated
+- updated Omniva API library to v1.3.5
+- updated FPDI library to v2.6.4
 
 ## [1.20.6]
 ### Fixed
