@@ -1099,11 +1099,17 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $based_on = (isset($this->settings['price_based_on'])) ? $this->settings['price_based_on'] : 'total_tax';
       $value = 0;
 
-      $subtotal_ex_tax = (float) $cart->get_subtotal();
-      $subtotal_inc_tax = (float) $cart->get_subtotal_tax();
+      $subtotal_ex_tax   = (float) $cart->get_subtotal();
       $cart_total_ex_tax = (float) $cart->get_cart_contents_total();
-      $cart_total_inc_tax = (float) $cart->get_total('edit');
-      $shipping_total = (float) $cart->get_shipping_total() + (float) $cart->get_shipping_tax();
+      if ( wc_tax_enabled() ) {
+          $subtotal_inc_tax = (float) $cart->get_subtotal() + (float) $cart->get_subtotal_tax();
+          $cart_total_inc_tax = (float) $cart->get_total('edit');
+          $shipping_total = (float) $cart->get_shipping_total() + (float) $cart->get_shipping_tax();
+      } else {
+          $subtotal_inc_tax = $subtotal_ex_tax;
+          $cart_total_inc_tax = $cart_total_ex_tax;
+          $shipping_total = (float) $cart->get_shipping_total();
+      }
 
       switch ( $based_on ) {
         case 'subtotal_tax':
