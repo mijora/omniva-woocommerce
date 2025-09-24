@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.20.8]
 ### Fixed
 - fixed getting cart amount when taxes are disabled
 
