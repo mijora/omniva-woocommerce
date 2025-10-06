@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.20.9]
 ### Fixed
 - newly reworked the function of getting the price of the cart
 
