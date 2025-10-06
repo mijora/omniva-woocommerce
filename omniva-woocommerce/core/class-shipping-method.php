@@ -300,10 +300,10 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'select',
         'description' => __('Select which cart price you want to use to calculate the shipping cost.', 'omnivalt'),
         'options' => array(
-          'subtotal_tax' => __('Cart subtotal with tax', 'omnivalt'),
-          'subtotal_no_tax' => __('Cart subtotal without tax', 'omnivalt'),
-          'total_tax' => __('Cart total with tax (default)', 'omnivalt'),
-          'total_no_tax' => __('Cart total without tax', 'omnivalt'),
+          'subtotal_tax' => __('Cart with tax before discounts', 'omnivalt'),
+          'subtotal_no_tax' => __('Cart without tax before discounts', 'omnivalt'),
+          'total_tax' => __('Cart with tax after discounts', 'omnivalt'),
+          'total_no_tax' => __('Cart without tax after discounts', 'omnivalt'),
         ),
         'default' => 'total_tax'
       );
@@ -1099,33 +1099,30 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $based_on = (isset($this->settings['price_based_on'])) ? $this->settings['price_based_on'] : 'total_tax';
       $value = 0;
 
-      $subtotal_ex_tax   = (float) $cart->get_subtotal();
-      $cart_total_ex_tax = (float) $cart->get_cart_contents_total();
-      if ( wc_tax_enabled() ) {
-          $subtotal_inc_tax = (float) $cart->get_subtotal() + (float) $cart->get_subtotal_tax();
-          $cart_total_inc_tax = (float) $cart->get_total('edit');
-          $shipping_total = (float) $cart->get_shipping_total() + (float) $cart->get_shipping_tax();
-      } else {
-          $subtotal_inc_tax = $subtotal_ex_tax;
-          $cart_total_inc_tax = $cart_total_ex_tax;
-          $shipping_total = (float) $cart->get_shipping_total();
-      }
+      $cart_subtotal = (float) $cart->get_subtotal(); // Products subtotal (excluding tax and before discounts)
+      $cart_tax = (float) $cart->get_subtotal_tax(); // Total product tax amount (before discounts)
+      $cart_after_discount = (float) $cart->get_cart_contents_total(); // Products subtotal (excluding tax, after discounts)
+      $cart_discount_total = (float) $cart->get_cart_discount_total(); // Total discount amount (excluding tax)
+      $cart_discount_tax = (float) $cart->get_cart_discount_tax_total(); // Tax reduced by discounts
+      $shipping_total = (float) $cart->get_shipping_total(); // Shipping cost (excluding tax)
+      $shipping_tax = (float) $cart->get_shipping_tax(); // Shipping tax amount
+      $order_total = (float) $cart->get_total('edit'); // Final order total
 
       switch ( $based_on ) {
-        case 'subtotal_tax':
-          $value = $subtotal_ex_tax + $subtotal_inc_tax;
+        case 'subtotal_tax': // With tax before discounts
+          $value = $cart_subtotal + $cart_tax;
           break;
-        case 'subtotal_no_tax':
-          $value = $subtotal_ex_tax;
+        case 'subtotal_no_tax': // Without tax before discounts
+          $value = $cart_subtotal;
           break;
-        case 'total_tax':
-          $value = $cart_total_inc_tax - $shipping_total;
+        case 'total_tax': // With tax after discounts
+          $value = $cart_after_discount + $cart_tax - $cart_discount_tax;
           break;
-        case 'total_no_tax':
-          $value = $cart_total_ex_tax;
+        case 'total_no_tax': // Without tax after discounts
+          $value = $cart_after_discount;
           break;
         default:
-          $value = $cart_total_inc_tax - $shipping_total;
+          $value = $cart_after_discount + $cart_tax - $cart_discount_tax;
           break;
       }
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.20.9]
+### Fixed
+- newly reworked the function of getting the price of the cart
+
 ## [1.20.8]
 ### Fixed
 - fixed getting cart amount when taxes are disabled
