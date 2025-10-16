@@ -891,9 +891,11 @@ class OmnivaLt_Order
   {
     $name = $order->shipping->name;
     $surname = $order->shipping->surname;
-    if ( empty($name) && empty($surname) ) {
-      $name = $order->billing->name;
-      $surname = $order->billing->surname;
+    if ( empty($name) || empty($surname) ) {
+      if ( ! empty($order->billing->name) && ! empty($order->billing->surname) ) {
+        $name = $order->billing->name;
+        $surname = $order->billing->surname;
+      }
     }
 
     if ( ! empty($name) || ! empty($surname) ) {
