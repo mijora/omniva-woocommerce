@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 ### Improved
-- amproved to take the customer's full name from the billing fields if the shipping fields is missing a first or last name, but the billing fields contains both values
+- improved to take the customer's full name from the billing fields if the shipping fields is missing a first or last name, but the billing fields contains both values
 
 ## [1.20.9]
 ### Fixed
