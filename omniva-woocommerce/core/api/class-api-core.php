@@ -389,9 +389,13 @@ class OmnivaLt_Api_Core
                 $data['street'] .= ' - ' . $this->clean($order->billing->address_2);
             }
         }
-        if ( empty($data['name']) && empty($data['surname']) ) {
-            $data['name'] = $this->clean($order->billing->name);
-            $data['surname'] = $this->clean($order->billing->surname);
+        if ( empty($data['name']) || empty($data['surname']) ) {
+            $billing_name = $this->clean($order->billing->name);
+            $billing_surname = $this->clean($order->billing->surname);
+            if ( ! empty($billing_name) && ! empty($billing_surname) ) {
+                $data['name'] = $billing_name;
+                $data['surname'] = $billing_surname;
+            }
         }
         if ( empty($data['name']) && empty($data['surname']) && empty($data['company']) ) {
             $data['company'] = $this->clean($order->billing->company);
