@@ -101,7 +101,7 @@ class OmnivaLt_Labels
 
       $change_order_status = (isset($this->omnivalt_settings['status_created_label'])) ? $this->omnivalt_settings['status_created_label'] : '';
       if ( ! empty($change_order_status) ) {
-        OmnivaLt_Wc_Order::update_status($order->id, $change_order_status, '<b>Omniva:</b> ');
+        OmnivaLt_Wc_Order::update_status($order->id, $change_order_status, '<b>Omniva:</b>');
       }
 
       $send_email = (isset($this->omnivalt_settings['email_created_label'])) ? $this->omnivalt_settings['email_created_label'] : 'yes';
