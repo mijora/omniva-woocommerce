@@ -127,6 +127,8 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         $countries_options[$country_code] = $country_code . ' - ' . OmnivaLt_Wc::get_country_name($country_code);
       }
 
+      $order_status_options = OmnivaLt_Wc_Order::get_all_statuses();
+
       $active_omx = ($this->omnivalt_configs['api']['type'] === 'omx');
       $feature_not_available_txt = '<br/><b>' . __('This feature is not working yet', 'omnivalt') . '.</b>';
       $feature_not_allowed_txt = '<br/><b>' . __('This feature is not allowed', 'omnivalt') . '.</b>';
@@ -444,6 +446,13 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'text',
         'description' => __('Custom email subject (this field value not translating into other languages).', 'omnivalt'),
         'placeholder' => __('Your order shipment has been registered', 'omnivalt')
+      );
+      $fields['status_created_label'] = array(
+        'title' => __('Change Order status when a label is created', 'omnivalt'),
+        'type' => 'select',
+        'options' => array_merge(['' => '- ' . __('Do not change', 'omnivalt') . ' -'], $order_status_options),
+        'default' => '',
+        'description' => __('The order status will be changed to selected when the shipment label is generated.', 'omnivalt')
       );
       $fields['send_email_on_arrive'] = array(
         'title' => __('Send email on shipment arrive', 'omnivalt'),

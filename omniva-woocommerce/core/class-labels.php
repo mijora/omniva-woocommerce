@@ -99,8 +99,13 @@ class OmnivaLt_Labels
       OmnivaLt_Omniva_Order::set_barcodes($order->id, $barcodes);
       OmnivaLt_Wc_Order::add_note($order->id, '<b>Omniva:</b> ' . __('Registered labels', 'omnivalt') . ":\n" . implode(', ', $barcodes));
 
+      $change_order_status = (isset($this->omnivalt_settings['status_created_label'])) ? $this->omnivalt_settings['status_created_label'] : '';
+      if ( ! empty($change_order_status) ) {
+        OmnivaLt_Wc_Order::update_status($order->id, $change_order_status, '<b>Omniva:</b> ');
+      }
+
       $send_email = (isset($this->omnivalt_settings['email_created_label'])) ? $this->omnivalt_settings['email_created_label'] : 'yes';
-      if ($send_email === 'yes') {
+      if ( $send_email === 'yes' ) {
         $email_subject = (isset($this->omnivalt_settings['email_created_label_subject'])) ? $this->omnivalt_settings['email_created_label_subject'] : '';
         $customer_country = OmnivaLt_Order::get_customer_shipping_country($order);
         $tracking_codes = $this->build_tracking_links($customer_country, $barcodes, true);
