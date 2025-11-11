@@ -89,10 +89,15 @@ jQuery('document').ready(function($){
           all_cb[i].checked = false;
           all_cb[i].disabled = true;
         } else {
-          all_cb[i].checked = true;
           all_cb[i].disabled = false;
         }
       }
+    },
+
+    refresh_all_cb_after_changes: function() {
+      omnivalt_settings.get_all_shipping_methods_cb().each(function() {
+        omnivalt_settings.toggle_prices_blocks_by_cb(this);
+      });
     },
 
     toggle_prices_blocks_by_cb: function( checkbox ) {
@@ -134,6 +139,7 @@ jQuery('document').ready(function($){
   omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_debug_mode",".omniva_debug");
   omnivalt_settings.enable_api_country_methods();
   omnivalt_settings.refresh_cb_by_api_country();
+  omnivalt_settings.refresh_all_cb_after_changes();
 
   /** Events **/
   $(document).on('change', '#woocommerce_omnivalt_debug_mode', function() {
@@ -143,6 +149,7 @@ jQuery('document').ready(function($){
   $(document).on('change', '#woocommerce_omnivalt_api_country', function() {
     omnivalt_settings.enable_api_country_methods();
     omnivalt_settings.refresh_cb_by_api_country();
+    omnivalt_settings.refresh_all_cb_after_changes();
   });
 
   $(document).on('click', '.debug-row .date', function() {
