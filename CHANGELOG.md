@@ -8,6 +8,7 @@
 ### Improved
 - improved to take the customer's full name from the billing fields if the shipping fields is missing a first or last name, but the billing fields contains both values
 - added a parameter to the settings that allows to automatically change the order status when a label is successfully generated
+- added information message in settings when "Enable" parameter is disabled
 
 ## [1.20.9]
 ### Fixed
