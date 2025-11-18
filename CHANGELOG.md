@@ -4,6 +4,7 @@
 ### Fixed
 - fixed updating of the list of parcel terminals when changing the delivery country and Omniva parcel terminal delivery method is the only delivery method
 - fixed disabling methods in settings
+- fixed on the Cart and Checkout pages to determine the customer's country based on WooCommerce settings when no shipping address has been provided yet
 
 ### Improved
 - improved to take the customer's full name from the billing fields if the shipping fields is missing a first or last name, but the billing fields contains both values
