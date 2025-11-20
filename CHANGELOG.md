@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.20.10]
 ### Fixed
 - fixed updating of the list of parcel terminals when changing the delivery country and Omniva parcel terminal delivery method is the only delivery method
 - fixed disabling methods in settings
