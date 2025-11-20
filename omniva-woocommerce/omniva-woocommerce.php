@@ -4,7 +4,7 @@
  * Description: Official Omniva shipping plugin for WooCommerce
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
- * Plugin URI: https://iskiepiai.omnivasiunta.lt/
+ * Plugin URI: https://www.omniva.lt/en/business/integrations-for-e-shops
  * Version: 1.20.10
  * Domain Path: /languages
  * Text Domain: omnivalt
