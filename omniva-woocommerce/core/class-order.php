@@ -34,17 +34,19 @@ class OmnivaLt_Order
 
   public static function after_rate_terminals( $method )
   {
-    $customer = WC()->session->get('customer');
+    $customer = OmnivaLt_Wc::get_customer_from_global();
+    $termnal_id = OmnivaLt_Wc::get_session('omnivalt_terminal_id');
+    $selected_shipping_method = OmnivaLt_Wc::get_session('chosen_shipping_methods');
+
     $country = "ALL";
-    if ( isset($customer['shipping_country']) ) {
-      $country = $customer['shipping_country'];
-    } elseif ( isset($customer['country']) ) {
-      $country = $customer['country'];
+    if ( $customer ) {
+      if ( ! empty($customer->get_shipping_country()) ) {
+        $country = $customer->get_shipping_country();
+      } else if ( ! empty($customer->get_billing_country()) ) {
+        $country = $customer->get_billing_country();
+      }
     }
     
-    $termnal_id = WC()->session->get('omnivalt_terminal_id');
-    
-    $selected_shipping_method = WC()->session->get('chosen_shipping_methods');
     if ( empty($selected_shipping_method) ) {
       $selected_shipping_method = array();
     }
@@ -891,9 +893,11 @@ class OmnivaLt_Order
   {
     $name = $order->shipping->name;
     $surname = $order->shipping->surname;
-    if ( empty($name) && empty($surname) ) {
-      $name = $order->billing->name;
-      $surname = $order->billing->surname;
+    if ( empty($name) || empty($surname) ) {
+      if ( ! empty($order->billing->name) && ! empty($order->billing->surname) ) {
+        $name = $order->billing->name;
+        $surname = $order->billing->surname;
+      }
     }
 
     if ( ! empty($name) || ! empty($surname) ) {

@@ -130,9 +130,10 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     ]);
 
     useEffect(() => {
+        debug('Updating destination...');
         setDestination(getDestination(shippingRates));
     }, [
-        selectedRateId
+        activeRates
     ]);
 
     useEffect(() => {
@@ -164,6 +165,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         getDynamicOmnivaData(destination.country, selectedRateId).then(response => {
             if ( response.data ) {
                 const data = response.data;
+                debug('Updating Omniva data...', data);
                 setOmnivaData(data);
             } else {
                 debug('Failed to get dynamic Omniva data');
@@ -187,6 +189,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         const terminalsType = ('terminals_type' in omnivaData) ? omnivaData.terminals_type : 'omniva';
         getTerminalsByCountry(mapValues.country, terminalsType).then(response => {
             if ( response.data ) {
+                debug('Updating terminals list...');
                 setTerminals(response.data);
             } else {
                 debug('Failed to get terminals list');

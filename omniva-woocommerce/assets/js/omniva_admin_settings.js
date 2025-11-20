@@ -59,6 +59,38 @@ jQuery('document').ready(function($){
       return unique_methods;
     },
 
+    is_plugin_enabled: function() {
+      const field = document.getElementById('woocommerce_omnivalt_enabled');
+      if ( ! field ) {
+        return true;
+      }
+      return field.checked;
+    },
+
+    show_disable_method: function() {
+      const save_button = document.querySelector('button.woocommerce-save-button');
+      if ( ! save_button ) return;
+
+      const notice_id = 'omnivalt-plugin-disabled-notice';
+      let existing_notice = document.getElementById(notice_id);
+
+      if ( omnivalt_settings.is_plugin_enabled() ) {
+        if (existing_notice) {
+          existing_notice.remove();
+        }
+      } else {
+        if ( ! existing_notice ) {
+          const span = document.createElement('span');
+          span.id = notice_id;
+          span.textContent = omnivalt_params.txt.disabled_notice;
+          span.style.marginRight = '10px';
+          span.style.color = 'red';
+
+          save_button.parentNode.insertBefore(span, save_button);
+        }
+      }
+    },
+
     enable_api_country_methods: function() {
       let country, i;
       let available_blocks = omnivalt_settings.get_available_prices_blocks();
@@ -89,10 +121,15 @@ jQuery('document').ready(function($){
           all_cb[i].checked = false;
           all_cb[i].disabled = true;
         } else {
-          all_cb[i].checked = true;
           all_cb[i].disabled = false;
         }
       }
+    },
+
+    refresh_all_cb_after_changes: function() {
+      omnivalt_settings.get_all_shipping_methods_cb().each(function() {
+        omnivalt_settings.toggle_prices_blocks_by_cb(this);
+      });
     },
 
     toggle_prices_blocks_by_cb: function( checkbox ) {
@@ -134,8 +171,14 @@ jQuery('document').ready(function($){
   omniva_show_admin_fields_by_cb("#woocommerce_omnivalt_debug_mode",".omniva_debug");
   omnivalt_settings.enable_api_country_methods();
   omnivalt_settings.refresh_cb_by_api_country();
+  omnivalt_settings.refresh_all_cb_after_changes();
+  omnivalt_settings.show_disable_method();
 
   /** Events **/
+  $(document).on('change', '#woocommerce_omnivalt_enabled', function() {
+    omnivalt_settings.show_disable_method();
+  });
+
   $(document).on('change', '#woocommerce_omnivalt_debug_mode', function() {
     omniva_show_admin_fields_by_cb(this, ".omniva_debug");
   });
@@ -143,6 +186,7 @@ jQuery('document').ready(function($){
   $(document).on('change', '#woocommerce_omnivalt_api_country', function() {
     omnivalt_settings.enable_api_country_methods();
     omnivalt_settings.refresh_cb_by_api_country();
+    omnivalt_settings.refresh_all_cb_after_changes();
   });
 
   $(document).on('click', '.debug-row .date', function() {

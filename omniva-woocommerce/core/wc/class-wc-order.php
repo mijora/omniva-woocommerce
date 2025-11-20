@@ -314,10 +314,27 @@ class OmnivaLt_Wc_Order
         }
 
         $wc_order->add_order_note($note);
+
+        return true;
     }
 
     public static function get_all_statuses()
     {
         return wc_get_order_statuses();
+    }
+
+    public static function update_status( $wc_order_id, $status_key, $note = '', $manual = false )
+    {
+        $wc_order = self::get_order($wc_order_id);
+        if ( ! $wc_order ) {
+            return false;
+        }
+
+        $all_statuses = self::get_all_statuses();
+        if ( ! isset($all_statuses[$status_key]) ) {
+            return false;
+        }
+
+        return $wc_order->update_status($status_key, $note, $manual);
     }
 }

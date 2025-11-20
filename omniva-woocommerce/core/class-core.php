@@ -351,7 +351,10 @@ class OmnivaLt_Core
       wp_enqueue_script('omnivalt_admin_settings', plugins_url($folder_js . 'omniva_admin_settings.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
 
       wp_localize_script('omnivalt_admin_settings', 'omnivalt_params', array(
-        'available_methods' => self::get_configs('available_methods')
+        'available_methods' => self::get_configs('available_methods'),
+        'txt' => array(
+          'disabled_notice' => __('The plugin is disabled', 'omnivalt')
+        )
       ));
     }
   }

@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.20.10]
+### Fixed
+- fixed updating of the list of parcel terminals when changing the delivery country and Omniva parcel terminal delivery method is the only delivery method
+- fixed disabling methods in settings
+- fixed on the Cart and Checkout pages to determine the customer's country based on WooCommerce settings when no shipping address has been provided yet
+
+### Improved
+- improved to take the customer's full name from the billing fields if the shipping fields is missing a first or last name, but the billing fields contains both values
+- added a parameter to the settings that allows to automatically change the order status when a label is successfully generated
+- added information message in settings when "Enable" parameter is disabled
+
 ## [1.20.9]
 ### Fixed
 - newly reworked the function of getting the price of the cart
