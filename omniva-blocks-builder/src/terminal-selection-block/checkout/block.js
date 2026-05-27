@@ -349,11 +349,17 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             return;
         }
 
+        debug('Set selected terminal:', selectedOmnivaTerminal);
         setExtensionData(
             'omnivalt',
             'selected_terminal',
             selectedOmnivaTerminal
         );
+
+        // Set cookie as fallback for server-side retrieval
+        if ( selectedOmnivaTerminal !== '' ) {
+            document.cookie = 'omniva_terminal=' + selectedOmnivaTerminal + ';path=/;max-age=' + (30 * 24 * 60 * 60);
+        }
 
         if ( selectedOmnivaTerminal === '' ) {
             debug('Terminal not selected. Adding terminal validation error...');
@@ -372,11 +378,13 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     ]);
 
     useEffect(() => {
-        setExtensionData(
-            'omnivalt',
-            'selected_rate_id',
-            selectedRateId
-        );
+        if ( selectedRateId !== '' ) {
+            setExtensionData(
+                'omnivalt',
+                'selected_rate_id',
+                selectedRateId
+            );
+        }
     }, [
         setExtensionData,
         selectedRateId

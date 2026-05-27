@@ -41,9 +41,34 @@ class OmnivaLt_Wc_Blocks
         $selected_method = wc_clean($data['selected_rate_id'] ?? '');
         $selected_terminal_id = wc_clean($data['selected_terminal'] ?? '');
 
+        // Fallback: if extension data has no method, try to get it from order shipping items
+        if ( empty($selected_method) ) {
+            $shipping_methods = $order->get_shipping_methods();
+            foreach ( $shipping_methods as $shipping_method ) {
+                $method_id = $shipping_method->get_method_id();
+                if ( strpos($method_id, 'omnivalt') === 0 ) {
+                    $instance_id = $shipping_method->get_instance_id();
+                    $selected_method = $instance_id ? $method_id . ':' . $instance_id : $method_id;
+                    break;
+                }
+            }
+        }
+
+        if ( empty($selected_method) ) {
+            return;
+        }
+
         OmnivaLt_Omniva_Order::set_method($order->get_id(), $selected_method);
-        OmnivaLt_Omniva_Order::set_terminal_id($order->get_id(), $selected_terminal_id);
-        OmnivaLt_Wc_Order::add_note($order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($selected_terminal_id,true) . ' <i>(ID: ' . $selected_terminal_id . ')</i>');
+
+        // Fallback: if terminal not in extension data, try cookie
+        if ( empty($selected_terminal_id) && ! empty($_COOKIE['omniva_terminal']) ) {
+            $selected_terminal_id = wc_clean($_COOKIE['omniva_terminal']);
+        }
+
+        if ( ! empty($selected_terminal_id) ) {
+            OmnivaLt_Omniva_Order::set_terminal_id($order->get_id(), $selected_terminal_id);
+            OmnivaLt_Wc_Order::add_note($order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($selected_terminal_id, true) . ' <i>(ID: ' . $selected_terminal_id . ')</i>');
+        }
     }
 
     public static function register_block_categories( $categories )
@@ -73,12 +98,12 @@ class OmnivaLt_Wc_Blocks
             'selected_terminal'  => array(
                 'description' => __('Selected terminal', 'omnivalt'),
                 'type'        => array('string', 'null'),
-                'readonly'    => true,
+                'readonly'    => false,
             ),
             'selected_rate_id'  => array(
                 'description' => __('Selected rate ID', 'omnivalt'),
                 'type'        => array('string', 'null'),
-                'readonly'    => true,
+                'readonly'    => false,
             ),
         );
     }
