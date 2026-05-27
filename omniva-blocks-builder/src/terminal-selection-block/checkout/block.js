@@ -356,9 +356,9 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             selectedOmnivaTerminal
         );
 
-        // Set cookie as fallback for server-side retrieval
+        // Set cookie as fallback for server-side retrieval (strictly necessary for checkout process)
         if ( selectedOmnivaTerminal !== '' ) {
-            document.cookie = 'omniva_terminal=' + selectedOmnivaTerminal + ';path=/;max-age=' + (30 * 24 * 60 * 60);
+            document.cookie = 'omniva_terminal=' + selectedOmnivaTerminal + ';path=/;max-age=3600;SameSite=Lax';
         }
 
         if ( selectedOmnivaTerminal === '' ) {
