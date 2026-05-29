@@ -41,15 +41,19 @@ class OmnivaLt_Wc_Blocks
         $selected_method = wc_clean($data['selected_rate_id'] ?? '');
         $selected_terminal_id = wc_clean($data['selected_terminal'] ?? '');
 
-        // Fallback: if extension data has no method, try to get it from order shipping items
+        // Fallback: if extension data has no method (e.g. order created via an alternative
+        // payment gateway flow that does not forward Store API extension data), try to
+        // recover the chosen Omniva sub-method from the WC session, because the shipping
+        // line item only stores the base method ID ("omnivalt") and not the rate ID
+        // ("omnivalt_pt", "omnivalt_c", etc.).
         if ( empty($selected_method) ) {
-            $shipping_methods = $order->get_shipping_methods();
-            foreach ( $shipping_methods as $shipping_method ) {
-                $method_id = $shipping_method->get_method_id();
-                if ( strpos($method_id, 'omnivalt') === 0 ) {
-                    $instance_id = $shipping_method->get_instance_id();
-                    $selected_method = $instance_id ? $method_id . ':' . $instance_id : $method_id;
-                    break;
+            $chosen_methods = OmnivaLt_Wc::get_session('chosen_shipping_methods');
+            if ( is_array($chosen_methods) ) {
+                foreach ( $chosen_methods as $chosen_method ) {
+                    if ( is_string($chosen_method) && strpos($chosen_method, 'omnivalt_') === 0 ) {
+                        $selected_method = $chosen_method;
+                        break;
+                    }
                 }
             }
         }
@@ -58,7 +62,10 @@ class OmnivaLt_Wc_Blocks
             return;
         }
 
-        OmnivaLt_Omniva_Order::set_method($order->get_id(), $selected_method);
+        $method_saved = OmnivaLt_Omniva_Order::set_method($order->get_id(), $selected_method);
+        if ( ! $method_saved ) {
+            OmnivaLt_Debug::log_error('Failed to save Omniva shipping method from Blocks Checkout. Received method: ' . print_r($selected_method, true));
+        }
 
         // Fallback: if terminal not in extension data, try cookie
         if ( empty($selected_terminal_id) && ! empty($_COOKIE['omniva_terminal']) ) {
