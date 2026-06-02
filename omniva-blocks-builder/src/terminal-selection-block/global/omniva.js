@@ -38,9 +38,11 @@ export const isOmnivaMethod = (methodKey) => {
 };
 
 export const isOmnivaTerminalMethod = (methodKey) => {
+    debug('Got method key:', methodKey);
+    const baseMethodKey = methodKey.split(':')[0];
     for ( let [key, value] of Object.entries(getOmnivaData().methods) ) {
-        if ( methodKey == value ) {
-            debug('Detected Omniva method', value);
+        if ( baseMethodKey == value ) {
+            debug('Detected Omniva method:', value);
             return true;
         }
     }

@@ -49,7 +49,12 @@ class OmnivaLt_Omniva_Order
 
     public static function get_method_key_from_id( $woo_method_id )
     {
-        return str_replace('omnivalt_', '', $woo_method_id);
+        $method_key = str_replace('omnivalt_', '', $woo_method_id);
+        // Strip WooCommerce shipping zone instance ID (e.g. "pt:5" → "pt")
+        if ( strpos($method_key, ':') !== false ) {
+            $method_key = explode(':', $method_key)[0];
+        }
+        return $method_key;
     }
 
     public static function get_method_id_from_key( $method_key )

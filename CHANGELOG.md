@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Improved
+- improved saving of selected terminal on block-based Checkout page
+
 ## [1.20.11]
 ### Fixed
 - fixed a display issue when a theme or other plugins change the margin value for the slider element in the Omniva plugin settings
