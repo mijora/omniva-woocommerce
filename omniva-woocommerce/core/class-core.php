@@ -8,6 +8,7 @@ class OmnivaLt_Core
   {
     self::load_classes();
     self::load_pre_init_hooks();
+    OmnivaLt_Cronjob::register_activation_hooks();
 
     add_action('init', function() {
       if ( ! self::allow_activate_plugin() ) {
@@ -425,6 +426,7 @@ class OmnivaLt_Core
     
     $core_dir = self::get_core_dir();
     require_once $core_dir . 'class-debug.php';
+    require_once $core_dir . 'class-logger.php';
     require_once $core_dir . 'class-filters.php';
     require_once $core_dir . 'class-helper.php';
     require_once $core_dir . 'wc/' . 'class-wc.php';
