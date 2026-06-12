@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.20.12]
 ### Fixed
 - fixed cronjob activation
 
