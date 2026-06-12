@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 1.20.12 =
+- fixed cronjob activation
+- improved saving of selected terminal on block-based Checkout page
+- plugin cronjobs will now have the group "omnivalt"
+- improved cronjobs performance and logging
+- cronjob logs will now be written to log files dedicated for each month and files older than 12 months will be deleted
+
 = 1.20.11 =
 - fixed a display issue when a theme or other plugins change the margin value for the slider element in the Omniva plugin settings
 - fixed an issue where the delivery method was displayed even when the cart weight did not match any defined weight range

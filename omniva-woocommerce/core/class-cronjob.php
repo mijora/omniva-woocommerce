@@ -1,44 +1,160 @@
 <?php
 class OmnivaLt_Cronjob
 {
+  const GROUP = 'omnivalt';
+  const LEGACY_CLEANUP_OPTION = 'omnivalt_cronjob_legacy_cleanup_done';
+  const LOG_NAME = 'cronjob';
+  const LOG_KEEP_MONTHS = 12;
+  const SCHEDULES = array(
+    'daily' => 86400,
+    'monthly' => 2592000,
+  );
+  const HOOKS = array(
+    'omnivalt_location_update' => array(
+      'callback' => 'generate_locations_file',
+      'interval' => 'daily',
+    ),
+    'omnivalt_send_statistic' => array(
+      'callback' => 'send_statistic_data',
+      'interval' => 'daily',
+    ),
+  );
+
   public static function init()
   {
     add_filter('cron_schedules', __CLASS__ . '::add_frequency');
 
-    add_action('omnivalt_location_update', __CLASS__ . '::generate_locations_file');
-    add_action('omnivalt_send_statistic', __CLASS__ . '::send_statistic_data');
+    foreach ( self::HOOKS as $hook => $config ) {
+      add_action($hook, __CLASS__ . '::' . $config['callback']);
+    }
 
+    add_action('action_scheduler_failed_execution', __CLASS__ . '::log_failed_execution', 10, 3);
+    add_action('action_scheduler_failed_action', __CLASS__ . '::log_failed_action', 10, 2);
+    add_action('action_scheduler_unexpected_shutdown', __CLASS__ . '::log_unexpected_shutdown', 10, 2);
+
+    self::cleanup_legacy_actions();
+  }
+
+  public static function register_activation_hooks()
+  {
     register_activation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, __CLASS__ . '::activation');
     register_deactivation_hook(WP_PLUGIN_DIR . '/' . OMNIVALT_BASENAME, __CLASS__ . '::deactivation');
   }
 
   public static function activation()
   {
-    if ( ! as_next_scheduled_action('omnivalt_location_update') ) {
-      as_schedule_recurring_action(current_time('timestamp'), self::get_interval_time('daily'), 'omnivalt_location_update');
-    }
-    if ( ! as_next_scheduled_action('omnivalt_send_statistic') ) {
-      as_schedule_recurring_action(current_time('timestamp'), self::get_interval_time('daily'), 'omnivalt_send_statistic');
+    foreach ( self::HOOKS as $hook => $config ) {
+      if ( ! as_next_scheduled_action($hook, null, self::GROUP) ) {
+        $interval = self::get_interval_time($config['interval']);
+        as_schedule_recurring_action(
+          current_time('timestamp') + $interval,
+          $interval,
+          $hook,
+          array(),
+          self::GROUP
+        );
+        self::log(sprintf('Scheduled action "%s" (interval: %s, group: %s).', $hook, $config['interval'], self::GROUP));
+      }
     }
   }
 
   public static function deactivation()
   {
-    as_unschedule_action('omnivalt_location_update');
-    as_unschedule_action('omnivalt_send_statistic');
+    foreach ( self::HOOKS as $hook => $config ) {
+      as_unschedule_action($hook, array(), self::GROUP);
+      self::log(sprintf('Unscheduled action "%s" (group: %s).', $hook, self::GROUP));
+    }
+  }
+
+  /**
+   * Removes any scheduled actions for the plugin's hooks that are not
+   * assigned to the plugin's group. This handles legacy actions that
+   * were registered before the group was introduced.
+   *
+   * Runs only once per install thanks to a one-off option flag.
+   */
+  public static function cleanup_legacy_actions()
+  {
+    if ( get_option(self::LEGACY_CLEANUP_OPTION) ) {
+      return;
+    }
+
+    if ( ! function_exists('as_unschedule_all_actions') ) {
+      return;
+    }
+
+    self::log('Cleaning up legacy actions (without group)...');
+    foreach ( self::HOOKS as $hook => $config ) {
+      as_unschedule_all_actions($hook, array(), '');
+    }
+
+    update_option(self::LEGACY_CLEANUP_OPTION, OMNIVALT_VERSION, false);
+
+    self::activation();
+  }
+
+  public static function log_failed_execution($action_id, $exception, $context = '')
+  {
+    $hook = self::get_action_hook($action_id);
+    if ( ! self::is_plugin_hook($hook) ) {
+      return;
+    }
+    $message = sprintf('Action "%s" (ID: %s) failed: %s', $hook, $action_id, $exception->getMessage());
+    if ( ! empty($context) ) {
+      $message .= ' [context: ' . $context . ']';
+    }
+    self::log($message);
+  }
+
+  public static function log_failed_action($action_id, $timeout)
+  {
+    $hook = self::get_action_hook($action_id);
+    if ( ! self::is_plugin_hook($hook) ) {
+      return;
+    }
+    self::log(sprintf('Action "%s" (ID: %s) failed - exceeded timeout of %ss.', $hook, $action_id, $timeout));
+  }
+
+  public static function log_unexpected_shutdown($action_id, $error)
+  {
+    $hook = self::get_action_hook($action_id);
+    if ( ! self::is_plugin_hook($hook) ) {
+      return;
+    }
+    $error_message = is_array($error) && isset($error['message']) ? $error['message'] : 'Unknown fatal error';
+    self::log(sprintf('Action "%s" (ID: %s) ended with unexpected shutdown: %s', $hook, $action_id, $error_message));
+  }
+
+  private static function get_action_hook($action_id)
+  {
+    if ( ! function_exists('ActionScheduler') ) {
+      return '';
+    }
+    try {
+      $store = ActionScheduler::store();
+      $action = $store->fetch_action($action_id);
+      return method_exists($action, 'get_hook') ? $action->get_hook() : '';
+    } catch ( \Exception $e ) {
+      return '';
+    }
+  }
+
+  private static function is_plugin_hook($hook)
+  {
+    return ($hook && isset(self::HOOKS[$hook]));
   }
 
   public static function add_frequency($schedules)
   {
     if ( ! isset($schedules['daily']) ) {
       $schedules['daily'] = array(
-        'interval' => 86400,
+        'interval' => self::SCHEDULES['daily'],
         'display' => __('Once daily', 'omnivalt'),
       );
     }
     if ( ! isset($schedules['monthly']) ) {
       $schedules['monthly'] = array(
-        'interval' => 2592000,
+        'interval' => self::SCHEDULES['monthly'],
         'display' => __('Once monthly', 'omnivalt'),
       );
     }
@@ -47,13 +163,16 @@ class OmnivaLt_Cronjob
 
   public static function get_interval_time( $interval_key )
   {
-    $all_intervals = apply_filters('cron_schedules', array());
+    if ( isset(self::SCHEDULES[$interval_key]) ) {
+      return self::SCHEDULES[$interval_key];
+    }
 
+    $all_intervals = apply_filters('cron_schedules', array());
     if ( isset($all_intervals[$interval_key]) ) {
       return $all_intervals[$interval_key]['interval'];
     }
 
-    return 2592000;
+    return self::SCHEDULES['monthly'];
   }
 
   public static function generate_locations_file()
@@ -114,10 +233,6 @@ class OmnivaLt_Cronjob
 
   public static function log($message, $show_date = true, $next_same_line = false)
   {
-    $message = ($show_date) ? current_time('Y-m-d H:i:s') . ': ' . $message : $message;
-    $message = ($next_same_line) ? $message . ' ' : $message . PHP_EOL;
-
-    OmnivaLt_Core::add_required_directories();
-    file_put_contents(OMNIVALT_DIR . 'var/logs/cronjob.log', $message, FILE_APPEND);
+    OmnivaLt_Logger::log_to(self::LOG_NAME, $message, $show_date, $next_same_line, self::LOG_KEEP_MONTHS);
   }
 }

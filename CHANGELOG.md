@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.20.12]
+### Fixed
+- fixed cronjob activation
+
+### Improved
+- improved saving of selected terminal on block-based Checkout page
+- plugin cronjobs will now have the group "omnivalt"
+- improved cronjobs performance and logging
+- cronjob logs will now be written to log files dedicated for each month and files older than 12 months will be deleted
+
 ## [1.20.11]
 ### Fixed
 - fixed a display issue when a theme or other plugins change the margin value for the slider element in the Omniva plugin settings
