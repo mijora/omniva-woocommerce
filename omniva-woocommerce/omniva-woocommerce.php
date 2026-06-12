@@ -5,7 +5,7 @@
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://www.omniva.lt/en/business/integrations-for-e-shops
- * Version: 1.20.11
+ * Version: 1.20.12
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 
@@ -21,7 +21,7 @@ if (!defined('WPINC')) {
   die;
 }
 
-define('OMNIVALT_VERSION', '1.20.11');
+define('OMNIVALT_VERSION', '1.20.12');
 define('OMNIVALT_DIR', plugin_dir_path(__FILE__));
 define('OMNIVALT_URL', plugin_dir_url(__FILE__));
 define('OMNIVALT_BASENAME', plugin_basename(__FILE__));
