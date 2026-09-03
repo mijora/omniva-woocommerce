@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.20.14]
+### Added
+- added Picapac as a separate delivery method for Estonia
+
 ## [1.20.13]
 ### Added
 - added new settings for automatic label generation based on order status

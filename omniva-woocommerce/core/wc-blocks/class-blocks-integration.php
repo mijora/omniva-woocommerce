@@ -92,6 +92,11 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
                 'post_omniva' => 'omnivalt_ps',
                 'letter_post_omniva' => 'omnivalt_lp'
             ),
+            'picapac' => array(
+                'rate_id' => OmnivaLt_Picapac::get_rate_id(),
+                'info_url' => OmnivaLt_Picapac::get_info_url(),
+                'info_label' => OmnivaLt_Picapac::get_info_label(),
+            ),
             'show_map' => $show_map,
             'autoselect' => $autoselect,
             'debug' => $debug_mode,
@@ -286,8 +291,9 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         $woo_method_id = esc_attr($_GET['method']);
 
         $settings = \OmnivaLt_Core::get_settings();
+        $is_picapac = \OmnivaLt_Picapac::is_rate($woo_method_id);
         $method_key = \OmnivaLt_Omniva_Order::get_method_key_from_id($woo_method_id);
-        $terminals_type = \OmnivaLt_Method::get_terminal_type($method_key);
+        $terminals_type = $is_picapac ? false : \OmnivaLt_Method::get_terminal_type($method_key);
         $omniva_methods = \OmnivaLt_Method::get_all();
         $omniva_method = ($terminals_type == 'post') ? $omniva_methods['post_specific'] : $omniva_methods['pickup'];
 

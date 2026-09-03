@@ -328,6 +328,9 @@ class OmnivaLt_Terminals
   public static function get_terminal_address( $terminal_id, $get_with_country = false )
   {
     $terminal_name = self::get_terminal_name($terminal_id, $get_with_country);
+    if ( ! $terminal_name && OmnivaLt_Picapac::is_terminal_id($terminal_id) ) {
+      $terminal_name = OmnivaLt_Picapac::get_label();
+    }
     if ( ! $terminal_name ) {
       $terminal_name  = __('Location not found!!!', 'omnivalt');
     }
@@ -391,12 +394,21 @@ class OmnivaLt_Terminals
   private static function read_terminals_file()
   {
     OmnivaLt_Core::add_required_directories();
-    
-    $terminals_file = fopen(self::$_terminals_dir . 'locations.json', "r");
-    $terminals = fread($terminals_file, filesize(self::$_terminals_dir . 'locations.json') + 10);
-    fclose($terminals_file);
 
-    return json_decode($terminals, true);
+    $terminals_path = self::$_terminals_dir . 'locations.json';
+    if ( ! is_readable($terminals_path) ) {
+      return array();
+    }
+
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Read-only access to the plugin's local runtime cache.
+    $terminals_json = file_get_contents($terminals_path);
+    if ( false === $terminals_json || '' === trim($terminals_json) ) {
+      return array();
+    }
+
+    $terminals = json_decode($terminals_json, true);
+
+    return is_array($terminals) ? $terminals : array();
   }
 
   private static function generate_terminals_json( $term = "", $country = "ALL", $get_list = 'terminal' )

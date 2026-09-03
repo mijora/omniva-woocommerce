@@ -73,6 +73,22 @@ class OmnivaLt_Frontend
       $new_rates[$rate_key] = $rates[$rate_key];
     }
 
+    $picapac_rate_id = OmnivaLt_Picapac::get_rate_id();
+    $terminal_rate_id = OmnivaLt_Picapac::get_omniva_method_id();
+    if ( isset($new_rates[$picapac_rate_id]) && isset($new_rates[$terminal_rate_id]) ) {
+      $rates_with_picapac = array();
+      foreach ( $new_rates as $rate_key => $rate ) {
+        if ( $rate_key === $picapac_rate_id ) {
+          continue;
+        }
+        if ( $rate_key === $terminal_rate_id ) {
+          $rates_with_picapac[$picapac_rate_id] = $new_rates[$picapac_rate_id];
+        }
+        $rates_with_picapac[$rate_key] = $rate;
+      }
+      $new_rates = $rates_with_picapac;
+    }
+
     return $new_rates;
   }
 

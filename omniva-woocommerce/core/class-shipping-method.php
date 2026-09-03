@@ -1222,6 +1222,13 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'meta_data' => $meta_data,
       );
 
+      if ( 'pt' === $method['key'] && OmnivaLt_Picapac::is_supported_country($country) ) {
+        $picapac_rate = $rate;
+        $picapac_rate['id'] = OmnivaLt_Picapac::get_rate_id();
+        $picapac_rate['label'] = OmnivaLt_Picapac::get_label();
+        $this->add_rate($picapac_rate);
+      }
+
       $this->add_rate($rate);
     }
   }

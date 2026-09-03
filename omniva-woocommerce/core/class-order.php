@@ -15,6 +15,11 @@ class OmnivaLt_Order
   {
     if ( is_cart() ) return; // Exit on cart page
 
+    if ( OmnivaLt_Picapac::is_rate($wc_method->id) ) {
+      echo '<small class="omnivalt-picapac-info" style="display: block;"><a href="' . esc_url(OmnivaLt_Picapac::get_info_url()) . '" target="_blank" rel="noopener noreferrer">' . esc_html(OmnivaLt_Picapac::get_info_label()) . '</a></small>';
+      return;
+    }
+
     $customer = OmnivaLt_Wc::get_session('customer');
     if ( ! isset($customer['country']) ) {
       return;
@@ -34,6 +39,10 @@ class OmnivaLt_Order
 
   public static function after_rate_terminals( $method )
   {
+    if ( OmnivaLt_Picapac::is_rate($method->id) ) {
+      return;
+    }
+
     $customer = OmnivaLt_Wc::get_customer_from_global();
     $termnal_id = OmnivaLt_Wc::get_session('omnivalt_terminal_id');
     $selected_shipping_method = OmnivaLt_Wc::get_session('chosen_shipping_methods');
@@ -144,6 +153,39 @@ class OmnivaLt_Order
     return $rates;
   }
 
+  /**
+   * Keep the Picapac rate aligned with the parcel terminal rate after other
+   * package-rate restrictions have been applied.
+   */
+  public static function remove_picapac_without_terminal( $rates )
+  {
+    $picapac_rate_id = OmnivaLt_Picapac::get_rate_id();
+    $terminal_rate_id = OmnivaLt_Picapac::get_omniva_method_id();
+
+    if ( isset($rates[$picapac_rate_id]) && ! isset($rates[$terminal_rate_id]) ) {
+      unset($rates[$picapac_rate_id]);
+    }
+
+    return $rates;
+  }
+
+  private static function get_posted_shipping_methods()
+  {
+    // WooCommerce validates the checkout request before these hooks run.
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
+    if ( ! isset($_POST['shipping_method']) ) {
+      return array();
+    }
+
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+    $shipping_methods = wp_unslash($_POST['shipping_method']);
+    if ( ! is_array($shipping_methods) ) {
+      $shipping_methods = array($shipping_methods);
+    }
+
+    return array_map('sanitize_text_field', $shipping_methods);
+  }
+
   public static function add_terminal_id_to_order( $order_id )
   {
     if ( empty($order_id) ) {
@@ -163,11 +205,18 @@ class OmnivaLt_Order
         }
       }
     }
-    if ( isset($_POST['shipping_method']) ) {
-      OmnivaLt_Omniva_Order::set_method($order_id, $_POST['shipping_method']);
+    $posted_shipping_methods = self::get_posted_shipping_methods();
+    if ( ! empty($posted_shipping_methods) ) {
+      OmnivaLt_Omniva_Order::set_method($order_id, $posted_shipping_methods);
     }
 
+    $is_picapac = OmnivaLt_Picapac::is_selected($posted_shipping_methods);
     $omniva_method = OmnivaLt_Omniva_Order::get_method($order_id);
+    if ( $is_picapac ) {
+      // WooCommerce validates the checkout request before this hook runs.
+      // phpcs:ignore WordPress.Security.NonceVerification.Missing
+      $_POST['omnivalt_terminal'] = OmnivaLt_Picapac::get_terminal_id();
+    }
     if ( ! isset($_POST['omnivalt_terminal']) && $omniva_method ) {
       if ( OmnivaLt_Method::is_omniva_domestic_terminal($omniva_method) && isset($_COOKIE['omniva_terminal']) ) {
         $_POST['omnivalt_terminal'] = $_COOKIE['omniva_terminal'];
@@ -214,12 +263,22 @@ class OmnivaLt_Order
   {
     try {
       $check_terminal_id = OmnivaLt_Omniva_Order::get_terminal_id($wc_order->get_id());
+      $posted_shipping_methods = self::get_posted_shipping_methods();
 
-      if ( ! empty($_POST['shipping_method']) ) {
-        $success = OmnivaLt_Omniva_Order::set_method($wc_order->get_id(), $_POST['shipping_method']);
+      if ( ! empty($posted_shipping_methods) ) {
+        $success = OmnivaLt_Omniva_Order::set_method($wc_order->get_id(), $posted_shipping_methods);
         if ( $success && ! OmnivaLt_Omniva_Order::get_method($wc_order->get_id()) ) {
           OmnivaLt_Debug::log_error('Failed to save Omniva shipping method. ' . print_r($_POST,true));
         }
+      }
+
+      if ( OmnivaLt_Picapac::is_selected($posted_shipping_methods) ) {
+        $terminal_id = OmnivaLt_Picapac::get_terminal_id();
+        if ( $check_terminal_id !== $terminal_id ) {
+          OmnivaLt_Omniva_Order::set_terminal_id($wc_order->get_id(), $terminal_id);
+          OmnivaLt_Wc_Order::add_note($wc_order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+        }
+        return;
       }
 
       if ( ! empty($_POST['omnivalt_terminal']) && empty($check_terminal_id) ) {

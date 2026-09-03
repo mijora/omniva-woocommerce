@@ -54,6 +54,82 @@
     vertical-align: middle;
 }
 
+.omnivalt-picapac-info {
+    display: block;
+    margin-top: 4px;
+    font-size: 80%;
+    color: #999;
+}
+
+.omnivalt-picapac-info a {
+    color: inherit;
+}
+
+.omnivalt-picapac-option,
+.wc-block-components-radio-control__option:has(input[value^="omnivalt_picapac"]) {
+    flex-wrap: wrap;
+}
+
+.omnivalt-picapac-option .wc-block-components-radio-control__option-layout,
+.wc-block-components-radio-control__option:has(input[value^="omnivalt_picapac"]) .wc-block-components-radio-control__option-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.omnivalt-picapac-option .wc-block-components-radio-control__label-group,
+.wc-block-components-radio-control__option:has(input[value^="omnivalt_picapac"]) .wc-block-components-radio-control__label-group {
+    grid-column: 1;
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    max-width: none;
+}
+
+.omnivalt-picapac-option .wc-block-components-radio-control__secondary-label,
+.wc-block-components-radio-control__option:has(input[value^="omnivalt_picapac"]) .wc-block-components-radio-control__secondary-label {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+    margin-left: auto;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.omnivalt-picapac-option .wc-block-components-radio-control__description-group,
+.wc-block-components-radio-control__option:has(input[value^="omnivalt_picapac"]) .wc-block-components-radio-control__description-group {
+    grid-column: 2;
+    flex: 0 0 auto;
+    margin-left: auto;
+    width: auto;
+    max-width: 100%;
+    white-space: nowrap;
+}
+
+.omnivalt-picapac-option .wc-block-components-radio-control__label,
+.wc-block-components-radio-control__option:has(input[value^="omnivalt_picapac"]) .wc-block-components-radio-control__label {
+    display: block;
+    min-width: 0;
+    width: 100%;
+    max-width: none;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+.omnivalt-picapac-option .omnivalt-picapac-info,
+.wc-block-components-radio-control__option:has(input[value^="omnivalt_picapac"]) .omnivalt-picapac-info {
+    flex: 0 0 100%;
+    grid-column: 1 / -1;
+    width: 100%;
+    text-align: left;
+}
+
 /*** GLOBAL: Matkahuolto ***/
 .provider-matkahuolto .omnivalt-loader,
 .provider-matkahuolto .omnivalt-loader:before,

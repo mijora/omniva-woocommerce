@@ -268,7 +268,7 @@ class OmnivaLt_Core
       wp_enqueue_script('omnivalt-helper', plugins_url($folder_js . 'omniva_helper.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
       wp_enqueue_script('omnivalt', plugins_url($folder_js . 'omniva.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
       wp_enqueue_style('omnivalt', plugins_url($folder_css . 'omniva.css', self::$main_file_path), array(), OMNIVALT_VERSION);
-      
+
       if ( file_exists(OMNIVALT_DIR . $folder_css . 'custom.css') ) { //Allow custom CSS file which not include in plugin by default
         wp_enqueue_style('omnivalt-custom', plugins_url($folder_css . 'custom.css', self::$main_file_path), array(), OMNIVALT_VERSION);
       }
@@ -433,6 +433,7 @@ class OmnivaLt_Core
     require_once $core_dir . 'wc/' . 'class-wc-order.php';
     require_once $core_dir . 'wc/' . 'class-wc-product.php';
     require_once $core_dir . 'wc/' . 'class-wc-blocks.php';
+    require_once $core_dir . 'services/' . 'class-picapac.php';
     require_once $core_dir . 'class-method.php';
     require_once $core_dir . 'methods/' . 'class-method-core.php';
     require_once $core_dir . 'methods/' . 'class-method-terminal.php';
@@ -570,6 +571,7 @@ class OmnivaLt_Core
     add_filter('woocommerce_order_data_store_cpt_get_orders_query', array('OmnivaLt_Manifest', 'handle_custom_query_var'), 10, 2);
     add_filter('woocommerce_package_rates', array('OmnivaLt_Order', 'restrict_shipping_methods_by_cats'), 10, 1);
     add_filter('woocommerce_package_rates', array('OmnivaLt_Order', 'restrict_shipping_methods_by_shipclass'), 10, 1);
+    add_filter('woocommerce_package_rates', array('OmnivaLt_Order', 'remove_picapac_without_terminal'), PHP_INT_MAX, 1);
     add_filter('woocommerce_admin_order_preview_get_order_details', array('OmnivaLt_Order', 'admin_order_add_custom_meta_data'), 10, 2);
     add_filter('bulk_actions-edit-shop_order', array('OmnivaLt_Order', 'bulk_actions'), 20);
     add_filter('handle_bulk_actions-edit-shop_order', array('OmnivaLt_Order', 'handle_bulk_actions'), 20, 3);

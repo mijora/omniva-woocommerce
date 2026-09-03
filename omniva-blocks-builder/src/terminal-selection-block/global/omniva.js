@@ -14,6 +14,12 @@ export const getOmnivaData = () => {
     return wcSettings["omnivalt-blocks_data"];
 };
 
+export const getPicapacData = () => {
+    const omnivaData = getOmnivaData();
+
+    return omnivaData && omnivaData.picapac ? omnivaData.picapac : {};
+};
+
 export const getDynamicOmnivaData = (country, method) => {
     return fetch(`${getOmnivaData().ajax_url}?action=omnivalt_get_dynamic_data&country=${country}&method=${method}`, {
         method: 'GET',
@@ -48,4 +54,11 @@ export const isOmnivaTerminalMethod = (methodKey) => {
     }
 
     return false;
+};
+
+export const isPicapacMethod = (methodKey) => {
+    const picapacData = getPicapacData();
+    const baseMethodKey = methodKey ? methodKey.split(':')[0] : '';
+
+    return Boolean(picapacData.rate_id) && baseMethodKey === picapacData.rate_id;
 };

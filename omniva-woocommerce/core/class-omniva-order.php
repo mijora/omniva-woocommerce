@@ -29,7 +29,10 @@ class OmnivaLt_Omniva_Order
         foreach ( $order_methods_list as $ship_method ) {
             $method_key = self::get_method_key_from_id($ship_method);
             if ( OmnivaLt_Method::is_omniva_domestic($method_key) || OmnivaLt_Method::is_omniva_international($method_key) ) {
-                OmnivaLt_Wc_Order::update_meta($order_id, $configs['meta_keys']['method'], $ship_method);
+                $method_to_save = OmnivaLt_Picapac::is_rate($ship_method)
+                    ? OmnivaLt_Picapac::get_omniva_method_id()
+                    : $ship_method;
+                OmnivaLt_Wc_Order::update_meta($order_id, $configs['meta_keys']['method'], $method_to_save);
                 return true;
             }
         }
@@ -54,6 +57,11 @@ class OmnivaLt_Omniva_Order
         if ( strpos($method_key, ':') !== false ) {
             $method_key = explode(':', $method_key)[0];
         }
+
+        if ( OmnivaLt_Picapac::get_method_key() === $method_key ) {
+            return OmnivaLt_Picapac::get_omniva_method_key();
+        }
+
         return $method_key;
     }
 
