@@ -1,0 +1,3 @@
+[submodule "omniva-mapping-v2"]
+	path = omniva-mapping-v2
+	url = https://github.com/mijora/omniva-mapping-v2.git

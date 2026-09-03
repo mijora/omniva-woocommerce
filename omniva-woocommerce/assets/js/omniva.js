@@ -1,3 +1,20 @@
+/* global
+    OmnivaFullwidthTheme,
+    OmnivaTerminalMapping,
+    omnivaSettings,
+    omnivaTerminals,
+    omniva_current_country,
+    omniva_eraseCookie,
+    omniva_getCookie,
+    omniva_setCookie,
+    omnivadata,
+    omnivaltMap,
+    omnivalt_provider,
+    omnivalt_terminals,
+    omnivalt_type,
+    omniva_type
+*/
+
 /*** New method (use terminal-mapping library) ***/
 function omnivalt_init_map() {
     var container_parcel_terminal = document.getElementById("omnivalt-terminal-container-map");
@@ -21,7 +38,10 @@ function omnivalt_init_map() {
         lib: null,
         field: null,
         icons_URL: '',
+        marker_icons_URL: '',
         translations: {},
+        theme_icons: {},
+        theme_strings: {},
         params: {},
         variables: {
             selected_terminal_id: '',
@@ -30,7 +50,8 @@ function omnivalt_init_map() {
 
         load_data: function () {
             this.field = document.getElementById("omnivalt-terminal-selected");
-            this.icons_URL = omnivalt_data.omniva_plugin_url + 'assets/img/terminal-mapping/';
+            this.icons_URL = omnivalt_data.omniva_plugin_url + 'assets/terminal-mapping/images/';
+            this.marker_icons_URL = omnivalt_data.omniva_plugin_url + 'assets/img/terminal-mapping/';
             let modal_header = (omnivalt_type == 'post') ? omnivalt_data.text.modal_title_post : omnivalt_data.text.modal_title_terminal;
             this.translations = {
                 modal_header: omnivalt_data.text.providers[omnivalt_provider] + " " + modal_header,
@@ -41,10 +62,50 @@ function omnivalt_init_map() {
                 select_btn: omnivalt_data.text.select_button,
                 modal_open_btn: omnivalt_data.text.modal_open_button,
                 geolocation_btn: omnivalt_data.text.use_my_location,
+                geolocation_loading: omnivalt_data.text.geolocation_loading,
                 your_position: omnivalt_data.text.my_position,
                 nothing_found: omnivalt_data.text.not_found,
                 no_cities_found: omnivalt_data.text.no_cities_found,
                 geolocation_not_supported: omnivalt_data.text.geo_not_supported
+            };
+            this.theme_strings = {
+                delivery_location: omnivalt_data.text.delivery_location,
+                close_button: omnivalt_data.text.close_button,
+                search_label: omnivalt_data.text.search_label,
+                // Keep the full-width map hint separate from the legacy
+                // postcode placeholder so both texts can be translated.
+                search_placeholder: omnivalt_data.text.map_search_placeholder,
+                clear_search: omnivalt_data.text.clear_search,
+                clear_selection: omnivalt_data.text.clear_selection,
+                search_results_label: omnivalt_data.text.search_results_label,
+                no_search_results: omnivalt_data.text.no_search_results,
+                show_on_map: omnivalt_data.text.show_on_map,
+                sorted_by_zip: omnivalt_data.text.sorted_by_zip,
+                sorted_by_location: omnivalt_data.text.sorted_by_location,
+                postcode_input_label: omnivalt_data.text.postcode_input_label,
+                postcode_placeholder: omnivalt_data.text.postcode_placeholder,
+                geolocation_button: omnivalt_data.text.use_my_location,
+                geolocation_loading: omnivalt_data.text.geolocation_loading,
+                geolocation_error: omnivalt_data.text.geolocation_error,
+                search_error: omnivalt_data.text.search_error,
+                sort_by_zip: omnivalt_data.text.sort_by_zip,
+                use_zip: omnivalt_data.text.use_zip,
+                enter_zip: omnivalt_data.text.enter_zip,
+                your_position: omnivalt_data.text.my_position,
+                close_popup: omnivalt_data.text.close_popup,
+                select_pickup_point: this.translations.select_pickup_point,
+                modal_open_button: omnivalt_data.text.modal_open_button,
+                select_btn: omnivalt_data.text.select_button,
+                selected_btn: omnivalt_data.text.selected_button,
+                change_button: omnivalt_data.text.change_button,
+                clear_button: omnivalt_data.text.clear_button
+            };
+            this.theme_icons = {
+                search: this.icons_URL + 'input_search.svg',
+                clear: this.icons_URL + 'input_x.svg',
+                geolocation: this.icons_URL + 'geolocation.svg',
+                location: this.icons_URL + 'location.svg',
+                terminal: this.icons_URL + 'terminal.svg'
             };
             this.params = {
                 country: omnivalt_current_country,
@@ -55,28 +116,20 @@ function omnivalt_init_map() {
         
         init: function ( container, terminals ) {
             this.load_data();
-            this.lib = new TerminalMappingOmnivalt();
+            this.lib = new OmnivaTerminalMapping();
 
             this.lib.setImagesPath(this.icons_URL);
             this.lib.setTranslation(this.translations);
             this.lib.dom.setContainerParent(container);
 
-            this.lib.setParseMapTooltip((location, leafletCoords) => {
-                let tip = location.address + " [" + location.id + "]";
-                if ( location.comment ) {
-                    tip += "<br/><i>" + location.comment + "</i>";
-                }
-                return tip;
-            });
-
             this.lib.sub('tmjs-ready', function(data) {
                 omnivaltMap.load_data();
-                omnivaltMap.lib.map.createIcon('omnivalt_icon', omnivaltMap.icons_URL + omnivalt_map_icon);
+                omnivaltMap.lib.map.createIcon('omnivalt_icon', omnivaltMap.marker_icons_URL + omnivalt_map_icon);
                 omnivaltMap.lib.map.refreshMarkerIcons();
 
                 let selected_location = data.map.getLocationById(omniva_getCookie('omniva_terminal'));
                 if ( typeof(selected_location) != 'undefined' && selected_location != null ) {
-                    omnivaltMap.lib.dom.setActiveTerminal(selected_location);
+                    omnivaltMap.lib.dom.setActiveTerminal(selected_location.id);
                     omnivaltMap.lib.publish('terminal-selected', selected_location);
                 }
             });
@@ -99,18 +152,26 @@ function omnivalt_init_map() {
                 console.log("OMNIVA: Terminal changed to " + data.id);
             });
 
-            this.lib.init({
+            var theme_overrides = OmnivaFullwidthTheme.apply(this.lib, {
+                container: container,
+                strings: this.theme_strings,
+                icons: this.theme_icons,
+                onClear: function() {
+                    omnivaltMap.clear_selection();
+                }
+            });
+
+            this.lib.init(Object.assign({
                 country_code: this.params.country,
                 identifier: 'omnivalt',
                 isModal: true,
                 modalParent: container,
                 hideContainer: true,
                 hideSelectBtn: true,
-                cssThemeRule: 'tmjs-default-theme',
                 customTileServerUrl: 'https://maps.omnivasiunta.lt/tile/{z}/{x}/{y}.png',
                 customTileAttribution: '&copy; <a href="https://www.omniva.lt">Omniva</a>' + ' | Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
                 terminalList: terminals,
-            });
+            }, theme_overrides));
 
             this.update_list();
         },
@@ -121,8 +182,44 @@ function omnivalt_init_map() {
                 return;
             }
 
-            this.lib.dom.searchNearest(selected_postcode);
-            this.lib.dom.UI.modal.querySelector('.tmjs-search-input').value = selected_postcode;
+            var runSearch = function() {
+                if ( ! omnivaltMap.lib || ! omnivaltMap.lib.map ) {
+                    return;
+                }
+
+                omnivaltMap.lib.dom.searchNearest(selected_postcode);
+            };
+
+            if ( this.lib.map ) {
+                runSearch();
+            } else {
+                this.lib.sub('tmjs-ready', runSearch);
+            }
+        },
+
+        clear_selection: function() {
+            if ( this.field ) {
+                this.field.value = '';
+                this.field.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            this.variables.selected_terminal_id = '';
+            omniva_eraseCookie('omniva_terminal');
+
+            if ( ! omnivalt_data.ajax_url || ! omnivalt_data.clear_terminal_nonce || typeof fetch !== 'function' ) {
+                return;
+            }
+
+            fetch(omnivalt_data.ajax_url, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                },
+                body: 'action=omnivalt_clear_terminal&nonce=' + encodeURIComponent(omnivalt_data.clear_terminal_nonce)
+            }).catch(function() {
+                return null;
+            });
         },
 
         activate_autoselect: function() {
@@ -314,11 +411,7 @@ var omniva_addrese_change = false;
                   
         });
         search.on('selectpostcode',function(){
-            if (omnivaSettings.auto_select != "yes") {
-                var autoselect = false;
-            } else {
-                var autoselect = true;
-            }
+            var autoselect = omnivaSettings.auto_select == "yes";
             findPosition(search.val(),autoselect);    
                   
         });
@@ -578,7 +671,7 @@ var omniva_addrese_change = false;
         function calculateDistance(y,x){
    
             $.each( terminals, function( key, location ) {
-                distance = calcCrow(y, x, location[1], location[2]);
+                var distance = calcCrow(y, x, location[1], location[2]);
                 location['distance'] = distance.toFixed(2);
                 
             });
@@ -606,11 +699,11 @@ var omniva_addrese_change = false;
           var R = 6371;
           var dLat = toRad(lat2-lat1);
           var dLon = toRad(lon2-lon1);
-          var lat1 = toRad(lat1);
-          var lat2 = toRad(lat2);
-    
+          var radLat1 = toRad(lat1);
+          var radLat2 = toRad(lat2);
+
           var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(radLat1) * Math.cos(radLat2); 
           var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
           var d = R * c;
           return d;
@@ -771,7 +864,7 @@ var omniva_addrese_change = false;
             */
             $('.omniva-terminals-listing li div.omniva-details').hide();
             id = 'omn-'+id;
-            dispOmniva = document.getElementById(id)
+            var dispOmniva = document.getElementById(id)
             if(dispOmniva){
                 dispOmniva.style.display = 'block';
             }      
@@ -882,7 +975,7 @@ var omniva_addrese_change = false;
           }
               var matches = document.querySelectorAll(".omnivaOption");
               for (var i = 0; i < matches.length; i++) {
-                node = matches[i];
+                var node = matches[i];
                 if ( node.value.includes(terminal)) {
                   node.selected = 'selected';
                 } else {

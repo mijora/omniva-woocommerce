@@ -11,6 +11,17 @@ class OmnivaLt_Terminals
     wp_die();
   }
 
+  public static function clear_terminal_from_session()
+  {
+    check_ajax_referer('omnivalt_clear_terminal', 'nonce');
+
+    if ( function_exists('WC') && WC()->session ) {
+      WC()->session->set('omnivalt_terminal_id', '');
+    }
+
+    wp_send_json_success();
+  }
+
   public static function get_terminals_list( $country = "ALL", $get_list = 'terminal' ) {
     $terminals = self::read_terminals_file();
     $grouped_options = array();

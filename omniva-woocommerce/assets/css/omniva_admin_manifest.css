@@ -1,515 +1,1422 @@
-.call-courier-container, .mass-print-container {
-  text-align: end;
-  margin: 1em 0;
-}
-
-.call-courier-container .current_calls .omnivalt-tip .tip-text {
-  right: -5px;
-  left: unset;
-  transform: unset;
-}
-.call-courier-container .current_calls .omnivalt-tip .tip-text:before {
-  right: 7px;
-  left: unset;
-  margin-left: 0;
-}
-
-.omniva-notice {
-  color: green;
-  border: 1px green solid;
-  border-left: 4px green solid;
-  border-radius: 3px;
-  background: #fff;
-  box-shadow: 0 1px 1px rgba(0,0,0,.04);
-  margin: 5px 15px 2px;
-  padding: 1px 12px;
-}
-.omniva-notice p {
-  margin: 0.5em 0;
-  padding: 2px;
-}
-
-.omniva-action-buttons-container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.manifest-date-title {
-  font-size: 1.5em;
-  font-weight: 900;
-  text-align: center;
-}
-
-.order_actions .omnivalt_view_label, .order_actions .omnivalt_generate_label {
-    display: block;
-    text-indent: -9999px;
-    position: relative;
-    height: 1em;
-    width: 1em;
-    padding: 0!important;
-    height: 2em!important;
-    width: 2em;
-}
-.order_actions .omnivalt_view_label::after {
-    font-family: Dashicons;
-    speak: none;
-    font-weight: 400;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    margin: 0;
-    text-indent: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    content: "\f128";
-    line-height: 1.85;
-}
-.order_actions .omnivalt_generate_label::after {
-    font-family: Dashicons;
-    speak: none;
-    font-weight: 400;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    margin: 0;
-    text-indent: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    content: "\f111";
-    line-height: 1.85;
-}
-
-.selected-orders {
-    display: inline-block;
-    line-height: 26px;
-    width: 75%;
-    text-align: left;
-    float: left;
-    position: relative;
-    padding-bottom: 14px;
-}
-
-.selected-orders.has-desc {
-    padding-bottom: 14px;
-}
-
-.selected-orders span {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.selected-orders .title {
-    color: #7fb8d4;
-}
-
-.selected-orders.has-desc .title {
-    cursor: help;
-}
-
-.selected-orders .desc {
-    position: absolute;
-    bottom: 4px;
-    left: 0;
-    line-height: 10px;
-    font-size: 10px;
-    color: #999;
-}
-
-.selected-orders.has-desc .title:hover ~ .desc {
-    color: #333;
-}
-
-.selected-orders .item {
-    padding: 0 0 0 3px;
-    margin: 0 1px 1px 0;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-
-.selected-orders .item:hover {
-    cursor: pointer;
-    color: #e70000;
-    background: #e700001c;
-}
-
-.selected-orders .item.removing {
-    transition: all 0.6s ease;
-    background: #e700008a;
-    color: #fff;
-}
-
-.selected-orders .item.adding {
-    background: #059d0078;
-    color: #fff;
-}
-
-.selected-orders .item .dashicons {
-    color: #dc4747;
-    padding: 0;
-    vertical-align: text-bottom;
-    height: 16px;
-    width: 16px;
-    font-size: 16px;
-}
-.selected-orders .item:hover .dashicons {
-    color: #a80000;
-    background: unset;
-}
-
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    z-index: 9999;
-    -webkit-animation-name: fadeIn;
-    -webkit-animation-duration: 0.4s;
-    animation-name: fadeIn;
-    animation-duration: 0.4s;
-  }
-
-  .modal.open {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* Modal Content/Box */
-  .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: fit-content;
-    max-width: 450px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.3);
-  }
-
-  .modal-content .alert-info {
-      border-left: 2px solid #46b450;
-      background: #fff;
-      box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-      margin-bottom: 20px;
-      padding: 1px 12px;
-  }
-
-  .modal-content .alert-info p span,
-  .modal-content div span:not(.tip-text) {
-      font-weight: 900;
-  }
-
-  .modal-content table {
-    text-align: left;
-    margin-top: 10px;
-  }
-
-  .modal-content th {
-    padding: 0 10px 0 0;
-  }
-  
-  .modal-content td {
-    padding: 0;
-  }
-
-  .modal-content table span.alert {
-    display: block;
-    padding: 10px 0;
-    font-weight: bold;
-    color: #a00;
-  }
-
-  .modal-content table span.alert .tip-text {
-    min-width: 200px;
-  }
-
-  .modal-footer {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-  }
-  
-  /* The Close Button */
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-@-webkit-keyframes fadeIn {
-    from {opacity: 0} 
-    to {opacity: 1}
-}
-
-@keyframes fadeIn {
-    from {opacity: 0} 
-    to {opacity: 1}
-}
-
-
-.nav {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  padding-left: 0;
-  margin-bottom: 0;
-  list-style: none;
-}
-
-.nav-link {
-  display: block;
-  padding: 0.5rem 1rem;
-}
-
-.nav-link:hover, .nav-link:focus {
-  text-decoration: none;
-}
-
-.nav-link.disabled {
-  color: #6c757d;
-  pointer-events: none;
-  cursor: default;
-}
-
-.nav-tabs {
-  border-bottom: 1px solid #dee2e6;
-}
-
-.nav-tabs .nav-item {
-  margin-bottom: -1px;
-  font-size: 1em;
-}
-
-.nav-tabs .nav-link {
-  border: 1px solid transparent;
-  border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem;
-  text-decoration: none;
-}
-
-.nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
-  border-color: #dee2e6 #dee2e6 #dee2e6;
-}
-
-.nav-tabs .nav-link.disabled {
-  color: #6c757d;
-  background-color: transparent;
-  border-color: transparent;
-}
-
-.nav-tabs .nav-link.active,
-.nav-tabs .nav-item.show .nav-link {
-  color: #495057;
-  background: linear-gradient(#fff, #f1f1f1);
-  border-color: #dee2e6 #dee2e6 #f1f1f1;
-}
-
-.nav-tabs .dropdown-menu {
-  margin-top: -1px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-
-.tablenav {
-  display: flex;
-  justify-content: center;
-  margin: 0.5em 0;
-}
-
-.tablenav .tablenav-pages {
-  margin: 0;
-}
-
-.tablenav-pages .page-numbers {
-  display: inline-block;
-  border: 1px solid #aaa;
-  border-radius: 3px;
-  padding: 5px 10px;
-  text-decoration: none;
-  color: #000000;
-}
-
-.tablenav-pages .page-numbers:hover {
-  background-color: rgba(255, 255, 255, 0.7);
-}
-
-.tablenav-pages .page-numbers.current {
-  background-color: #fff;
-  font-weight: 700;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.table-container * {
-  box-sizing: border-box;
-}
-
-.table-container .manage-column .button.action {
-  display: block;
-  text-align: center;
-  margin-bottom: 3px;
-}
-
-.table-container .manage-column .button.action:last-child {
-  margin-bottom: 0;
-}
-
-.page-omniva_manifest .table-container strong.title {
-  display: block;
-}
-
-.page-omniva_manifest .table-container .column-order_customer span {
-  display: block;
-}
-.page-omniva_manifest .table-container .column-order_customer .customer-company {
-  font-style: italic;
-}
-
-.omniva-table {
-  border-collapse: separate;
-  border-spacing: 0 2px 0 0;
-  margin-bottom: 5px;
-  width: 100%;
-  background-color: #fff;
-}
-
-.wp-list-table .fixed-width {
-  width: 48px !important;
-}
-
-.omniva-filter input:not([type="checkbox"]) {
-  height: 28px;
-  border-radius: 3px;
-  width: 100%;
-  margin: 0;
-  padding: 3px 6px;
-}
-
-.omniva-filter {
-  background-color: rgba(0, 115, 170, 0.5);
-}
-
-.omniva-filter .datetimepicker {
-  display: flex;
-  flex-wrap: wrap;
-  border: 1px solid rgb(221, 221, 221);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.omniva-filter .datetimepicker div {
-  line-height: initial;
-  position: relative;
-  width: 100%;
-}
-
-.omniva-filter .datetimepicker input {
-  min-width: 90px;
-  width: 100%;
-  background-color: #fff;
-  border: none;
-  border-radius: 0;
-}
-
-.bootstrap-datetimepicker-widget {
+/* Manifest workspace. All styles are scoped to the legacy manifest screen. */
+.page-omniva_manifest .modal {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
   display: none;
-  background-color: #fff;
-  border: 1px solid grey;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 
-.call-courier-container .current_calls {
-  margin: 5px 0;
+.page-omniva_manifest .modal.open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.call-courier-container .current_calls table {
-  margin: 0 0 0 auto;
-  text-align: left;
+/* The datetime picker appends its popup to the document body, outside the page root. */
+body .bootstrap-datetimepicker-widget {
+  display: none;
+  z-index: 100000;
+  min-width: 250px;
+  padding: 8px;
+  border: 1px solid rgba(45, 45, 45, 0.28);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+  color: #2d2d2d;
+  font-family: 'TT Wellingtons', sans-serif;
+  opacity: 1;
 }
 
-.call-courier-container .current_calls button {
+.bootstrap-datetimepicker-widget table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+}
+
+.bootstrap-datetimepicker-widget th,
+.bootstrap-datetimepicker-widget td {
+  padding: 5px;
+  border: 0;
+  color: #2d2d2d;
+  font-size: 13px;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.bootstrap-datetimepicker-widget th {
+  font-weight: 600;
+}
+
+.bootstrap-datetimepicker-widget td.day {
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.call-courier-container .current_calls .timezone_alert {
-  color: #a00;
-  font-weight: bold;
+.bootstrap-datetimepicker-widget td.day:hover,
+.bootstrap-datetimepicker-widget td.active,
+.bootstrap-datetimepicker-widget td.active:hover {
+  background: #ffbc01;
+  color: #000;
 }
 
-.call-courier-container .current_calls .timezone_alert .tip-text {
-  min-width: 200px;
+.bootstrap-datetimepicker-widget td.old,
+.bootstrap-datetimepicker-widget td.new {
+  color: #7a7a7a;
 }
 
-.call-courier-container .current_calls .date {
-  font-size: 70%;
+.bootstrap-datetimepicker-widget .picker-switch,
+.bootstrap-datetimepicker-widget .prev,
+.bootstrap-datetimepicker-widget .next {
+  cursor: pointer;
 }
 
-.call-courier-container .current_calls .icon-btn {
+.page-omniva_manifest .call-courier-container .omnivalt-tip .tip-text {
+  right: -5px;
+  left: auto;
+  transform: none;
+}
+
+.page-omniva_manifest .call-courier-container .omnivalt-tip .tip-text::before {
+  right: 7px;
+  left: auto;
+  margin-left: 0;
+}
+
+.page-omniva_manifest .modal .omnivalt-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 3px;
+  color: #b42318;
+  vertical-align: middle;
+}
+
+.page-omniva_manifest .modal .omnivalt-tip .dashicons {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.page-omniva_manifest .modal .omnivalt-tip .tip-text {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 10001;
+  display: block;
+  width: 260px;
+  max-width: calc(100vw - 48px);
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #1d2327;
+  color: #fff;
+  font-family: 'TT Wellingtons', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition:
+    opacity 120ms ease,
+    visibility 120ms ease;
+}
+
+.page-omniva_manifest .modal .omnivalt-tip .tip-text::before {
+  top: 100%;
+  bottom: auto;
+  left: 50%;
+  width: 0;
+  height: 0;
+  margin-left: -6px;
+  border: 0;
+  border-top: 6px solid #1d2327;
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+}
+
+.page-omniva_manifest .modal .omnivalt-tip:hover .tip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.omnivalt-manifest-page__floating-tooltip {
+  position: fixed;
+  z-index: 100001;
+  max-width: 240px;
+  padding: 9px 11px;
+  border-radius: 6px;
+  background: #1d2327;
+  color: #fff;
+  font-family: 'TT Wellingtons', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  pointer-events: none;
+  text-align: center;
+}
+
+.page-omniva_manifest .call-courier-container .current_calls .timezone_alert {
+  color: #b42318;
+  font-weight: 600;
+}
+
+.page-omniva_manifest .call-courier-container .current_calls .date {
+  font-size: 12px;
+}
+
+.page-omniva_manifest .call-courier-container .current_calls .icon-btn {
   padding: 0;
-  border: 1px solid transparent;
-  background: unset;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
-.call-courier-container .current_calls .icon-btn:hover,
-.call-courier-container .current_calls .icon-btn:focus {
-  color: #7fb8d4;
+.page-omniva_manifest
+  .call-courier-container
+  .current_calls
+  .icon-btn.action-cancel:hover,
+.page-omniva_manifest
+  .call-courier-container
+  .current_calls
+  .icon-btn.action-cancel:focus {
+  color: #d63638;
 }
 
-.call-courier-container .current_calls .icon-btn.action-cancel:hover,
-.call-courier-container .current_calls .icon-btn.action-cancel:focus {
-  color: #dc4747;
-}
-
-.call-courier-container .current_calls .icon-btn.action-remove:hover,
-.call-courier-container .current_calls .icon-btn.action-remove:focus {
-  color: #aaa;
-}
-
-#omniva-call input[type=number] {
-  width: 70px;
-}
-
-.omniva-orders .row-bad_order_notice {
-  color: #999;
+.page-omniva_manifest
+  .call-courier-container
+  .current_calls
+  .icon-btn.action-remove:hover,
+.page-omniva_manifest
+  .call-courier-container
+  .current_calls
+  .icon-btn.action-remove:focus {
+  color: var(--omniva-manifest-muted);
 }
 
 @media only screen and (min-width: 1600px) {
   .page-omniva_manifest .column-order_id {
     width: 120px;
   }
-  .page-omniva_manifest .column-order_date {
-    width: 120px;
-  }
+
   .page-omniva_manifest .column-order_status {
     width: 160px;
   }
+
   .page-omniva_manifest .column-manifest_date {
     width: 150px;
+  }
+}
+
+@font-face {
+  font-family: 'TT Wellingtons';
+  src: url('../fonts/tt-wellingtons-medium.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'TT Wellingtons';
+  src: url('../fonts/tt-wellingtons-demibold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+}
+
+body.woocommerce_page_omniva-manifest #wpcontent,
+body.woocommerce_page_omniva-manifest #wpbody,
+body.woocommerce_page_omniva-manifest #wpbody-content {
+  background-color: #f4f4f4;
+}
+
+body.woocommerce_page_omniva-manifest #wpcontent {
+  padding-left: 0;
+}
+
+.page-omniva_manifest.omnivalt-manifest-page {
+  --omniva-manifest-ink: #000;
+  --omniva-manifest-muted: #2d2d2d;
+  --omniva-manifest-line: rgba(45, 45, 45, 0.18);
+  --omniva-manifest-canvas: #f4f4f4;
+  --omniva-manifest-card: #fff;
+  --omniva-manifest-accent: #ff6600;
+  --omniva-manifest-green: #007a45;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 20px;
+  color: var(--omniva-manifest-ink);
+  font-family: 'TT Wellingtons', sans-serif;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__root,
+.page-omniva_manifest .omnivalt-manifest-page__root * {
+  box-sizing: border-box;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__root {
+  width: 100%;
+  font-feature-settings: 'lnum';
+  font-variant-numeric: lining-nums;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__header {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0 0 24px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--omniva-manifest-line);
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__header::after {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 56px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--omniva-manifest-accent);
+  content: '';
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__breadcrumb {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+  color: var(--omniva-manifest-muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.36;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__breadcrumb
+  span[aria-hidden='true'] {
+  opacity: 0.5;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__header h1 {
+  margin: 0 0 4px;
+  padding: 0;
+  color: var(--omniva-manifest-ink);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__header p {
+  margin: 0;
+  color: var(--omniva-manifest-muted);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__courier-action,
+.page-omniva_manifest .omnivalt-manifest-page__button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 0;
+  padding: 8px 13px;
+  border: 1px solid var(--omniva-manifest-ink);
+  border-radius: 999px;
+  background: var(--omniva-manifest-card);
+  color: var(--omniva-manifest-ink);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  text-shadow: none;
+  cursor: pointer;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__courier-action:hover,
+.page-omniva_manifest .omnivalt-manifest-page__courier-action:focus,
+.page-omniva_manifest .omnivalt-manifest-page__button--primary:hover,
+.page-omniva_manifest .omnivalt-manifest-page__button--primary:focus {
+  border-color: #ffd15a;
+  background: #ffd15a;
+  color: #000;
+  box-shadow: none;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__courier-action,
+.page-omniva_manifest .omnivalt-manifest-page__button--primary {
+  border-color: #ffbc01;
+  background: #ffbc01;
+  color: #000;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__button--secondary:hover,
+.page-omniva_manifest .omnivalt-manifest-page__button--secondary:focus {
+  border-color: var(--omniva-manifest-ink);
+  background: #f4f4f4;
+  color: var(--omniva-manifest-ink);
+  box-shadow: none;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__button--text {
+  border-color: var(--omniva-manifest-ink);
+  background: #fff;
+  color: var(--omniva-manifest-ink);
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__button--text:hover,
+.page-omniva_manifest .omnivalt-manifest-page__button--text:focus {
+  border-color: var(--omniva-manifest-ink);
+  background: #f4f4f4;
+  color: var(--omniva-manifest-ink);
+  box-shadow: none;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__truck-icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__scheduled-card,
+.page-omniva_manifest .omnivalt-manifest-page__orders-card,
+.page-omniva_manifest .omnivalt-manifest-page__bulk-actions {
+  margin: 0 0 18px;
+  border: 1px solid var(--omniva-manifest-line);
+  border-radius: 10px;
+  background: var(--omniva-manifest-card);
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__scheduled-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 18px;
+  text-align: left;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__scheduled-heading,
+.page-omniva_manifest .omnivalt-manifest-page__scheduled-heading > div {
+  display: flex;
+  align-items: center;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__scheduled-heading {
+  gap: 7px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__scheduled-heading > div {
+  gap: 8px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__scheduled-heading .dashicons {
+  display: flex;
+  width: 26px;
+  height: 26px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--omniva-manifest-accent);
+  color: #fff;
+  font-size: 15px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__scheduled-heading h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.page-omniva_manifest .call-courier-container .current_calls {
+  margin: 0;
+}
+
+.page-omniva_manifest .call-courier-container .current_calls table {
+  margin: 0;
+  color: var(--omniva-manifest-muted);
+  font-size: 13px;
+}
+
+.page-omniva_manifest .call-courier-container .current_calls td {
+  padding: 3px 0 3px 14px;
+}
+
+.page-omniva_manifest .call-courier-container .current_calls td:first-child {
+  padding-left: 0;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  width: min(100%, 860px);
+  margin: 0 0 18px;
+  overflow: hidden;
+  border: 1px solid var(--omniva-manifest-ink);
+  border-radius: 8px;
+  background: var(--omniva-manifest-card);
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__tab {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-right: 1px solid var(--omniva-manifest-ink);
+  color: var(--omniva-manifest-ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__tab:last-child {
+  border-right: 0;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__tab:hover,
+.page-omniva_manifest .omnivalt-manifest-page__tab:focus {
+  background: #f4f4f4;
+  color: var(--omniva-manifest-ink);
+  box-shadow: none;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__tab.is-active {
+  position: relative;
+  z-index: 1;
+  margin: -1px;
+  border: 2px solid var(--omniva-manifest-green);
+  border-radius: 0;
+  background: #f0ffef;
+  color: var(--omniva-manifest-ink);
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__tab.is-active:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__tab.is-active:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__bulk-actions {
+  display: none;
+  min-height: 68px;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__bulk-actions.is-visible {
+  display: flex;
+}
+
+.page-omniva_manifest .mass-print-container form {
+  display: none;
+}
+
+.page-omniva_manifest .selected-orders {
+  width: auto;
+  min-width: 0;
+  flex: 1;
+  float: none;
+  padding: 0;
+  color: var(--omniva-manifest-muted);
+  font-size: 14px;
+}
+
+.page-omniva_manifest .selected-orders .title {
+  color: var(--omniva-manifest-muted);
+  font-weight: 600;
+}
+
+.page-omniva_manifest .selected-orders .desc {
+  display: block;
+  margin-top: 3px;
+  color: var(--omniva-manifest-muted);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.page-omniva_manifest .selected-orders .item {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  gap: 3px;
+  margin: 0 3px 3px 0;
+  padding: 3px 7px;
+  border: 1px solid #e3c6e4;
+  border-radius: 6px;
+  background: #faeafd;
+  color: var(--omniva-manifest-ink);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.page-omniva_manifest .selected-orders .item:hover {
+  border-color: #bc84c1;
+  background: #f3d8f5;
+  color: var(--omniva-manifest-ink);
+}
+
+.page-omniva_manifest .selected-orders .item .dashicons {
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  color: #8c318f;
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__selection-actions {
+  display: none;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__selection-actions.is-visible {
+  display: flex;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__orders-card {
+  overflow: hidden;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__filters {
+  display: grid;
+  grid-template-columns:
+    minmax(110px, 0.7fr) repeat(2, minmax(150px, 1fr))
+    minmax(150px, 0.9fr) minmax(220px, 1.3fr) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 18px;
+  border-bottom: 1px solid var(--omniva-manifest-line);
+  background: #fafafa;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__filter-field {
+  min-width: 0;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__filter-field label {
+  display: block;
+  margin: 0 0 5px;
+  color: var(--omniva-manifest-muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__filter-field input,
+.page-omniva_manifest .omnivalt-manifest-page__filter-field select {
+  width: 100%;
+  min-height: 38px;
+  margin: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--omniva-manifest-line);
+  border-radius: 7px;
+  background: var(--omniva-manifest-card);
+  color: var(--omniva-manifest-ink);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__filter-field input:focus,
+.page-omniva_manifest .omnivalt-manifest-page__filter-field select:focus {
+  border-color: var(--omniva-manifest-ink);
+  box-shadow: inset 0 0 0 1px var(--omniva-manifest-ink);
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__filter-field .datetimepicker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__filter-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__orders-card .wp-list-table {
+  width: 100%;
+  min-width: 1050px;
+  margin: 0;
+  border: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  box-shadow: none;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__orders-card form {
+  overflow-x: auto;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .wp-list-table
+  thead
+  th,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .wp-list-table
+  thead
+  td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--omniva-manifest-line);
+  background: #f4f4f4;
+  color: var(--omniva-manifest-muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .wp-list-table
+  tbody
+  th,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .wp-list-table
+  tbody
+  td {
+  padding: 15px 12px;
+  border-bottom: 1px solid #ededed;
+  background: var(--omniva-manifest-card);
+  color: var(--omniva-manifest-ink);
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .wp-list-table
+  tbody
+  tr.data-row:hover
+  td,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .wp-list-table
+  tbody
+  tr.data-row:hover
+  th {
+  background: #fffaf7;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .wp-list-table
+  tbody
+  td.omnivalt-manifest-page__empty-cell {
+  padding: 54px 20px;
+  background: #fff;
+  text-align: center;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__empty-state {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--omniva-manifest-muted);
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__empty-state > img {
+  display: block;
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__empty-state p {
+  margin: 0;
+  color: var(--omniva-manifest-ink);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__orders-card input.check-all,
+.page-omniva_manifest .omnivalt-manifest-page__orders-card input.manifest-item {
+  position: relative;
+  width: 22px;
+  min-width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--omniva-manifest-ink);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: none;
+  color: transparent;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.check-all::before,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.manifest-item::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+  color: var(--omniva-manifest-ink);
+  font-family: Dashicons;
+  font-size: 16px;
+  line-height: 1;
+  content: '\f147';
+  transform: translate(-50%, -50%);
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.check-all:checked,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.manifest-item:checked {
+  border-color: var(--omniva-manifest-ink);
+  background: #fff;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.check-all:checked::before,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.manifest-item:checked::before {
+  display: block;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.check-all:hover,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.manifest-item:hover {
+  border-color: var(--omniva-manifest-ink);
+  box-shadow: inset 0 0 0 1px var(--omniva-manifest-ink);
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.check-all:focus,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.manifest-item:focus {
+  border-color: var(--omniva-manifest-ink);
+  box-shadow: none;
+  outline: none;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.check-all:focus-visible,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  input.manifest-item:focus-visible {
+  outline: 2px solid var(--omniva-manifest-accent);
+  outline-offset: 2px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__orders-card .check-column {
+  width: 58px;
+  padding-right: 16px !important;
+  text-align: center;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__orders-card .column-order_id {
+  padding-left: 18px !important;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__orders-card .wp-list-table a {
+  color: var(--omniva-manifest-ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--omniva-manifest-accent);
+  text-underline-offset: 3px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__orders-card .column-order_id a {
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .column-order_id
+  a:hover,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .column-order_id
+  a:focus {
+  color: var(--omniva-manifest-accent);
+  text-decoration: none;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .data-grid-cell-content {
+  line-height: 1.55;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .column-order_customer
+  span {
+  display: block;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .column-order_customer
+  .customer-company {
+  color: var(--omniva-manifest-muted);
+  font-style: italic;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__orders-card .order-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 3px 9px;
+  border: 1px solid var(--omniva-manifest-line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--omniva-manifest-muted);
+  box-shadow: none;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .manage-column
+  .button.action {
+  display: inline-flex;
+  min-height: 31px;
+  align-items: center;
+  margin: 0 4px 4px 0;
+  padding: 4px 9px;
+  border: 1px solid var(--omniva-manifest-line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--omniva-manifest-ink);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .manage-column
+  .button.action:hover,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .manage-column
+  .button.action:focus {
+  border-color: var(--omniva-manifest-accent);
+  background: var(--omniva-manifest-accent);
+  color: #fff;
+  box-shadow: none;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .manage-column
+  .button.action.omnivalt-manifest-page__row-action {
+  width: 36px;
+  min-height: 36px;
+  margin: 0 5px 0 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border-color: var(--omniva-manifest-ink);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--omniva-manifest-ink);
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .manage-column
+  .button.action.omnivalt-manifest-page__row-action:hover,
+.page-omniva_manifest
+  .omnivalt-manifest-page__orders-card
+  .manage-column
+  .button.action.omnivalt-manifest-page__row-action:focus {
+  border-color: #ffd15a;
+  background: #ffd15a;
+  color: #000;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__row-action .dashicons {
+  width: 17px;
+  height: 17px;
+  font-size: 17px;
+  line-height: 17px;
+}
+
+.page-omniva_manifest .manifest-date-title {
+  padding: 9px 12px !important;
+  background: #f0ffef !important;
+  color: var(--omniva-manifest-green) !important;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__pagination {
+  float: none;
+  min-height: auto;
+  margin: 0;
+  padding: 14px 18px;
+  border-top: 1px solid var(--omniva-manifest-line);
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__pagination .tablenav-pages {
+  float: none;
+  margin: 0;
+  text-align: right;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__pagination .page-numbers {
+  display: inline-flex;
+  min-width: 32px;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 2px;
+  padding: 5px 8px;
+  border: 1px solid var(--omniva-manifest-line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--omniva-manifest-ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__pagination a.page-numbers:hover,
+.page-omniva_manifest .omnivalt-manifest-page__pagination a.page-numbers:focus {
+  border-color: var(--omniva-manifest-ink);
+  background: #f4f4f4;
+  box-shadow: none;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__pagination
+  .page-numbers.current {
+  border-color: var(--omniva-manifest-green);
+  background: #f0ffef;
+  color: var(--omniva-manifest-green);
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__bottom-actions {
+  display: none;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__bottom-actions.is-visible {
+  display: flex;
+}
+
+.page-omniva_manifest .modal-content {
+  border: 1px solid var(--omniva-manifest-line);
+  border-radius: 10px;
+  box-shadow: 0 14px 48px rgba(0, 0, 0, 0.22);
+  font-family: 'TT Wellingtons', sans-serif;
+}
+
+.page-omniva_manifest .modal-footer .button.action {
+  border-radius: 999px;
+}
+
+@media only screen and (max-width: 1100px) {
+  .page-omniva_manifest .omnivalt-manifest-page__filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__filter-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media only screen and (max-width: 782px) {
+  .page-omniva_manifest.omnivalt-manifest-page {
+    padding: 16px 12px;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__header,
+  .page-omniva_manifest .omnivalt-manifest-page__scheduled-card,
+  .page-omniva_manifest .omnivalt-manifest-page__bulk-actions {
+    flex-direction: column;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__courier-action {
+    width: 100%;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__tabs {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__tab,
+  .page-omniva_manifest .omnivalt-manifest-page__tab:last-child {
+    border-right: 0;
+    border-bottom: 1px solid var(--omniva-manifest-ink);
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__tab:last-child {
+    border-bottom: 0;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__bulk-actions {
+    align-items: stretch;
+  }
+
+  .page-omniva_manifest .selected-orders {
+    width: 100%;
+  }
+
+  .page-omniva_manifest
+    .omnivalt-manifest-page__bulk-actions
+    .omnivalt-manifest-page__button,
+  .page-omniva_manifest
+    .omnivalt-manifest-page__bottom-actions
+    .omnivalt-manifest-page__button {
+    width: 100%;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__selection-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__filters {
+    grid-template-columns: 1fr;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__filter-actions,
+  .page-omniva_manifest .omnivalt-manifest-page__bottom-actions {
+    flex-direction: column;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__pagination .tablenav-pages {
+    text-align: left;
+  }
+}
+
+/* Courier modal refresh. */
+.page-omniva_manifest .modal {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.page-omniva_manifest .modal-content {
+  width: min(640px, calc(100vw - 32px));
+  max-width: none;
+  margin: 0;
+  padding: 28px;
+  border: 1px solid var(--omniva-manifest-line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 14px 48px rgba(0, 0, 0, 0.22);
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__modal-icon,
+.page-omniva_manifest .omnivalt-manifest-page__modal-header > .dashicons {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--omniva-manifest-accent);
+  color: #fff;
+  font-size: 16px;
+}
+
+.page-omniva_manifest
+  .omnivalt-manifest-page__modal-icon
+  .omnivalt-manifest-page__truck-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__modal-header h2 {
+  margin: 0 0 3px;
+  padding: 0;
+  color: var(--omniva-manifest-ink);
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__modal-header p {
+  margin: 0;
+  color: var(--omniva-manifest-muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.page-omniva_manifest .modal-content .alert-info {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border: 1px solid #b7dfc8;
+  border-left: 3px solid var(--omniva-manifest-green);
+  border-radius: 8px;
+  background: #f0ffef;
+  box-shadow: none;
+}
+
+.page-omniva_manifest .modal-content .alert-info p {
+  margin: 0;
+  color: var(--omniva-manifest-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.page-omniva_manifest .modal-content .alert-info p + p {
+  margin-top: 6px;
+}
+
+.page-omniva_manifest .modal-content .alert-info p span {
+  color: var(--omniva-manifest-ink);
+  font-weight: 600;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__courier-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 18px;
+  margin: 0 0 18px;
+  padding: 16px;
+  border: 1px solid var(--omniva-manifest-line);
+  border-radius: 8px;
+  background: #fafafa;
+  color: var(--omniva-manifest-ink);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__courier-details > div {
+  min-width: 0;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__courier-details span {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--omniva-manifest-muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__courier-form {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__courier-form th,
+.page-omniva_manifest .omnivalt-manifest-page__courier-form td {
+  padding: 10px 0;
+  color: var(--omniva-manifest-ink);
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: left;
+  vertical-align: top;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__courier-form th {
+  width: 42%;
+  padding-right: 16px;
+  font-weight: 600;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__courier-form td label {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.page-omniva_manifest #omniva-call input[type='number'] {
+  width: 84px;
+  min-height: 44px;
+  margin: 0;
+  padding: 9px 11px;
+  border: 1px solid var(--omniva-manifest-line);
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.page-omniva_manifest #omniva-call input[type='number']:focus {
+  border-color: var(--omniva-manifest-ink);
+  box-shadow: inset 0 0 0 1px var(--omniva-manifest-ink);
+}
+
+.page-omniva_manifest #omniva-call input[type='checkbox'] {
+  position: relative;
+  width: 38px;
+  min-width: 38px;
+  height: 22px;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(45, 45, 45, 0.28);
+  border-radius: 999px;
+  background: #d9d9d9;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+  color: transparent;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.page-omniva_manifest #omniva-call input[type='checkbox']::before {
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1px solid rgba(45, 45, 45, 0.12);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
+  content: '';
+  float: none;
+  transform: none;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.page-omniva_manifest #omniva-call input[type='checkbox']:not(:checked):hover {
+  border-color: rgba(45, 45, 45, 0.42);
+  background: #e5e5e5;
+}
+
+.page-omniva_manifest #omniva-call input[type='checkbox']:checked {
+  border-color: var(--omniva-manifest-green);
+  background-color: var(--omniva-manifest-green);
+  box-shadow: none;
+}
+
+.page-omniva_manifest #omniva-call input[type='checkbox']:checked::before {
+  transform: translateX(16px);
+}
+
+.page-omniva_manifest #omniva-call input[type='checkbox']:checked:hover {
+  border-color: var(--omniva-manifest-green);
+  background: var(--omniva-manifest-green);
+  box-shadow: 0 0 0 2px #dafed6;
+}
+
+.page-omniva_manifest #omniva-call input[type='checkbox']:focus-visible {
+  outline: 2px solid var(--omniva-manifest-accent);
+  outline-offset: 2px;
+}
+
+.page-omniva_manifest #omniva-call input[type='checkbox']:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.page-omniva_manifest .modal-content table span.alert {
+  padding: 8px 0 0;
+  color: #b42318;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.page-omniva_manifest .omnivalt-manifest-page__modal-confirmation {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--omniva-manifest-line);
+  border-radius: 8px;
+  background: #fafafa;
+  color: var(--omniva-manifest-ink);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.page-omniva_manifest .modal-footer {
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+@media only screen and (max-width: 600px) {
+  .page-omniva_manifest .modal-content {
+    padding: 18px;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__courier-details {
+    grid-template-columns: 1fr;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__courier-form th,
+  .page-omniva_manifest .omnivalt-manifest-page__courier-form td {
+    display: block;
+    width: 100%;
+  }
+
+  .page-omniva_manifest .omnivalt-manifest-page__courier-form th {
+    padding-bottom: 2px;
+  }
+
+  .page-omniva_manifest .modal-footer {
+    flex-direction: column;
+  }
+
+  .page-omniva_manifest .modal-footer .omnivalt-manifest-page__button {
+    width: 100%;
   }
 }

@@ -70,45 +70,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     public function init()
     {
       $this->init_settings();
-
-      // Execute next code only in admin area
-      if ( ! is_admin() ) {
-        return;
-      }
-
-      // Load settings page
-      if ( isset($_REQUEST['section']) && $_REQUEST['section'] === $this->id ) {
-        $this->init_form_fields();
-      
-        // Save settings
-        add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
-
-        // Fix in some websites, when process_admin_options not called automatically
-        if ( isset($_POST['save']) && ! did_action('woocommerce_update_options_shipping_' . $this->id) ) {
-          $this->process_admin_options();
-        }
-      }
-    }
-
-    /**
-     * Load settings form
-     */
-    public function admin_options()
-    {
-      ?>
-      <div class="omniva-title">
-        <div class="title">
-          <h2><?php echo $this->method_title; ?></h2>
-          <p><?php echo $this->method_description; ?></p>
-        </div>
-        <div class="logo">
-          <img src="<?php echo OMNIVALT_URL; ?>assets/img/logos/omniva_vertical_m.png" alt="Omniva logo" />
-        </div>
-      </div>
-      <table class="form-table omniva-settings">
-        <?php $this->generate_settings_html(); ?>
-      </table>
-      <?php
     }
 
     private function add_required_mark( $title )
@@ -157,7 +118,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['api_user'] = array(
         'title' => __('API user', 'omnivalt'),
         'type' => 'text',
-        'description' => __('Please contact Omniva for API access codes.', 'omnivalt'),
       );
       $fields['api_pass'] = array(
         'title' => __('API password', 'omnivalt'),
@@ -197,7 +157,6 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['shop_postcode'] = array(
         'title' => $this->add_required_mark(__('Shop postcode', 'omnivalt')),
         'type' => 'text',
-        'description' => sprintf(__('Example for Latvia: %1$s. Example for other countries: %2$s.', 'omnivalt'), '<code>LV-0123</code>', '<code>01234</code>'),
       );
       $fields['shop_countrycode'] = array(
         'title' => $this->add_required_mark(__('Shop country code', 'omnivalt')),
@@ -227,16 +186,14 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'description' => __('Required if want to use the "Cash On Delivery" (COD) payment method.', 'omnivalt'),
       );
       $fields['pick_up_start'] = array(
-        'title' => __('Pick up time start', 'omnivalt'),
-        'type' => 'text',
-        'placeholder' => '08:00',
-        'description' => sprintf(__('Allowed formats: %1$s. Default time is %2$s, if incorrect value is entered or field is empty.', 'omnivalt'),'<i>07:00, 7:00, 7</i>', '08:00'),
+        'title' => __('Pickup window', 'omnivalt'),
+        'type' => 'pickup_window',
+        'end_field_key' => 'pick_up_end',
+        'default' => '08:00',
       );
       $fields['pick_up_end'] = array(
-        'title' => __('Pick up time end', 'omnivalt'),
-        'type' => 'text',
-        'placeholder' => '17:00',
-        'description' => sprintf(__('Allowed formats: %1$s. Default time is %2$s, if incorrect value is entered or field is empty.', 'omnivalt'),'<i>09:00, 9:00, 9</i>', '17:00'),
+        'type' => 'pickup_window_end',
+        'default' => '17:00',
       );
       $fields['send_off'] = array(
         'title' => __('Send off type', 'omnivalt'),
@@ -336,7 +293,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['restricted_categories'] = array(
         'title' => __('Disable for specific categories', 'omnivalt'),
         'type' => 'multiselect',
-        'class' => 'wc-enhanced-select',
+        'class' => 'omnivalt-multiselect',
         'description' => __('Select categories for which you want to disable the Omniva method', 'omnivalt'),
         'options' => $this->omnivalt_get_categories(),
         //'desc_tip' => true,
@@ -349,7 +306,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['restricted_shipclass'] = array(
         'title' => __('Disable for specific shipping classes', 'omnivalt'),
         'type' => 'multiselect',
-        'class' => 'wc-enhanced-select',
+        'class' => 'omnivalt-multiselect',
         'description' => __('Select shipping classes for which you want to disable the Omniva method', 'omnivalt'),
         'options' => $this->omnivalt_get_shipping_classes(),
         //'desc_tip' => true,
@@ -576,6 +533,78 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $this->form_fields = $fields;
     }
 
+    /**
+     * Normalizes and validates a sender phone number for the selected country.
+     *
+     * @param string $phone           Raw phone number from the settings form.
+     * @param string $default_country ISO country code used for national numbers.
+     * @param bool   $mobile          Whether the number must satisfy the mobile pattern.
+     * @return string|false Normalized international number or false when invalid.
+     */
+    private function normalize_sender_phone( $phone, $default_country, $mobile )
+    {
+      $countries = array(
+        'LT' => array('dial_code' => '370', 'phone' => '/^\d{8}$/'),
+        'LV' => array('dial_code' => '371', 'phone' => '/^\d{8}$/'),
+        'EE' => array('dial_code' => '372', 'phone' => '/^\d{7,8}$/'),
+        'FI' => array('dial_code' => '358', 'phone' => '/^\d{5,12}$/'),
+      );
+      $phone = preg_replace('/[^\d+]/', '', $phone);
+
+      // Convert the common international dialing prefix to the format used by the API.
+      if ( strpos($phone, '00') === 0 ) {
+        $phone = '+' . substr($phone, 2);
+      }
+
+      $country = strtoupper($default_country);
+      $national_number = ltrim($phone, '+');
+      foreach ( $countries as $country_code => $country_data ) {
+        if ( strpos($phone, '+' . $country_data['dial_code']) === 0 ) {
+          $country = $country_code;
+          $national_number = substr($phone, strlen($country_data['dial_code']) + 1);
+          break;
+        }
+      }
+
+      if ( ! isset($countries[$country]) ) {
+        return false;
+      }
+
+      // Accept legacy national prefixes before storing the canonical international value.
+      if ( ($country === 'LT' && (strpos($national_number, '8') === 0 || strpos($national_number, '0') === 0)) || ($country === 'FI' && strpos($national_number, '0') === 0) ) {
+        $national_number = substr($national_number, 1);
+      }
+
+      $normalized = '+' . $countries[$country]['dial_code'] . $national_number;
+      $regex = $mobile ? OmnivaLt_Helper::get_mobile_regex($country) : $countries[$country]['phone'];
+
+      if ( empty($regex) || ! preg_match($regex, $mobile ? $normalized : $national_number) ) {
+        return false;
+      }
+
+      return $normalized;
+    }
+
+    private function normalize_pickup_time( $value, $fallback = false )
+    {
+      $value = trim((string) $value);
+
+      if ( preg_match('/^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/', $value) ) {
+        return $value;
+      }
+
+      if ( preg_match('/^(?:[0-9]|1[0-9]|2[0-3])$/', $value) ) {
+        return sprintf('%02d:00', (int) $value);
+      }
+
+      return $fallback;
+    }
+
+    /**
+     * Validates sender phone fields before saving the shipping settings.
+     *
+     * @return void
+     */
     public function process_admin_options()
     {
       $required_fields = array(
@@ -588,6 +617,48 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'shop_mobile' => __('Shop mobile number', 'omnivalt'),
         'shop_email' => __('Shop email', 'omnivalt')
       );
+
+      $phone_errors = array();
+      $pickup_time_errors = array();
+      $default_country_field = $this->get_field_key('shop_countrycode');
+      $default_country = isset($_POST[$default_country_field]) ? sanitize_key(wp_unslash($_POST[$default_country_field])) : 'LT';
+      foreach ( array('shop_phone' => false, 'shop_mobile' => true) as $field_key => $mobile ) {
+        $field_name = $this->get_field_key($field_key);
+        $value = isset($_POST[$field_name]) ? sanitize_text_field(wp_unslash($_POST[$field_name])) : '';
+        if ( empty($value) ) {
+          continue;
+        }
+
+        $normalized_phone = $this->normalize_sender_phone($value, $default_country, $mobile);
+        if ( $normalized_phone === false ) {
+          $phone_errors[] = $field_key === 'shop_mobile' ? __('Shop mobile number', 'omnivalt') : __('Shop phone number', 'omnivalt');
+          // Preserve the previously saved value when validation fails for one field.
+          $_POST[$field_name] = $this->get_option($field_key);
+          continue;
+        }
+        $_POST[$field_name] = $normalized_phone;
+      }
+
+      $pickup_start_field = $this->get_field_key('pick_up_start');
+      $pickup_end_field = $this->get_field_key('pick_up_end');
+      $pickup_start = isset($_POST[$pickup_start_field]) ? sanitize_text_field(wp_unslash($_POST[$pickup_start_field])) : '';
+      $pickup_end = isset($_POST[$pickup_end_field]) ? sanitize_text_field(wp_unslash($_POST[$pickup_end_field])) : '';
+      $normalized_pickup_start = $this->normalize_pickup_time($pickup_start);
+      $normalized_pickup_end = $this->normalize_pickup_time($pickup_end);
+
+      if ( $normalized_pickup_start === false || $normalized_pickup_end === false ) {
+        $pickup_time_errors[] = __('Use the 24-hour HH:MM format for the pickup window.', 'omnivalt');
+      } elseif ( $normalized_pickup_start >= $normalized_pickup_end ) {
+        $pickup_time_errors[] = __('Pickup end time must be later than the start time.', 'omnivalt');
+      }
+
+      if ( ! empty($pickup_time_errors) ) {
+        $_POST[$pickup_start_field] = $this->normalize_pickup_time($this->get_option('pick_up_start'), '08:00');
+        $_POST[$pickup_end_field] = $this->normalize_pickup_time($this->get_option('pick_up_end'), '17:00');
+      } else {
+        $_POST[$pickup_start_field] = $normalized_pickup_start;
+        $_POST[$pickup_end_field] = $normalized_pickup_end;
+      }
 
       // Save all values
       parent::process_admin_options();
@@ -604,32 +675,62 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       if ( ! empty($errors) ) {
         WC_Admin_Settings::add_error(__('Settings saved, but some required fields are empty', 'omnivalt') . ': ' . implode(', ', $errors));
       }
+      if ( ! empty($phone_errors) ) {
+        WC_Admin_Settings::add_error(__('Settings were not changed for invalid phone fields', 'omnivalt') . ': ' . implode(', ', $phone_errors));
+      }
+      if ( ! empty($pickup_time_errors) ) {
+        WC_Admin_Settings::add_error(implode(' ', $pickup_time_errors));
+      }
     }
 
-    public function generate_hr_html( $key, $value )
+    public function generate_pickup_window_html( $key, $value )
     {
-      $class = (isset($value['class'])) ? $value['class'] : '';
-      $title = '';
-      if ( ! empty($value['title']) ) {
-        if ( ! empty($class) ) {
-          $class .= ' ';
-        }
-        $class .= 'have_title';
-        $title = '<span>' . $value['title'] . '</span>';
-      }
-      
-      $html = '<tr valign="top"><td colspan="2" class="section_title"><hr class="' . $class . '">' . $title . '</td></tr>';
-      
-      return $html;
+      $end_field_key = isset($value['end_field_key']) ? $value['end_field_key'] : 'pick_up_end';
+      $start_field_key = $this->get_field_key($key);
+      $end_field_name = $this->get_field_key($end_field_key);
+      $start_value = $this->normalize_pickup_time($this->get_option($key), '08:00');
+      $end_value = $this->normalize_pickup_time($this->get_option($end_field_key), '17:00');
+      $description_id = $start_field_key . '_description';
+
+      ob_start();
+      ?>
+      <tr valign="top" class="omnivalt-pickup-window">
+        <th scope="row" class="titledesc">
+          <label><?php echo esc_html($value['title']); ?></label>
+        </th>
+        <td class="forminp">
+          <fieldset>
+            <div class="omnivalt-pickup-window__fields">
+              <div class="omnivalt-pickup-window__field">
+                <label for="<?php echo esc_attr($start_field_key); ?>"><?php esc_html_e('Start time', 'omnivalt'); ?></label>
+                <input type="time" id="<?php echo esc_attr($start_field_key); ?>" name="<?php echo esc_attr($start_field_key); ?>" value="<?php echo esc_attr($start_value); ?>" step="60" required aria-describedby="<?php echo esc_attr($description_id); ?>" />
+              </div>
+              <div class="omnivalt-pickup-window__field">
+                <label for="<?php echo esc_attr($end_field_name); ?>"><?php esc_html_e('End time', 'omnivalt'); ?></label>
+                <input type="time" id="<?php echo esc_attr($end_field_name); ?>" name="<?php echo esc_attr($end_field_name); ?>" value="<?php echo esc_attr($end_value); ?>" step="60" required aria-describedby="<?php echo esc_attr($description_id); ?>" />
+              </div>
+            </div>
+            <p id="<?php echo esc_attr($description_id); ?>" class="description"><?php esc_html_e('Use 24-hour time, for example 08:00–17:00.', 'omnivalt'); ?></p>
+          </fieldset>
+        </td>
+      </tr>
+      <?php
+      return ob_get_clean();
     }
-    
-    public function generate_empty_html( $key, $value )
+
+    public function generate_pickup_window_end_html( $key, $value )
     {
-      $class = (isset($value['class'])) ? $value['class'] : '';
-      
-      $html = '<tr valign="top"><td colspan="2" class="' . $class . '"></td></tr>';
-      
-      return $html;
+      return '';
+    }
+
+    public function validate_pickup_window_field( $key, $value )
+    {
+      return sanitize_text_field($value);
+    }
+
+    public function validate_pickup_window_end_field( $key, $value )
+    {
+      return sanitize_text_field($value);
     }
 
     public function generate_string_html( $key, $value )
@@ -644,161 +745,131 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       return $html;
     }
 
-    public function generate_prices_box_html( $key, $value )
+    public function get_prices_box_data( $key, $value )
     {
       $box_key = $this->get_field_key($key);
-      $html = '';
       $coupons = OmnivaLt_Wc::get_coupons(OmnivaLt_Filters::settings_coupon_args());
+      $destination = array();
+
       if ( isset($value['lang']) ) {
         $shipping_country = new OmnivaLt_Shipping_Method_Country($value['lang'], $key);
-        $shipping_methods = $shipping_country->getMethods();
+        $destination = array(
+          'type' => 'country',
+          'key' => $value['lang'],
+          'title' => $shipping_country->getTitle(),
+          'image_url' => $shipping_country->getImgUrl(),
+          'blocks' => array(),
+        );
 
-        ob_start();
-        ?>
-        <tr class="row-prices" valign="top">
-          <td colspan="2">
-            <div class="prices_box" data-country="<?php echo $value['lang']; ?>">
-              <div class="pb-lang">
-                <img src="<?php echo $shipping_country->getImgUrl(); ?>" alt="[<?php echo $value['lang']; ?>]">
-                <span><?php echo $shipping_country->getTitle(); ?></span>
-              </div>
-              <div class="pb-content">
-                <?php foreach ($shipping_methods as $method_key => $method) : ?>
-                  <?php
-                  if ( empty($method['fields']) ) continue;
-                  
-                  $method_fields = $method['fields'];
-                  $field_builder = new OmnivaLt_Shipping_Method_Field($method['key'], $value['lang']);
+        foreach ( $shipping_country->getMethods() as $method_key => $method ) {
+          if ( empty($method['fields']) ) {
+            continue;
+          }
 
-                  $params = array(
-                    'type' => $method_key,
-                    'box_key' => $box_key,
-                    'title' => $method['title'],
-                    'enable' => array(
-                      'id' => $this->get_field_key($field_builder->buildIdFull('enable')),
-                      'name' => $field_builder->buildIdPrefix('enable'),
-                      'checked' => ($method_fields['enable']) ? 'checked' : '',
-                      'class' => $field_builder->buildIdPrefix('enable'),
-                      'title' => sprintf(__('Enable %s','omnivalt'), strtolower($method['title']))
-                    ),
-                    'prices' => array(
-                      'type' => $this->omnivalt_build_price_field($field_builder->buildIdFull('price_type'), $method_fields['price_type']),
-                      'type_name' => $field_builder->buildIdPrefix('price_type'),
-                      'single' => $this->omnivalt_build_price_field($field_builder->buildIdFull('price'), $method_fields['price_single']),
-                      'single_name' => $field_builder->buildIdPrefix('price_single'),
-                      'weight' => $this->omnivalt_build_price_field($field_builder->buildIdFull('price_by_weight'), $method_fields['price_by_weight']),
-                      'weight_name' => $field_builder->buildIdPrefix('price_by_weight'),
-                      'amount' => $this->omnivalt_build_price_field($field_builder->buildIdFull('price_by_amount'), $method_fields['price_by_amount']),
-                      'amount_name' => $field_builder->buildIdPrefix('price_by_amount'),
-                      'free_enable' => $this->omnivalt_build_price_field($field_builder->buildIdFull('enable_free_from'), $method_fields['enable_free_from']),
-                      'free_enable_name' => $field_builder->buildIdPrefix('enable_free_from'),
-                      'free_enable_class' => $field_builder->buildIdPrefix('enable_free'),
-                      'free' => $this->omnivalt_build_price_field($field_builder->buildIdFull('free_from'), $method_fields['free_from']),
-                      'free_name' => $field_builder->buildIdPrefix('free_from'),
-                      'coupon' => $this->omnivalt_build_price_field($field_builder->buildIdFull('coupon'), $method_fields['coupon']),
-                      'coupon_name' => $field_builder->buildIdPrefix('coupon'),
-                      'coupon_enable' => $this->omnivalt_build_price_field($field_builder->buildIdFull('enable_coupon'), $method_fields['enable_coupon']),
-                      'coupon_enable_name' => $field_builder->buildIdPrefix('enable_coupon'),
-                      'coupon_enable_class' => $field_builder->buildIdPrefix('enable_coupon'),
-                    ),
-                    'data' => array(
-                      'coupons' => $coupons,
-                    ),
-                    'other' => array(
-                      'label' => $this->omnivalt_build_price_field($field_builder->buildIdFull('label'), $method_fields['label']),
-                      'label_name' => $field_builder->buildIdPrefix('label'),
-                      'desc' => $this->omnivalt_build_price_field($field_builder->buildIdFull('description'), $method_fields['description']),
-                      'desc_name' => $field_builder->buildIdPrefix('description'),
-                    )
-                  );
-                  if ( array_key_exists('price_by_boxsize', $method_fields) ) {
-                    $params['prices']['boxsize'] = $this->omnivalt_build_price_field($field_builder->buildIdFull('price_by_boxsize'), $method_fields['price_by_boxsize']);
-                    $params['prices']['boxsize_name'] = $field_builder->buildIdPrefix('price_by_boxsize');
-                  }
-                  echo $shipping_country->setCurrentMethodKey($method_key)->buildSettingsBlock($params);
-                  ?>
-                <?php endforeach; ?>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <?php
-        $html = ob_get_contents();
-        ob_end_clean();
-      } else if ( isset($value['plan']) ) {
+          $field_builder = new OmnivaLt_Shipping_Method_Field($method['key'], $value['lang']);
+          $params = $this->prepare_prices_box_method_params($box_key, $field_builder, $method['fields'], $coupons);
+          $params['type'] = $method_key;
+          $params['method_key'] = $method['key'];
+          $params['title'] = $method['title'];
+          $params['show_enable_label'] = false;
+          $params['enable']['title'] = sprintf(__('Enable %s','omnivalt'), strtolower($method['title']));
+          $params['prices']['type'] = $this->omnivalt_build_price_field($field_builder->buildIdFull('price_type'), $method['fields']['price_type']);
+          $params['prices']['type_name'] = $field_builder->buildIdPrefix('price_type');
+          $params['prices']['weight'] = $this->omnivalt_build_price_field($field_builder->buildIdFull('price_by_weight'), $method['fields']['price_by_weight']);
+          $params['prices']['weight_name'] = $field_builder->buildIdPrefix('price_by_weight');
+          $params['prices']['amount'] = $this->omnivalt_build_price_field($field_builder->buildIdFull('price_by_amount'), $method['fields']['price_by_amount']);
+          $params['prices']['amount_name'] = $field_builder->buildIdPrefix('price_by_amount');
+
+          if ( array_key_exists('price_by_boxsize', $method['fields']) ) {
+            $params['prices']['boxsize'] = $this->omnivalt_build_price_field($field_builder->buildIdFull('price_by_boxsize'), $method['fields']['price_by_boxsize']);
+            $params['prices']['boxsize_name'] = $field_builder->buildIdPrefix('price_by_boxsize');
+          }
+
+          $renderer = $shipping_country->setCurrentMethodKey($method_key);
+          $destination['blocks'][] = array(
+            'group_key' => $method['key'],
+            'toggle_html' => $renderer->buildSettingsSwitcher($params),
+            'block_html' => $renderer->buildSettingsBlock($params),
+          );
+        }
+
+        return $destination;
+      }
+
+      if ( isset($value['plan']) ) {
         $international_data = array(
           'key' => $value['plan'],
           'title' => $this->omnivalt_api_int->get_package_title($value['plan']),
         );
         $shipping_international = new OmnivaLt_Shipping_Method_International($international_data, $key);
-        $shipping_methods = $shipping_international->getMethods();
+        $destination = array(
+          'type' => 'plan',
+          'key' => $value['plan'],
+          'title' => __('International','omnivalt') . ': ' . $shipping_international->getTitle(),
+          'image_url' => $shipping_international->getImgUrl(),
+          'blocks' => array(),
+        );
 
-        ob_start();
-        ?>
-        <tr class="row-prices" valign="top">
-          <td colspan="2">
-            <div class="prices_box" data-plan="<?php echo $value['plan']; ?>">
-              <div class="pb-lang">
-                <img src="<?php echo $shipping_international->getImgUrl(); ?>" alt="[<?php echo $value['plan']; ?>]">
-                <span><?php echo __('International','omnivalt') . ': ' . $shipping_international->getTitle(); ?></span>
-              </div>
-              <div class="pb-content">
-                <?php foreach ( $shipping_methods as $method_key => $method ) : ?>
-                  <?php
-                  if ( empty($method['fields']) ) continue;
-                  
-                  $method_fields = $method['fields'];
-                  $field_builder = new OmnivaLt_Shipping_Method_Field($method_key, $value['plan']);
-                  $region_title = $this->omnivalt_api_int->get_region_title($method_key);
-                  
-                  $params = array(
-                    'type' => $method_key,
-                    'box_key' => $box_key,
-                    'title' => $region_title,
-                    'cant_disable' => true,
-                    'enable' => array(
-                      'id' => $this->get_field_key($field_builder->buildIdFull('enable')),
-                      'name' => $field_builder->buildIdPrefix('enable'),
-                      'checked' => ($method_fields['enable']) ? 'checked' : '',
-                      'class' => $field_builder->buildIdPrefix('enable'),
-                      'title' => sprintf(__('Enable %s','omnivalt'), $region_title)
-                    ),
-                    'prices' => array(
-                      'single' => $this->omnivalt_build_price_field($field_builder->buildIdFull('price'), $method_fields['price_single']),
-                      'single_name' => $field_builder->buildIdPrefix('price_single'),
-                      'free_enable' => $this->omnivalt_build_price_field($field_builder->buildIdFull('enable_free_from'), $method_fields['enable_free_from']),
-                      'free_enable_name' => $field_builder->buildIdPrefix('enable_free_from'),
-                      'free_enable_class' => $field_builder->buildIdPrefix('enable_free'),
-                      'free' => $this->omnivalt_build_price_field($field_builder->buildIdFull('free_from'), $method_fields['free_from']),
-                      'free_name' => $field_builder->buildIdPrefix('free_from'),
-                      'coupon' => $this->omnivalt_build_price_field($field_builder->buildIdFull('coupon'), $method_fields['coupon']),
-                      'coupon_name' => $field_builder->buildIdPrefix('coupon'),
-                      'coupon_enable' => $this->omnivalt_build_price_field($field_builder->buildIdFull('enable_coupon'), $method_fields['enable_coupon']),
-                      'coupon_enable_name' => $field_builder->buildIdPrefix('enable_coupon'),
-                      'coupon_enable_class' => $field_builder->buildIdPrefix('enable_coupon'),
-                    ),
-                    'data' => array(
-                      'coupons' => $coupons,
-                    ),
-                    'other' => array(
-                      'label' => $this->omnivalt_build_price_field($field_builder->buildIdFull('label'), $method_fields['label']),
-                      'label_name' => $field_builder->buildIdPrefix('label'),
-                      'desc' => $this->omnivalt_build_price_field($field_builder->buildIdFull('description'), $method_fields['description']),
-                      'desc_name' => $field_builder->buildIdPrefix('description'),
-                    ),
-                  );
-                  echo $shipping_international->setCurrentMethodKey($value['plan'])->buildSettingsBlock($params);
-                  ?>
-                <?php endforeach; ?>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <?php
-        $html = ob_get_contents();
-        ob_end_clean();
+        foreach ( $shipping_international->getMethods() as $method_key => $method ) {
+          if ( empty($method['fields']) ) {
+            continue;
+          }
+
+          $region_title = $this->omnivalt_api_int->get_region_title($method_key);
+          $field_builder = new OmnivaLt_Shipping_Method_Field($method_key, $value['plan']);
+          $params = $this->prepare_prices_box_method_params($box_key, $field_builder, $method['fields'], $coupons);
+          $params['type'] = $method_key;
+          $params['method_key'] = $method_key;
+          $params['title'] = $region_title;
+          $params['show_enable_label'] = true;
+          $params['enable']['title'] = sprintf(__('Enable %s','omnivalt'), $region_title);
+
+          $renderer = $shipping_international->setCurrentMethodKey($method_key);
+          $destination['blocks'][] = array(
+            'group_key' => 'international',
+            'toggle_html' => $renderer->buildSettingsSwitcher($params),
+            'block_html' => $renderer->buildSettingsBlock($params),
+          );
+        }
       }
-      return $html;
+
+      return $destination;
+    }
+
+    private function prepare_prices_box_method_params( $box_key, $field_builder, $method_fields, $coupons )
+    {
+      return array(
+        'box_key' => $box_key,
+        'enable' => array(
+          'id' => $this->get_field_key($field_builder->buildIdFull('enable')),
+          'name' => $field_builder->buildIdPrefix('enable'),
+          'checked' => ($method_fields['enable']) ? 'checked' : '',
+          'class' => $field_builder->buildIdPrefix('enable'),
+        ),
+        'prices' => array(
+          'single' => $this->omnivalt_build_price_field($field_builder->buildIdFull('price'), $method_fields['price_single']),
+          'single_name' => $field_builder->buildIdPrefix('price_single'),
+          'free_enable' => $this->omnivalt_build_price_field($field_builder->buildIdFull('enable_free_from'), $method_fields['enable_free_from']),
+          'free_enable_name' => $field_builder->buildIdPrefix('enable_free_from'),
+          'free_enable_class' => $field_builder->buildIdPrefix('enable_free'),
+          'free' => $this->omnivalt_build_price_field($field_builder->buildIdFull('free_from'), $method_fields['free_from']),
+          'free_name' => $field_builder->buildIdPrefix('free_from'),
+          'coupon' => $this->omnivalt_build_price_field($field_builder->buildIdFull('coupon'), $method_fields['coupon']),
+          'coupon_name' => $field_builder->buildIdPrefix('coupon'),
+          'coupon_enable' => $this->omnivalt_build_price_field($field_builder->buildIdFull('enable_coupon'), $method_fields['enable_coupon']),
+          'coupon_enable_name' => $field_builder->buildIdPrefix('enable_coupon'),
+          'coupon_enable_class' => $field_builder->buildIdPrefix('enable_coupon'),
+        ),
+        'data' => array(
+          'coupons' => $coupons,
+        ),
+        'other' => array(
+          'label' => $this->omnivalt_build_price_field($field_builder->buildIdFull('label'), $method_fields['label']),
+          'label_name' => $field_builder->buildIdPrefix('label'),
+          'desc' => $this->omnivalt_build_price_field($field_builder->buildIdFull('description'), $method_fields['description']),
+          'desc_name' => $field_builder->buildIdPrefix('description'),
+        ),
+      );
     }
 
     private function omnivalt_build_price_field( $field_key, $field_value ) {

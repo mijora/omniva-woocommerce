@@ -28,7 +28,7 @@ class OmnivaLt_Core
       }
 
       if ( OmnivaLt_Debug::is_development_mode_enabled() ) {
-        OmnivaLt_Helper::add_msg(sprintf(__('Development mode is activated! When no longer needed, disable it in %s.', 'omnivalt'), '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=shipping&section=omnivalt' ) . '">' . __('Omniva settings page', 'omnivalt') . '</a>'), 'warning', 'Omniva');
+        OmnivaLt_Helper::add_msg(sprintf(__('Development mode is activated! When no longer needed, disable it in %s.', 'omnivalt'), '<a href="' . OmnivaLt_Settings_Page::get_page_url() . '">' . __('Omniva settings page', 'omnivalt') . '</a>'), 'warning', 'Omniva');
       }
     });
   }
@@ -260,13 +260,18 @@ class OmnivaLt_Core
   {
     $folder_css = '/assets/css/';
     $folder_js = '/assets/js/';
+    $folder_mapping = '/assets/terminal-mapping/';
 
     if (is_cart() || is_checkout()) {
-      wp_enqueue_script('omnivalt_mapping', plugins_url($folder_js . 'terminal-mapping.js', self::$main_file_path), array('jquery'), null, true);
-      wp_enqueue_style('omnivalt_mapping', plugins_url($folder_css . 'terminal-mapping.css', self::$main_file_path));
+      $mapping_js_file = OMNIVALT_DIR . $folder_mapping . 'terminal-mapping.omniva-fullwidth.js';
+      $mapping_css_file = OMNIVALT_DIR . $folder_mapping . 'terminal-mapping.omniva-fullwidth.css';
+      $mapping_js_version = file_exists($mapping_js_file) ? filemtime($mapping_js_file) : OMNIVALT_VERSION;
+      $mapping_css_version = file_exists($mapping_css_file) ? filemtime($mapping_css_file) : OMNIVALT_VERSION;
+      wp_enqueue_script('omnivalt_mapping', plugins_url($folder_mapping . 'terminal-mapping.omniva-fullwidth.js', self::$main_file_path), array('jquery'), $mapping_js_version, true);
+      wp_enqueue_style('omnivalt_mapping', plugins_url($folder_mapping . 'terminal-mapping.omniva-fullwidth.css', self::$main_file_path), array(), $mapping_css_version);
 
       wp_enqueue_script('omnivalt-helper', plugins_url($folder_js . 'omniva_helper.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
-      wp_enqueue_script('omnivalt', plugins_url($folder_js . 'omniva.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
+      wp_enqueue_script('omnivalt', plugins_url($folder_js . 'omniva.js', self::$main_file_path), array('jquery', 'omnivalt-helper', 'omnivalt_mapping', 'omnivalt_leaflet'), OMNIVALT_VERSION);
       wp_enqueue_style('omnivalt', plugins_url($folder_css . 'omniva.css', self::$main_file_path), array(), OMNIVALT_VERSION);
 
       if ( file_exists(OMNIVALT_DIR . $folder_css . 'custom.css') ) { //Allow custom CSS file which not include in plugin by default
@@ -278,6 +283,7 @@ class OmnivaLt_Core
 
       wp_localize_script('omnivalt', 'omnivalt_data', array( //New method (use terminal-mapping library)
         'ajax_url' => admin_url('admin-ajax.php'),
+        'clear_terminal_nonce' => wp_create_nonce('omnivalt_clear_terminal'),
         'omniva_plugin_url' => OMNIVALT_URL,
         'text' => array(
           'providers' => array(
@@ -292,15 +298,38 @@ class OmnivaLt_Core
           'select_post' => __('Select post office', 'omnivalt'),
           'modal_open_button' => __('Select in map', 'omnivalt'),
           'search_placeholder' => __('Enter postcode', 'omnivalt'),
+          'map_search_placeholder' => __('Start typing parcel machine name or address', 'omnivalt'),
           'search_button' => __('Search', 'omnivalt'),
           'select_button' => __('Select', 'omnivalt'),
           'not_found' => __('Place not found', 'omnivalt'),
           'no_cities_found' => __('There were no cities found for your search term', 'omnivalt'),
+          'no_search_results' => __('No results', 'omnivalt'),
           'enter_address' => __('Enter postcode/address', 'omnivalt'),
           'show_more' => __('Show more', 'omnivalt'),
           'use_my_location' => __('Use my location', 'omnivalt'),
+          'geolocation_loading' => __('Locating...', 'omnivalt'),
           'my_position' => __('Distance calculated from this point', 'omnivalt'),
           'geo_not_supported' => __('Geolocation is not supported', 'omnivalt'),
+          'delivery_location' => __('Delivery location', 'omnivalt'),
+          'close_button' => __('Close map', 'omnivalt'),
+          'search_label' => __('Search delivery locations', 'omnivalt'),
+          'clear_search' => __('Clear search', 'omnivalt'),
+          'clear_selection' => __('Clear selected delivery location', 'omnivalt'),
+          'search_results_label' => __('Delivery location search results', 'omnivalt'),
+          'show_on_map' => __('Show on map', 'omnivalt'),
+          'sorted_by_zip' => __('Sorted by distance from your ZIP:', 'omnivalt'),
+          'sort_by_zip' => __('Sort by distance from your ZIP', 'omnivalt'),
+          'sorted_by_location' => __('Sorted by distance from your location:', 'omnivalt'),
+          'postcode_input_label' => __('Postcode', 'omnivalt'),
+          'postcode_placeholder' => __('Enter postcode', 'omnivalt'),
+          'geolocation_error' => __('Location unavailable', 'omnivalt'),
+          'search_error' => __('Unable to find a location', 'omnivalt'),
+          'use_zip' => __('Use ZIP', 'omnivalt'),
+          'enter_zip' => __('Enter ZIP', 'omnivalt'),
+          'close_popup' => __('Close popup', 'omnivalt'),
+          'selected_button' => __('Selected', 'omnivalt'),
+          'change_button' => __('Change', 'omnivalt'),
+          'clear_button' => __('Clear', 'omnivalt'),
         )
       ));
       wp_localize_script('omnivalt', 'omnivadata', array( //Old method (for dropdown)
@@ -342,22 +371,57 @@ class OmnivaLt_Core
     wp_enqueue_style('omnivalt_admin_global', plugins_url($folder_css . 'omniva_admin_global.css', self::$main_file_path), array(), OMNIVALT_VERSION);
   }
 
+  /**
+   * Enqueues assets for the Omniva settings screen.
+   *
+   * @param string $hook Current admin page hook suffix.
+   * @return void
+   */
   public static function load_admin_settings_scripts( $hook )
   {
     $folder_css = '/assets/css/';
     $folder_js = '/assets/js/';
 
-    if ($hook == 'woocommerce_page_wc-settings' && isset($_GET['section']) && $_GET['section'] == 'omnivalt') {
-      wp_enqueue_style('omnivalt_admin_settings', plugins_url($folder_css . 'omniva_admin_settings.css', self::$main_file_path), array(), OMNIVALT_VERSION);
-      wp_enqueue_script('omnivalt_admin_settings', plugins_url($folder_js . 'omniva_admin_settings.js', self::$main_file_path), array('jquery'), OMNIVALT_VERSION);
+    // Some WordPress admin screens expose a more reliable identifier than the hook suffix.
+    $screen = function_exists('get_current_screen') ? get_current_screen() : false;
+    $screen_id = is_object($screen) && ! empty($screen->id) ? $screen->id : '';
+    $is_omniva_settings_page = $hook === 'woocommerce_page_omnivalt-settings'
+      || $screen_id === 'woocommerce_page_omnivalt-settings';
 
-      wp_localize_script('omnivalt_admin_settings', 'omnivalt_params', array(
-        'available_methods' => self::get_configs('available_methods'),
-        'txt' => array(
-          'disabled_notice' => __('The plugin is disabled', 'omnivalt')
-        )
-      ));
+    if ( ! $is_omniva_settings_page ) {
+      return;
     }
+
+    wp_enqueue_style('woocommerce_admin_styles');
+    wp_enqueue_style('omnivalt_admin_settings_page', plugins_url($folder_css . 'omniva_admin_settings_page.css', self::$main_file_path), array(), OMNIVALT_VERSION);
+    wp_enqueue_script('omnivalt_admin_settings_page', plugins_url($folder_js . 'omniva_admin_settings_page.js', self::$main_file_path), array('jquery', 'jquery-ui-sortable'), OMNIVALT_VERSION, true);
+    wp_localize_script('omnivalt_admin_settings_page', 'omnivaltSettingsPage', array(
+      'available_methods' => self::get_configs('available_methods'),
+      'phone' => array(
+        'countries' => array(
+          'LT' => array('name' => __('Lithuania', 'omnivalt'), 'dial_code' => '370', 'min' => 8, 'max' => 8, 'mobile' => '^6\\d{7}$'),
+          'LV' => array('name' => __('Latvia', 'omnivalt'), 'dial_code' => '371', 'min' => 8, 'max' => 8, 'mobile' => '^2\\d{7}$'),
+          'EE' => array('name' => __('Estonia', 'omnivalt'), 'dial_code' => '372', 'min' => 7, 'max' => 8, 'mobile' => '^(5|8)\\d{6,7}$'),
+          'FI' => array('name' => __('Finland', 'omnivalt'), 'dial_code' => '358', 'min' => 5, 'max' => 12, 'mobile' => '^(4|5)\\d{8}$'),
+        ),
+        'placeholder' => __('Enter phone number', 'omnivalt'),
+        'invalid' => __('Enter a valid phone number for the selected country.', 'omnivalt'),
+        'flag_url' => OMNIVALT_URL . 'assets/img/flags/',
+      ),
+      'txt' => array(
+        'disabled_notice' => __('The plugin is disabled', 'omnivalt'),
+        'pickup_window_invalid' => __('End time must be later than start time.', 'omnivalt'),
+        'country_calling_code' => __('Country calling code', 'omnivalt'),
+        'clear_all' => __('Clear all', 'omnivalt'),
+        'search_categories' => __('Search categories...', 'omnivalt'),
+        'search_shipping_classes' => __('Search shipping classes...', 'omnivalt'),
+        'search' => __('Search...', 'omnivalt'),
+        /* translators: %d: Number of selected items. */
+        'selected_count' => __('%d selected', 'omnivalt'),
+        'remove_selected_item' => __('Remove selected item', 'omnivalt'),
+        'no_matches' => __('No matches found.', 'omnivalt'),
+      ),
+    ));
   }
 
   public static function add_asyncdefer_by_handle( $tag, $handle )
@@ -384,7 +448,7 @@ class OmnivaLt_Core
   }
 
   public static function settings_link( $links ) {
-    array_unshift($links, '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=shipping&section=omnivalt' ) . '">' . __('Settings', 'omnivalt') . '</a>');
+    array_unshift($links, '<a href="' . OmnivaLt_Settings_Page::get_page_url() . '">' . __('Settings', 'omnivalt') . '</a>');
     return $links;
   }
 
@@ -459,6 +523,7 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-cronjob.php';
     require_once $core_dir . 'class-terminals.php';
     require_once $core_dir . 'class-manifest.php';
+    require_once $core_dir . 'admin/class-settings-page.php';
     require_once $core_dir . 'class-order.php';
     require_once $core_dir . 'class-omniva-order.php';
     require_once $core_dir . 'class-frontend.php';
@@ -534,9 +599,14 @@ class OmnivaLt_Core
     add_action('wp_footer', array('OmnivaLt_Core', 'add_to_footer'));
     add_action('wp_ajax_nopriv_add_terminal_to_session', array('OmnivaLt_Terminals', 'add_terminal_to_session'));
     add_action('wp_ajax_add_terminal_to_session', array('OmnivaLt_Terminals', 'add_terminal_to_session'));
+    add_action('wp_ajax_nopriv_omnivalt_clear_terminal', array('OmnivaLt_Terminals', 'clear_terminal_from_session'));
+    add_action('wp_ajax_omnivalt_clear_terminal', array('OmnivaLt_Terminals', 'clear_terminal_from_session'));
     add_action('wp_ajax_omniva_terminals_json', array('OmnivaLt_Terminals', 'get_terminals_json'));
     add_action('wp_ajax_nopriv_omniva_terminals_json', array('OmnivaLt_Terminals', 'get_terminals_json'));
     add_action('admin_menu', array('OmnivaLt_Manifest', 'register_menu_pages'));
+    add_action('admin_menu', array('OmnivaLt_Settings_Page', 'register_menu_page'));
+    add_action('admin_init', array('OmnivaLt_Settings_Page', 'redirect_legacy_settings_page'), 1);
+    add_action('admin_init', array('OmnivaLt_Settings_Page', 'save_settings'));
     add_action('woocommerce_after_shipping_rate', array('OmnivaLt_Order', 'after_rate_description'), 20, 2);
     add_action('woocommerce_after_shipping_rate', array('OmnivaLt_Order', 'after_rate_terminals'));
     add_action('woocommerce_checkout_update_order_meta', array('OmnivaLt_Order', 'add_terminal_id_to_order'));
@@ -565,6 +635,7 @@ class OmnivaLt_Core
     add_action('omnivalt_cleanup_temp_label', array('OmnivaLt_Emails', 'cleanup_temp_label'));
 
     add_filter('script_loader_tag', array('OmnivaLt_Core', 'add_asyncdefer_by_handle'), 10, 2);
+    add_filter('woocommerce_get_sections_shipping', array('OmnivaLt_Settings_Page', 'remove_legacy_settings_section'));
     add_filter('woocommerce_shipping_methods', array('OmnivaLt_Core', 'add_shipping_method'));
     add_filter('admin_post_omnivalt_call_courier', array('OmnivaLt_Labels', 'post_call_courier_actions'));
     add_filter('admin_post_omnivalt_cancel_courier', array('OmnivaLt_Labels', 'post_cancel_courier_actions'));

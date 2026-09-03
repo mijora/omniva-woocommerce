@@ -20,6 +20,13 @@ class OmnivaLt_Wc_Blocks
                 'schema_callback' => 'OmnivaLt_Wc_Blocks::cb_schema_callback',
                 'schema_type' => ARRAY_A,
             ));
+            woocommerce_store_api_register_endpoint_data(array(
+                'endpoint' => \Automattic\WooCommerce\StoreApi\Schemas\V1\CartSchema::IDENTIFIER,
+                'namespace' => 'omnivalt',
+                'data_callback' => 'OmnivaLt_Wc_Blocks::cb_data_callback',
+                'schema_callback' => 'OmnivaLt_Wc_Blocks::cb_schema_callback',
+                'schema_type' => ARRAY_A,
+            ));
         }
         add_action('woocommerce_store_api_checkout_update_order_from_request', array('OmnivaLt_Wc_Blocks', 'update_block_order_meta'), 10, 2);
 
@@ -67,11 +74,16 @@ class OmnivaLt_Wc_Blocks
             OmnivaLt_Debug::log_error('Failed to save Omniva shipping method from Blocks Checkout. Received method: ' . print_r($selected_method, true));
         }
 
+        $cookie_terminal_id = '';
+        if ( isset($_COOKIE['omniva_terminal']) ) {
+            $cookie_terminal_id = sanitize_text_field(wp_unslash($_COOKIE['omniva_terminal']));
+        }
+
         if ( OmnivaLt_Picapac::is_rate($selected_method) ) {
             $selected_terminal_id = OmnivaLt_Picapac::get_terminal_id();
-        } elseif ( empty($selected_terminal_id) && ! empty($_COOKIE['omniva_terminal']) ) {
+        } elseif ( empty($selected_terminal_id) && ! empty($cookie_terminal_id) ) {
             // Fallback: if terminal not in extension data, try cookie
-            $selected_terminal_id = wc_clean($_COOKIE['omniva_terminal']);
+            $selected_terminal_id = $cookie_terminal_id;
         }
 
         if ( ! empty($selected_terminal_id) ) {
@@ -95,8 +107,26 @@ class OmnivaLt_Wc_Blocks
 
     public static function cb_data_callback()
     {
+        $selected_terminal_id = '';
+        $cookie_terminal_id = '';
+
+        if ( isset($_COOKIE['omniva_terminal']) ) {
+            $cookie_terminal_id = sanitize_text_field(wp_unslash($_COOKIE['omniva_terminal']));
+        }
+
+        // A terminal can be changed in the Blocks checkout without a classic
+        // checkout request, so its cookie is newer than the saved session value.
+        if ( ! empty($cookie_terminal_id) ) {
+            $selected_terminal_id = $cookie_terminal_id;
+            WC()->session->set('omnivalt_terminal_id', $selected_terminal_id);
+        }
+
+        if ( empty($selected_terminal_id) ) {
+            $selected_terminal_id = OmnivaLt_Wc::get_session('omnivalt_terminal_id');
+        }
+
         return array(
-            'selected_terminal' => '',
+            'selected_terminal' => $selected_terminal_id,
             'selected_rate_id' => '',
         );
     }

@@ -1,0 +1,2498 @@
+@font-face {
+  font-family: 'TT Wellingtons';
+  src: url('../fonts/tt-wellingtons-medium.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'TT Wellingtons';
+  src: url('../fonts/tt-wellingtons-demibold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+}
+
+#omnivalt-settings-root,
+#omnivalt-settings-root *,
+#omnivalt-settings-root *::before,
+#omnivalt-settings-root *::after {
+  box-sizing: border-box;
+  font-feature-settings: 'lnum';
+  font-variant-numeric: lining-nums;
+}
+
+#omnivalt-settings-root {
+  --omniva-ink: #000000;
+  --omniva-muted: #2d2d2d;
+  --omniva-line: rgba(45, 45, 45, 0.18);
+  --omniva-line-strong: #2d2d2d;
+  --omniva-card: #ffffff;
+  --omniva-accent: #ff6600;
+  --omniva-accent-soft: #fbe6d9;
+  --omniva-accent-ink: #2d2d2d;
+  --omniva-green: #007a45;
+  --omniva-radius: 14px;
+  --omniva-radius-sm: 8px;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --line-height-sm: 1.25rem;
+  --line-height-base: 1.5rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --omniva-main-max: 700px;
+  width: 100%;
+  max-width: var(--omniva-main-max);
+  padding: 20px 0px 0px;
+  background: var(--omniva-canvas);
+  color: var(--omniva-ink);
+  font-family: 'TT Wellingtons', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+  font-feature-settings: 'lnum';
+  font-variant-numeric: lining-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.woocommerce_page_omnivalt-settings {
+  --omniva-canvas: #f4f4f4;
+}
+
+body.woocommerce_page_omnivalt-settings #wpcontent {
+  position: relative;
+}
+
+body.woocommerce_page_omnivalt-settings #wpcontent,
+body.woocommerce_page_omnivalt-settings #wpbody,
+body.woocommerce_page_omnivalt-settings #wpbody-content {
+  background-color: var(--omniva-canvas);
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__header {
+  position: relative;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--omniva-line);
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__header::after {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 56px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--omniva-accent);
+  content: '';
+}
+
+#omnivalt-settings-root .omniva-tabs {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(100%, 700px);
+  margin: 0 0 1.5rem;
+  overflow: hidden;
+  border: 1px solid var(--omniva-line-strong);
+  border-radius: var(--omniva-radius-sm);
+  background: var(--omniva-card);
+}
+
+#omnivalt-settings-root .omniva-tabs__tab {
+  min-height: 3.25rem;
+  margin: 0;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-right: 1px solid var(--omniva-line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--omniva-ink);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: var(--line-height-sm);
+  text-align: center;
+  cursor: pointer;
+}
+
+#omnivalt-settings-root .omniva-tabs__tab:last-child {
+  border-right: 0;
+  border-radius: 0 var(--omniva-radius-sm) var(--omniva-radius-sm) 0;
+}
+
+#omnivalt-settings-root .omniva-tabs__tab:not(.is-active):hover {
+  background: var(--omniva-canvas);
+}
+
+#omnivalt-settings-root .omniva-tabs__tab:focus-visible {
+  position: relative;
+  z-index: 2;
+  outline: 2px solid var(--omniva-accent);
+  outline-offset: -2px;
+}
+
+#omnivalt-settings-root .omniva-tabs__tab.is-active {
+  position: relative;
+  z-index: 1;
+  margin: -1px;
+  border: 2px solid var(--omniva-green);
+  border-radius: 0;
+  background: #f0ffef;
+}
+
+#omnivalt-settings-root .omniva-tabs__tab.is-active:first-child {
+  border-radius: var(--omniva-radius-sm) 0 0 var(--omniva-radius-sm);
+}
+
+#omnivalt-settings-root .omniva-tabs__tab.is-active:last-child {
+  border-radius: 0 var(--omniva-radius-sm) var(--omniva-radius-sm) 0;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__header-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  color: var(--omniva-muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.36;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__header h1 {
+  margin: 0 0 4px;
+  padding: 0;
+  color: var(--omniva-ink);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 2rem;
+  letter-spacing: 0;
+}
+
+#omnivalt-settings-root
+  .omnivalt-settings-page__breadcrumb
+  span[aria-hidden='true'] {
+  opacity: 0.5;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__header > div > p {
+  margin: 0;
+  color: var(--omniva-muted);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 18px 16px;
+  flex-shrink: 0;
+  gap: 0;
+  border-radius: 10px;
+  background: var(--omniva-accent);
+  color: #ffffff;
+  text-align: left;
+  text-decoration: none;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__brand:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--omniva-accent);
+  outline-offset: 4px;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__brand-logo {
+  display: block;
+  width: 145px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 7px;
+  filter: brightness(0) invert(1);
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__brand-slogan {
+  width: 144px;
+  margin-top: 25px;
+  color: #ffffff;
+  font-family: 'TT Wellingtons', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 2.4px;
+  line-height: 18.36px;
+  text-align: left;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__layout {
+  display: block;
+  max-width: var(--omniva-main-max);
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__main {
+  width: 100%;
+  max-width: var(--omniva-main-max);
+
+  min-width: 0;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__card {
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid var(--omniva-line);
+  border-radius: 10px;
+  background: var(--omniva-card);
+  box-shadow: none;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__sidebar {
+  position: fixed;
+  top: 140px;
+  right: 24px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 368px;
+  max-height: calc(100vh - 164px);
+  overflow-y: auto;
+  min-width: 0;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__sidebar-card {
+  padding: 16px;
+  border: 1px solid var(--omniva-line);
+  border-radius: var(--omniva-radius-sm);
+  background: var(--omniva-card);
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__sidebar-card h2 {
+  margin: 0 0 8px;
+  color: var(--omniva-ink);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__sidebar-card p {
+  margin: 0;
+  color: var(--omniva-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__sidebar-card p + p {
+  margin-top: 8px;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__sidebar-card a {
+  color: var(--omniva-green);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__support-image {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 160px;
+  min-height: 0;
+  align-items: center;
+  justify-content: end;
+  margin-bottom: -24px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__support-image img {
+  display: block;
+  height: 140px;
+  object-fit: contain;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__help-card {
+  position: relative;
+  z-index: 2;
+  padding-top: 28px;
+}
+
+#omnivalt-settings-root
+  .omnivalt-settings-page__sidebar
+  > .omnivalt-settings-page__brand {
+  align-self: stretch;
+  margin: 0 0 18px;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__card-header {
+  position: relative;
+  margin: 0;
+  padding: 24px 24px 0px;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__card-header-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__card-header-icon {
+  display: flex;
+  width: 26px;
+  height: 26px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--omniva-accent);
+  color: #fff;
+  font-size: 15px;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__card-header h2 {
+  margin: 0 0 4px;
+  padding: 0;
+  color: var(--omniva-ink);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.18;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__card-header-top h2 {
+  margin: 0;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__card-subtitle {
+  margin: 0;
+  padding-left: 36px;
+  max-width: 64ch;
+  color: var(--omniva-muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__card-body {
+  padding: 8px 24px 8px;
+}
+
+#omnivalt-settings-root .omnivalt-api-access {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 15px 0 15px;
+  padding: 14px 16px;
+  border: 1px solid #e3c6e4;
+  border-radius: var(--omniva-radius-sm);
+  background: #faeafd;
+}
+
+#omnivalt-settings-root .omnivalt-api-access__icon {
+  display: block;
+  width: 31px;
+  height: 35px;
+  flex: 0 0 auto;
+}
+
+#omnivalt-settings-root .omnivalt-api-access__content {
+  min-width: 0;
+  flex: 1;
+}
+
+#omnivalt-settings-root .omnivalt-api-access__content h3 {
+  margin: 0 0 2px;
+  color: var(--omniva-ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+#omnivalt-settings-root .omnivalt-api-access__content p {
+  margin: 0;
+  color: var(--omniva-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+#omnivalt-settings-root .omnivalt-api-access__action {
+  display: inline-flex;
+  min-height: 36px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border: 1px solid var(--omniva-ink);
+  border-radius: 999px;
+  color: var(--omniva-ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+#omnivalt-settings-root .omnivalt-api-access__action:hover,
+#omnivalt-settings-root .omnivalt-api-access__action:focus {
+  border-color: var(--omniva-accent);
+  background: var(--omniva-accent);
+  color: #fff;
+  box-shadow: none;
+}
+
+#omnivalt-settings-root .omnivalt-api-access__action .dashicons {
+  width: 15px;
+  height: 15px;
+  font-size: 15px;
+}
+
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings {
+  display: block;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings tbody,
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings tr,
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings th,
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings td {
+  display: block;
+  width: auto;
+  max-width: none;
+  padding: 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings tr {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--omniva-line);
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.hidden {
+  display: none;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr:last-child,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr:not(:has(~ tr.omniva-field:not(.hidden))) {
+  border-bottom: 0;
+}
+
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings th {
+  margin-bottom: 3px;
+  color: var(--omniva-ink);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:not(:has(.description))
+  > th.titledesc {
+  margin-bottom: 10px;
+}
+
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings td {
+  margin: 0;
+  color: var(--omniva-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .description {
+  max-width: 64ch;
+  margin: 0 0 10px;
+  color: var(--omniva-muted);
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:not(:has(input[type='checkbox']))
+  > td.forminp
+  > fieldset {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:not(:has(input[type='checkbox']))
+  > td.forminp
+  > fieldset
+  > .description {
+  order: 1;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:not(:has(input[type='checkbox']))
+  > td.forminp
+  > fieldset
+  > input,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:not(:has(input[type='checkbox']))
+  > td.forminp
+  > fieldset
+  > select,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:not(:has(input[type='checkbox']))
+  > td.forminp
+  > fieldset
+  > textarea {
+  order: 2;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='text'],
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='password'],
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='number'],
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings select,
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings textarea {
+  min-height: 48px;
+  max-width: 520px;
+  border: 1px solid var(--omniva-line-strong);
+  border-radius: var(--omniva-radius-sm);
+  box-shadow: none;
+  color: var(--omniva-ink);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='text'],
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='password'],
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='number'] {
+  padding: 0 12px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omnivalt-floating-field
+  > th.titledesc {
+  display: none;
+}
+
+#omnivalt-settings-root .omnivalt-floating-input {
+  position: relative;
+  display: block;
+  order: 2;
+  width: 100%;
+  max-width: 520px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr.omniva-field:not(:has(input[type='checkbox']))
+  > td.forminp
+  > fieldset
+  > .description {
+  order: 3;
+  margin: 8px 0 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr {
+  padding: 8px 0;
+  border-bottom: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr:not(.omnivalt-floating-field)
+  > th.titledesc {
+  margin-bottom: 8px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tbody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  max-width: 520px;
+  column-gap: 12px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr:has(#woocommerce_omnivalt_shop_city) {
+  grid-column: 1;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr:has(#woocommerce_omnivalt_shop_postcode) {
+  grid-column: 2;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr:has(#woocommerce_omnivalt_shop_city)
+  input,
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr:has(#woocommerce_omnivalt_shop_postcode)
+  input {
+  width: 100%;
+  max-width: none;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr:has(#woocommerce_omnivalt_shop_countrycode),
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr:has(#woocommerce_omnivalt_shop_email) {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--omniva-line);
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr:has(#woocommerce_omnivalt_shop_countrycode)
+  + tr,
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  tr:has(#woocommerce_omnivalt_shop_email)
+  + tr {
+  padding-top: 20px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  [data-settings-card='shop']
+  table.form-table.omniva-settings
+  select,
+#omnivalt-settings-root [data-settings-card='shop'] .omnivalt-phone-input {
+  min-height: 52px;
+  height: 52px;
+}
+
+#omnivalt-settings-root .omnivalt-pickup-window__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  max-width: 520px;
+  gap: 12px;
+}
+
+#omnivalt-settings-root .omnivalt-pickup-window__field > label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--omniva-ink);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+#omnivalt-settings-root .omnivalt-pickup-window__field > input[type='time'] {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 12px;
+  border: 1px solid var(--omniva-line-strong);
+  border-radius: var(--omniva-radius-sm);
+  background: var(--omniva-card);
+  color: var(--omniva-ink);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .omnivalt-floating-input
+  > input[type='text'] {
+  display: block;
+  width: 100%;
+  height: 52px;
+  min-height: 52px;
+  padding: 25px 12px 6px;
+}
+
+#omnivalt-settings-root .omnivalt-floating-input__label {
+  position: absolute;
+  top: 21px;
+  left: 12px;
+  z-index: 1;
+  margin: 0;
+  color: var(--omniva-muted);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
+  transform: translateY(-50%);
+  transition:
+    top 150ms ease,
+    font-size 150ms ease,
+    line-height 150ms ease,
+    transform 150ms ease;
+}
+
+#omnivalt-settings-root
+  .omnivalt-floating-input.is-active
+  .omnivalt-floating-input__label {
+  top: 3px;
+  padding: 0 2px;
+  background: var(--omniva-card);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+  transform: none;
+}
+
+#omnivalt-settings-root .omnivalt-phone-input {
+  position: relative;
+  display: flex;
+  order: 2;
+  width: 100%;
+  max-width: 520px;
+  height: 48px;
+  min-height: 48px;
+  overflow: visible;
+  border: 1px solid var(--omniva-line-strong);
+  border-radius: var(--omniva-radius-sm);
+  background: var(--omniva-card);
+}
+
+#omnivalt-settings-root .omnivalt-phone-input:focus-within {
+  border-color: var(--omniva-accent);
+  box-shadow: 0 0 0 2px var(--omniva-accent-soft);
+}
+
+#omnivalt-settings-root .omnivalt-phone-input__country,
+#omnivalt-settings-root .omnivalt-phone-input__number {
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  font: inherit;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+#omnivalt-settings-root .omnivalt-phone-input__country {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: center;
+  width: 8rem;
+  min-width: 0;
+  padding: 0 var(--space-3);
+  border-right: 1px solid var(--omniva-line);
+  border-radius: var(--omniva-radius-sm) 0 0 var(--omniva-radius-sm);
+  background-color: var(--omniva-card);
+  cursor: pointer;
+}
+
+#omnivalt-settings-root .omnivalt-phone-input__flag {
+  display: block;
+  width: 1.25rem;
+  height: 0.875rem;
+  object-fit: cover;
+}
+
+#omnivalt-settings-root .omnivalt-phone-input__chevron {
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-left: 0.125rem;
+  border-right: 1px solid var(--omniva-ink);
+  border-bottom: 1px solid var(--omniva-ink);
+  transform: rotate(45deg) translateY(-0.125rem);
+}
+
+#omnivalt-settings-root .omnivalt-phone-input__dropdown {
+  position: absolute;
+  top: calc(100% + 0.375rem);
+  right: 0;
+  left: 0;
+  z-index: 30;
+  max-height: 16rem;
+  overflow-y: auto;
+  padding: var(--space-2);
+  border: 1px solid var(--omniva-line);
+  border-radius: var(--omniva-radius-sm);
+  background: var(--omniva-card);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.12);
+}
+
+#omnivalt-settings-root .omnivalt-phone-input__option {
+  display: grid;
+  grid-template-columns: 1.25rem auto 1fr;
+  align-items: center;
+  width: 100%;
+  gap: var(--space-3);
+  min-height: 3rem;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--omniva-ink);
+  font: inherit;
+  font-size: var(--font-size-base);
+  text-align: left;
+  cursor: pointer;
+}
+
+#omnivalt-settings-root .omnivalt-phone-input__option:hover,
+#omnivalt-settings-root .omnivalt-phone-input__option.is-selected {
+  background: var(--omniva-canvas);
+}
+
+#omnivalt-settings-root .omnivalt-phone-input__number {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  padding: 0 var(--space-3);
+  border-radius: 0 var(--omniva-radius-sm) var(--omniva-radius-sm) 0;
+  color: var(--omniva-ink);
+}
+
+#omnivalt-settings-root .omnivalt-phone-input__number:focus,
+#omnivalt-settings-root .omnivalt-phone-input__country:focus {
+  outline: 0;
+}
+
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings select {
+  min-width: 300px;
+  padding: 0 32px 0 12px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input:focus,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  select:focus,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  textarea:focus {
+  border-color: var(--omniva-line-strong);
+  box-shadow: inset 0 0 0 0.0625rem var(--omniva-line-strong);
+}
+
+#omnivalt-settings-root .omnivalt-multiselect__source {
+  display: none;
+}
+
+#omnivalt-settings-root .omniva-picker {
+  position: relative;
+  order: 2;
+  max-width: 520px;
+}
+
+#omnivalt-settings-root .omniva-picker__selected-wrap {
+  margin-bottom: 12px;
+}
+
+#omnivalt-settings-root .omniva-picker__selected-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+#omnivalt-settings-root .omniva-picker__selected-count {
+  color: var(--omniva-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+#omnivalt-settings-root .omniva-picker__clear,
+#omnivalt-settings-root .omniva-picker__remove {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+#omnivalt-settings-root .omniva-picker__clear {
+  padding: 0;
+  color: var(--omniva-accent);
+  font-size: 12px;
+}
+
+#omnivalt-settings-root .omniva-picker__clear:hover {
+  text-decoration: underline;
+}
+
+#omnivalt-settings-root .omniva-picker__selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+#omnivalt-settings-root .omniva-picker__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--omniva-accent);
+  border-radius: 999px;
+  background: var(--omniva-accent-soft);
+  color: var(--omniva-accent-ink);
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+#omnivalt-settings-root .omniva-picker__remove {
+  padding: 0;
+  font-size: 16px;
+  line-height: 1;
+}
+
+#omnivalt-settings-root .omniva-picker__search {
+  width: 100%;
+}
+
+#omnivalt-settings-root .omniva-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--omniva-line);
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  color: var(--omniva-ink);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+#omnivalt-settings-root .omniva-input:focus {
+  border-color: var(--omniva-accent);
+  box-shadow: 0 0 0 3px var(--omniva-accent-soft);
+}
+
+#omnivalt-settings-root .omniva-picker__search:focus {
+  border-color: var(--omniva-accent);
+  box-shadow: 0 0 0 1px var(--omniva-accent);
+}
+
+#omnivalt-settings-root .omniva-picker__input-wrap {
+  position: relative;
+}
+
+#omnivalt-settings-root .omniva-picker__dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  z-index: 20;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--omniva-line-strong);
+  border-radius: var(--omniva-radius-sm);
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+#omnivalt-settings-root .omniva-picker__list {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+#omnivalt-settings-root .omniva-picker__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--omniva-line);
+  background: transparent;
+  color: var(--omniva-ink);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+}
+
+#omnivalt-settings-root .omniva-picker__option:last-child {
+  border-bottom: 0;
+}
+
+#omnivalt-settings-root .omniva-picker__option:hover {
+  background: var(--omniva-canvas);
+}
+
+#omnivalt-settings-root .omniva-picker__option--selected {
+  background: var(--omniva-accent-soft);
+  color: var(--omniva-accent-ink);
+}
+
+#omnivalt-settings-root .omniva-picker__option-check {
+  width: 16px;
+  flex-shrink: 0;
+  color: var(--omniva-accent);
+  font-weight: 600;
+}
+
+#omnivalt-settings-root .omniva-picker__option-label {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+#omnivalt-settings-root .omniva-picker__empty {
+  margin: 0;
+  padding: 12px;
+  color: var(--omniva-muted);
+  font-size: 13px;
+}
+
+#omnivalt-settings-root .omnivalt-position-list {
+  display: flex;
+  max-width: 520px;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#omnivalt-settings-root .omnivalt-position-list__item {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--omniva-line-strong);
+  border-radius: var(--omniva-radius-sm);
+  background: var(--omniva-card);
+  color: var(--omniva-ink);
+  cursor: grab;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+#omnivalt-settings-root .omnivalt-position-list__item:hover {
+  border-color: var(--omniva-accent);
+}
+
+#omnivalt-settings-root .omnivalt-position-list__item.ui-sortable-helper {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  cursor: grabbing;
+}
+
+#omnivalt-settings-root .omnivalt-position-list__handle {
+  display: inline-flex;
+  width: 18px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  color: var(--omniva-muted);
+  font-size: 22px;
+  line-height: 1;
+  transform: rotate(90deg);
+  user-select: none;
+}
+
+#omnivalt-settings-root .omnivalt-position-list__title {
+  min-width: 0;
+  flex: 1;
+}
+
+#omnivalt-settings-root .omnivalt-position-list__item input[type='number'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+#omnivalt-settings-root .omnivalt-position-list__placeholder {
+  min-height: 48px;
+  border: 1px dashed var(--omniva-accent);
+  border-radius: var(--omniva-radius-sm);
+  background: var(--omniva-accent-soft);
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='checkbox'] {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  margin: 0 12px 0 0;
+  border: 1px solid rgba(45, 45, 45, 0.28);
+  border-radius: 999px;
+  background: #d9d9d9;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+  vertical-align: middle;
+  appearance: none;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='checkbox']::before {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1px solid rgba(45, 45, 45, 0.12);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
+  content: '';
+  transform: none;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='checkbox']:not(:checked):hover {
+  border-color: rgba(45, 45, 45, 0.42);
+  background: #e5e5e5;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='checkbox']:checked {
+  border-color: var(--omniva-green);
+  background: var(--omniva-green);
+  box-shadow: none;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='checkbox']:checked:hover {
+  background: var(--omniva-green);
+  border-color: var(--omniva-green);
+  box-shadow: 0 0 0 2px #dafed6;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='checkbox']:focus-visible {
+  outline: 2px solid var(--omniva-accent);
+  outline-offset: 2px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  input[type='checkbox']:checked::before {
+  transform: translateX(16px);
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:has(input[type='checkbox'])
+  fieldset
+  > label {
+  display: inline-flex;
+  align-items: center;
+  color: var(--omniva-ink);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:has(input[type='checkbox'])
+  > th.titledesc {
+  display: none;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:has(input[type='checkbox'])
+  > td {
+  padding: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:has(input[type='checkbox'])
+  .omniva-field__desc {
+  margin: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  tr.omniva-field:not(:has(input[type='checkbox']))
+  > td.forminp
+  > fieldset.field-dimensions {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  fieldset.field-dimensions
+  > .description {
+  flex: 0 0 100%;
+  order: 1;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  fieldset.field-dimensions
+  > input[type='number'],
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  fieldset.field-dimensions
+  > span {
+  order: 2;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  fieldset.field-dimensions
+  > input[type='number'] {
+  width: 90px;
+  vertical-align: middle;
+}
+
+#omnivalt-settings-root .switcher {
+  display: flex;
+  align-items: center;
+}
+
+#omnivalt-settings-root .switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 24px;
+  margin: 0;
+}
+
+#omnivalt-settings-root .switch input[type='checkbox'],
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .switch
+  input[type='checkbox'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  box-shadow: none;
+  opacity: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .switch
+  input[type='checkbox']::before {
+  display: none;
+}
+
+#omnivalt-settings-root .switch .slider {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  background-color: #ccc;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#omnivalt-settings-root .switch .slider::before {
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background-color: #fff;
+  content: '';
+  transition: transform 0.2s ease;
+}
+
+#omnivalt-settings-root .switch input:checked + .slider {
+  background-color: var(--omniva-accent);
+}
+
+#omnivalt-settings-root .switch input:focus-visible + .slider {
+  outline: 2px solid var(--omniva-accent);
+  outline-offset: 2px;
+}
+
+#omnivalt-settings-root .switch input:checked + .slider::before {
+  transform: translateX(16px);
+}
+
+#omnivalt-settings-root .switch .slider.round,
+#omnivalt-settings-root .switch .slider.round::before {
+  border-radius: 999px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .sec-prices,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .sec-other {
+  position: relative;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .sec-prices
+  > div,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .sec-other
+  > div {
+  margin-bottom: 8px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .sec-prices
+  label,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .sec-other
+  label {
+  display: inline-block;
+  width: 24%;
+  vertical-align: middle;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .sec-prices
+  input[type='number'],
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .sec-prices
+  select,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .sec-other
+  input,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .sec-other
+  textarea {
+  display: inline-block;
+  width: 75%;
+  min-height: 38px;
+  max-width: 75%;
+  vertical-align: middle;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  table {
+  display: inline-table;
+  width: 75%;
+  border-collapse: collapse;
+  vertical-align: top;
+  transition: box-shadow 0.2s ease;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  tbody {
+  display: table-row-group;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  tr {
+  display: table-row;
+  width: auto;
+  padding: 0;
+  border: 0;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  th,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  td {
+  display: table-cell;
+  width: auto;
+  padding: 5px;
+  border: 1px solid #8c8f94;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  table:hover {
+  box-shadow: 0 0 0 1px #2271b1;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  table:hover
+  th,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  table:hover
+  td {
+  border-color: #2271b1;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  .column-value
+  input {
+  width: 100%;
+  max-width: 100px;
+  min-height: 34px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  .column-price {
+  width: 30%;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  .column-actions {
+  width: 10%;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-table
+  .description,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .prices-coupon
+  .description {
+  width: 75%;
+  margin: 3px 0 10px 25%;
+  color: var(--omniva-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .price_free.disabled,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .block-prices
+  .price_coupon.disabled {
+  opacity: 0.55;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .omniva-debugview
+  th,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .omniva-debugview
+  td {
+  padding-top: 0;
+}
+
+#omnivalt-settings-root .omniva-debugview .field-debug > .title {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+#omnivalt-settings-root .omniva-debugview .debug-row .date {
+  color: #2271b1;
+  cursor: pointer;
+}
+
+#omnivalt-settings-root .omniva-debugview .debug-row .date:hover,
+#omnivalt-settings-root .omniva-debugview .debug-row .date:focus {
+  text-decoration: underline;
+}
+
+#omnivalt-settings-root .omniva-debugview .debug-row .date.active {
+  color: var(--omniva-green);
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .omniva-fake-btn,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  button:not(.woocommerce-save-button):not(.omniva-picker__clear):not(
+    .omniva-picker__remove
+  ):not(.omniva-picker__option):not(.omnivalt-phone-input__country):not(
+    .omnivalt-phone-input__option
+  ):not(.omniva-tabs__tab),
+#omnivalt-settings-root .woocommerce table.form-table.omniva-settings .button {
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid var(--omniva-ink);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--omniva-ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .omniva-fake-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .omniva-fake-btn:hover {
+  background: var(--omniva-canvas);
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings
+  .omniva-fake-btn.disabled {
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__savebar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 160px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+  padding: 12px 24px;
+  border-top: 1px solid var(--omniva-line-strong);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__save-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #52627a;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__save-status.is-unsaved {
+  color: #52627a;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__save-status-dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #248653;
+}
+
+#omnivalt-settings-root
+  .omnivalt-settings-page__save-status.is-unsaved
+  .omnivalt-settings-page__save-status-dot {
+  background: #a46f00;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__save-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__save-notices {
+  display: none;
+  color: #d63638;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+#omnivalt-settings-root
+  .omnivalt-settings-page__savebar:has(.omnivalt-settings-page__save-notice) {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+#omnivalt-settings-root
+  .omnivalt-settings-page__savebar:has(.omnivalt-settings-page__save-notice)
+  .omnivalt-settings-page__save-notices {
+  display: block;
+  flex-basis: 100%;
+  order: -1;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__discard {
+  min-height: 48px;
+  padding: 11px 24px;
+  border: 1px solid var(--omniva-ink);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--omniva-ink);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__discard:hover,
+#omnivalt-settings-root .omnivalt-settings-page__discard:focus {
+  border-color: var(--omniva-ink);
+  background: var(--omniva-canvas);
+  box-shadow: none;
+  color: var(--omniva-ink);
+}
+
+#omnivalt-settings-root .omnivalt-settings-page__discard[hidden] {
+  display: none;
+}
+
+#omnivalt-settings-root
+  .omnivalt-settings-page__savebar
+  .woocommerce-save-button {
+  min-height: 48px;
+  padding: 11px 24px;
+  border: 1px solid #ffbc01;
+  border-radius: 999px;
+  background: #ffbc01;
+  box-shadow: none;
+  color: #000000;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#omnivalt-settings-root
+  .omnivalt-settings-page__savebar
+  .woocommerce-save-button:disabled {
+  border-color: #f0d994;
+  background: #f6e4ac;
+  color: #75683e;
+  cursor: default;
+  opacity: 1;
+}
+
+#omnivalt-settings-root
+  .omnivalt-settings-page__savebar
+  .woocommerce-save-button:hover,
+#omnivalt-settings-root
+  .omnivalt-settings-page__savebar
+  .woocommerce-save-button:focus {
+  border-color: #ffbc01;
+  background: #ffbc01;
+  box-shadow: none;
+  color: #000000;
+}
+
+#omnivalt-settings-root
+  .omnivalt-settings-page__savebar
+  .woocommerce-save-button:disabled:hover,
+#omnivalt-settings-root
+  .omnivalt-settings-page__savebar
+  .woocommerce-save-button:disabled:focus {
+  border-color: #f0d994;
+  background: #f6e4ac;
+  box-shadow: none;
+  color: #75683e;
+}
+
+#omnivalt-settings-root.is-layout-pending {
+  visibility: hidden;
+}
+
+#omnivalt-settings-root .omniva-shipping-methods-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+#omnivalt-settings-root .omniva-shipping-method {
+  padding: 14px 0 12px;
+  border-bottom: 1px solid var(--omniva-line);
+}
+
+#omnivalt-settings-root .omniva-shipping-method__control table.form-table {
+  margin: 0;
+}
+
+#omnivalt-settings-root
+  .omniva-shipping-method__control
+  table.form-table.omniva-settings
+  tr {
+  padding: 0;
+  border-bottom: 0;
+}
+
+#omnivalt-settings-root
+  .omniva-shipping-method__control
+  table.form-table.omniva-settings
+  .description {
+  margin-bottom: 0;
+}
+
+#omnivalt-settings-root .omniva-shipping-method__countries {
+  margin-top: 18px;
+}
+
+#omnivalt-settings-root .omniva-shipping-method__countries h3,
+#omnivalt-settings-root .omniva-shipping-method--international h3 {
+  margin: 0 0 5px;
+  color: var(--omniva-ink);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+#omnivalt-settings-root .omniva-shipping-method__countries > p,
+#omnivalt-settings-root
+  .omniva-shipping-method--international
+  .omniva-shipping-method__control
+  p {
+  margin: 0 0 14px;
+  color: var(--omniva-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#omnivalt-settings-root .omniva-shipping-method__country-list {
+  display: block;
+}
+
+#omnivalt-settings-root .omniva-shipping-method__country-tabs {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+#omnivalt-settings-root .omniva-delivery-country-tab {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-width: 148px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  margin-bottom: -1px;
+  border: 1px solid var(--omniva-line-strong);
+  border-radius: var(--omniva-radius-sm);
+  border-bottom-color: transparent;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  background: var(--omniva-canvas);
+  color: var(--omniva-ink);
+}
+
+#omnivalt-settings-root .omniva-delivery-country-tab.is-active {
+  z-index: 3;
+  border-color: var(--omniva-green);
+  border-bottom-color: transparent;
+  background: #f0ffef;
+}
+
+#omnivalt-settings-root .omniva-delivery-country-tab.is-country-disabled {
+  background: var(--omniva-canvas);
+}
+
+#omnivalt-settings-root
+  .omniva-delivery-country-tab.is-country-disabled
+  .omniva-delivery-country-tab__button,
+#omnivalt-settings-root .omniva-delivery-country-tab__button:disabled {
+  color: var(--omniva-muted);
+  cursor: default;
+  opacity: 0.65;
+}
+
+#omnivalt-settings-root .omniva-delivery-country-tab.is-unavailable {
+  display: none;
+}
+
+#omnivalt-settings-root .omniva-delivery-country-tab__button {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 9px 7px 9px 11px;
+  border: 0;
+  background: transparent;
+  color: var(--omniva-ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+
+#omnivalt-settings-root .omniva-delivery-country-tab__button:hover {
+  background: transparent;
+  color: var(--omniva-ink);
+}
+
+#omnivalt-settings-root
+  .omniva-delivery-country-tab:not(.is-active):not(.is-country-disabled):hover {
+  background: rgba(255, 102, 0, 0.08);
+}
+
+#omnivalt-settings-root .omniva-delivery-country-tab__button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--omniva-accent);
+  outline-offset: -2px;
+}
+
+@media screen and (min-width: 783px) {
+  #omnivalt-settings-root .omniva-delivery-country-tab,
+  #omnivalt-settings-root .omniva-delivery-country-tab:hover,
+  #omnivalt-settings-root .omniva-delivery-country-tab:focus,
+  #omnivalt-settings-root .omniva-delivery-country-tab:active {
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-radius: var(--omniva-radius-sm) var(--omniva-radius-sm) 0 0;
+  }
+
+  #omnivalt-settings-root
+    .omniva-shipping-method__country-tabs
+    > .omniva-delivery-country-tab:not(.is-active),
+  #omnivalt-settings-root
+    .omniva-shipping-method__country-tabs
+    > .omniva-delivery-country-tab:not(.is-active):hover {
+    border-bottom: 1px solid var(--omniva-line-strong);
+  }
+}
+
+#omnivalt-settings-root .omniva-delivery-country-tab__title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#omnivalt-settings-root .omniva-delivery-country-tab__toggle {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding-right: 8px;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings.omniva-delivery-country:not(.is-active),
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings.omniva-delivery-country.is-unavailable {
+  display: none;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings[data-omniva-destination][hidden] {
+  display: none;
+}
+
+#omnivalt-settings-root
+  .omniva-shipping-method.is-method-disabled
+  .omniva-shipping-method__countries {
+  display: none;
+}
+
+#omnivalt-settings-root .omniva-delivery-country__box {
+  max-width: none;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--omniva-line-strong);
+  border-radius: 0 0 var(--omniva-radius-sm) var(--omniva-radius-sm);
+  background: var(--omniva-canvas);
+  box-shadow: none;
+}
+
+#omnivalt-settings-root table.omniva-delivery-country {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings.omniva-delivery-country
+  > tbody,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings.omniva-delivery-country
+  > tbody
+  > tr,
+#omnivalt-settings-root
+  .woocommerce
+  table.form-table.omniva-settings.omniva-delivery-country
+  > tbody
+  > tr
+  > td {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+#omnivalt-settings-root .omniva-delivery-country__header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 12px;
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--omniva-line-strong);
+  color: var(--omniva-ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#omnivalt-settings-root .omniva-delivery-country__title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+}
+
+#omnivalt-settings-root .omniva-delivery-country__method-header {
+  margin: 0;
+  padding: 0 0 10px;
+}
+
+#omnivalt-settings-root .omniva-delivery-country__method-header > label {
+  flex: 1;
+  color: var(--omniva-ink);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+#omnivalt-settings-root .omniva-delivery-country__flag {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+#omnivalt-settings-root .omniva-delivery-country__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#omnivalt-settings-root
+  .omniva-delivery-country.is-country-disabled
+  .omniva-delivery-country__body {
+  display: none;
+}
+
+#omnivalt-settings-root
+  .omniva-delivery-country.is-country-disabled
+  .omniva-delivery-country__box {
+  padding: 8px 12px;
+}
+
+#omnivalt-settings-root
+  .omniva-delivery-country.is-country-disabled
+  .omniva-delivery-country__header {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+#omnivalt-settings-root .omniva-delivery-country__body .block-prices {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#omnivalt-settings-root
+  .omniva-delivery-country__body
+  .block-prices
+  + .block-prices {
+  padding-top: 12px;
+  border-top: 1px solid var(--omniva-line);
+}
+
+#omnivalt-settings-root .omniva-delivery-country__body .block-prices:hover {
+  box-shadow: none;
+}
+
+#omnivalt-settings-root
+  .omniva-delivery-country__body
+  .block-prices.is-country-disabled
+  .sec-prices,
+#omnivalt-settings-root
+  .omniva-delivery-country__body
+  .block-prices.is-country-disabled
+  .sec-other,
+#omnivalt-settings-root
+  .omniva-delivery-country__body
+  .block-prices.is-method-disabled
+  .sec-prices,
+#omnivalt-settings-root
+  .omniva-delivery-country__body
+  .block-prices.is-method-disabled
+  .sec-other {
+  display: none;
+}
+
+#omnivalt-settings-root .omniva-shipping-methods__returns {
+  padding-top: 18px;
+}
+
+#omnivalt-settings-root .omniva-shipping-method--international {
+  padding-top: 22px;
+}
+
+@media (max-width: 1280px) {
+  #omnivalt-settings-root .omnivalt-settings-page__sidebar {
+    position: static;
+    width: 100%;
+    margin: 24px 0;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 1160px) {
+  #omnivalt-settings-root .omnivalt-settings-page__layout {
+    display: block;
+    padding-right: 0;
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__tabs,
+  #omnivalt-settings-root .omnivalt-settings-page__main,
+  #omnivalt-settings-root .omnivalt-settings-page__sidebar {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__main {
+    max-width: none;
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__sidebar {
+    position: static;
+    width: 100%;
+    margin: 24px 0;
+  }
+}
+
+@media screen and (max-width: 782px) {
+  body.woocommerce_page_omnivalt-settings.auto-fold #wpcontent {
+    padding-left: 0;
+  }
+
+  #omnivalt-settings-root {
+    margin-right: 12px;
+    padding: 22px 16px 24px;
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__header h1 {
+    font-size: 22px;
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__header-content {
+    align-items: flex-end;
+  }
+
+  #omnivalt-settings-root .omniva-shipping-method__country-tabs {
+    position: static;
+    z-index: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  #omnivalt-settings-root .omniva-delivery-country-tab,
+  #omnivalt-settings-root .omniva-delivery-country-tab.is-active {
+    position: static;
+    z-index: auto;
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    margin-bottom: 0;
+    border: 1px solid var(--omniva-line-strong);
+    border-radius: var(--omniva-radius-sm);
+    background: var(--omniva-card);
+  }
+
+  #omnivalt-settings-root .omniva-delivery-country-tab.is-active {
+    border-color: var(--omniva-green);
+    background: #f0ffef;
+  }
+
+  #omnivalt-settings-root .omniva-delivery-country__box {
+    border-radius: var(--omniva-radius-sm);
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__brand-logo,
+  #omnivalt-settings-root .omnivalt-settings-page__brand-slogan {
+    max-width: 100%;
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__card-header,
+  #omnivalt-settings-root .omnivalt-settings-page__card-body {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  #omnivalt-settings-root .woocommerce table.form-table.omniva-settings select,
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    input[type='text'],
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    input[type='password'],
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    input[type='number'] {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    .block-prices
+    .sec-prices
+    label,
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    .block-prices
+    .sec-other
+    label,
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    .block-prices
+    .sec-prices
+    input[type='number'],
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    .block-prices
+    .sec-prices
+    select,
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    .block-prices
+    .sec-other
+    input,
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    .block-prices
+    .sec-other
+    textarea,
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    .block-prices
+    .prices-table
+    table,
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    .block-prices
+    .prices-table
+    .description,
+  #omnivalt-settings-root
+    .woocommerce
+    table.form-table.omniva-settings
+    .block-prices
+    .prices-coupon
+    .description {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+
+  #omnivalt-settings-root
+    .woocommerce
+    [data-settings-card='shop']
+    table.form-table.omniva-settings
+    tbody {
+    grid-template-columns: 1fr;
+  }
+
+  #omnivalt-settings-root
+    .woocommerce
+    [data-settings-card='shop']
+    table.form-table.omniva-settings
+    tr:has(#woocommerce_omnivalt_shop_city),
+  #omnivalt-settings-root
+    .woocommerce
+    [data-settings-card='shop']
+    table.form-table.omniva-settings
+    tr:has(#woocommerce_omnivalt_shop_postcode) {
+    grid-column: 1;
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__savebar {
+    left: 0;
+    padding: 10px 16px;
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__savebar {
+    gap: 16px;
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__save-actions {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  #omnivalt-settings-root .omnivalt-api-access {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  #omnivalt-settings-root .omnivalt-api-access__content {
+    flex: 1 1 calc(100% - 43px);
+  }
+
+  #omnivalt-settings-root .omnivalt-api-access__action {
+    margin: 0 auto;
+  }
+
+  #omnivalt-settings-root .omnivalt-pickup-window__fields {
+    grid-template-columns: 1fr;
+  }
+
+  #omnivalt-settings-root .omnivalt-settings-page__sidebar {
+    display: none;
+  }
+}
