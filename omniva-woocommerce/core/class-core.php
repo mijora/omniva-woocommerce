@@ -574,6 +574,10 @@ class OmnivaLt_Core
 
   private static function load_pre_init_hooks()
   {
+    // These endpoints are used by the Blocks frontend, but must not depend on
+    // the Blocks integration registry being initialized for the current page.
+    OmnivaLt_Wc_Blocks::register_ajax_actions();
+
     add_action('before_woocommerce_init', array('OmnivaLt_Compatibility', 'declare_wc_hpos_compatibility'));
     add_action('before_woocommerce_init', array('OmnivaLt_Compatibility', 'declare_wc_blocks_compatibility'));
     add_action('init', array('OmnivaLt_Core', 'textdomain'));

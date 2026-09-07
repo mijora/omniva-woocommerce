@@ -282,72 +282,17 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
 
     public function register_additional_actions()
     {
-        add_action('wp_ajax_omnivalt_get_terminals', array($this, 'get_terminals_callback'));
-        add_action('wp_ajax_nopriv_omnivalt_get_terminals', array($this, 'get_terminals_callback'));
-        add_action('wp_ajax_omnivalt_get_dynamic_data', array($this, 'get_dynamic_data_callback'));
-        add_action('wp_ajax_nopriv_omnivalt_get_dynamic_data', array($this, 'get_dynamic_data_callback'));
+        OmnivaLt_Wc_Blocks::register_ajax_actions();
     }
 
     public function get_terminals_callback()
     {
-        if ( empty($_GET['country']) ) {
-            wp_send_json_error('Missing country parameter');
-            return;
-        }
-
-        $country = esc_attr($_GET['country']);
-        $type = (! empty($_GET['type'])) ? esc_attr($_GET['type']) : 'terminal';
-
-        $terminals = \OmnivaLt_Terminals::get_terminals_for_map_new($country, $type);
-        if ( empty($terminals) || ! is_array($terminals) ) {
-            $terminals = array();
-        }
-        
-        wp_send_json_success($terminals);
+        return OmnivaLt_Wc_Blocks::get_terminals_callback();
     }
 
     public function get_dynamic_data_callback()
     {
-        if ( empty($_GET['country']) ) {
-            wp_send_json_error('Missing country parameter');
-            return;
-        }
-        if ( empty($_GET['method']) ) {
-            wp_send_json_error('Missing method parameter');
-            return;
-        }
-
-        $country = esc_attr($_GET['country']);
-        $woo_method_id = esc_attr($_GET['method']);
-
-        $settings = \OmnivaLt_Core::get_settings();
-        $is_picapac = \OmnivaLt_Picapac::is_rate($woo_method_id);
-        $method_key = \OmnivaLt_Omniva_Order::get_method_key_from_id($woo_method_id);
-        $terminals_type = $is_picapac ? false : \OmnivaLt_Method::get_terminal_type($method_key);
-        $omniva_methods = \OmnivaLt_Method::get_all();
-        $omniva_method = ($terminals_type == 'post') ? $omniva_methods['post_specific'] : $omniva_methods['pickup'];
-
-        $provider = 'omniva';
-        $map_icon = $omniva_method['map_marker'];
-        if ( $country == 'FI' ) {
-            $provider = 'matkahuolto';
-            $map_icon = $omniva_method['display_by_country'][$country]['map_marker'];
-        }
-
-        $phone_regex = '';
-        if ( isset($settings['verify_phone']) && $settings['verify_phone'] === 'yes' ) {
-            $phone_regex_raw = \OmnivaLt_Helper::get_mobile_regex(strtoupper($country));
-            $phone_regex_clean = trim($phone_regex_raw, '/');
-            $phone_regex = json_decode(json_encode($phone_regex_clean));
-        }
-
-        wp_send_json_success(array(
-            'terminals_type' => $terminals_type,
-            'provider' => $provider,
-            'map_icon' => $map_icon,
-            'country' => $country,
-            'phone_regex' => $phone_regex
-        ));
+        return OmnivaLt_Wc_Blocks::get_dynamic_data_callback();
     }
 
     public function register_external_scripts()
@@ -367,12 +312,8 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         );
 
         foreach ( $scripts as $script_id => $script_files ) {
-            if ( ! empty($script_files['js']) ) {
-                wp_enqueue_script($script_id, $assets_url . $script_files['js'], array('jquery'), $this->get_file_version($assets_dir . $script_files['js']), true);
-            }
-            if ( ! empty($script_files['css']) ) {
-                wp_enqueue_style($script_id, $assets_url . $script_files['css'], array(), $this->get_file_version($assets_dir . $script_files['css']));
-            }
+            wp_enqueue_script($script_id, $assets_url . $script_files['js'], array('jquery'), $this->get_file_version($assets_dir . $script_files['js']), true);
+            wp_enqueue_style($script_id, $assets_url . $script_files['css'], array(), $this->get_file_version($assets_dir . $script_files['css']));
         }
     }
 
