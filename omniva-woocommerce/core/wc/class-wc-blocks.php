@@ -1,6 +1,94 @@
 <?php
 class OmnivaLt_Wc_Blocks
 {
+    private static $ajax_actions_registered = false;
+
+    public static function register_ajax_actions()
+    {
+        if ( self::$ajax_actions_registered ) {
+            return;
+        }
+
+        self::$ajax_actions_registered = true;
+
+        add_action('wp_ajax_omnivalt_get_terminals', array(__CLASS__, 'get_terminals_callback'));
+        add_action('wp_ajax_nopriv_omnivalt_get_terminals', array(__CLASS__, 'get_terminals_callback'));
+        add_action('wp_ajax_omnivalt_get_dynamic_data', array(__CLASS__, 'get_dynamic_data_callback'));
+        add_action('wp_ajax_nopriv_omnivalt_get_dynamic_data', array(__CLASS__, 'get_dynamic_data_callback'));
+    }
+
+    public static function get_terminals_callback()
+    {
+        // This is a public, read-only endpoint used to load terminal data.
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No state is changed by this endpoint.
+        $country = isset($_GET['country']) ? strtoupper(sanitize_key(wp_unslash($_GET['country']))) : '';
+        if ( '' === $country ) {
+            wp_send_json_error('Missing country parameter');
+        }
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No state is changed by this endpoint.
+        $type = isset($_GET['type']) ? sanitize_key(wp_unslash($_GET['type'])) : 'terminal';
+
+        $terminals = OmnivaLt_Terminals::get_terminals_for_map_new($country, $type);
+        if ( empty($terminals) || ! is_array($terminals) ) {
+            $terminals = array();
+        }
+
+        wp_send_json_success($terminals);
+    }
+
+    public static function get_dynamic_data_callback()
+    {
+        // This is a public, read-only endpoint used to load checkout data.
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No state is changed by this endpoint.
+        $country = isset($_GET['country']) ? strtoupper(sanitize_key(wp_unslash($_GET['country']))) : '';
+        if ( '' === $country ) {
+            wp_send_json_error('Missing country parameter');
+        }
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No state is changed by this endpoint.
+        $woo_method_id = isset($_GET['method']) ? sanitize_text_field(wp_unslash($_GET['method'])) : '';
+        if ( '' === $woo_method_id ) {
+            wp_send_json_error('Missing method parameter');
+        }
+
+        $settings = OmnivaLt_Core::get_settings();
+        $is_picapac = OmnivaLt_Picapac::is_rate($woo_method_id);
+        $method_key = OmnivaLt_Omniva_Order::get_method_key_from_id($woo_method_id);
+        $terminals_type = $is_picapac ? false : OmnivaLt_Method::get_terminal_type($method_key);
+        $omniva_methods = OmnivaLt_Method::get_all();
+        $omniva_method_key = ($terminals_type == 'post') ? 'post_specific' : 'pickup';
+
+        if ( empty($omniva_methods[$omniva_method_key]) || ! is_array($omniva_methods[$omniva_method_key]) ) {
+            wp_send_json_error('Invalid Omniva shipping method', 400);
+        }
+
+        $omniva_method = $omniva_methods[$omniva_method_key];
+        $provider = 'omniva';
+        $map_icon = isset($omniva_method['map_marker']) ? $omniva_method['map_marker'] : '';
+        if ( $country == 'FI' ) {
+            $provider = 'matkahuolto';
+            if ( isset($omniva_method['display_by_country'][$country]['map_marker']) ) {
+                $map_icon = $omniva_method['display_by_country'][$country]['map_marker'];
+            }
+        }
+
+        $phone_regex = '';
+        if ( isset($settings['verify_phone']) && $settings['verify_phone'] === 'yes' ) {
+            $phone_regex_raw = OmnivaLt_Helper::get_mobile_regex(strtoupper($country));
+            $phone_regex_clean = trim($phone_regex_raw, '/');
+            $phone_regex = $phone_regex_clean;
+        }
+
+        wp_send_json_success(array(
+            'terminals_type' => $terminals_type,
+            'provider' => $provider,
+            'map_icon' => $map_icon,
+            'country' => $country,
+            'phone_regex' => $phone_regex
+        ));
+    }
+
     public static function init()
     {
         require_once OmnivaLt_Core::get_core_dir() . 'wc-blocks/class-blocks-integration.php';

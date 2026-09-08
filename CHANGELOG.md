@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.20.15]
+### Fixed
+- fixed parcel terminal loading on the block-based Checkout page after upgrading to WooCommerce 11.1.0
+
 ## [1.20.14]
 ### Added
 - added Picapac as a separate delivery method for Estonia
