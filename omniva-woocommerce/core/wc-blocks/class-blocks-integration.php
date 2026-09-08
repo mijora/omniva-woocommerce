@@ -271,6 +271,11 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         // @phpstan-ignore-next-line
         $css_url = OMNIVALT_URL . 'assets/css/';
 
+        /**
+         * External assets may define only one of the supported file types.
+         *
+         * @var array<string, array{js?: string, css?: string}> $scripts
+         */
         $scripts = array(
             'omnivalt-library-mapping' => array(
                 'js' => 'terminal-mapping.js',
@@ -283,8 +288,12 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         );
 
         foreach ( $scripts as $script_id => $script_files ) {
-            wp_enqueue_script($script_id, $js_url . $script_files['js'], array('jquery'), null, true);
-            wp_enqueue_style($script_id, $css_url . $script_files['css']);
+            if ( ! empty($script_files['js']) ) {
+                wp_enqueue_script($script_id, $js_url . $script_files['js'], array('jquery'), null, true);
+            }
+            if ( ! empty($script_files['css']) ) {
+                wp_enqueue_style($script_id, $css_url . $script_files['css']);
+            }
         }
     }
 
