@@ -300,6 +300,11 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         $assets_url = OMNIVALT_URL . 'assets/';
         $assets_dir = OMNIVALT_DIR . 'assets/';
 
+        /**
+         * External assets may define only one of the supported file types.
+         *
+         * @var array<string, array{js?: string, css?: string}> $scripts
+         */
         $scripts = array(
             'omnivalt-library-mapping' => array(
                 'js' => 'terminal-mapping/terminal-mapping.omniva-fullwidth.js',
@@ -312,8 +317,12 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         );
 
         foreach ( $scripts as $script_id => $script_files ) {
-            wp_enqueue_script($script_id, $assets_url . $script_files['js'], array('jquery'), $this->get_file_version($assets_dir . $script_files['js']), true);
-            wp_enqueue_style($script_id, $assets_url . $script_files['css'], array(), $this->get_file_version($assets_dir . $script_files['css']));
+            if ( ! empty($script_files['js']) ) {
+                wp_enqueue_script($script_id, $assets_url . $script_files['js'], array('jquery'), $this->get_file_version($assets_dir . $script_files['js']), true);
+            }
+            if ( ! empty($script_files['css']) ) {
+                wp_enqueue_style($script_id, $assets_url . $script_files['css'], array(), $this->get_file_version($assets_dir . $script_files['css']));
+            }
         }
     }
 
