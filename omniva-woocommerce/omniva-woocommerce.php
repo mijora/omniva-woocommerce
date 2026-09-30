@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Omniva shipping
- * Description: Official Omniva shipping plugin for WooCommerce
+ * Plugin Name: Omniva Delivery
+ * Description: Official Omniva delivery plugin for WooCommerce
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://www.omniva.lt/en/business/integrations-for-e-shops
@@ -63,7 +63,7 @@ function omnivalt_configs($section_name = false) {
    * title - Country name
    * methods - Value of one of this: courier, courier_plus, pickup, post_near, private_customer //TODO: Need to make it take the value from available_methods instead
    * shipping_sets - Array of destination countries, other services and sets for them
-   * comment_lang - Identifier for terminals map
+   * comment_lang - Identifier for parcel machines map
    */
   $params['shipping_params'] = array(
     'LT' => array(
@@ -133,7 +133,7 @@ function omnivalt_configs($section_name = false) {
   $params['cod'] = array('cod');
 
   /*
-   * Post offices and terminals params
+   * Post offices and parcel machines params
    */
   $params['locations'] = array(
     'source_url' => 'https://www.omniva.ee/locationsfull.json',

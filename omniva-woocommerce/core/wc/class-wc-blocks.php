@@ -60,7 +60,7 @@ class OmnivaLt_Wc_Blocks
         $omniva_method_key = ($terminals_type == 'post') ? 'post_specific' : 'pickup';
 
         if ( empty($omniva_methods[$omniva_method_key]) || ! is_array($omniva_methods[$omniva_method_key]) ) {
-            wp_send_json_error('Invalid Omniva shipping method', 400);
+            wp_send_json_error('Invalid Omniva delivery method', 400);
         }
 
         $omniva_method = $omniva_methods[$omniva_method_key];
@@ -159,7 +159,7 @@ class OmnivaLt_Wc_Blocks
 
         $method_saved = OmnivaLt_Omniva_Order::set_method($order->get_id(), $selected_method);
         if ( ! $method_saved ) {
-            OmnivaLt_Debug::log_error('Failed to save Omniva shipping method from Blocks Checkout. Received method: ' . print_r($selected_method, true));
+            OmnivaLt_Debug::log_error('Failed to save Omniva delivery method from Blocks Checkout. Received method: ' . print_r($selected_method, true));
         }
 
         $cookie_terminal_id = '';
@@ -176,7 +176,7 @@ class OmnivaLt_Wc_Blocks
 
         if ( ! empty($selected_terminal_id) ) {
             OmnivaLt_Omniva_Order::set_terminal_id($order->get_id(), $selected_terminal_id);
-            OmnivaLt_Wc_Order::add_note($order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($selected_terminal_id, true) . ' <i>(ID: ' . $selected_terminal_id . ')</i>');
+            OmnivaLt_Wc_Order::add_note($order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel machine', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($selected_terminal_id, true) . ' <i>(ID: ' . $selected_terminal_id . ')</i>');
         }
     }
 

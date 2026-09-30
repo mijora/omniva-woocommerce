@@ -18,7 +18,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
     public function __construct()
     {
       $this->id = 'omnivalt';
-      $this->method_title = __('Omniva shipping', 'omnivalt');
+      $this->method_title = __('Omniva delivery', 'omnivalt');
       $this->method_description = __('Shipping methods for Omniva', 'omnivalt');
 
       // Initialize provider-specific API metadata, including the OMX integration header.
@@ -48,7 +48,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $this->init();
 
       $this->enabled = isset($this->settings['enabled']) ? $this->settings['enabled'] : 'yes';
-      $this->title = isset($this->settings['title']) ? $this->settings['title'] : __('Omniva shipping', 'omnivalt');
+      $this->title = isset($this->settings['title']) ? $this->settings['title'] : __('Omniva delivery', 'omnivalt');
 
       // Default values
       if ( empty($this->settings['api_country']) ) {
@@ -213,7 +213,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'select',
         'description' => __('Send from store type.', 'omnivalt'),
         'options' => array(
-          'pt' => __('Parcel terminal', 'omnivalt'),
+          'pt' => __('Parcel machine', 'omnivalt'),
           'c' => __('Courier', 'omnivalt'),
           'po' => __('Post office', 'omnivalt'),
           'lc' => __('Logistics center', 'omnivalt'),
@@ -293,9 +293,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         );
       }
       $fields['size_pt'] = array(
-        'title' => sprintf(__('Max cart size (%s) for terminal', 'omnivalt'), get_option('woocommerce_dimension_unit')),
+        'title' => sprintf(__('Max cart size (%s) for parcel machine', 'omnivalt'), get_option('woocommerce_dimension_unit')),
         'type' => 'dimensions',
-        'description' => __('Maximum cart size for parcel terminals. Leave all empty to disable.', 'omnivalt') . '<br/>' . __('Preliminary cart size is calculated by trying to fit all products by taking their dimensions (boxes) indicated in their settings.', 'omnivalt'),
+        'description' => __('Maximum cart size for parcel machines. Leave all empty to disable.', 'omnivalt') . '<br/>' . __('Preliminary cart size is calculated by trying to fit all products by taking their dimensions (boxes) indicated in their settings.', 'omnivalt'),
         'class' => 'omniva_terminal'
       );
       /*$fields['size_c'] = array(
@@ -330,9 +330,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         ),
       );
       $fields['auto_select'] = array(
-        'title' => __('Automatic terminal selection', 'omnivalt'),
+        'title' => __('Automatic parcel machine selection', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Automatically select terminal by postcode.', 'omnivalt'),
+        'description' => __('Automatically select parcel machine by postcode.', 'omnivalt'),
         'default' => 'yes',
         'class' => 'omniva_terminal'
       );
@@ -349,7 +349,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['show_map'] = array(
         'title' => __('Map', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Show map of terminals.', 'omnivalt'),
+        'description' => __('Show map of parcel machines.', 'omnivalt'),
         'default' => 'yes',
         'class' => 'omniva_terminal'
       );
@@ -358,16 +358,16 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'type' => 'select',
         'description' => __('Choose what the shipping method label will be displayed on the Cart and Checkout pages.', 'omnivalt'),
         'options' => array(
-          'classic' => 'Omniva ' . strtolower(__('Parcel terminal', 'omnivalt')),
-          'full' => 'LOGO Omniva ' . strtolower(__('Parcel terminal', 'omnivalt')),
-          'logo' => 'LOGO ' . __('Parcel terminal', 'omnivalt'),
-          'short' => __('Parcel terminal', 'omnivalt'),
+          'classic' => 'Omniva ' . strtolower(__('Parcel machine', 'omnivalt')),
+          'full' => 'LOGO Omniva ' . strtolower(__('Parcel machine', 'omnivalt')),
+          'logo' => 'LOGO ' . __('Parcel machine', 'omnivalt'),
+          'short' => __('Parcel machine', 'omnivalt'),
         )
       );
       $fields['position'] = array(
         'title' => __('Positions', 'omnivalt'),
         'type' => 'position',
-        'description' => __('Position of each Omniva shipping method in shipping methods list on Checkout page.', 'omnivalt') . '<br/>' . __('NOTE', 'omnivalt') . ': ' . __('Positioning may be affected by other plugins or functions used in the theme.', 'omnivalt'),
+        'description' => __('Position of each Omniva delivery method in shipping methods list on Checkout page.', 'omnivalt') . '<br/>' . __('NOTE', 'omnivalt') . ': ' . __('Positioning may be affected by other plugins or functions used in the theme.', 'omnivalt'),
       );
       $fields['hr_orders'] = array(
         'type' => 'hr',
@@ -522,7 +522,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $fields['debug_front_post_data'] = array(
         'title' => __('Log the received Checkout data', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Save the data in the logs, that is received during the creation of the Order. Sensitive information will not be stored. Intended for use when there is a problem that the delivery method of Omniva is not recognized or the parcel terminal is not added to the Order.', 'omnivalt'),
+        'description' => __('Save the data in the logs, that is received during the creation of the Order. Sensitive information will not be stored. Intended for use when there is a problem that the delivery method of Omniva is not recognized or the parcel machine is not added to the Order.', 'omnivalt'),
         'default' => '',
         'class' => 'omniva_debug'
       );

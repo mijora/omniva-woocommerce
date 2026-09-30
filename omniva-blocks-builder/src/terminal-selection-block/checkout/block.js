@@ -341,21 +341,21 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
 
     useEffect(() => {
         if ( isObjectEmpty(omnivaData) ) {
-            debug('Skipped getting Terminals because the Omniva dynamic data is empty');
+            debug('Skipped getting locations because the Omniva dynamic data is empty');
             return;
         }
         if ( omnivaData.terminals_type === false ) {
-            debug('The selected delivery method does not have a terminals');
+            debug('The selected delivery method does not have a locations');
             return;
         }
 
         const terminalsType = ('terminals_type' in omnivaData) ? omnivaData.terminals_type : 'omniva';
         getTerminalsByCountry(mapValues.country, terminalsType).then(response => {
             if ( response.data ) {
-                debug('Updating terminals list...');
+                debug('Updating locations list...');
                 setTerminals(response.data);
             } else {
-                debug('Failed to get terminals list');
+                debug('Failed to get locations list');
             }
         });
     }, [
@@ -382,19 +382,25 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
 
     useEffect(() => {
         if ( ! terminals.length ) {
-            debug('Skipped updating terminals block because the terminals list is empty');
+            debug(
+              'Skipped updating locations block because the locations list is empty'
+            );
             return;
         }
 
         if ( selectedOmnivaTerminal !== '' ) {
-            debug('Checking if the selected terminal is in the terminals list...');
+            debug(
+              'Checking if the selected location is in the locations list...'
+            );
             if ( ! findArrayElemByObjProp(terminals, 'id', selectedOmnivaTerminal) ) {
-                debug('The specified terminal was not found in the list of terminals');
+                debug(
+                  'The specified location was not found in the list of locations'
+                );
                 setSelectedOmnivaTerminal('');
             }
         }
 
-        debug('Updating terminal selection options...');
+        debug('Updating location selection options...');
         const preparedTerminalsOptions = [
             {
                 label: blockText.label,
@@ -446,7 +452,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
                 map.set_search_value(mapValues.postcode);
                 map.activate_autoselect();
             } else if ( showMap === false ) {
-                debug('Initializing terminal select field...');
+                debug('Initializing location select field...');
                 customSelect.load_data({
                     org_field: elemTerminalSelectField.current,
                     custom_container: elemMapContainer.current,
@@ -504,7 +510,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     /* Handle changing the select's value */
     useEffect(() => {
         if ( terminalValidationError ) {
-            debug('Clearing terminal validation error...');
+            debug('Clearing location validation error...');
             clearValidationError(terminalValidationErrorId);
         }
 
@@ -512,7 +518,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             return;
         }
 
-        debug('Set selected terminal:', selectedOmnivaTerminal);
+        debug('Set selected location:', selectedOmnivaTerminal);
         setExtensionData(
             'omnivalt',
             'selected_terminal',
@@ -525,7 +531,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         }
 
         if ( selectedOmnivaTerminal === '' ) {
-            debug('Terminal not selected. Adding terminal validation error...');
+            debug('Location not selected. Adding location validation error...');
             setValidationErrors({
                 [terminalValidationErrorId]: {
                     message: blockText.error,

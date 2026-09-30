@@ -54,7 +54,7 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
           <span aria-hidden="true">/</span>
           <span><?php esc_html_e('Omniva', 'omnivalt'); ?></span>
         </div>
-        <h1><?php esc_html_e('Omniva shipping', 'omnivalt'); ?></h1>
+        <h1><?php esc_html_e('Omniva delivery', 'omnivalt'); ?></h1>
         <p><?php esc_html_e('Manage Omniva shipments, labels and courier collection in one place.', 'omnivalt'); ?></p>
       </div>
       <?php if ( $shipping_settings ) : ?>

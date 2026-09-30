@@ -7,11 +7,11 @@ export const txt = wcSettings["omnivalt-blocks_data"].txt; //Temporary solution 
 
 export const txt_json = {
   block_options: __('Block options', 'omnivalt'),
-  title_terminal: __('Parcel terminal', 'omnivalt'),
-  select_terminal: __('Select parcel terminal', 'omnivalt'),
-  error_terminal: __('Please select parcel terminal', 'omnivalt'),
+  title_terminal: __('Parcel machine', 'omnivalt'),
+  select_terminal: __('Select parcel machine', 'omnivalt'),
+  error_terminal: __('Please select parcel machine', 'omnivalt'),
   cart_terminal_info: __(
-    'You can choose the parcel terminal on the Checkout page',
+    'You can choose the parcel machine on the Checkout page',
     'omnivalt'
   ),
   loading_field: __('Loading select field...', 'omnivalt'),
@@ -29,17 +29,17 @@ export const txt_json = {
   errors: {
     invalid_format: __('Invalid format', 'omnivalt'),
     invalid_phone_format: __(
-      'The phone format specified in the Shipping address is not valid for this shipping method',
+      'The phone format specified in the Delivery address is not valid for this delivery method',
       'omnivalt'
     ),
   },
   map: {
     modal_title_post: __('post offices', 'omnivalt'),
-    modal_title_terminal: __('parcel terminals', 'omnivalt'),
+    modal_title_terminal: __('parcel machines', 'omnivalt'),
     modal_search_title_post: __('Post offices list', 'omnivalt'),
-    modal_search_title_terminal: __('Parcel terminals list', 'omnivalt'),
+    modal_search_title_terminal: __('Parcel machines list', 'omnivalt'),
     select_post: __('Select post office', 'omnivalt'),
-    select_terminal: __('Select terminal', 'omnivalt'),
+    select_terminal: __('Select parcel machine', 'omnivalt'),
     search_placeholder: __('Enter postcode', 'omnivalt'),
     map_search_placeholder: __(
       'Start typing parcel machine name or address',
@@ -85,9 +85,9 @@ export const txt_json = {
   select: {
     not_found: __('Place not found', 'omnivalt'),
     search_too_short: __('Value is too short', 'omnivalt'),
-    terminal_select: __('Select terminal', 'omnivalt'),
-    terminal_map_title: __('parcel terminals', 'omnivalt'),
-    terminal_map_search_title: __('Parcel terminals addresses', 'omnivalt'),
+    terminal_select: __('Select parcel machine', 'omnivalt'),
+    terminal_map_title: __('parcel machines', 'omnivalt'),
+    terminal_map_search_title: __('Parcel machines addresses', 'omnivalt'),
     post_select: __('Select post office', 'omnivalt'),
     post_map_title: __('post offices', 'omnivalt'),
     post_map_search_title: __('Post offices addresses', 'omnivalt'),

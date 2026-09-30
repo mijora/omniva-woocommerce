@@ -290,9 +290,9 @@ class OmnivaLt_Core
             'omniva' => 'Omniva',
             'matkahuolto' => 'Matkahuolto',
           ),
-          'modal_title_terminal' => __('parcel terminals', 'omnivalt'),
-          'modal_search_title_terminal' => __('Parcel terminals list', 'omnivalt'),
-          'select_terminal' => __('Select terminal', 'omnivalt'),
+          'modal_title_terminal' => __('parcel machines', 'omnivalt'),
+          'modal_search_title_terminal' => __('Parcel machines list', 'omnivalt'),
+          'select_terminal' => __('Select parcel machine', 'omnivalt'),
           'modal_title_post' => __('post offices', 'omnivalt'),
           'modal_search_title_post' => __('Post offices list', 'omnivalt'),
           'select_post' => __('Select post office', 'omnivalt'),
@@ -336,15 +336,15 @@ class OmnivaLt_Core
         'ajax_url' => admin_url('admin-ajax.php'),
         'add_terminal_nonce' => wp_create_nonce('omnivalt_add_terminal'),
         'omniva_plugin_url' => OMNIVALT_URL,
-        'text_select_terminal' => __('Select terminal', 'omnivalt'),
+        'text_select_terminal' => __('Select parcel machine', 'omnivalt'),
         'text_select_post' => __('Select post office', 'omnivalt'),
         'text_search_placeholder' => __('Enter postcode', 'omnivalt'),
         'not_found' => __('Place not found', 'omnivalt'),
         'text_enter_address' => __('Enter postcode/address', 'omnivalt'),
         'text_show_in_map' => __('Show in map', 'omnivalt'),
         'text_show_more' => __('Show more', 'omnivalt'),
-        'text_modal_title_terminal' => __('Omniva parcel terminals', 'omnivalt'),
-        'text_modal_search_title_terminal' => __('Parcel terminals addresses', 'omnivalt'),
+        'text_modal_title_terminal' => __('Omniva parcel machines', 'omnivalt'),
+        'text_modal_search_title_terminal' => __('Parcel machines addresses', 'omnivalt'),
         'text_modal_title_post' => __('Omniva post offices', 'omnivalt'),
         'text_modal_search_title_post' => __('Post offices addresses', 'omnivalt'),
       ));
@@ -382,17 +382,8 @@ class OmnivaLt_Core
     $folder_css = '/assets/css/';
     $folder_js = '/assets/js/';
 
-    // Some WordPress admin screens expose a more reliable identifier than the hook suffix.
-    $screen = function_exists('get_current_screen') ? get_current_screen() : false;
-    $screen_id = is_object($screen) && ! empty($screen->id) ? $screen->id : '';
-    $settings_screen_ids = array(
-      'omniva-shipping_page_omnivalt-settings',
-      'woocommerce_page_omnivalt-settings',
-    );
-    $is_omniva_settings_page = in_array($hook, $settings_screen_ids, true)
-      || in_array($screen_id, $settings_screen_ids, true);
-
-    if ( ! $is_omniva_settings_page ) {
+    $page = isset($_GET['page']) && is_string($_GET['page']) ? wp_unslash($_GET['page']) : '';
+    if ( OmnivaLt_Admin_Navigation::SETTINGS_PAGE_SLUG !== $page ) {
       return;
     }
 

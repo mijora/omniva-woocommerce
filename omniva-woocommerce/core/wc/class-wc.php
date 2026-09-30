@@ -5,7 +5,6 @@ class OmnivaLt_Wc
     {
         $all_screen_ids = array(
             'admin_order_edit' => array('shop_order', 'woocommerce_page_wc-orders'),
-            'admin_manifest' => array('omniva-shipping_page_omniva-manifest', 'woocommerce_page_omniva-manifest'),
         );
 
         return $all_screen_ids[$type_key] ?? false;

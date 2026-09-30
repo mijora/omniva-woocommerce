@@ -28,7 +28,7 @@ $settings_script_class = wp_script_is('omnivalt_admin_settings_page', 'enqueued'
           <span><?php esc_html_e('Omniva', 'omnivalt'); ?></span>
         </div>
         <h1><?php esc_html_e('Omniva settings', 'omnivalt'); ?></h1>
-        <p class="omnivalt-settings-page__subtitle"><?php esc_html_e('Configure Omniva shipping methods, delivery services and labels.', 'omnivalt'); ?></p>
+        <p class="omnivalt-settings-page__subtitle"><?php esc_html_e('Configure Omniva delivery methods, delivery services and labels.', 'omnivalt'); ?></p>
       </div>
 
     </div>

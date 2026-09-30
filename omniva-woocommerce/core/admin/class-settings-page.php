@@ -309,7 +309,7 @@ class OmnivaLt_Settings_Page
     $settings_sections = array(
       'general' => array(
         'title' => __('General', 'omnivalt'),
-        'description' => __('Core Omniva shipping configuration.', 'omnivalt'),
+        'description' => __('Core Omniva delivery configuration.', 'omnivalt'),
         'fields' => array(),
       ),
     );
@@ -437,7 +437,7 @@ class OmnivaLt_Settings_Page
     $methods['international'] = array(
       'key' => 'international',
       'title' => __('International services', 'omnivalt'),
-      'description' => __('Configure international service package and region settings.', 'omnivalt'),
+      'description' => __('Configure international service settings.', 'omnivalt'),
       'rows_html' => '',
       'is_international' => true,
       'destinations' => array(),

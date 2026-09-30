@@ -229,14 +229,10 @@ body .bootstrap-datetimepicker-widget {
   font-weight: 600;
 }
 
-body.woocommerce_page_omniva-manifest #wpcontent,
-body.woocommerce_page_omniva-manifest #wpbody,
-body.woocommerce_page_omniva-manifest #wpbody-content {
+body[class*='_page_omniva-manifest'] #wpcontent,
+body[class*='_page_omniva-manifest'] #wpbody,
+body[class*='_page_omniva-manifest'] #wpbody-content {
   background-color: #f4f4f4;
-}
-
-body.woocommerce_page_omniva-manifest #wpcontent {
-  padding-left: 0;
 }
 
 .page-omniva_manifest.omnivalt-manifest-page {
@@ -1160,8 +1156,7 @@ body.woocommerce_page_omniva-manifest #wpcontent {
 }
 
 @media only screen and (max-width: 782px) {
-  body.woocommerce_page_omniva-manifest.auto-fold #wpcontent,
-  body.omniva-shipping_page_omniva-manifest.auto-fold #wpcontent,
+  body[class*='_page_omniva-manifest'].auto-fold #wpcontent,
   body.toplevel_page_omniva-shipping.auto-fold #wpcontent {
     padding-left: 0 !important;
   }

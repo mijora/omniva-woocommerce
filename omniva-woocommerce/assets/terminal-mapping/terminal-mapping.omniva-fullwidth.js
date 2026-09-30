@@ -1029,7 +1029,7 @@ var DOMManipulator = /*#__PURE__*/function () {
         return;
       }
       if (event.target.classList.contains('tmjs-select-btn')) {
-        console.log('Trying to select terminal:', data.dataset.id);
+        console.log('Trying to select parcel machine:', data.dataset.id);
         this.TMJS.publish('terminal-selected', this.TMJS.map.getActiveLocation());
         return;
       }
@@ -2014,11 +2014,11 @@ var TerminalMapping = /*#__PURE__*/function () {
 
     // Default strings and proxy to detect changes
     this.strings = new Proxy({
-      modal_header: 'Terminal map',
-      terminal_list_header: 'Terminal list',
+      modal_header: 'Parcel machines map',
+      terminal_list_header: 'Parcel machines list',
       seach_header: 'Search around',
       search_btn: 'Find',
-      modal_open_btn: 'Select terminal',
+      modal_open_btn: 'Select parcel machine',
       geolocation_btn: 'Use my location',
       your_position: 'Distance calculated from this point',
       nothing_found: 'Nothing found',
@@ -4256,7 +4256,7 @@ window.OmnivaTerminalMapping = TerminalMapping;
       state.options,
       'select_pickup_point',
       'select_pickup_point',
-      'Select parcel machine'
+      'Select in map'
     );
     var openText = getString(
       tmjs,

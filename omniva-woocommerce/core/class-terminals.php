@@ -71,8 +71,8 @@ class OmnivaLt_Terminals
     $list_options = array(
       'list' => 'terminal',
       'type' => 0,
-      'txt_select' => __('Select parcel terminal', 'omnivalt'),
-      'txt_show_map' => __('Show parcel terminals map', 'omnivalt'),
+      'txt_select' => __('Select parcel machine', 'omnivalt'),
+      'txt_show_map' => __('Show parcel machines map', 'omnivalt'),
     );
     if ( $get_list === 'post' ) {
       $list_options['list'] = 'post';
@@ -145,8 +145,8 @@ class OmnivaLt_Terminals
     $list_options = array(
       'list' => 'terminal',
       'type' => 0,
-      'txt_select' => __('Select parcel terminal', 'omnivalt'),
-      'txt_show_map' => __('Show parcel terminals map', 'omnivalt'),
+      'txt_select' => __('Select parcel machine', 'omnivalt'),
+      'txt_show_map' => __('Show parcel machines map', 'omnivalt'),
     );
     if ( $get_list === 'post' ) {
       $list_options['list'] = 'post';
@@ -361,12 +361,12 @@ class OmnivaLt_Terminals
         <div class="omniva-modal-content">
             <div class="omniva-modal-header">
             <span class="close" id="terminalsModal">&times;</span>
-            <h5 id="omnivaLt_modal_title" style="display: inline">' . __('Omniva parcel terminals', 'omnivalt') . '</h5>
+            <h5 id="omnivaLt_modal_title" style="display: inline">' . __('Omniva parcel machines', 'omnivalt') . '</h5>
             </div>
             <div class="omniva-modal-body" style="/*overflow: hidden;*/">
                 <div id = "omnivaMapContainer"></div>
                 <div class="omniva-search-bar" >
-                    <h4 id="omnivaLt_modal_search" style="margin-top: 0px;">' . __('Parcel terminals addresses', 'omnivalt') . '</h4>
+                    <h4 id="omnivaLt_modal_search" style="margin-top: 0px;">' . __('Parcel machines addresses', 'omnivalt') . '</h4>
                     <div id="omniva-search">
                     <form>
                     <input type = "text" placeholder = "' . __('Enter postcode', 'omnivalt') . '"/>

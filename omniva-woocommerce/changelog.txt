@@ -1,24 +1,24 @@
 == Changelog ==
 
 = 1.21.0 =
-- added a dedicated Omniva Shipping admin menu with separate Settings and Shipments pages
+- added a dedicated Omniva Delivery admin menu with separate Settings and Shipments pages
 - added a redesigned, tabbed settings interface for shipping methods, delivery countries, prices, sender information, order fulfilment and design options
-- added a full-width terminal map for classic and block-based Cart and Checkout pages with location search, geolocation and postcode-based distance sorting
+- added a full-width parcel machines map for classic and block-based Cart and Checkout pages with location search, geolocation and postcode-based distance sorting
 - added country-aware sender phone controls and a custom pickup-window input in the admin settings
 - improved shipping method configuration with country tabs, international-service controls, drag-and-drop method ordering, unsaved-change handling and responsive layouts
 - improved initial setup by selecting the default API account country from the site locale
 - improved the manifest administration page with responsive order details, mobile filters, clearer bulk actions and courier controls
 - optimized batch barcode lookup for selected orders on the manifest page
-- improved the Blocks Checkout terminal selector to restore the selected terminal, place it below the active shipping rate and prevent conflicting rate changes while it is updating
-- improved terminal-map selection with clear/change actions and loading, error and no-results states
+- improved the Blocks Checkout parcel machine selector to restore the selected parcel machine, place it below the active shipping rate and prevent conflicting rate changes while it is updating
+- improved parcel machine-map selection with clear/change actions and loading, error and no-results states
 - added server-rendered fallbacks for the settings and manifest pages when their enhancement scripts fail to load
 - fixed label printing when sender information is incomplete: existing labels can be printed, while generating or regenerating labels still requires complete sender information
 - fixed sender phone and pickup-window validation so invalid values do not overwrite previously saved settings
-- fixed selected-terminal synchronization between the browser cookie, WooCommerce session and the Blocks Store API
+- fixed selected-parcel machine synchronization between the browser cookie, WooCommerce session and the Blocks Store API
 - updated terminal-mapping library to v2.0.0
 
 = 1.20.15 =
-- fixed parcel terminal loading on the block-based Checkout page after upgrading to WooCommerce 11.1.0
+- fixed parcel machine loading on the block-based Checkout page after upgrading to WooCommerce 11.1.0
 
 = 1.20.14 =
 - added Picapac as a separate delivery method for Estonia

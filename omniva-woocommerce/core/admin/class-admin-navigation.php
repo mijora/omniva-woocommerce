@@ -24,8 +24,8 @@ class OmnivaLt_Admin_Navigation
         ),
       ),
       self::MANIFEST_PAGE_SLUG => array(
-        'title' => __('Omniva shipping', 'omnivalt'),
-        'menu_title' => __('Shippings', 'omnivalt'),
+        'title' => __('Omniva delivery', 'omnivalt'),
+        'menu_title' => __('Shipments', 'omnivalt'),
         'capability' => 'manage_woocommerce',
         'url' => add_query_arg(
           array('page' => self::MANIFEST_PAGE_SLUG),
@@ -55,8 +55,8 @@ class OmnivaLt_Admin_Navigation
     }
 
     add_menu_page(
-      __('Omniva Shipping', 'omnivalt'),
-      __('Omniva Shipping', 'omnivalt'),
+      __('Omniva delivery', 'omnivalt'),
+      __('Omniva delivery', 'omnivalt'),
       $manifest_page['capability'],
       self::MENU_SLUG,
       array('OmnivaLt_Manifest', 'manifest_page'),

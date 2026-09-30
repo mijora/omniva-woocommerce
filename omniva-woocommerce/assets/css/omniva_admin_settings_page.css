@@ -58,21 +58,21 @@
   -webkit-font-smoothing: antialiased;
 }
 
-body.woocommerce_page_omnivalt-settings {
+body[class*="_page_omnivalt-settings"] {
   --omniva-canvas: #f4f4f4;
 }
 
-body.woocommerce_page_omnivalt-settings #wpcontent {
+body[class*="_page_omnivalt-settings"] #wpcontent {
   position: relative;
 }
 
-body.woocommerce_page_omnivalt-settings #wpcontent,
-body.woocommerce_page_omnivalt-settings #wpbody,
-body.woocommerce_page_omnivalt-settings #wpbody-content {
+body[class*="_page_omnivalt-settings"] #wpcontent,
+body[class*="_page_omnivalt-settings"] #wpbody,
+body[class*="_page_omnivalt-settings"] #wpbody-content {
   background-color: var(--omniva-canvas);
 }
 
-body.woocommerce_page_omnivalt-settings.omnivalt-settings-sidebar-open {
+body[class*="_page_omnivalt-settings"].omnivalt-settings-sidebar-open {
   overflow: hidden;
 }
 
@@ -2610,7 +2610,7 @@ body.woocommerce_page_omnivalt-settings.omnivalt-settings-sidebar-open {
 }
 
 @media screen and (max-width: 782px) {
-  body.woocommerce_page_omnivalt-settings.auto-fold #wpcontent {
+  body[class*="_page_omnivalt-settings"].auto-fold #wpcontent {
     padding-left: 0;
   }
 
