@@ -203,59 +203,6 @@ class OmnivaLt_Core
     return false;
   }
 
-  public static function check_update( $current_version = '' ) {
-    $update_params = self::get_configs('update');
-    
-    if (empty($update_params['check_url'])) {
-      return false;
-    }
-
-    $ch = curl_init(); 
-    curl_setopt($ch, CURLOPT_URL, $update_params['check_url']);
-    curl_setopt($ch, CURLOPT_USERAGENT,'Awesome-Octocat-App');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-    $response_data = json_decode(curl_exec($ch)); 
-    curl_close($ch);
-
-    if (isset($response_data->tag_name)) {
-      $update_info = array(
-        'version' => str_replace('v', '', $response_data->tag_name),
-        'url' => (isset($response_data->html_url)) ? $response_data->html_url : '#',
-      );
-      if (empty($current_version)) {
-        $plugin_data = get_file_data(self::$main_file_path, array('Version' => 'Version'), false);
-        $current_version = $plugin_data['Version'];
-      }
-      return (version_compare($current_version, $update_info['version'], '<')) ? $update_info : false;
-    }
-  
-    return false;
-  }
-
-  public static function update_message( $file, $plugin ) {
-    $check_update = self::check_update($plugin['Version']);
-    $update_params = self::get_configs('update');
-
-    if ( $check_update ) {
-      echo '<tr class="plugin-update-tr installer-plugin-update-tr js-otgs-plugin-tr active">';
-      echo '<td class="plugin-update" colspan="100%">';
-      echo '<div class="update-message notice inline notice-warning notice-alt">';
-      echo '<p>' . sprintf(__('A newer version of the plugin (%s) has been released.', 'omnivalt'), '<a href="' . $check_update['url'] . '" target="_blank">v' . $check_update['version'] . '</a>');
-      if ( ! empty($update_params['download_url']) ) {
-        echo ' ' . sprintf(__('You can download it by pressing %s.', 'omnivalt'), '<a href="' . $update_params['download_url'] . '">' . __('here', 'omnivalt') . '</a>');
-      }
-      if ( defined('OMNIVALT_CUSTOM_CHANGES') && ! empty(OMNIVALT_CUSTOM_CHANGES) ) {
-        echo '<br/><strong style="color:red;">' . __('We do not recommend update the plugin, because your plugin have changes that is not included in the update', 'omnivalt') . ':</strong>';
-        foreach ( OMNIVALT_CUSTOM_CHANGES as $change ) {
-          echo '<br/>· ' . $change . '';
-        }
-      }
-      echo '</p>';
-      echo '</div>';
-      echo '</td></tr>';
-    }
-  }
-
   public static function load_front_scripts()
   {
     $folder_css = '/assets/css/';
@@ -429,6 +376,7 @@ class OmnivaLt_Core
     require_once $core_dir . 'class-logger.php';
     require_once $core_dir . 'class-filters.php';
     require_once $core_dir . 'class-helper.php';
+    require_once $core_dir . 'class-updater.php';
     require_once $core_dir . 'wc/' . 'class-wc.php';
     require_once $core_dir . 'wc/' . 'class-wc-order.php';
     require_once $core_dir . 'wc/' . 'class-wc-product.php';
@@ -518,12 +466,17 @@ class OmnivaLt_Core
     add_action('init', array('OmnivaLt_Core', 'textdomain'));
     add_action('woocommerce_blocks_loaded', array('OmnivaLt_Wc_Blocks', 'init'));
     add_action('woocommerce_shipping_init', array('OmnivaLt_Core', 'init_shipping_method'));
+
+    add_filter('pre_set_site_transient_update_plugins', array('OmnivaLt_Updater', 'update_plugins'));
+    add_filter('auto_update_plugin', array('OmnivaLt_Updater', 'disable_auto_update'), 10, 2);
+    add_filter('plugins_api', array('OmnivaLt_Updater', 'plugin_information'), 10, 3);
+    add_action('upgrader_process_complete', array('OmnivaLt_Updater', 'clear_update_cache'), 10, 2);
   }
 
   private static function load_init_hooks()
   {
     add_action('admin_notices', array('OmnivaLt_Core', 'admin_notices'));
-    add_action('after_plugin_row_' . OMNIVALT_BASENAME, array('OmnivaLt_Core', 'update_message'), 10, 3);
+    add_action('in_plugin_update_message-' . OMNIVALT_BASENAME, array('OmnivaLt_Updater', 'update_message'), 10, 2);
 
     add_filter('plugin_action_links_' . OMNIVALT_BASENAME, array('OmnivaLt_Core', 'settings_link'));
   }
