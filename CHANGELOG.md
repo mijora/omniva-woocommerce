@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.20.16]
+### Added
+- added native WordPress plugin update support
+- added WooCommerce dependency declaration to the plugin metadata
+
 ## [1.20.15]
 ### Fixed
 - fixed parcel terminal loading on the block-based Checkout page after upgrading to WooCommerce 11.1.0
