@@ -2,9 +2,9 @@
   "apiVersion": 2,
   "name": "omnivalt/terminal-selection-cart",
   "version": "1.0.0",
-  "title": "Omniva terminal information",
+  "title": "Omniva location information",
   "category": "woocommerce",
-  "description": "Allow to add components for Omniva shipping method",
+  "description": "Allow to add components for Omniva delivery method",
   "parent": [
     "woocommerce/cart-order-summary-block"
   ],

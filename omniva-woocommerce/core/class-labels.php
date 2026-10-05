@@ -24,15 +24,17 @@ class OmnivaLt_Labels
 
   public function print_labels( $orderIds = false, $download = true, $regenerate = false )
   {
-    if (empty($orderIds) || !$orderIds) {
+    if ( empty($orderIds) ) {
       return;
     }
 
     if ( ! is_array($orderIds) )
       $orderIds = array($orderIds);
 
+    $orderIds = array_unique($orderIds);
+
     $all_barcodes = array();
-    foreach ( array_unique($orderIds) as $orderId ) {
+    foreach ( $orderIds as $orderId ) {
       $this->is_international = false;
       $order = OmnivaLt_Wc_Order::get_data($orderId, array('shipment', 'shipping', 'billing'));
       if ( ! $order ) {
@@ -57,11 +59,18 @@ class OmnivaLt_Labels
         $this->omnivalt_api->change_api_type($this->omnivalt_configs['api']['type']);
       }
       
-      if ( $regenerate ) {
-        OmnivaLt_Omniva_Order::set_barcodes($order->id, '');
+      $barcodes = OmnivaLt_Omniva_Order::get_barcodes($order->id);
+
+      $needs_generation = $regenerate || empty($barcodes);
+      if ( $needs_generation && ! OmnivaLt_Helper::has_required_sender_information() ) {
+        OmnivaLt_Helper::add_msg($order->number . ' - ' . __('Please fill in the sender information on the settings page.', 'omnivalt'), 'error');
+        continue;
       }
 
-      $barcodes = OmnivaLt_Omniva_Order::get_barcodes($order->id);
+      if ( $regenerate ) {
+        OmnivaLt_Omniva_Order::set_barcodes($order->id, '');
+        $barcodes = array();
+      }
 
       if ( empty($barcodes) ) {
         $barcodes = $this->register_label($order);
@@ -74,6 +83,11 @@ class OmnivaLt_Labels
       foreach ( $barcodes as $barcode ) {
         $all_barcodes[] = $barcode;
       }
+    }
+
+    if ( empty($all_barcodes) ) {
+      wp_safe_redirect(wp_get_referer() ? wp_get_referer() : admin_url('edit.php?post_type=shop_order'));
+      exit;
     }
 
     $labels_status = $this->omnivalt_api->download_shipment_labels($all_barcodes);

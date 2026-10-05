@@ -241,16 +241,8 @@ class OmnivaLt_Shipping_Method_Core
         $units = OmnivaLt_Wc::get_units();
         $params = array(
             'type' => (isset($params['type'])) ? $params['type'] : '',
-            'title' => (isset($params['title'])) ? $params['title'] : __('Shipping','omnivalt'),
+            'method_key' => (isset($params['method_key'])) ? $params['method_key'] : '',
             'box_key' => (isset($params['box_key'])) ? $params['box_key'] : '',
-            'cant_disable' => (isset($params['cant_disable'])) ? $params['cant_disable'] : false,
-            'enable' => array(
-                'title' => (isset($params['enable']['title'])) ? $params['enable']['title'] : __('Enable','omnivalt'),
-                'id' => (isset($params['enable']['id'])) ? $params['enable']['id'] : '',
-                'name' => (isset($params['enable']['name'])) ? $params['enable']['name'] : '',
-                'checked' => (isset($params['enable']['checked'])) ? $params['enable']['checked'] : '',
-                'class' => (isset($params['enable']['class'])) ? $params['enable']['class'] : '',
-            ),
             'prices' => array(
                 'type' => $this->prepareFieldData('type', $params['prices']),
                 'single' => $this->prepareFieldData('single', $params['prices'], array('title' => __('Price','omnivalt'))),
@@ -276,27 +268,9 @@ class OmnivaLt_Shipping_Method_Core
         }
 
         $coupons_args = OmnivaLt_Filters::settings_coupon_args();
-        $block_additional_classes = $params['type'];
-        if ( $params['cant_disable'] ) {
-            $block_additional_classes .= ' cant_disable';
-        }
-
         ob_start();
         ?>
-        <div class="block-prices <?php echo $block_additional_classes; ?>">
-            <div class="sec-title">
-                <?php
-                $html_params = array(
-                    'label' => $params['title'],
-                    'title' => $params['enable']['title'],
-                    'id' => $params['enable']['id'],
-                    'name' => $params['box_key'] . '[' . $params['enable']['name'] . ']',
-                    'class' => $params['enable']['class'],
-                    'checked' => ($params['enable']['checked'] === 'checked') ? true : false,
-                );
-                echo OmnivaLt_Shipping_Method_Html::buildSwitcher($html_params);
-                ?>
-            </div>
+        <div class="block-prices <?php echo esc_attr($params['type']); ?>" data-method="<?php echo esc_attr($params['type']); ?>" data-method-key="<?php echo esc_attr($params['method_key']); ?>">
             <div class="sec-prices">
                 <?php if ( isset($params['prices']['type']['key']) ) : ?>
                     <?php
@@ -502,6 +476,20 @@ class OmnivaLt_Shipping_Method_Core
         ob_end_clean();
 
         return $html;
+    }
+
+    public function buildSettingsSwitcher( $params )
+    {
+        $html_params = array(
+            'label' => (!isset($params['show_enable_label']) || $params['show_enable_label']) ? $params['title'] : '',
+            'title' => isset($params['enable']['title']) ? $params['enable']['title'] : '',
+            'id' => isset($params['enable']['id']) ? $params['enable']['id'] : '',
+            'name' => isset($params['box_key'], $params['enable']['name']) ? $params['box_key'] . '[' . $params['enable']['name'] . ']' : '',
+            'class' => isset($params['enable']['class']) ? $params['enable']['class'] : '',
+            'checked' => isset($params['enable']['checked']) && 'checked' === $params['enable']['checked'],
+        );
+
+        return OmnivaLt_Shipping_Method_Html::buildSwitcher($html_params);
     }
 
     public function getBoxSizesValues( $values )

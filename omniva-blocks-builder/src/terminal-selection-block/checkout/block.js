@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useEffect, useState, useCallback, useRef } from '@wordpress/element';
+import { createPortal, useEffect, useState, useCallback, useRef } from '@wordpress/element';
 import { SelectControl, TextareaControl, Icon } from '@wordpress/components';
 import { warning } from '@wordpress/icons';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -17,7 +17,59 @@ import { txt } from '../global/text';
 import { addTokenToValue, isObjectEmpty, findArrayElemByObjProp} from '../global/utils';
 import { debug, enableStateDebug } from '../global/debug';
 
-const getShippingRateOption = (shippingRatesControl) => {
+const getSavedTerminal = ( extensions ) => {
+    const cookieMatch = document.cookie.match(/(?:^|;\s*)omniva_terminal=([^;]*)/);
+
+    if ( cookieMatch ) {
+        return decodeURIComponent(cookieMatch[1]);
+    }
+
+    return extensions && extensions.omnivalt
+        ? extensions.omnivalt.selected_terminal || ''
+        : '';
+};
+
+const getShippingRatePortalTarget = ( rateId, shippingRatesControl ) => {
+    if ( ! shippingRatesControl ) {
+        return null;
+    }
+
+    const rateInputs = shippingRatesControl.querySelectorAll(
+        'input[type="radio"]'
+    );
+
+    for ( let i = 0; i < rateInputs.length; i++ ) {
+        if ( rateInputs[i].value !== rateId ) {
+            continue;
+        }
+
+        const rateOption = rateInputs[i].closest(
+            '.wc-block-components-radio-control__option'
+        ) || rateInputs[i].closest('label');
+
+        if ( rateOption && rateOption.parentElement ) {
+            return {
+                parent: rateOption.parentElement,
+                sibling: rateOption,
+            };
+        }
+    }
+
+    const ratePackage = shippingRatesControl.querySelector(
+        '.wc-block-components-shipping-rates-control__package'
+    );
+
+    if ( ratePackage ) {
+        return {
+            parent: ratePackage,
+            sibling: ratePackage.lastElementChild,
+        };
+    }
+
+    return null;
+};
+
+const getShippingRateOption = ( shippingRatesControl ) => {
     const rateInputs = shippingRatesControl.querySelectorAll(
         'input[type="radio"]'
     );
@@ -43,10 +95,39 @@ const getShippingRateOption = (shippingRatesControl) => {
     return null;
 };
 
+const getShippingRatesControl = () => document.querySelector(
+    '.wc-block-components-shipping-rates-control'
+);
+
+const setShippingRateInputsDisabled = ( disabled ) => {
+    const shippingRatesControl = getShippingRatesControl();
+
+    if ( ! shippingRatesControl ) {
+        return;
+    }
+
+    shippingRatesControl.querySelectorAll('input[type="radio"]').forEach((rateInput) => {
+        if ( disabled ) {
+            if ( ! rateInput.disabled ) {
+                rateInput.disabled = true;
+                rateInput.dataset.omnivaltDisabled = 'true';
+            }
+
+            return;
+        }
+
+        if ( rateInput.dataset.omnivaltDisabled === 'true' ) {
+            rateInput.disabled = false;
+            delete rateInput.dataset.omnivaltDisabled;
+        }
+    });
+};
+
 export const Block = ({ checkoutExtensionData, extensions }) => {
     const terminalValidationErrorId = 'omnivalt_terminal';
     const phoneValidationErrorId = 'shipping_phone';
     const { setExtensionData } = checkoutExtensionData;
+    const savedTerminal = getSavedTerminal(extensions);
     const [mapValues, setMapValues] = useState({
         country: 'LT',
         postcode: ''
@@ -67,15 +148,17 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         label: txt.select_terminal,
         error: txt.error_terminal,
     });
-    const [selectedOmnivaTerminal, setSelectedOmnivaTerminal] = useState('');
+    const [selectedOmnivaTerminal, setSelectedOmnivaTerminal] = useState(savedTerminal);
     const [selectedRateId, setSelectedRateId] = useState('');
     const [containerParams, setContainerParams] = useState({
         provider: 'unknown',
         type: 'unknown',
     });
-    const [containerErrorClass, setContainerErrorClass] = useState('');
     const elemTerminalSelectField = useRef(null);
     const elemMapContainer = useRef(null);
+    const terminalPortalTarget = useRef(null);
+    const [portalTarget, setPortalTarget] = useState(null);
+    const hasRestoredTerminal = useRef(false);
     const picapacInfoContainer = useRef(null);
     const map = loadMap();
     const customSelect = loadCustomSelect();
@@ -91,6 +174,13 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     enableStateDebug('Selected terminal', selectedOmnivaTerminal);
     enableStateDebug('Selected rate ID', selectedRateId);
     enableStateDebug('Omniva dynamic data', omnivaData);
+
+    useEffect(() => {
+        if ( ! hasRestoredTerminal.current && savedTerminal !== '' ) {
+            setSelectedOmnivaTerminal(savedTerminal);
+            hasRestoredTerminal.current = true;
+        }
+    }, [savedTerminal]);
 
     const debouncedSetExtensionData = useCallback(
         debounce((namespace, key, value) => {
@@ -118,6 +208,16 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         return storeCart.getCartData().shippingRates;
     });
 
+    const isSelectingShippingRate = useSelect((select) => {
+        const storeCart = select('wc/store/cart');
+
+        return typeof storeCart.isShippingRateBeingSelected === 'function'
+            ? storeCart.isShippingRateBeingSelected()
+            : false;
+    });
+
+    const hasShippingRates = shippingRates.length > 0;
+
     const customerData = useSelect((select) => {
         const storeCart = select('wc/store/cart');
         const billingAddress = storeCart.getCartData().billingAddress;
@@ -130,6 +230,38 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             country: shippingAddress.country
         };
     });
+
+    useEffect(() => {
+        setShippingRateInputsDisabled(isSelectingShippingRate);
+
+        if ( ! isSelectingShippingRate || ! window.MutationObserver ) {
+            return undefined;
+        }
+
+        const shippingRatesControl = getShippingRatesControl();
+
+        if ( ! shippingRatesControl ) {
+            return () => setShippingRateInputsDisabled(false);
+        }
+
+        const observerRoot = shippingRatesControl.closest(
+            '.wp-block-woocommerce-checkout-shipping-methods-block'
+        ) || shippingRatesControl.parentElement || shippingRatesControl;
+
+        const observer = new MutationObserver(() => {
+            setShippingRateInputsDisabled(true);
+        });
+
+        observer.observe(observerRoot, {
+            childList: true,
+            subtree: true,
+        });
+
+        return () => {
+            observer.disconnect();
+            setShippingRateInputsDisabled(false);
+        };
+    }, [isSelectingShippingRate]);
 
     useEffect(() => {
         if ( shippingRates.length ) {
@@ -209,21 +341,21 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
 
     useEffect(() => {
         if ( isObjectEmpty(omnivaData) ) {
-            debug('Skipped getting Terminals because the Omniva dynamic data is empty');
+            debug('Skipped getting locations because the Omniva dynamic data is empty');
             return;
         }
         if ( omnivaData.terminals_type === false ) {
-            debug('The selected delivery method does not have a terminals');
+            debug('The selected delivery method does not have a locations');
             return;
         }
 
         const terminalsType = ('terminals_type' in omnivaData) ? omnivaData.terminals_type : 'omniva';
         getTerminalsByCountry(mapValues.country, terminalsType).then(response => {
             if ( response.data ) {
-                debug('Updating terminals list...');
+                debug('Updating locations list...');
                 setTerminals(response.data);
             } else {
-                debug('Failed to get terminals list');
+                debug('Failed to get locations list');
             }
         });
     }, [
@@ -250,19 +382,25 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
 
     useEffect(() => {
         if ( ! terminals.length ) {
-            debug('Skipped updating terminals block because the terminals list is empty');
+            debug(
+              'Skipped updating locations block because the locations list is empty'
+            );
             return;
         }
 
         if ( selectedOmnivaTerminal !== '' ) {
-            debug('Checking if the selected terminal is in the terminals list...');
+            debug(
+              'Checking if the selected location is in the locations list...'
+            );
             if ( ! findArrayElemByObjProp(terminals, 'id', selectedOmnivaTerminal) ) {
-                debug('The specified terminal was not found in the list of terminals');
+                debug(
+                  'The specified location was not found in the list of locations'
+                );
                 setSelectedOmnivaTerminal('');
             }
         }
 
-        debug('Updating terminal selection options...');
+        debug('Updating location selection options...');
         const preparedTerminalsOptions = [
             {
                 label: blockText.label,
@@ -307,13 +445,14 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
                     country: mapValues.country,
                     map_icon: omnivaData.map_icon,
                     selected_terminal: selectedOmnivaTerminal,
-                    autoselect: autoselect
+                    autoselect: autoselect,
+                    on_clear: () => setSelectedOmnivaTerminal('')
                 });
                 map.init(terminals);
                 map.set_search_value(mapValues.postcode);
                 map.activate_autoselect();
             } else if ( showMap === false ) {
-                debug('Initializing terminal select field...');
+                debug('Initializing location select field...');
                 customSelect.load_data({
                     org_field: elemTerminalSelectField.current,
                     custom_container: elemMapContainer.current,
@@ -371,16 +510,15 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     /* Handle changing the select's value */
     useEffect(() => {
         if ( terminalValidationError ) {
-            debug('Clearing terminal validation error...');
+            debug('Clearing location validation error...');
             clearValidationError(terminalValidationErrorId);
-            setContainerErrorClass('');
         }
 
         if ( ! isOmnivaTerminalMethod(selectedRateId) ) {
             return;
         }
 
-        debug('Set selected terminal:', selectedOmnivaTerminal);
+        debug('Set selected location:', selectedOmnivaTerminal);
         setExtensionData(
             'omnivalt',
             'selected_terminal',
@@ -393,14 +531,13 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         }
 
         if ( selectedOmnivaTerminal === '' ) {
-            debug('Terminal not selected. Adding terminal validation error...');
+            debug('Location not selected. Adding location validation error...');
             setValidationErrors({
                 [terminalValidationErrorId]: {
                     message: blockText.error,
-                    hidden: false
+                    hidden: true
                 }
             });
-            setContainerErrorClass('error');
         }
     }, [
         setExtensionData,
@@ -422,6 +559,15 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     ]);
 
     useEffect(() => {
+        const removePortalTarget = () => {
+            if ( terminalPortalTarget.current ) {
+                terminalPortalTarget.current.remove();
+                terminalPortalTarget.current = null;
+            }
+
+            setPortalTarget(null);
+        };
+
         const removeInfoLink = () => {
             if ( picapacInfoContainer.current ) {
                 picapacInfoContainer.current.remove();
@@ -429,17 +575,76 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             }
         };
 
-        const shippingRatesControl = document.querySelector(
-            '.wc-block-components-shipping-rates-control'
-        );
+        const shippingRatesControl = getShippingRatesControl();
 
-        if ( ! shippingRates.length || picapacRateId === '' || ! shippingRatesControl || ! window.MutationObserver ) {
+        const shouldPlacePortalTarget = showBlock.value && selectedRateId !== '';
+        const shouldPlaceInfoLink = hasShippingRates && picapacRateId !== '';
+
+        if (
+            ! shippingRatesControl ||
+            ! window.MutationObserver ||
+            ( ! shouldPlacePortalTarget && ! shouldPlaceInfoLink )
+        ) {
+            removePortalTarget();
             removeInfoLink();
             return undefined;
         }
 
+        const placePortalTarget = () => {
+            if ( ! shouldPlacePortalTarget ) {
+                removePortalTarget();
+                return;
+            }
+
+            const currentTarget = terminalPortalTarget.current;
+
+            if (
+                currentTarget &&
+                currentTarget.isConnected &&
+                currentTarget.dataset.rateId === selectedRateId
+            ) {
+                return;
+            }
+
+            const target = getShippingRatePortalTarget(
+                selectedRateId,
+                getShippingRatesControl()
+            );
+
+            if ( currentTarget ) {
+                currentTarget.remove();
+            }
+
+            if ( ! target ) {
+                terminalPortalTarget.current = null;
+                setPortalTarget(null);
+                return;
+            }
+
+            const newPortalTarget = document.createElement('div');
+            newPortalTarget.className = 'omnivalt-terminal-portal';
+            newPortalTarget.dataset.rateId = selectedRateId;
+
+            if ( target.sibling && target.sibling.nextSibling ) {
+                target.parent.insertBefore(newPortalTarget, target.sibling.nextSibling);
+            } else {
+                target.parent.appendChild(newPortalTarget);
+            }
+
+            terminalPortalTarget.current = newPortalTarget;
+            setPortalTarget(newPortalTarget);
+        };
+
         const placeInfoLink = () => {
-            const target = getShippingRateOption(shippingRatesControl);
+            if ( ! shouldPlaceInfoLink ) {
+                removeInfoLink();
+                return;
+            }
+
+            const currentShippingRatesControl = getShippingRatesControl();
+            const target = currentShippingRatesControl
+                ? getShippingRateOption(currentShippingRatesControl)
+                : null;
             const currentContainer = picapacInfoContainer.current;
 
             if (
@@ -473,28 +678,68 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             picapacInfoContainer.current = newInfoContainer;
         };
 
+        let animationFrame = null;
+        const schedulePlacement = () => {
+            if ( animationFrame !== null ) {
+                return;
+            }
+
+            animationFrame = window.requestAnimationFrame(() => {
+                animationFrame = null;
+                placePortalTarget();
+                placeInfoLink();
+            });
+        };
+
+        placePortalTarget();
         placeInfoLink();
 
-        const observer = new MutationObserver(placeInfoLink);
-        observer.observe(shippingRatesControl, {
+        const observerRoot = shippingRatesControl.closest(
+            '.wp-block-woocommerce-checkout-shipping-methods-block'
+        ) || shippingRatesControl.parentElement || shippingRatesControl;
+
+        const observer = new MutationObserver((mutations) => {
+            const hasExternalMutation = mutations.some((mutation) => (
+                ! mutation.target.closest ||
+                ! mutation.target.closest(
+                    '.omnivalt-terminal-portal, .omnivalt-picapac-info'
+                )
+            ));
+
+            if ( hasExternalMutation ) {
+                schedulePlacement();
+            }
+        });
+        observer.observe(observerRoot, {
             childList: true,
             subtree: true,
         });
 
         return () => {
             observer.disconnect();
+
+            if ( animationFrame !== null ) {
+                window.cancelAnimationFrame(animationFrame);
+            }
+
+            removePortalTarget();
             removeInfoLink();
         };
     }, [
+        selectedRateId,
+        showBlock.value,
+        hasShippingRates,
         picapacRateId,
         picapacInfoUrl,
         picapacInfoLabel,
-        shippingRates
     ]);
 
     if ( ! isOmnivaMethod(selectedRateId) ) {
         return null;
     }
+
+    const isTerminalRate = isOmnivaTerminalMethod(selectedRateId);
+    const hasPortalTarget = portalTarget && portalTarget.isConnected;
 
     const blockContent = (
         <div className="omnivalt-container">
@@ -507,7 +752,7 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
                 )}
             </div>
             {showBlock.value && (
-                <div className={`omnivalt-terminal-select-container provider-${containerParams.provider} type-${containerParams.type} ${containerErrorClass}`}>
+                <div className={`omnivalt-terminal-select-container provider-${containerParams.provider} type-${containerParams.type} ${terminalValidationError && !terminalValidationError.hidden && selectedOmnivaTerminal === '' ? 'error' : ''}`}>
                     <div id="omnivalt-terminal-container-org" className="omnivalt-org-select">
                         <SelectControl
                             id="omnivalt-terminal-select-field"
@@ -529,6 +774,10 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
             )}
         </div>
     );
+
+    if ( isTerminalRate && hasPortalTarget ) {
+        return createPortal(blockContent, portalTarget);
+    }
 
     return blockContent;
 };

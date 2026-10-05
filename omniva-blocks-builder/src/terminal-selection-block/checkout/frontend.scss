@@ -137,100 +137,6 @@
     background: var(--omnivalt-blocks-matkahuolto-color-main);
 }
 
-/*** MAP: Omniva ***/
-
-.omnivalt-map-select .tmjs-selected-terminal {
-    padding-bottom: 5px;
-}
-
-.omnivalt-map-select .tmjs-open-modal-btn {
-    color: var(--omnivalt-blocks-white-color);
-    border: 1px solid var(--omnivalt-blocks-omniva-color-main);
-    background-color: var(--omnivalt-blocks-omniva-color-main);
-    padding: 7px 15px;
-}
-
-.omnivalt-map-select .tmjs-open-modal-btn:hover,
-.omnivalt-map-select .tmjs-open-modal-btn:focus {
-    color: var(--omnivalt-blocks-omniva-color-main);
-    background-color: var(--omnivalt-blocks-white-color);
-}
-
-.omnivalt-map-select .tmjs-terminal-sidebar h2 {
-    font-size: 28px;
-}
-
-.omnivalt-map-select .tmjs-terminal-sidebar h3 {
-    font-size: 20px;
-}
-
-.omnivalt-map-select .tmjs-terminal-sidebar a:hover {
-    color: var(--omnivalt-blocks-omniva-color-main);
-}
-
-.omnivalt-map-select .tmjs-close-modal-btn:hover:before,
-.omnivalt-map-select .tmjs-close-modal-btn:hover:after {
-    background-color: var(--omnivalt-blocks-omniva-color-main);
-}
-
-.omnivalt-map-select .tmjs-search-btn {
-    background-color: var(--omnivalt-blocks-omniva-color-main);
-}
-
-.omnivalt-map-select .tmjs-active {
-    background-color: var(--omnivalt-blocks-omniva-color-main) !important;
-}
-
-.omnivalt-map-select .tmjs-terminal-comment {
-    color: #fffc;
-}
-
-.omnivalt-map-select .tmjs-modal-content .tmjs-select-btn {
-    color: #000;
-    background-color: var(--omnivalt-blocks-white-color);
-    border: 1px solid var(--omnivalt-blocks-white-color);
-}
-
-.omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:hover,
-.omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:focus {
-    color: var(--omnivalt-blocks-white-color);
-    background-color: var(--omnivalt-blocks-omniva-color-main);
-}
-
-/*** MAP: Matkahuolto ***/
-
-.provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn,
-.provider-matkahuolto .omnivalt-map-select .tmjs-close-modal-btn:hover:before,
-.provider-matkahuolto .omnivalt-map-select .tmjs-close-modal-btn:hover:after,
-.provider-matkahuolto .omnivalt-map-select .tmjs-search-btn,
-.provider-matkahuolto .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:hover,
-.provider-matkahuolto .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:focus {
-    background-color: var(--omnivalt-blocks-matkahuolto-color-main);
-}
-
-.provider-matkahuolto .omnivalt-map-select .tmjs-active {
-    background-color: var(--omnivalt-blocks-matkahuolto-color-main) !important;
-}
-
-.provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:hover,
-.provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:focus {
-    background-color: var(--omnivalt-blocks-white-color);
-}
-
-.provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn {
-    border-color: var(--omnivalt-blocks-matkahuolto-color-main);
-}
-
-.provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:hover,
-.provider-matkahuolto .omnivalt-map-select .tmjs-open-modal-btn:focus,
-.provider-matkahuolto .omnivalt-map-select .tmjs-terminal-sidebar a:hover {
-    color: var(--omnivalt-blocks-matkahuolto-color-main);
-}
-
-.provider-matkahuolto .omnivalt-map-select .tmjs-modal-content .tmjs-select-btn:hover {
-    color: var(--omnivalt-blocks-white-color);
-}
-
 /*** SELECT FIELD: Omniva ***/
 
 .omnivalt-terminals-list {
@@ -383,4 +289,42 @@
 
 .provider-matkahuolto .omnivalt-terminals-list .show-more a:hover {
     color: var(--omnivalt-blocks-matkahuolto-color-main);
+}
+
+/*** CHECKOUT: TERMINAL PICKER ***/
+
+.omnivalt-terminal-portal,
+.omnivalt-terminal-select-container,
+.omnivalt-map-select {
+    width: 100%;
+}
+
+.omnivalt-terminal-select-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.omnivalt-terminal-select-container .omnivalt-map-select {
+    order: 1;
+}
+
+.omnivalt-terminal-select-container .omnivalt-org-select {
+    order: 2;
+    position: relative;
+}
+
+.omnivalt-terminal-select-container .omnivalt-org-select > .components-base-control {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.omnivalt-terminal-select-container .omnivalt-terminal-error {
+    margin: 12px 24px 0;
 }

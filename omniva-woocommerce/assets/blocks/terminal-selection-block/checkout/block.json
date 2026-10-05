@@ -2,9 +2,9 @@
   "apiVersion": 2,
   "name": "omnivalt/terminal-selection-checkout",
   "version": "1.0.0",
-  "title": "Omniva terminal selection",
+  "title": "Omniva location selection",
   "category": "woocommerce",
-  "description": "Allow to add components for Omniva shipping method",
+  "description": "Allow to add components for Omniva delivery method",
   "parent": [
     "woocommerce/checkout-shipping-methods-block"
   ],

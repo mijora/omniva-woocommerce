@@ -5,7 +5,6 @@ class OmnivaLt_Wc
     {
         $all_screen_ids = array(
             'admin_order_edit' => array('shop_order', 'woocommerce_page_wc-orders'),
-            'admin_manifest' => array('woocommerce_page_omniva-manifest'),
         );
 
         return $all_screen_ids[$type_key] ?? false;
@@ -37,7 +36,26 @@ class OmnivaLt_Wc
 
     public static function get_session( $session_key )
     {
+        // Store API callbacks can run before the WooCommerce session is initialized.
+        // @phpstan-ignore-next-line
+        if ( ! function_exists('WC') || ! isset(WC()->session) ) {
+            return null;
+        }
+
         return WC()->session->get($session_key);
+    }
+
+    public static function set_session( $session_key, $value )
+    {
+        // Keep session availability checks in the WooCommerce adapter so callers
+        // do not need to depend on the session lifecycle.
+        // @phpstan-ignore-next-line
+        if ( ! function_exists('WC') || ! isset(WC()->session) ) {
+            return false;
+        }
+
+        WC()->session->set($session_key, $value);
+        return true;
     }
 
     public static function get_customer_from_global()
