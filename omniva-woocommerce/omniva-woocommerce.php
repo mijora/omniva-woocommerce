@@ -11,6 +11,7 @@
  * 
  * Requires at least: 5.1
  * Tested up to: 7.1
+ * Requires Plugins: woocommerce
  * WC requires at least: 6.0.0
  * WC tested up to: 11.1.0
  * Requires PHP: 7.2
@@ -142,9 +143,11 @@ function omnivalt_configs($section_name = false) {
   /*
    * Params for update
    */
+  $update_asset_name = 'omniva-woocommerce.zip';
   $params['update'] = array(
     'check_url' => 'https://api.github.com/repos/mijora/omniva-woocommerce/releases/latest',
-    'download_url' => 'https://github.com/mijora/omniva-woocommerce/releases/latest/download/omniva-woocommerce.zip',
+    'asset_name' => $update_asset_name,
+    'download_url' => 'https://github.com/mijora/omniva-woocommerce/releases/latest/download/' . $update_asset_name,
   );
 
   /*

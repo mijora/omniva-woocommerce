@@ -2,6 +2,8 @@
 
 ## [1.21.0]
 ### Added
+- added native WordPress plugin update support
+- added WooCommerce dependency declaration to the plugin metadata
 - added a dedicated Omniva Delivery admin menu with separate Settings and Shipments pages
 - added a redesigned, tabbed settings interface for shipping methods, delivery countries, prices, sender information, order fulfilment and design options
 - added a full-width parcel machines map for classic and block-based Cart and Checkout pages with location search, geolocation and postcode-based distance sorting
