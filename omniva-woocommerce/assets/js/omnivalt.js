@@ -1,3 +1,5 @@
+/* global omnivadata */
+
 jQuery('document').ready(function($){
     $('input.shipping_method').on('click',function(){
         var current_method = $(this);
@@ -11,12 +13,18 @@ jQuery('document').ready(function($){
     
     $( document ).on( 'change', '.omnivalt_terminal', function() {
         var terminal_id = $(this).val();
+
+        if ( typeof omnivadata === 'undefined' || ! omnivadata.ajax_url || ! omnivadata.add_terminal_nonce ) {
+            return;
+        }
+
         $.ajax({
-            url : omnivaltdata.ajax_url,
+            url : omnivadata.ajax_url,
             type : 'post',
             data : {
                 action : 'add_terminal_to_session',
-                terminal_id : terminal_id
+                terminal_id : terminal_id,
+                nonce : omnivadata.add_terminal_nonce
             },
             success : function( response ) {
                

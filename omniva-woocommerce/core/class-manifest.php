@@ -1,45 +1,21 @@
 <?php
 class OmnivaLt_Manifest
 {
+  const PAGE_SLUG = 'omniva-manifest';
+
   public static function load_admin_scripts()
   {
-    $folder_css = '/assets/css/';
-    $folder_js = '/assets/js/';
-
-    wp_enqueue_style('omnivalt_admin_woo', plugins_url($folder_css . 'omniva_admin_woo.css', OmnivaLt_Core::$main_file_path, array(), OMNIVALT_VERSION));
-    wp_enqueue_style('omnivalt_admin_manifest', plugins_url($folder_css . 'omniva_admin_manifest.css', OmnivaLt_Core::$main_file_path, array(), OMNIVALT_VERSION));
-    wp_enqueue_style('bootstrap-datetimepicker', plugins_url($folder_js . 'datetimepicker/bootstrap-datetimepicker.min.css', OmnivaLt_Core::$main_file_path));
-
-    wp_enqueue_script('moment', plugins_url($folder_js . 'moment.min.js', OmnivaLt_Core::$main_file_path), array(), null, true);
-    wp_enqueue_script('bootstrap-datetimepicker', plugins_url($folder_js . 'datetimepicker/bootstrap-datetimepicker.min.js', OmnivaLt_Core::$main_file_path), array('jquery', 'moment'), null, true);
-    wp_enqueue_script('omniva_helper', plugins_url($folder_js . 'omniva_helper.js', OmnivaLt_Core::$main_file_path), array(), null, true);
-    wp_enqueue_script('omniva_manifest', plugins_url($folder_js . 'omniva_manifest.js', OmnivaLt_Core::$main_file_path), array(), null, true);
-
-    wp_localize_script('omniva_manifest', 'omnivaglobals', array(
-      'cookie_checked_list' => 'omniva_checked',
-    ));
-
-    wp_localize_script('omniva_manifest', 'omnivatext', array(
-      'alert_select_orders' => __('Please select orders', 'omnivalt'),
-    ));
+    OmnivaLt_Manifest_Page::load_admin_scripts();
   }
 
   public static function register_menu_pages()
   {
-    add_submenu_page(
-      'woocommerce',
-      __('Omniva shipping', 'omnivalt'),
-      __('Omniva shipping', 'omnivalt'),
-      'manage_woocommerce',
-      'omniva-manifest',
-      'OmnivaLt_Manifest::manifest_page',
-      10
-    );
+    OmnivaLt_Admin_Navigation::register_menu_pages();
   }
 
   public static function manifest_page()
   {
-    include_once(OMNIVALT_DIR . 'manifest_page.php');
+    OmnivaLt_Manifest_Page::render_page();
   }
 
   /**
@@ -222,7 +198,7 @@ class OmnivaLt_Manifest
 
   public static function page_make_link($args)
   {
-    $query_args = array('page' => 'omniva-manifest');
+    $query_args = array('page' => self::PAGE_SLUG);
     $query_args = array_merge($query_args, $args);
     return add_query_arg($query_args, admin_url('/admin.php'));
   }

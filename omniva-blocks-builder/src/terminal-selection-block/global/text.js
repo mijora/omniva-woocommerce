@@ -6,52 +6,93 @@ import { __ } from '@wordpress/i18n';
 export const txt = wcSettings["omnivalt-blocks_data"].txt; //Temporary solution while not clear how use @wordpress/i18n
 
 export const txt_json = {
-    block_options: __('Block options', 'omnivalt'),
-    title_terminal: __('Parcel terminal', 'omnivalt'),
-    select_terminal: __('Select parcel terminal', 'omnivalt'),
-    error_terminal: __('Please select parcel terminal', 'omnivalt'),
-    cart_terminal_info: __('You can choose the parcel terminal on the Checkout page', 'omnivalt'),
-    loading_field: __('Loading select field...', 'omnivalt'),
-    title_post: __('Post office', 'omnivalt'),
+  block_options: __('Block options', 'omnivalt'),
+  title_terminal: __('Parcel machine', 'omnivalt'),
+  select_terminal: __('Select parcel machine', 'omnivalt'),
+  error_terminal: __('Please select parcel machine', 'omnivalt'),
+  cart_terminal_info: __(
+    'You can choose the parcel machine on the Checkout page',
+    'omnivalt'
+  ),
+  loading_field: __('Loading select field...', 'omnivalt'),
+  title_post: __('Post office', 'omnivalt'),
+  select_post: __('Select post office', 'omnivalt'),
+  error_post: __('Please select post office', 'omnivalt'),
+  cart_post_info: __(
+    'You can choose the post office on the Checkout page',
+    'omnivalt'
+  ),
+  providers: {
+    omniva: __('Omniva', 'omnivalt'),
+    matkahuolto: __('Matkahuolto', 'omnivalt'),
+  },
+  errors: {
+    invalid_format: __('Invalid format', 'omnivalt'),
+    invalid_phone_format: __(
+      'The phone format specified in the Delivery address is not valid for this delivery method',
+      'omnivalt'
+    ),
+  },
+  map: {
+    modal_title_post: __('post offices', 'omnivalt'),
+    modal_title_terminal: __('parcel machines', 'omnivalt'),
+    modal_search_title_post: __('Post offices list', 'omnivalt'),
+    modal_search_title_terminal: __('Parcel machines list', 'omnivalt'),
     select_post: __('Select post office', 'omnivalt'),
-    error_post: __('Please select post office', 'omnivalt'),
-    cart_post_info: __('You can choose the post office on the Checkout page', 'omnivalt'),
-    providers: {
-        omniva: __('Omniva', 'omnivalt'),
-        matkahuolto: __('Matkahuolto', 'omnivalt')
-    },
-    errors: {
-        invalid_format: __('Invalid format', 'omnivalt'),
-        invalid_phone_format: __('The phone format specified in the Shipping address is not valid for this shipping method', 'omnivalt')
-    },
-    map: {
-        modal_title_post: __('post offices', 'omnivalt'),
-        modal_title_terminal: __('parcel terminals', 'omnivalt'),
-        modal_search_title_post: __('Post offices list', 'omnivalt'),
-        modal_search_title_terminal: __('Parcel terminals list', 'omnivalt'),
-        select_post: __('Select post office', 'omnivalt'),
-        select_terminal: __('Select terminal', 'omnivalt'),
-        search_placeholder: __('Enter postcode', 'omnivalt'),
-        search_button: __('Search', 'omnivalt'),
-        select_button: __('Select', 'omnivalt'),
-        modal_open_button: __('Select in map', 'omnivalt'),
-        use_my_location: __('Use my location', 'omnivalt'),
-        my_position: __('Distance calculated from this point', 'omnivalt'),
-        not_found: __('Place not found', 'omnivalt'),
-        no_cities_found: __('There were no cities found for your search term', 'omnivalt'),
-        geo_not_supported: __('Geolocation is not supported', 'omnivalt')
-    },
-    select: {
-        not_found: __('Place not found', 'omnivalt'),
-        search_too_short: __('Value is too short', 'omnivalt'),
-        terminal_select: __('Select terminal', 'omnivalt'),
-        terminal_map_title: __('parcel terminals', 'omnivalt'),
-        terminal_map_search_title: __('Parcel terminals addresses', 'omnivalt'),
-        post_select: __('Select post office', 'omnivalt'),
-        post_map_title: __('post offices', 'omnivalt'),
-        post_map_search_title: __('Post offices addresses', 'omnivalt'),
-        enter_address: __('Enter postcode/address', 'omnivalt'),
-        show_in_map: __('Show in map', 'omnivalt'),
-        show_more: __('Show more', 'omnivalt')
-    }
+    select_terminal: __('Select parcel machine', 'omnivalt'),
+    search_placeholder: __('Enter postcode', 'omnivalt'),
+    map_search_placeholder: __(
+      'Start typing parcel machine name or address',
+      'omnivalt'
+    ),
+    search_button: __('Search', 'omnivalt'),
+    select_button: __('Select', 'omnivalt'),
+    modal_open_button: __('Select in map', 'omnivalt'),
+    change_button: __('Change', 'omnivalt'),
+    use_my_location: __('Use my location', 'omnivalt'),
+    geolocation_loading: __('Locating...', 'omnivalt'),
+    my_position: __('Distance calculated from this point', 'omnivalt'),
+    not_found: __('Place not found', 'omnivalt'),
+    no_cities_found: __(
+      'There were no cities found for your search term',
+      'omnivalt'
+    ),
+    no_search_results: __('No results', 'omnivalt'),
+    geo_not_supported: __('Geolocation is not supported', 'omnivalt'),
+    delivery_location: __('Delivery location', 'omnivalt'),
+    close_button: __('Close map', 'omnivalt'),
+    search_label: __('Search delivery locations', 'omnivalt'),
+    clear_search: __('Clear search', 'omnivalt'),
+    clear_selection: __('Clear selected delivery location', 'omnivalt'),
+    search_results_label: __('Delivery location search results', 'omnivalt'),
+    show_on_map: __('Show on map', 'omnivalt'),
+    sorted_by_zip: __('Sorted by distance from your postcode:', 'omnivalt'),
+    sort_by_zip: __('Sort by distance from your postcode', 'omnivalt'),
+    sorted_by_location: __(
+      'Sorted by distance from your location:',
+      'omnivalt'
+    ),
+    postcode_input_label: __('Postcode', 'omnivalt'),
+    postcode_placeholder: __('Enter postcode', 'omnivalt'),
+    geolocation_error: __('Location unavailable', 'omnivalt'),
+    search_error: __('Unable to find a location', 'omnivalt'),
+    use_zip: __('Use postcode', 'omnivalt'),
+    enter_zip: __('Enter postcode', 'omnivalt'),
+    close_popup: __('Close popup', 'omnivalt'),
+    selected_button: __('Selected', 'omnivalt'),
+    clear_button: __('Clear', 'omnivalt'),
+  },
+  select: {
+    not_found: __('Place not found', 'omnivalt'),
+    search_too_short: __('Value is too short', 'omnivalt'),
+    terminal_select: __('Select parcel machine', 'omnivalt'),
+    terminal_map_title: __('parcel machines', 'omnivalt'),
+    terminal_map_search_title: __('Parcel machines addresses', 'omnivalt'),
+    post_select: __('Select post office', 'omnivalt'),
+    post_map_title: __('post offices', 'omnivalt'),
+    post_map_search_title: __('Post offices addresses', 'omnivalt'),
+    enter_address: __('Enter postcode/address', 'omnivalt'),
+    show_in_map: __('Show in map', 'omnivalt'),
+    show_more: __('Show more', 'omnivalt'),
+  },
 };
