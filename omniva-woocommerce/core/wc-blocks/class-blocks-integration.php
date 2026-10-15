@@ -85,6 +85,7 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
         
         return array(
             'ajax_url' => admin_url('admin-ajax.php'),
+            'clear_terminal_nonce' => wp_create_nonce('omnivalt_clear_terminal'),
             'plugin_url' => OMNIVALT_URL,
             'methods' => array(
                 'terminal_omniva' => 'omnivalt_pt',
@@ -102,10 +103,10 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
             'debug' => $debug_mode,
             'txt' => array(
                 'block_options' => __('Block options', 'omnivalt'),
-                'title_terminal' => __('Parcel terminal', 'omnivalt'),
-                'select_terminal' => __('Select parcel terminal', 'omnivalt'),
-                'error_terminal' => __('Please select parcel terminal', 'omnivalt'),
-                'cart_terminal_info' => __('You can choose the parcel terminal on the Checkout page', 'omnivalt'),
+                'title_terminal' => __('Parcel machine', 'omnivalt'),
+                'select_terminal' => __('Select parcel machine', 'omnivalt'),
+                'error_terminal' => __('Please select parcel machine', 'omnivalt'),
+                'cart_terminal_info' => __('You can choose the parcel machine on the Checkout page', 'omnivalt'),
                 'loading_field' => __('Loading select field...', 'omnivalt'),
                 'title_post' => __('Post office', 'omnivalt'),
                 'select_post' => __('Select post office', 'omnivalt'),
@@ -117,31 +118,54 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
                 ),
                 'errors' => array(
                     'invalid_format' => __('Invalid format', 'omnivalt'),
-                    'invalid_phone_format' => __('The phone format specified in the Shipping address is not valid for this shipping method', 'omnivalt')
+                    'invalid_phone_format' => __('The phone format specified in the Delivery address is not valid for this delivery method', 'omnivalt')
                 ),
                 'map' => array(
                     'modal_title_post' => __('post offices', 'omnivalt'),
-                    'modal_title_terminal' => __('parcel terminals', 'omnivalt'),
+                    'modal_title_terminal' => __('parcel machines', 'omnivalt'),
                     'modal_search_title_post' => __('Post offices list', 'omnivalt'),
-                    'modal_search_title_terminal' => __('Parcel terminals list', 'omnivalt'),
+                    'modal_search_title_terminal' => __('Parcel machines list', 'omnivalt'),
                     'select_post' => __('Select post office', 'omnivalt'),
-                    'select_terminal' => __('Select terminal', 'omnivalt'),
+                    'select_terminal' => __('Select parcel machine', 'omnivalt'),
                     'search_placeholder' => __('Enter postcode', 'omnivalt'),
+                    'map_search_placeholder' => __('Start typing parcel machine name or address', 'omnivalt'),
                     'search_button' => __('Search', 'omnivalt'),
                     'select_button' => __('Select', 'omnivalt'),
                     'modal_open_button' => __('Select in map', 'omnivalt'),
+                    'change_button' => __('Change', 'omnivalt'),
                     'use_my_location' => __('Use my location', 'omnivalt'),
+                    'geolocation_loading' => __('Locating...', 'omnivalt'),
                     'my_position' => __('Distance calculated from this point', 'omnivalt'),
                     'not_found' => __('Place not found', 'omnivalt'),
                     'no_cities_found' => __('There were no cities found for your search term', 'omnivalt'),
-                    'geo_not_supported' => __('Geolocation is not supported', 'omnivalt')
+                    'no_search_results' => __('No results', 'omnivalt'),
+                    'geo_not_supported' => __('Geolocation is not supported', 'omnivalt'),
+                    'delivery_location' => __('Delivery location', 'omnivalt'),
+                    'close_button' => __('Close map', 'omnivalt'),
+                    'search_label' => __('Search delivery locations', 'omnivalt'),
+                    'clear_search' => __('Clear search', 'omnivalt'),
+                    'clear_selection' => __('Clear selected delivery location', 'omnivalt'),
+                    'search_results_label' => __('Delivery location search results', 'omnivalt'),
+                    'show_on_map' => __('Show on map', 'omnivalt'),
+                    'sorted_by_zip' => __('Sorted by distance from your postcode:', 'omnivalt'),
+                    'sort_by_zip' => __('Sort by distance from your postcode', 'omnivalt'),
+                    'sorted_by_location' => __('Sorted by distance from your location:', 'omnivalt'),
+                    'postcode_input_label' => __('Postcode', 'omnivalt'),
+                    'postcode_placeholder' => __('Enter postcode', 'omnivalt'),
+                    'geolocation_error' => __('Location unavailable', 'omnivalt'),
+                    'search_error' => __('Unable to find a location', 'omnivalt'),
+                    'use_zip' => __('Use postcode', 'omnivalt'),
+                    'enter_zip' => __('Enter postcode', 'omnivalt'),
+                    'close_popup' => __('Close popup', 'omnivalt'),
+                    'selected_button' => __('Selected', 'omnivalt'),
+                    'clear_button' => __('Clear', 'omnivalt')
                 ),
                 'select' => array(
                     'not_found' => __('Place not found', 'omnivalt'),
                     'search_too_short' => __('Value is too short', 'omnivalt'),
-                    'terminal_select' => __('Select terminal', 'omnivalt'),
-                    'terminal_map_title' => __('parcel terminals', 'omnivalt'),
-                    'terminal_map_search_title' => __('Parcel terminals addresses', 'omnivalt'),
+                    'terminal_select' => __('Select parcel machine', 'omnivalt'),
+                    'terminal_map_title' => __('parcel machines', 'omnivalt'),
+                    'terminal_map_search_title' => __('Parcel machines addresses', 'omnivalt'),
                     'post_select' => __('Select post office', 'omnivalt'),
                     'post_map_title' => __('post offices', 'omnivalt'),
                     'post_map_search_title' => __('Post offices addresses', 'omnivalt'),
@@ -158,7 +182,8 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
             'omnivalt-block-frontend-checkout' => array(
                 'js' => 'terminal-selection-block/checkout/frontend.js',
                 'asset' => 'terminal-selection-block/checkout/frontend.asset.php',
-                'css' => 'terminal-selection-block/checkout/frontend.css'
+                'css' => 'terminal-selection-block/checkout/frontend.css',
+                'dependencies' => array('omnivalt-library-mapping', 'omnivalt-library-leaflet')
             ),
             'omnivalt-block-frontend-cart' => array(
                 'js' => 'terminal-selection-block/cart/frontend.js',
@@ -197,11 +222,16 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
                 'dependencies' => array(),
                 'version' => $this->get_file_version($script_asset_path),
             );
+            $script_dependencies = isset($script_asset['dependencies']) ? $script_asset['dependencies'] : array();
+
+            if ( isset($script_files['dependencies']) ) {
+                $script_dependencies = array_values(array_unique(array_merge($script_dependencies, $script_files['dependencies'])));
+            }
 
             wp_register_script(
                 $script_id,
                 $script_url,
-                $script_asset['dependencies'],
+                $script_dependencies,
                 $script_asset['version'],
                 true
             );
@@ -267,9 +297,8 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
 
     public function register_external_scripts()
     {
-        $js_url = OMNIVALT_URL . 'assets/js/';
-        // @phpstan-ignore-next-line
-        $css_url = OMNIVALT_URL . 'assets/css/';
+        $assets_url = OMNIVALT_URL . 'assets/';
+        $assets_dir = OMNIVALT_DIR . 'assets/';
 
         /**
          * External assets may define only one of the supported file types.
@@ -278,21 +307,21 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
          */
         $scripts = array(
             'omnivalt-library-mapping' => array(
-                'js' => 'terminal-mapping.js',
-                'css' => 'terminal-mapping.css'
+                'js' => 'terminal-mapping/terminal-mapping.omniva-fullwidth.js',
+                'css' => 'terminal-mapping/terminal-mapping.omniva-fullwidth.css'
             ),
             'omnivalt-library-leaflet' => array(
-                'js' => 'leaflet.js',
-                'css' => 'leaflet.css'
+                'js' => 'js/leaflet.js',
+                'css' => 'css/leaflet.css'
             ),
         );
 
         foreach ( $scripts as $script_id => $script_files ) {
             if ( ! empty($script_files['js']) ) {
-                wp_enqueue_script($script_id, $js_url . $script_files['js'], array('jquery'), null, true);
+                wp_enqueue_script($script_id, $assets_url . $script_files['js'], array('jquery'), $this->get_file_version($assets_dir . $script_files['js']), true);
             }
             if ( ! empty($script_files['css']) ) {
-                wp_enqueue_style($script_id, $css_url . $script_files['css']);
+                wp_enqueue_style($script_id, $assets_url . $script_files['css'], array(), $this->get_file_version($assets_dir . $script_files['css']));
             }
         }
     }
@@ -306,14 +335,14 @@ class Omnivalt_Blocks_Integration implements IntegrationInterface
     }
 
     /**
-     * Get the file modified time as a cache buster if we're in dev mode.
+     * Get the file modified time as a cache buster.
      *
      * @param string $file Local path to the file.
      * @return string The cache buster value to use for the given file.
      */
     private function get_file_version( $file )
     {
-        if ( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG && file_exists($file) ) {
+        if ( file_exists($file) ) {
             return filemtime($file);
         }
         

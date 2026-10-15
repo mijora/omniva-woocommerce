@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Omniva shipping
- * Description: Official Omniva shipping plugin for WooCommerce
+ * Plugin Name: Omniva Delivery
+ * Description: Official Omniva delivery plugin for WooCommerce
  * Author: Omniva
  * Author URI: https://www.omniva.lt/
  * Plugin URI: https://www.omniva.lt/en/business/integrations-for-e-shops
@@ -11,6 +11,7 @@
  * 
  * Requires at least: 5.1
  * Tested up to: 7.1
+ * Requires Plugins: woocommerce
  * WC requires at least: 6.0.0
  * WC tested up to: 11.1.0
  * Requires PHP: 7.2
@@ -63,7 +64,7 @@ function omnivalt_configs($section_name = false) {
    * title - Country name
    * methods - Value of one of this: courier, courier_plus, pickup, post_near, private_customer //TODO: Need to make it take the value from available_methods instead
    * shipping_sets - Array of destination countries, other services and sets for them
-   * comment_lang - Identifier for terminals map
+   * comment_lang - Identifier for parcel machines map
    */
   $params['shipping_params'] = array(
     'LT' => array(
@@ -133,7 +134,7 @@ function omnivalt_configs($section_name = false) {
   $params['cod'] = array('cod');
 
   /*
-   * Post offices and terminals params
+   * Post offices and parcel machines params
    */
   $params['locations'] = array(
     'source_url' => 'https://www.omniva.ee/locationsfull.json',
@@ -142,9 +143,11 @@ function omnivalt_configs($section_name = false) {
   /*
    * Params for update
    */
+  $update_asset_name = 'omniva-woocommerce.zip';
   $params['update'] = array(
     'check_url' => 'https://api.github.com/repos/mijora/omniva-woocommerce/releases/latest',
-    'download_url' => 'https://github.com/mijora/omniva-woocommerce/releases/latest/download/omniva-woocommerce.zip',
+    'asset_name' => $update_asset_name,
+    'download_url' => 'https://github.com/mijora/omniva-woocommerce/releases/latest/download/' . $update_asset_name,
   );
 
   /*

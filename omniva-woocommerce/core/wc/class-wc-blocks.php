@@ -60,7 +60,7 @@ class OmnivaLt_Wc_Blocks
         $omniva_method_key = ($terminals_type == 'post') ? 'post_specific' : 'pickup';
 
         if ( empty($omniva_methods[$omniva_method_key]) || ! is_array($omniva_methods[$omniva_method_key]) ) {
-            wp_send_json_error('Invalid Omniva shipping method', 400);
+            wp_send_json_error('Invalid Omniva delivery method', 400);
         }
 
         $omniva_method = $omniva_methods[$omniva_method_key];
@@ -103,6 +103,13 @@ class OmnivaLt_Wc_Blocks
         if ( function_exists('woocommerce_store_api_register_endpoint_data') ) {
             woocommerce_store_api_register_endpoint_data(array(
                 'endpoint' => \Automattic\WooCommerce\StoreApi\Schemas\V1\CheckoutSchema::IDENTIFIER,
+                'namespace' => 'omnivalt',
+                'data_callback' => 'OmnivaLt_Wc_Blocks::cb_data_callback',
+                'schema_callback' => 'OmnivaLt_Wc_Blocks::cb_schema_callback',
+                'schema_type' => ARRAY_A,
+            ));
+            woocommerce_store_api_register_endpoint_data(array(
+                'endpoint' => \Automattic\WooCommerce\StoreApi\Schemas\V1\CartSchema::IDENTIFIER,
                 'namespace' => 'omnivalt',
                 'data_callback' => 'OmnivaLt_Wc_Blocks::cb_data_callback',
                 'schema_callback' => 'OmnivaLt_Wc_Blocks::cb_schema_callback',
@@ -152,19 +159,24 @@ class OmnivaLt_Wc_Blocks
 
         $method_saved = OmnivaLt_Omniva_Order::set_method($order->get_id(), $selected_method);
         if ( ! $method_saved ) {
-            OmnivaLt_Debug::log_error('Failed to save Omniva shipping method from Blocks Checkout. Received method: ' . print_r($selected_method, true));
+            OmnivaLt_Debug::log_error('Failed to save Omniva delivery method from Blocks Checkout. Received method: ' . print_r($selected_method, true));
+        }
+
+        $cookie_terminal_id = '';
+        if ( isset($_COOKIE['omniva_terminal']) ) {
+            $cookie_terminal_id = sanitize_text_field(wp_unslash($_COOKIE['omniva_terminal']));
         }
 
         if ( OmnivaLt_Picapac::is_rate($selected_method) ) {
             $selected_terminal_id = OmnivaLt_Picapac::get_terminal_id();
-        } elseif ( empty($selected_terminal_id) && ! empty($_COOKIE['omniva_terminal']) ) {
+        } elseif ( empty($selected_terminal_id) && ! empty($cookie_terminal_id) ) {
             // Fallback: if terminal not in extension data, try cookie
-            $selected_terminal_id = wc_clean($_COOKIE['omniva_terminal']);
+            $selected_terminal_id = $cookie_terminal_id;
         }
 
         if ( ! empty($selected_terminal_id) ) {
             OmnivaLt_Omniva_Order::set_terminal_id($order->get_id(), $selected_terminal_id);
-            OmnivaLt_Wc_Order::add_note($order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($selected_terminal_id, true) . ' <i>(ID: ' . $selected_terminal_id . ')</i>');
+            OmnivaLt_Wc_Order::add_note($order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel machine', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($selected_terminal_id, true) . ' <i>(ID: ' . $selected_terminal_id . ')</i>');
         }
     }
 
@@ -183,8 +195,26 @@ class OmnivaLt_Wc_Blocks
 
     public static function cb_data_callback()
     {
+        $selected_terminal_id = '';
+        $cookie_terminal_id = '';
+
+        if ( isset($_COOKIE['omniva_terminal']) ) {
+            $cookie_terminal_id = sanitize_text_field(wp_unslash($_COOKIE['omniva_terminal']));
+        }
+
+        // A terminal can be changed in the Blocks checkout without a classic
+        // checkout request, so its cookie is newer than the saved session value.
+        if ( ! empty($cookie_terminal_id) ) {
+            $selected_terminal_id = $cookie_terminal_id;
+            OmnivaLt_Wc::set_session('omnivalt_terminal_id', $selected_terminal_id);
+        }
+
+        if ( empty($selected_terminal_id) ) {
+            $selected_terminal_id = OmnivaLt_Wc::get_session('omnivalt_terminal_id');
+        }
+
         return array(
-            'selected_terminal' => '',
+            'selected_terminal' => $selected_terminal_id,
             'selected_rate_id' => '',
         );
     }
