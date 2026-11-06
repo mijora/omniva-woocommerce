@@ -22,6 +22,7 @@ foreach ( $selected_orders as $selected_order_id ) {
 }
 $labels_bulk_disabled = ! $sender_info_complete && ! $has_selected_existing_labels;
 $manifest_enabled = ! empty($page_data['manifest_enabled']);
+$manifest_bulk_disabled = ! $has_selected_existing_labels;
 $active_omx = ! empty($page_data['active_omx']);
 $current_courier_calls = isset($page_data['current_courier_calls']) && is_array($page_data['current_courier_calls']) ? $page_data['current_courier_calls'] : array();
 $active_filter_count = isset($page_data['active_filter_count']) ? (int) $page_data['active_filter_count'] : 0;
@@ -154,7 +155,11 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
           </div>
           <div class="omnivalt-manifest-page__selection-actions<?php echo ! empty($selected_orders) ? ' is-visible' : ''; ?>">
             <?php if ($manifest_enabled) : ?>
-              <button id="submit_manifest_items_1" title="<?php echo esc_attr__('Generate manifest', 'omnivalt'); ?>" type="button" class="button omnivalt-manifest-page__button omnivalt-manifest-page__button--secondary">
+              <button id="submit_manifest_items_1"
+                title="<?php echo esc_attr__('Generate manifest', 'omnivalt'); ?>"
+                type="button"
+                <?php if ( $manifest_bulk_disabled ) : ?>disabled="disabled" aria-disabled="true"<?php endif; ?>
+                class="button omnivalt-manifest-page__button omnivalt-manifest-page__button--secondary">
                 <?php esc_html_e('Generate manifest', 'omnivalt'); ?>
               </button>
             <?php endif; ?>
@@ -239,6 +244,17 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
                 <?php
                 $order_data = OmnivaLt_Wc_Order::get_data($order->get_id());
                 $barcodes = $order_data->omniva->barcodes;
+                $order_has_barcodes = false;
+                if ( is_array($barcodes) ) {
+                  foreach ( $barcodes as $barcode ) {
+                    if ( is_scalar($barcode) && '' !== trim((string) $barcode) ) {
+                      $order_has_barcodes = true;
+                      break;
+                    }
+                  }
+                } elseif ( is_scalar($barcodes) ) {
+                  $order_has_barcodes = '' !== trim((string) $barcodes);
+                }
                 $manifest_date = $order_data->omniva->manifest_date;
                 $date = date('Y-m-d H:i', strtotime($manifest_date));
                 $order_size = $order_data->shipment->size;
@@ -262,7 +278,7 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
                 <?php endif; ?>
                 <tr class="data-row">
                   <?php $checked = (in_array((int) $order_data->id, $selected_orders, true)) ? 'checked' : ''; ?>
-                  <th scope="row" class="check-column"><input type="checkbox" name="items[]" class="manifest-item" value="<?php echo esc_attr($order_data->id); ?>" data-has-barcodes="<?php echo ! empty($barcodes) ? '1' : '0'; ?>" <?php echo esc_attr($checked); ?>/></th>
+                  <th scope="row" class="check-column"><input type="checkbox" name="items[]" class="manifest-item" value="<?php echo esc_attr($order_data->id); ?>" data-has-barcodes="<?php echo $order_has_barcodes ? '1' : '0'; ?>" <?php echo esc_attr($checked); ?>/></th>
                   <td class="manage-column column-order_id">
                     <div class="omnivalt-manifest-page__mobile-order-identity">
                       <a href="<?php echo esc_url($order_data->admin->url_edit); ?>">#<?php echo esc_html($order_data->number); ?></a>
@@ -399,7 +415,11 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
       <?php if ( $orders_data['is_orders'] ) : ?>
         <div class="mass-print-container omnivalt-manifest-page__bottom-actions<?php echo ! empty($selected_orders) ? ' is-visible' : ''; ?>" data-sender-info-complete="<?php echo esc_attr($sender_info_complete ? '1' : '0'); ?>">
           <?php if ($manifest_enabled) : ?>
-            <button id="submit_manifest_items_2" title="<?php echo esc_attr__('Generate manifest', 'omnivalt'); ?>" type="button" class="button omnivalt-manifest-page__button omnivalt-manifest-page__button--secondary">
+            <button id="submit_manifest_items_2"
+              title="<?php echo esc_attr__('Generate manifest', 'omnivalt'); ?>"
+              type="button"
+              <?php if ( $manifest_bulk_disabled ) : ?>disabled="disabled" aria-disabled="true"<?php endif; ?>
+              class="button omnivalt-manifest-page__button omnivalt-manifest-page__button--secondary">
               <?php esc_html_e('Generate manifest', 'omnivalt'); ?>
             </button>
           <?php endif; ?>

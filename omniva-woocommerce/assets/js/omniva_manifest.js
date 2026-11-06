@@ -239,24 +239,31 @@
 
   function omniva_remove_from_checked_list(value) {
     var cookie_value = [];
-    if (omniva_getCookie(omnivaglobals.cookie_checked_list) != null) {
-      var current_cookie = omniva_getCookie(omnivaglobals.cookie_checked_list);
+    var current_cookie = omniva_getCookie(omnivaglobals.cookie_checked_list);
+    if (current_cookie != null) {
       cookie_value = JSON.parse(current_cookie);
-      for (var i=0;i<cookie_value.length;i++) {
-        if (cookie_value[i] == value) {
-          cookie_value.splice(i, 1);
-        }
-      }
-      if (cookie_value.length == 0) {
-        omniva_eraseCookie(omnivaglobals.cookie_checked_list);
-        $('#selected-orders').hide();
-        omniva_set_selected_actions_visible(false);
-      } else {
-        omniva_setCookie(omnivaglobals.cookie_checked_list, JSON.stringify(cookie_value), 12*60);
-      }
-
-      omniva_remove_selected_item($('#selected-orders .item[data-id="' + value + '"]'));
     }
+    if ( ! Array.isArray(cookie_value) ) {
+      cookie_value = [];
+    }
+
+    cookie_value = cookie_value.filter(function(order_id) {
+      return String(order_id) !== String(value);
+    });
+    if (cookie_value.length == 0) {
+      omniva_eraseCookie(omnivaglobals.cookie_checked_list);
+    } else {
+      omniva_setCookie(omnivaglobals.cookie_checked_list, JSON.stringify(cookie_value), 12*60);
+    }
+
+    var selected_item = $('#selected-orders .item').filter(function() {
+      return String($(this).attr('data-id')) === String(value);
+    });
+    selected_item.remove();
+
+    var has_selected_orders = $('#selected-orders .item').length > 0;
+    $('#selected-orders').toggle(has_selected_orders);
+    omniva_set_selected_actions_visible(has_selected_orders);
   }
 
   function omniva_add_selected_item(value) {
@@ -284,6 +291,7 @@
 
     selected_orders.find('.selected-count').text(selected_count);
     selected_orders.closest('.omnivalt-manifest-page__bulk-actions').toggleClass('has-many-selected', has_many_selected);
+    omniva_update_manifest_action_state();
     omniva_update_label_action_state();
   }
 
@@ -315,6 +323,32 @@
       trigger.attr('data-tooltip', tooltip || '');
       trigger.attr('aria-label', disabled ? (tooltip || button_title) : button_title);
     });
+  }
+
+  function omniva_update_manifest_action_state() {
+    var has_selected_barcodes = $('#selected-orders .item').filter(function() {
+      var selected_item = $(this);
+      var order_id = String(selected_item.attr('data-id'));
+      var checkbox = $('.manifest-item').filter(function() {
+        return String($(this).val()) === order_id;
+      }).first();
+
+      if (!checkbox.length) {
+        return selected_item.attr('data-has-barcodes') === '1';
+      }
+
+      var has_barcodes = checkbox.attr('data-has-barcodes') === '1';
+      selected_item.attr('data-has-barcodes', has_barcodes ? '1' : '0');
+      return checkbox.is(':checked') && has_barcodes;
+    }).length > 0;
+    var buttons = $('#submit_manifest_items_1, #submit_manifest_items_2');
+
+    buttons.prop('disabled', !has_selected_barcodes);
+    if ( !has_selected_barcodes ) {
+      buttons.attr('aria-disabled', 'true');
+    } else {
+      buttons.removeAttr('aria-disabled');
+    }
   }
 
   function omniva_submit_bulk_action(form_selector) {
