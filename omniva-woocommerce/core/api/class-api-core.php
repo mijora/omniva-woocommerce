@@ -102,7 +102,7 @@ class OmnivaLt_Api_Core
         return $output;
     }
 
-    public function download_labels( $barcodes )
+    public function download_labels( $barcodes, $inline = false )
     {
         $output = array(
             'status' => false,
@@ -117,7 +117,8 @@ class OmnivaLt_Api_Core
             $api_label = new Label();
             $this->set_auth($api_label);
 
-            $api_label->downloadLabels($barcodes, $print_type_bool, 'D', 'Omnivalt_labels_' . current_time('Ymd_His'));
+            $output_mode = $inline ? 'I' : 'D';
+            $api_label->downloadLabels($barcodes, $print_type_bool, $output_mode, 'Omnivalt_labels_' . current_time('Ymd_His'));
             $output['status'] = true;
         } catch (OmnivaException $e) {
             $output['msg'] = $e->getMessage();

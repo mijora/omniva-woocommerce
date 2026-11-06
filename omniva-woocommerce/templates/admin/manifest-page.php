@@ -138,12 +138,13 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
         $has_many_selected = $selected_order_count > 3;
         ?>
         <section class="mass-print-container omnivalt-manifest-page__bulk-actions<?php echo ! empty($selected_orders) ? ' is-visible' : ''; ?><?php echo $has_many_selected ? ' has-many-selected' : ''; ?>" data-sender-info-complete="<?php echo esc_attr($sender_info_complete ? '1' : '0'); ?>">
-          <form id="manifest-print-form" action="admin-post.php" method="GET">
+          <form id="manifest-print-form" action="admin-post.php" method="POST" target="_blank">
             <input type="hidden" name="action" value="omnivalt_manifest" />
             <?php wp_nonce_field('omnivalt_manifest', 'omnivalt_manifest_nonce'); ?>
           </form>
-          <form id="labels-print-form" action="admin-post.php" method="GET">
+          <form id="labels-print-form" action="admin-post.php" method="POST" target="_blank">
             <input type="hidden" name="action" value="omnivalt_labels" />
+            <input type="hidden" name="inline" value="1" />
             <?php wp_nonce_field('omnivalt_labels', 'omnivalt_labels_nonce'); ?>
           </form>
           <div id="selected-orders" class="selected-orders" style="<?php echo (empty($selected_orders)) ? 'display:none' : ''; ?>">
@@ -177,6 +178,7 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
       <?php endif; ?>
 
       <section class="table-container omnivalt-manifest-page__orders-card">
+        <?php $row_label_action_forms = array(); ?>
         <form id="filter-form" class="" action="<?php echo esc_url(OmnivaLt_Manifest::page_make_link(array('action' => $orders_data['action']))); ?>" method="POST">
           <?php wp_nonce_field('omnivalt_labels', 'omnivalt_labels_nonce'); ?>
           <div id="omnivalt-manifest-page__filters" class="omnivalt-manifest-page__filters" role="dialog" aria-label="<?php esc_attr_e('Filters', 'omnivalt'); ?>">
@@ -365,26 +367,36 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
                     <span class="omnivalt-manifest-page__mobile-actions-label"><?php esc_html_e('Actions', 'omnivalt'); ?></span>
                     <?php $label_action = ! empty($barcodes) ? __('Print label', 'omnivalt') : __('Generate label', 'omnivalt'); ?>
                     <?php $label_action_disabled = ! $sender_info_complete && empty($barcodes); ?>
-                    <a
-                      <?php if ( ! $label_action_disabled ) : ?>href="<?php echo esc_url(add_query_arg(array('action' => 'omnivalt_labels', 'post' => $order_data->id), admin_url('admin-post.php'))); ?>"<?php endif; ?>
+                    <?php $label_form_id = 'omnivalt-label-' . absint($order_data->id); ?>
+                    <?php if ( ! $label_action_disabled ) : ?>
+                      <?php $row_label_action_forms[] = array('id' => $label_form_id, 'order_id' => absint($order_data->id), 'regenerate' => false); ?>
+                    <?php endif; ?>
+                    <button
+                      type="<?php echo $label_action_disabled ? 'button' : 'submit'; ?>"
+                      <?php if ( ! $label_action_disabled ) : ?>form="<?php echo esc_attr($label_form_id); ?>"<?php else : ?>disabled="disabled"<?php endif; ?>
                       class="button action omnivalt-manifest-page__row-action<?php echo $label_action_disabled ? ' is-disabled' : ''; ?>"
                       data-tooltip="<?php echo esc_attr($label_action_disabled ? $sender_info_tooltip : $label_action); ?>"
                       aria-label="<?php echo esc_attr($label_action); ?>"
                       <?php if ( $label_action_disabled ) : ?>aria-disabled="true" tabindex="-1"<?php endif; ?>>
                       <span class="dashicons <?php echo ! empty($barcodes) ? 'dashicons-printer' : 'dashicons-media-document'; ?>" aria-hidden="true"></span>
                       <span class="screen-reader-text"><?php echo esc_html($label_action); ?></span>
-                    </a>
+                    </button>
                     <?php if ( ! empty($barcodes) ) : ?>
                       <?php $regenerate_label = __('Regenerate label', 'omnivalt'); ?>
-                      <a
-                        <?php if ( $sender_info_complete ) : ?>href="<?php echo esc_url(add_query_arg(array('action' => 'omnivalt_labels', 'post' => $order_data->id, 'process' => 'regenerate'), admin_url('admin-post.php'))); ?>"<?php endif; ?>
+                      <?php $regenerate_form_id = 'omnivalt-regenerate-label-' . absint($order_data->id); ?>
+                      <?php if ( $sender_info_complete ) : ?>
+                        <?php $row_label_action_forms[] = array('id' => $regenerate_form_id, 'order_id' => absint($order_data->id), 'regenerate' => true); ?>
+                      <?php endif; ?>
+                      <button
+                        type="<?php echo $sender_info_complete ? 'submit' : 'button'; ?>"
+                        <?php if ( $sender_info_complete ) : ?>form="<?php echo esc_attr($regenerate_form_id); ?>"<?php else : ?>disabled="disabled"<?php endif; ?>
                         class="button action omnivalt-manifest-page__row-action<?php echo $sender_info_complete ? '' : ' is-disabled'; ?>"
                         data-tooltip="<?php echo esc_attr($sender_info_complete ? $regenerate_label : $sender_info_tooltip); ?>"
                         aria-label="<?php echo esc_attr($regenerate_label); ?>"
                         <?php if ( ! $sender_info_complete ) : ?>aria-disabled="true" tabindex="-1"<?php endif; ?>>
                         <span class="dashicons dashicons-update" aria-hidden="true"></span>
                         <span class="screen-reader-text"><?php echo esc_html($regenerate_label); ?></span>
-                      </a>
+                      </button>
                     <?php endif; ?>
                   </td>
                 </tr>
@@ -410,6 +422,26 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
             </div>
           <?php endif; ?>
         </form>
+        <?php foreach ( $row_label_action_forms as $row_label_action_form ) : ?>
+          <?php
+          $label_print_url = add_query_arg(array(
+            'action' => 'omnivalt_labels',
+            'post' => $row_label_action_form['order_id'],
+            'process' => 'print',
+            'inline' => '1',
+            'omnivalt_labels_nonce' => wp_create_nonce('omnivalt_labels'),
+          ), admin_url('admin-post.php'));
+          ?>
+          <form id="<?php echo esc_attr($row_label_action_form['id']); ?>" action="<?php echo esc_url($label_print_url); ?>" method="POST" target="_blank">
+            <input type="hidden" name="action" value="omnivalt_labels" />
+            <input type="hidden" name="post" value="<?php echo esc_attr((string) $row_label_action_form['order_id']); ?>" />
+            <input type="hidden" name="inline" value="1" />
+            <?php if ( $row_label_action_form['regenerate'] ) : ?>
+              <input type="hidden" name="process" value="regenerate" />
+            <?php endif; ?>
+            <?php wp_nonce_field('omnivalt_labels', 'omnivalt_labels_nonce'); ?>
+          </form>
+        <?php endforeach; ?>
       </section>
 
       <?php if ( $orders_data['is_orders'] ) : ?>
@@ -450,7 +482,7 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
             <p><span><?php esc_html_e('Important!', 'omnivalt'); ?></span> <?php esc_html_e('Latest call for same day pickup is until 3 pm.', 'omnivalt'); ?></p>
             <p><?php esc_html_e('Address and contact information can be changed in Omniva settings.', 'omnivalt'); ?></p>
           </div>
-          <form id="omniva-call" action="admin-post.php" method="GET">
+          <form id="omniva-call" action="admin-post.php" method="POST">
             <input type="hidden" name="action" value="omnivalt_call_courier" />
             <?php wp_nonce_field('omnivalt_call_courier', 'omnivalt_call_courier_nonce'); ?>
             <div class="omnivalt-manifest-page__courier-details">
@@ -514,7 +546,7 @@ $manifest_script_class = wp_script_is('omniva_manifest', 'enqueued') ? '' : ' is
               <p><?php esc_html_e('This removes the selected courier collection request.', 'omnivalt'); ?></p>
             </div>
           </div>
-          <form id="omniva-cancel" action="admin-post.php" method="GET">
+          <form id="omniva-cancel" action="admin-post.php" method="POST">
             <input type="hidden" name="action" value="omnivalt_cancel_courier" />
             <?php wp_nonce_field('omnivalt_cancel_courier', 'omnivalt_cancel_courier_nonce'); ?>
             <input id="omniva-cancel-id" type="hidden" name="call_id" value="" />

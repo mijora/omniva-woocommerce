@@ -127,10 +127,11 @@
     $.ajax({
       type: "post",
       dataType: "json",
-      url: "/wp-admin/admin-ajax.php",
+      url: omnivaglobals.ajax_url,
       data: {
         action: 'remove_courier_call',
-        call_id: call_id
+        call_id: call_id,
+        nonce: omnivaglobals.remove_courier_call_nonce
       },
       success: function(response) {
         //console.log(response);
@@ -370,6 +371,15 @@
     if (!ids.length) {
       alert(omnivatext.alert_select_orders);
     } else {
+      // PDF viewers can reload the response URL with GET and cannot replay its POST body.
+      var form = $(form_selector)[0];
+      var print_url = new URL(form.getAttribute('action'), window.location.href);
+      var print_params = new URLSearchParams(new FormData(form));
+      print_params.delete('_wp_http_referer');
+      print_params.set('process', 'print');
+      print_url.search = print_params.toString();
+      form.setAttribute('action', print_url.toString());
+
       omniva_eraseCookie(omnivaglobals.cookie_checked_list);
       $('#selected-orders .item').remove();
       $('#selected-orders').hide();

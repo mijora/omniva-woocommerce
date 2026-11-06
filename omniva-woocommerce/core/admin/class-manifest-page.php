@@ -27,6 +27,8 @@ class OmnivaLt_Manifest_Page
 
     wp_localize_script('omniva_manifest', 'omnivaglobals', array(
       'cookie_checked_list' => 'omniva_checked',
+      'ajax_url' => admin_url('admin-ajax.php'),
+      'remove_courier_call_nonce' => wp_create_nonce('omnivalt_remove_courier_call'),
     ));
 
     wp_localize_script('omniva_manifest', 'omnivatext', array(
