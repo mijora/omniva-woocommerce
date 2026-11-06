@@ -176,11 +176,11 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
     enableStateDebug('Omniva dynamic data', omnivaData);
 
     useEffect(() => {
-        if ( ! hasRestoredTerminal.current && savedTerminal !== '' ) {
+        if ( ! hasRestoredTerminal.current && savedTerminal !== '' && isOmnivaTerminalMethod(selectedRateId) ) {
             setSelectedOmnivaTerminal(savedTerminal);
             hasRestoredTerminal.current = true;
         }
-    }, [savedTerminal]);
+    }, [savedTerminal, selectedRateId]);
 
     const debouncedSetExtensionData = useCallback(
         debounce((namespace, key, value) => {
@@ -515,6 +515,12 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         }
 
         if ( ! isOmnivaTerminalMethod(selectedRateId) ) {
+            setExtensionData('omnivalt', 'selected_terminal', '');
+            if ( selectedRateId !== '' ) {
+                hasRestoredTerminal.current = true;
+                setSelectedOmnivaTerminal('');
+                document.cookie = 'omniva_terminal=;path=/;max-age=0;SameSite=Lax';
+            }
             return;
         }
 
@@ -528,6 +534,8 @@ export const Block = ({ checkoutExtensionData, extensions }) => {
         // Set cookie as fallback for server-side retrieval (strictly necessary for checkout process)
         if ( selectedOmnivaTerminal !== '' ) {
             document.cookie = 'omniva_terminal=' + selectedOmnivaTerminal + ';path=/;max-age=3600;SameSite=Lax';
+        } else {
+            document.cookie = 'omniva_terminal=;path=/;max-age=0;SameSite=Lax';
         }
 
         if ( selectedOmnivaTerminal === '' ) {
