@@ -361,7 +361,7 @@ class OmnivaLt_Order
     $plugin_info = OmnivaLt_Core::get_configs('plugin');
     $grouped = (version_compare($wp_version, '5.6.0', '>=')) ? true : false; 
     $actions = array(
-      'labels' => __('Print labels', 'omnivalt'),
+      'labels' => __('Print address cards', 'omnivalt'),
       'manifest' => __('Print manifest', 'omnivalt'),
     );
 
@@ -382,7 +382,7 @@ class OmnivaLt_Order
 
     if ( $action == $plugin_info['id'] . '_labels' ) {
       if ( ! current_user_can('manage_woocommerce') ) {
-        wp_die(esc_html__('You are not allowed to print Omniva labels.', 'omnivalt'), '', array('response' => 403));
+        wp_die(esc_html__('You are not allowed to print Omniva address cards.', 'omnivalt'), '', array('response' => 403));
       }
 
       $omnivalt_labels = new OmnivaLt_Labels();
@@ -406,7 +406,7 @@ class OmnivaLt_Order
   public static function post_label_actions()
   {
     if ( ! current_user_can('manage_woocommerce') ) {
-      wp_die(esc_html__('You are not allowed to print Omniva labels.', 'omnivalt'), '', array('response' => 403));
+      wp_die(esc_html__('You are not allowed to print Omniva address cards.', 'omnivalt'), '', array('response' => 403));
     }
 
     $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';

@@ -199,7 +199,7 @@ class OmnivaLt_Labels
     if ( isset($status['status']) && $status['status'] === true ) {
       $barcodes = $status['barcodes'];
       OmnivaLt_Omniva_Order::set_barcodes($order->id, $barcodes);
-      OmnivaLt_Wc_Order::add_note($order->id, '<b>Omniva:</b> ' . __('Registered labels', 'omnivalt') . ":\n" . implode(', ', $barcodes));
+      OmnivaLt_Wc_Order::add_note($order->id, '<b>Omniva:</b> ' . __('Registered address cards', 'omnivalt') . ":\n" . implode(', ', $barcodes));
 
       $change_order_status = (isset($this->omnivalt_settings['status_created_label'])) ? $this->omnivalt_settings['status_created_label'] : '';
       if ( ! empty($change_order_status) ) {

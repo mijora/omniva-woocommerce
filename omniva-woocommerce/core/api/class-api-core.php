@@ -89,7 +89,7 @@ class OmnivaLt_Api_Core
             $labels = $api_label->getLabels($barcodes);
             $output['debug'] = OmnivaLt_Debug::debug_response($labels);
             if ( empty($labels['labels']) ) {
-                $output['msg'] = __('Failed to get labels', 'omnivalt');
+                $output['msg'] = __('Failed to get address cards', 'omnivalt');
                 return $output;
             }
             $output['status'] = true;

@@ -145,7 +145,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
           'EE' => OmnivaLt_Wc::get_country_name('EE'),
         ),
         'default' => $this->get_default_api_country(),
-        'description' => __('Choose the country of Omniva support from which you received API logins.', 'omnivalt'),
+        'description' => __('Choose the country of Omniva business customer support from which you received API logins.', 'omnivalt'),
       );
       $fields['hr_shop'] = array(
         'type' => 'hr',
@@ -199,7 +199,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'description' => __('Required if want to use the "Cash On Delivery" (COD) payment method.', 'omnivalt'),
       );
       $fields['pick_up_start'] = array(
-        'title' => __('Pickup window', 'omnivalt'),
+        'title' => __('Courier collection window', 'omnivalt'),
         'type' => 'pickup_window',
         'end_field_key' => 'pick_up_end',
         'default' => '08:00',
@@ -354,9 +354,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'class' => 'omniva_terminal'
       );
       $fields['label_design'] = array(
-        'title' => __('Label design', 'omnivalt'),
+        'title' => __('Address card design', 'omnivalt'),
         'type' => 'select',
-        'description' => __('Choose what the shipping method label will be displayed on the Cart and Checkout pages.', 'omnivalt'),
+        'description' => __('Choose what the shipping method address card will be displayed on the Cart and Checkout pages.', 'omnivalt'),
         'options' => array(
           'classic' => 'Omniva ' . strtolower(__('Parcel machine', 'omnivalt')),
           'full' => 'LOGO Omniva ' . strtolower(__('Parcel machine', 'omnivalt')),
@@ -380,63 +380,63 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'default' => 'yes',
       );
       $fields['auto_generate_labels'] = array(
-        'title' => __('Automatic label generation', 'omnivalt'),
+        'title' => __('Automatic address card generation', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Automatically generate Omniva labels when the order changes to the selected status.', 'omnivalt'),
+        'description' => __('Automatically generate Omniva address cards when the order changes to the selected status.', 'omnivalt'),
         'default' => 'no',
       );
       $fields['auto_generate_label_status'] = array(
-        'title' => __('Generate label when order changes to', 'omnivalt'),
+        'title' => __('Generate address card when order changes to', 'omnivalt'),
         'type' => 'select',
         'options' => $order_status_options,
         'default' => 'wc-processing',
-        'description' => __('Select the order status that triggers automatic label generation.', 'omnivalt'),
+        'description' => __('Select the order status that triggers automatic address card generation.', 'omnivalt'),
         'class' => 'omniva_auto_labels',
       );
       $fields['auto_generate_only_payment'] = array(
-        'title' => __('Generate labels only on automatic status change', 'omnivalt'),
+        'title' => __('Generate address cards only on automatic status change', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Generate labels only when the status changes automatically (e.g. after payment is received), not when an administrator changes it manually.', 'omnivalt'),
+        'description' => __('Generate address cards only when the status changes automatically (e.g. after payment is received), not when an administrator changes it manually.', 'omnivalt'),
         'default' => 'no',
         'class' => 'omniva_auto_labels',
       );
       $fields['email_labels_to_admin'] = array(
-        'title' => __('Email labels to admin', 'omnivalt'),
+        'title' => __('Email address cards to admin', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Attach the generated label PDF to the WooCommerce new order admin email.', 'omnivalt'),
+        'description' => __('Attach the generated address card PDF to the WooCommerce new order admin email.', 'omnivalt'),
         'default' => 'no',
         'class' => 'omniva_auto_labels',
       );
       $fields['hr_labels'] = array(
         'type' => 'hr',
-        'title' => __('Labels', 'omnivalt'),
+        'title' => __('Address cards', 'omnivalt'),
       );
       $fields['print_type'] = array(
-        'title' => __('Labels print type', 'omnivalt'),
+        'title' => __('Address cards print type', 'omnivalt'),
         'type' => 'select',
         'options' => array(
-          '1' => __('Original (single label)', 'omnivalt'),
-          '4' => __('A4 (4 labels)', 'omnivalt')
+          '1' => __('Original (single address card)', 'omnivalt'),
+          '4' => __('A4 (4 address cards)', 'omnivalt')
         ),
         'default' => '4',
-        'description' => __('How many labels to print per page.', 'omnivalt')
+        'description' => __('How many address cards to print per page.', 'omnivalt')
       );
       $inline_variables = '';
       foreach ( $this->omnivalt_configs['text_variables'] as $key => $title ) {
         $inline_variables .= '<br/><code>{' . $key . '}</code> - ' . $title;
       }
       $fields['label_note'] = array(
-        'title' => __('Note on label', 'omnivalt'),
+        'title' => __('Note on address card', 'omnivalt'),
         'type' => 'text',
-        'description' => sprintf(__('Show note or other comment on label. You can use this variables: %s', 'omnivalt'), $inline_variables),
+        'description' => sprintf(__('Show note or other comment on address card. You can use this variables: %s', 'omnivalt'), $inline_variables),
         'custom_attributes' => array(
           'maxlength' => 128,
         ),
       );
       $fields['email_created_label'] = array(
-        'title' => __('Send email when a label is created', 'omnivalt'),
+        'title' => __('Send email when a address card is created', 'omnivalt'),
         'type' => 'checkbox',
-        'description' => __('Send an email to customer with tracking code, when the label is generated.', 'omnivalt') . '<br/>' . sprintf(__('To override email template, copy template file from %1$s to your theme %2$s directory.', 'omnivalt'), '<code>wp-content/plugins/omniva-woocommerce/templates/emails</code>', '<code>wp-content/themes/theme-name/omniva/emails</code>'),
+        'description' => __('Send an email to customer with tracking code, when the address card is generated.', 'omnivalt') . '<br/>' . sprintf(__('To override email template, copy template file from %1$s to your theme %2$s directory.', 'omnivalt'), '<code>wp-content/plugins/omniva-woocommerce/templates/emails</code>', '<code>wp-content/themes/theme-name/omniva/emails</code>'),
         'default' => ''
       );
       $fields['email_created_label_subject'] = array(
@@ -446,11 +446,11 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
         'placeholder' => __('Your order shipment has been registered', 'omnivalt')
       );
       $fields['status_created_label'] = array(
-        'title' => __('Change Order status when a label is created', 'omnivalt'),
+        'title' => __('Change Order status when a address card is created', 'omnivalt'),
         'type' => 'select',
         'options' => array_merge(['' => '- ' . __('Do not change', 'omnivalt') . ' -'], $order_status_options),
         'default' => '',
-        'description' => __('The order status will be changed to selected when the shipment label is generated.', 'omnivalt')
+        'description' => __('The order status will be changed to selected when the shipment address card is generated.', 'omnivalt')
       );
       $fields['send_email_on_arrive'] = array(
         'title' => __('Send email on shipment arrive', 'omnivalt'),
@@ -483,7 +483,7 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       );
       $fields['hr_pickup'] = array(
         'type' => 'hr',
-        'title' => __('Shipment pickup', 'omnivalt'),
+        'title' => __('Shipment collect', 'omnivalt'),
       );
       $field_custom_attributes = array(
         'maxlength' => 120,
@@ -661,9 +661,9 @@ if ( ! class_exists('Omnivalt_Shipping_Method') ) {
       $normalized_pickup_end = $this->normalize_pickup_time($pickup_end);
 
       if ( $normalized_pickup_start === false || $normalized_pickup_end === false ) {
-        $pickup_time_errors[] = __('Use the 24-hour HH:MM format for the pickup window.', 'omnivalt');
+        $pickup_time_errors[] = __('Use the 24-hour HH:MM format for the courier collection window.', 'omnivalt');
       } elseif ( $normalized_pickup_start >= $normalized_pickup_end ) {
-        $pickup_time_errors[] = __('Pickup end time must be later than the start time.', 'omnivalt');
+        $pickup_time_errors[] = __('Courier collection end time must be later than the start time.', 'omnivalt');
       }
 
       if ( ! empty($pickup_time_errors) ) {

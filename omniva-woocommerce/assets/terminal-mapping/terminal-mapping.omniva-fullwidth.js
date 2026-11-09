@@ -4401,7 +4401,7 @@ window.OmnivaTerminalMapping = TerminalMapping;
       options,
       'delivery_location',
       'modal_header',
-      'Delivery location'
+      'Delivery point'
     );
     var closeLabel = getString(
       tmjs,

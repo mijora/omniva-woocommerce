@@ -28,7 +28,7 @@ $settings_script_class = wp_script_is('omnivalt_admin_settings_page', 'enqueued'
           <span><?php esc_html_e('Omniva', 'omnivalt'); ?></span>
         </div>
         <h1><?php esc_html_e('Omniva settings', 'omnivalt'); ?></h1>
-        <p class="omnivalt-settings-page__subtitle"><?php esc_html_e('Configure Omniva delivery methods, delivery services and labels.', 'omnivalt'); ?></p>
+        <p class="omnivalt-settings-page__subtitle"><?php esc_html_e('Configure Omniva shipping methods, delivery services and address cards.', 'omnivalt'); ?></p>
       </div>
 
     </div>
@@ -175,7 +175,7 @@ $settings_script_class = wp_script_is('omnivalt_admin_settings_page', 'enqueued'
                     <img class="omnivalt-api-access__icon" src="<?php echo esc_url(OMNIVALT_URL . 'assets/img/admin/key.svg'); ?>" alt="" aria-hidden="true" />
                     <div class="omnivalt-api-access__content">
                       <h3><?php esc_html_e('Need API access?', 'omnivalt'); ?></h3>
-                      <p><?php esc_html_e('API credentials are issued by Omniva. Contact support team to get access.', 'omnivalt'); ?></p>
+                      <p><?php esc_html_e('API credentials are issued by Omniva. Contact Omniva business customer support to get access.', 'omnivalt'); ?></p>
                     </div>
                     <a class="omnivalt-api-access__action" href="<?php echo esc_url('https://account.omniva.eu/'); ?>" target="_blank" rel="noopener noreferrer">
                       <?php esc_html_e('Contact Omniva', 'omnivalt'); ?>
@@ -257,7 +257,7 @@ $settings_script_class = wp_script_is('omnivalt_admin_settings_page', 'enqueued'
         <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span>
       </button>
       <div class="omnivalt-settings-page__support-image">
-        <img src="<?php echo esc_url(OMNIVALT_URL . 'assets/img/admin/support.png'); ?>" alt="<?php esc_attr_e('Omniva support', 'omnivalt'); ?>" />
+        <img src="<?php echo esc_url(OMNIVALT_URL . 'assets/img/admin/support.png'); ?>" alt="<?php esc_attr_e('Omniva business customer support', 'omnivalt'); ?>" />
       </div>
 
       <section class="omnivalt-settings-page__sidebar-card omnivalt-settings-page__help-card">
