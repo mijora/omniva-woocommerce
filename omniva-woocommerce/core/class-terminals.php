@@ -27,6 +27,11 @@ class OmnivaLt_Terminals
     wp_send_json_success();
   }
 
+  public static function has_terminals_data()
+  {
+    return ! empty(self::read_terminals_file());
+  }
+
   public static function is_valid_terminal( $terminal_id, $country, $type = 'terminal' )
   {
     if ( ! is_scalar($terminal_id) || ! is_string($country) || '' === $country || ! in_array($type, array('terminal', 'post'), true) ) {

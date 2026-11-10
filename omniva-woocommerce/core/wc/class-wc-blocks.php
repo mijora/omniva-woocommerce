@@ -173,6 +173,10 @@ class OmnivaLt_Wc_Blocks
                     $selected_terminal_id = sanitize_text_field(wp_unslash((string) $_COOKIE['omniva_terminal']));
                 }
                 $valid_terminal = OmnivaLt_Terminals::is_valid_terminal($selected_terminal_id, $country, $terminal_type);
+                // A missing or unreadable terminals file cannot prove the selection wrong; do not block every order because of it.
+                if ( ! $valid_terminal && ! OmnivaLt_Terminals::has_terminals_data() ) {
+                    $valid_terminal = true;
+                }
             }
 
             if ( ! $valid_terminal ) {
