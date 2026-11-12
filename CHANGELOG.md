@@ -24,6 +24,7 @@
 - fixed sender phone and courier collection-window validation so invalid values do not overwrite previously saved settings
 - fixed potential Blocks Checkout failures when the WooCommerce session was not initialized during Store API requests
 - fixed Blocks Checkout orders sometimes saving a stale shipping rate or a parcel machine left over from a previously selected shipping method
+- fixed an infinite shipping method update loop on the Cart page with themes that reload the cart after a shipping method change
 
 ### Updated
 - updated terminal-mapping library to v2.0.0

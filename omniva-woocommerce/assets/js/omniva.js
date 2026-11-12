@@ -269,10 +269,18 @@ jQuery('document').ready(function($){
         }
     });
     $('input.shipping_method:checked').trigger('click');
- 
+
+    var omnivalt_calc_submitted = false;
+    $(document).on('submit', 'form.woocommerce-shipping-calculator', function() {
+        omnivalt_calc_submitted = true;
+    });
+
     $(document.body).on( 'updated_wc_div', function(){
         if ($(".woocommerce-shipping-calculator").length) {
-            $("select.shipping_method, :input[name^=shipping_method]:checked").trigger('change'); //TODO: Need better solution for dropdown update when in cart change country
+            if (omnivalt_calc_submitted) { // Prevents infinite loop with themes that reload cart after shipping method change
+                omnivalt_calc_submitted = false;
+                $("select.shipping_method, :input[name^=shipping_method]:checked").trigger('change'); //TODO: Need better solution for dropdown update when in cart change country
+            }
         } else if ( $('.omnivalt_terminal_container.old').length ) {
             if ( typeof omnivalt_settings !== 'undefined' && omnivalt_settings.show_map) {
                 omnivalt_init_map();
