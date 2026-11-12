@@ -9,11 +9,11 @@
  * Domain Path: /languages
  * Text Domain: omnivalt
  * 
- * Requires at least: 5.1
- * Tested up to: 7.1
+ * Requires at least: 5.9
+ * Tested up to: 7.1.4
  * Requires Plugins: woocommerce
- * WC requires at least: 6.0.0
- * WC tested up to: 11.1.0
+ * WC requires at least: 6.4.0
+ * WC tested up to: 11.3.0
  * Requires PHP: 7.2
  * PHP tested up to: 8.1.34
  */
