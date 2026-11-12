@@ -95,7 +95,9 @@ class OmnivaLt_Helper
       return false;
     }
 
-    foreach ( array_keys(self::get_required_sender_fields()) as $field_key ) {
+    // Only these fields block label registration; the settings form has a separate warning list.
+    $label_required_fields = array('shop_name', 'shop_city', 'shop_postcode', 'shop_mobile');
+    foreach ( $label_required_fields as $field_key ) {
       if ( ! isset($settings[$field_key]) || ! is_scalar($settings[$field_key]) || '' === trim((string) $settings[$field_key]) ) {
         return false;
       }

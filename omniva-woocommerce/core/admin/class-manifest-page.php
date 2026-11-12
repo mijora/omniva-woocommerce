@@ -27,6 +27,8 @@ class OmnivaLt_Manifest_Page
 
     wp_localize_script('omniva_manifest', 'omnivaglobals', array(
       'cookie_checked_list' => 'omniva_checked',
+      'ajax_url' => admin_url('admin-ajax.php'),
+      'remove_courier_call_nonce' => wp_create_nonce('omnivalt_remove_courier_call'),
     ));
 
     wp_localize_script('omniva_manifest', 'omnivatext', array(
@@ -59,8 +61,11 @@ class OmnivaLt_Manifest_Page
     $orders_data = OmnivaLt_Manifest::page_get_orders();
     $selected_orders = self::get_selected_orders();
     $sender_info_complete = OmnivaLt_Helper::has_required_sender_information($shipping_settings);
-    $selected_order_has_barcodes = $sender_info_complete ? array() : self::get_selected_order_barcode_state($selected_orders);
     $manifest_enabled = (!isset($shipping_settings['manifest_enable']) || $shipping_settings['manifest_enable'] === 'yes') ? true : false;
+    $selected_order_has_barcodes = array();
+    if ( ! $sender_info_complete || $manifest_enabled ) {
+      $selected_order_has_barcodes = self::get_selected_order_barcode_state($selected_orders);
+    }
     $active_omx = ($configs['api']['type'] === 'omx');
     $current_courier_calls = OmnivaLt_Helper::get_courier_calls();
 
@@ -126,28 +131,26 @@ class OmnivaLt_Manifest_Page
     }
 
     foreach ( array_chunk($selected_orders, self::BARCODE_LOOKUP_CHUNK_SIZE) as $order_chunk ) {
-      $orders_with_barcodes = wc_get_orders(array(
-        'include' => $order_chunk,
+      $orders = wc_get_orders(array(
+        'post__in' => $order_chunk,
         'limit' => count($order_chunk),
         'paginate' => false,
-        'return' => 'ids',
-        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- The include list is limited to 100 selected order IDs per query.
-        'meta_query' => array(
-          array(
-            'key' => $meta_keys['barcodes'],
-            'value' => '',
-            'compare' => '!=',
-          ),
-        ),
+        'return' => 'objects',
       ));
 
-      if ( ! is_array($orders_with_barcodes) ) {
+      if ( ! is_array($orders) ) {
         continue;
       }
 
-      foreach ( $orders_with_barcodes as $order_id ) {
+      foreach ( $orders as $order ) {
+        if ( ! is_object($order) || ! method_exists($order, 'get_id') || ! method_exists($order, 'get_meta') ) {
+          continue;
+        }
+
+        $order_id = $order->get_id();
         $order_key = (string) $order_id;
-        if ( isset($barcode_state[$order_key]) && ! $barcode_state[$order_key] ) {
+        if ( isset($barcode_state[$order_key]) && ! $barcode_state[$order_key]
+          && self::has_barcodes($order->get_meta($meta_keys['barcodes'], true)) ) {
           $barcode_state[$order_key] = true;
           $orders_with_barcodes_count++;
         }
@@ -159,6 +162,21 @@ class OmnivaLt_Manifest_Page
     }
 
     return $barcode_state;
+  }
+
+  private static function has_barcodes( $barcodes )
+  {
+    if ( ! is_array($barcodes) ) {
+      return is_scalar($barcodes) && '' !== trim((string) $barcodes);
+    }
+
+    foreach ( $barcodes as $barcode ) {
+      if ( is_scalar($barcode) && '' !== trim((string) $barcode) ) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private static function get_selected_orders()

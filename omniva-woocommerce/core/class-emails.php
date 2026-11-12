@@ -66,7 +66,7 @@ class OmnivaLt_Emails
 
 		$barcodes = OmnivaLt_Omniva_Order::get_barcodes($order_id);
 		if ( empty($barcodes) ) {
-			OmnivaLt_Debug::log('order', 'Email label: no barcodes found for order #' . $order_id);
+			OmnivaLt_Debug::log('order', 'Email address card: no barcodes found for order #' . $order_id);
 			return $attachments;
 		}
 
@@ -75,14 +75,14 @@ class OmnivaLt_Emails
 			$labels_result = $api->get_shipment_labels($barcodes);
 
 			if ( empty($labels_result['status']) || empty($labels_result['labels']) ) {
-				OmnivaLt_Debug::log('error', 'Email label: failed to get labels for order #' . $order_id . (isset($labels_result['msg']) ? ' (' . $labels_result['msg'] . ')' : ''));
+				OmnivaLt_Debug::log('error', 'Email address card: failed to get labels for order #' . $order_id . (isset($labels_result['msg']) ? ' (' . $labels_result['msg'] . ')' : ''));
 				return $attachments;
 			}
 
 			$pdf_content = null;
 			foreach ( $labels_result['labels'] as $barcode => $base64_pdf ) {
 				if ( in_array( $barcode, (array) $barcodes, true ) ) {
-					// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- The Omniva API returns the label PDF as base64 data.
+					// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- The Omniva API returns the address card PDF as base64 data.
 					$pdf_content = base64_decode( $base64_pdf, true );
 
 					if ( false === $pdf_content ) {

@@ -258,7 +258,7 @@ class OmnivaLt_Shipping_Method_Core
                 'coupons' => (isset($params['data']['coupons'])) ? $params['data']['coupons'] : array(),
             ),
             'other' => array(
-                'label' => $this->prepareFieldData('label', $params['other'], array('title' => __('Custom label','omnivalt'))),
+                'label' => $this->prepareFieldData('label', $params['other'], array('title' => __('Custom address card','omnivalt'))),
                 'desc' => $this->prepareFieldData('desc', $params['other'], array('title' => __('Description','omnivalt'))),
             ),
         );

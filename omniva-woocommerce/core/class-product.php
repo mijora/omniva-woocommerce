@@ -76,7 +76,7 @@ class OmnivaLt_Product
           'id' => '_omnivalt_total_shipments',
           'label' => __('Number of parcels (MPS)', 'omnivalt'),
           'desc_tip' => 'true',
-          'description' => __('Specify how many separate shipments will be required for 1 quantity of this product. If a value of 1 or more is specified, when generating labels for the Order, as many labels as specified here will be additionally generated. If specify a value of 0, no additional shipping labels will be generated.', 'omnivalt'),
+          'description' => __('Specify how many separate shipments will be required for 1 quantity of this product. If a value of 1 or more is specified, when generating address cards for the Order, as many address cards as specified here will be additionally generated. If specify a value of 0, no additional shipping address cards will be generated.', 'omnivalt'),
           'type' => 'number',
           'custom_attributes' => array(
             'min' => '0',

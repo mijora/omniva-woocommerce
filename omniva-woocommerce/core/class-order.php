@@ -361,7 +361,7 @@ class OmnivaLt_Order
     $plugin_info = OmnivaLt_Core::get_configs('plugin');
     $grouped = (version_compare($wp_version, '5.6.0', '>=')) ? true : false; 
     $actions = array(
-      'labels' => __('Print labels', 'omnivalt'),
+      'labels' => __('Print address cards', 'omnivalt'),
       'manifest' => __('Print manifest', 'omnivalt'),
     );
 
@@ -381,12 +381,20 @@ class OmnivaLt_Order
     $plugin_info = OmnivaLt_Core::get_configs('plugin');
 
     if ( $action == $plugin_info['id'] . '_labels' ) {
+      if ( ! current_user_can('manage_woocommerce') ) {
+        wp_die(esc_html__('You are not allowed to print Omniva address cards.', 'omnivalt'), '', array('response' => 403));
+      }
+
       $omnivalt_labels = new OmnivaLt_Labels();
       $omnivalt_labels->print_labels($ids);
       die();
     }
 
     if ( $action == $plugin_info['id'] . '_manifest' ) {
+      if ( ! current_user_can('manage_woocommerce') ) {
+        wp_die(esc_html__('You are not allowed to generate an Omniva manifest.', 'omnivalt'), '', array('response' => 403));
+      }
+
       $omnivalt_labels = new OmnivaLt_Labels();
       $omnivalt_labels->print_manifest($ids);
       die();
@@ -397,19 +405,69 @@ class OmnivaLt_Order
 
   public static function post_label_actions()
   {
-    $regenerate = false;
-    if ( isset($_REQUEST['process']) && $_REQUEST['process'] === 'regenerate' ) {
-      $regenerate = true;
+    if ( ! current_user_can('manage_woocommerce') ) {
+      wp_die(esc_html__('You are not allowed to print Omniva address cards.', 'omnivalt'), '', array('response' => 403));
     }
 
+    $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+    if ( ! in_array($request_method, array('GET', 'POST'), true) ) {
+      wp_die(esc_html__('This action requires a POST request.', 'omnivalt'), '', array('response' => 405));
+    }
+
+    check_admin_referer('omnivalt_labels', 'omnivalt_labels_nonce');
+
+    $request_data = 'POST' === $request_method ? $_POST : $_GET;
+    $process = isset($request_data['process']) && is_scalar($request_data['process']) ? sanitize_key(wp_unslash($request_data['process'])) : '';
+    if ( 'GET' === $request_method && 'print' !== $process ) {
+      wp_die(esc_html__('This action requires a POST request.', 'omnivalt'), '', array('response' => 405));
+    }
+
+    $submitted_ids = isset($request_data['post']) ? wp_unslash($request_data['post']) : array();
+    if ( ! is_array($submitted_ids) ) {
+      $submitted_ids = array($submitted_ids);
+    }
+    $order_ids = array_values(array_filter(array_map('absint', array_filter($submitted_ids, 'is_scalar'))));
+    if ( empty($order_ids) ) {
+      wp_die(esc_html__('No valid orders were selected.', 'omnivalt'), '', array('response' => 400));
+    }
+
+    $inline = isset($request_data['inline']) && is_scalar($request_data['inline']) && '1' === (string) wp_unslash($request_data['inline']);
+    $regenerate = 'regenerate' === $process;
+
     $omnivalt_labels = new OmnivaLt_Labels();
-    $omnivalt_labels->print_labels($_REQUEST['post'], true, $regenerate);
+    $omnivalt_labels->print_labels($order_ids, true, $regenerate, $inline, 'POST' === $request_method);
   }
 
   public static function post_manifest_actions()
   {
+    if ( ! current_user_can('manage_woocommerce') ) {
+      wp_die(esc_html__('You are not allowed to generate an Omniva manifest.', 'omnivalt'), '', array('response' => 403));
+    }
+
+    $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+    if ( ! in_array($request_method, array('GET', 'POST'), true) ) {
+      wp_die(esc_html__('This action requires a POST request.', 'omnivalt'), '', array('response' => 405));
+    }
+
+    check_admin_referer('omnivalt_manifest', 'omnivalt_manifest_nonce');
+
+    $request_data = 'POST' === $request_method ? $_POST : $_GET;
+    $process = isset($request_data['process']) && is_scalar($request_data['process']) ? sanitize_key(wp_unslash($request_data['process'])) : '';
+    if ( 'GET' === $request_method && 'print' !== $process ) {
+      wp_die(esc_html__('This action requires a POST request.', 'omnivalt'), '', array('response' => 405));
+    }
+
+    $submitted_ids = isset($request_data['post']) ? wp_unslash($request_data['post']) : array();
+    if ( ! is_array($submitted_ids) ) {
+      $submitted_ids = array($submitted_ids);
+    }
+    $order_ids = array_values(array_filter(array_map('absint', array_filter($submitted_ids, 'is_scalar'))));
+    if ( empty($order_ids) ) {
+      wp_die(esc_html__('No valid orders were selected.', 'omnivalt'), '', array('response' => 400));
+    }
+
     $omnivalt_labels = new OmnivaLt_Labels();
-    $omnivalt_labels->print_manifest($_REQUEST['post']);
+    $omnivalt_labels->print_manifest($order_ids, 'POST' === $request_method);
   }
 
   /*public static function order_actions($order) //Disabled because disabled hook and this function use old structure

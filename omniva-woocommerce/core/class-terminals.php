@@ -27,6 +27,40 @@ class OmnivaLt_Terminals
     wp_send_json_success();
   }
 
+  public static function has_terminals_data()
+  {
+    return ! empty(self::read_terminals_file());
+  }
+
+  public static function is_valid_terminal( $terminal_id, $country, $type = 'terminal' )
+  {
+    if ( ! is_scalar($terminal_id) || ! is_string($country) || '' === $country || ! in_array($type, array('terminal', 'post'), true) ) {
+      return false;
+    }
+
+    $terminal_id = (string) $terminal_id;
+    if ( '' === $terminal_id ) {
+      return false;
+    }
+    $country = strtoupper($country);
+    $terminal_type = ('post' === $type) ? '1' : '0';
+
+    foreach ( self::read_terminals_file() as $terminal ) {
+      if ( ! is_array($terminal) || ! isset($terminal['ZIP'], $terminal['A0_NAME'], $terminal['TYPE'])
+        || ! is_scalar($terminal['ZIP']) || ! is_string($terminal['A0_NAME']) || ! is_scalar($terminal['TYPE']) ) {
+        continue;
+      }
+
+      if ( $terminal_id === (string) $terminal['ZIP']
+        && $country === $terminal['A0_NAME']
+        && $terminal_type === (string) $terminal['TYPE'] ) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   public static function get_terminals_list( $country = "ALL", $get_list = 'terminal' ) {
     $terminals = self::read_terminals_file();
     $grouped_options = array();

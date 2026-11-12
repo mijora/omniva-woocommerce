@@ -8,7 +8,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2020-10-29 09:53+0000\n"
-"PO-Revision-Date: 2026-09-30T20:18:35+00:00\n"
+"PO-Revision-Date: 2026-11-09T11:53:25+00:00\n"
 "Language: lt_LT\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10 >= 2 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
 "X-Generator: Loco https://localise.biz/\n"
@@ -35,7 +35,7 @@ msgstr "Oficialus Omniva pristatymo įskiepis, skirtas WooCommerce."
 #. Author of the plugin
 #: omniva-woocommerce.php:5
 #: core/wc-blocks/class-blocks-integration.php:116
-#: templates/admin/manifest-page.php:55
+#: templates/admin/manifest-page.php:56
 #: templates/admin/settings-page.php:28
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -56,7 +56,7 @@ msgid "Omniva settings"
 msgstr "Omniva nustatymai"
 
 #: core/admin/class-admin-navigation.php:19
-#: core/class-core.php:455
+#: core/class-core.php:402
 msgid "Settings"
 msgstr "Nustatymai"
 
@@ -64,10 +64,10 @@ msgstr "Nustatymai"
 #: core/admin/class-admin-navigation.php:58
 #: core/admin/class-admin-navigation.php:59
 #: core/class-order.php:252
-#: core/class-order.php:529
+#: core/class-order.php:587
 #: core/class-shipping-method.php:21
 #: core/class-shipping-method.php:51
-#: templates/admin/manifest-page.php:57
+#: templates/admin/manifest-page.php:58
 msgid "Omniva delivery"
 msgstr "Omniva pristatymas"
 
@@ -75,11 +75,11 @@ msgstr "Omniva pristatymas"
 msgid "Shipments"
 msgstr "Siuntos"
 
-#: core/admin/class-manifest-page.php:33
+#: core/admin/class-manifest-page.php:35
 msgid "Please select orders"
 msgstr "Prašome pasirinkti užsakymus"
 
-#: core/admin/class-manifest-page.php:84
+#: core/admin/class-manifest-page.php:89
 msgid "The offset of the timezone of your website is different from the offset of the timezone of the Omniva server, so the courier call time is displayed differently than specified in the settings"
 msgstr "Jūsų svetainės laiko juostos poslinkis skiriasi nuo Omniva serverio laiko juostos poslinkio, todėl kurjerio skambučio laikas rodomas kitaip nei nurodyta nustatymuose"
 
@@ -126,7 +126,7 @@ msgid "Configure international service settings."
 msgstr "Konfigūruokite tarptautinių paslaugų nustatymus."
 
 #: core/admin/class-settings-page.php:490
-#: core/class-order.php:796
+#: core/class-order.php:854
 #: core/class-shipping-method.php:824
 #: core/shipping-method/class-shipping-method-international.php:36
 msgid "International"
@@ -145,60 +145,60 @@ msgid "The used API does not have a courier cancel option"
 msgstr "Naudojamas API neturi kurjerio atšaukimo galimybės"
 
 #: core/api/class-api-core.php:92
-msgid "Failed to get labels"
-msgstr "Nepavyko gauti lipdukų"
+msgid "Failed to get address cards"
+msgstr "Nepavyko gauti adresų kortelių"
 
-#: core/api/class-api-core.php:167
+#: core/api/class-api-core.php:168
 msgctxt "Manifest"
 msgid "Sender address"
 msgstr "Siuntėjo adresas"
 
-#: core/api/class-api-core.php:168
+#: core/api/class-api-core.php:169
 msgctxt "Manifest"
 msgid "No."
 msgstr "Nr."
 
-#: core/api/class-api-core.php:169
+#: core/api/class-api-core.php:170
 msgctxt "Manifest"
 msgid "Shipment number"
 msgstr "Siuntos numeris"
 
-#: core/api/class-api-core.php:170
+#: core/api/class-api-core.php:171
 msgctxt "Manifest"
 msgid "Order No."
 msgstr "Užsakymo nr."
 
-#: core/api/class-api-core.php:171
+#: core/api/class-api-core.php:172
 msgctxt "Manifest"
 msgid "Date"
 msgstr "Data"
 
-#: core/api/class-api-core.php:172
+#: core/api/class-api-core.php:173
 msgctxt "Manifest"
 msgid "Quantity"
 msgstr "Kiekis"
 
-#: core/api/class-api-core.php:173
+#: core/api/class-api-core.php:174
 msgctxt "Manifest"
 msgid "Weight"
 msgstr "Svoris"
 
-#: core/api/class-api-core.php:174
+#: core/api/class-api-core.php:175
 msgctxt "Manifest"
 msgid "Recipient's name and address"
 msgstr "Gavėjo vardas ir adresas"
 
-#: core/api/class-api-core.php:175
+#: core/api/class-api-core.php:176
 msgctxt "Manifest"
 msgid "Courier name, surname, signature"
 msgstr "Kurjerio vardas, pavardė, parašas"
 
-#: core/api/class-api-core.php:176
+#: core/api/class-api-core.php:177
 msgctxt "Manifest"
 msgid "Sender name, surname, signature"
 msgstr "Siuntėjo vardas, pavardė, parašas"
 
-#: core/api/class-api-core.php:565
+#: core/api/class-api-core.php:566
 msgid "Unknown product"
 msgstr "Nežinomas produktas"
 
@@ -317,12 +317,18 @@ msgstr "Nepavyko gauti siuntos paslaugos"
 msgid "Failed to get delivery service"
 msgstr "Nepavyko gauti pristatymo paslaugos"
 
-#: core/api/class-api-omx.php:482
+#: core/api/class-api-omx.php:437
+#: core/class-labels.php:70
+#: templates/admin/manifest-page.php:14
+msgid "Please fill in the sender information on the settings page."
+msgstr "Užpildykite siuntėjo informaciją nustatymų puslapyje."
+
+#: core/api/class-api-omx.php:490
 #: core/api/class-api-xml.php:505
 msgid "Failed to call courier"
 msgstr "Nepavyko iškviesti kurjerio"
 
-#: core/api/class-api-omx.php:503
+#: core/api/class-api-omx.php:511
 msgid "Failed to cancel courier"
 msgstr "Nepavyko atšaukti kurjerio"
 
@@ -389,7 +395,7 @@ msgid "Development mode is activated! When no longer needed, disable it in %s."
 msgstr "Įjungtas kūrėjo režimas! Kai nebereikės, išjunkite jį eidami į %s."
 
 #: core/class-core.php:31
-#: templates/admin/manifest-page.php:68
+#: templates/admin/manifest-page.php:69
 msgid "Omniva settings page"
 msgstr "Omniva nustatymų puslapis"
 
@@ -409,25 +415,7 @@ msgstr "Nepavyksta sukurti failų įskiepio aplankale. prašome patikrinti įski
 msgid "Cannot create files in plugin folder"
 msgstr "Nepavyko sukurti failų įskiepio aplankale"
 
-#: core/class-core.php:243
-#, php-format
-msgid "A newer version of the plugin (%s) has been released."
-msgstr "Buvo išleista nauja įskiepio versija (%s)."
-
-#: core/class-core.php:245
-#, php-format
-msgid "You can download it by pressing %s."
-msgstr "Jūs galite parsisiųsti jį paspausdami %s."
-
-#: core/class-core.php:245
-msgid "here"
-msgstr "čia"
-
-#: core/class-core.php:248
-msgid "We do not recommend update the plugin, because your plugin have changes that is not included in the update"
-msgstr "Mes nerekomenduojame atnaujinti įskiepį, kadangi Jūsų įskiepis turi pakeitimų, kurie nėra įtraukti į atnaujinimą."
-
-#: core/class-core.php:293
+#: core/class-core.php:240
 #: core/wc-blocks/class-blocks-integration.php:125
 #: core/wc-blocks/class-blocks-integration.php:167
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
@@ -438,7 +426,7 @@ msgstr "Mes nerekomenduojame atnaujinti įskiepį, kadangi Jūsų įskiepis turi
 msgid "parcel machines"
 msgstr "paštomatai"
 
-#: core/class-core.php:294
+#: core/class-core.php:241
 #: core/wc-blocks/class-blocks-integration.php:127
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -448,10 +436,10 @@ msgstr "paštomatai"
 msgid "Parcel machines list"
 msgstr "Paštomatų sąrašas"
 
-#: core/class-core.php:295
-#: core/class-core.php:339
-#: core/class-terminals.php:74
-#: core/class-terminals.php:148
+#: core/class-core.php:242
+#: core/class-core.php:286
+#: core/class-terminals.php:103
+#: core/class-terminals.php:177
 #: core/wc-blocks/class-blocks-integration.php:107
 #: core/wc-blocks/class-blocks-integration.php:129
 #: core/wc-blocks/class-blocks-integration.php:166
@@ -463,7 +451,7 @@ msgstr "Paštomatų sąrašas"
 msgid "Select parcel machine"
 msgstr "Pasirinkite paštomatą"
 
-#: core/class-core.php:296
+#: core/class-core.php:243
 #: core/wc-blocks/class-blocks-integration.php:124
 #: core/wc-blocks/class-blocks-integration.php:170
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
@@ -474,7 +462,7 @@ msgstr "Pasirinkite paštomatą"
 msgid "post offices"
 msgstr "pašto skyriai"
 
-#: core/class-core.php:297
+#: core/class-core.php:244
 #: core/wc-blocks/class-blocks-integration.php:126
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -484,10 +472,10 @@ msgstr "pašto skyriai"
 msgid "Post offices list"
 msgstr "Pašto skyrių sąrašas"
 
-#: core/class-core.php:298
-#: core/class-core.php:340
-#: core/class-terminals.php:80
-#: core/class-terminals.php:154
+#: core/class-core.php:245
+#: core/class-core.php:287
+#: core/class-terminals.php:109
+#: core/class-terminals.php:183
 #: core/wc-blocks/class-blocks-integration.php:112
 #: core/wc-blocks/class-blocks-integration.php:128
 #: core/wc-blocks/class-blocks-integration.php:169
@@ -499,7 +487,7 @@ msgstr "Pašto skyrių sąrašas"
 msgid "Select post office"
 msgstr "Pasirinkti pašto skyrių"
 
-#: core/class-core.php:299
+#: core/class-core.php:246
 #: core/wc-blocks/class-blocks-integration.php:134
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -509,11 +497,11 @@ msgstr "Pasirinkti pašto skyrių"
 msgid "Select in map"
 msgstr "Pasirinkti žemėlapyje"
 
-#: core/class-core.php:300
-#: core/class-core.php:324
-#: core/class-core.php:328
-#: core/class-core.php:341
-#: core/class-terminals.php:372
+#: core/class-core.php:247
+#: core/class-core.php:271
+#: core/class-core.php:275
+#: core/class-core.php:288
+#: core/class-terminals.php:401
 #: core/wc-blocks/class-blocks-integration.php:130
 #: core/wc-blocks/class-blocks-integration.php:154
 #: core/wc-blocks/class-blocks-integration.php:158
@@ -525,7 +513,7 @@ msgstr "Pasirinkti žemėlapyje"
 msgid "Enter postcode"
 msgstr "Įvesti pašto kodą"
 
-#: core/class-core.php:301
+#: core/class-core.php:248
 #: core/wc-blocks/class-blocks-integration.php:131
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -535,7 +523,7 @@ msgstr "Įvesti pašto kodą"
 msgid "Start typing parcel machine name or address"
 msgstr "Rašykite paštomato pavadinimą arba adresą"
 
-#: core/class-core.php:302
+#: core/class-core.php:249
 #: core/wc-blocks/class-blocks-integration.php:132
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -545,7 +533,7 @@ msgstr "Rašykite paštomato pavadinimą arba adresą"
 msgid "Search"
 msgstr "Ieškoti"
 
-#: core/class-core.php:303
+#: core/class-core.php:250
 #: core/wc-blocks/class-blocks-integration.php:133
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -555,8 +543,8 @@ msgstr "Ieškoti"
 msgid "Select"
 msgstr "Pasirinkti"
 
-#: core/class-core.php:304
-#: core/class-core.php:342
+#: core/class-core.php:251
+#: core/class-core.php:289
 #: core/wc-blocks/class-blocks-integration.php:139
 #: core/wc-blocks/class-blocks-integration.php:164
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
@@ -567,7 +555,7 @@ msgstr "Pasirinkti"
 msgid "Place not found"
 msgstr "Vieta nerasta"
 
-#: core/class-core.php:305
+#: core/class-core.php:252
 #: core/wc-blocks/class-blocks-integration.php:140
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -577,7 +565,7 @@ msgstr "Vieta nerasta"
 msgid "There were no cities found for your search term"
 msgstr "Nepavyko surasti miestų pagal Jūsų paieškos frazę"
 
-#: core/class-core.php:306
+#: core/class-core.php:253
 #: core/wc-blocks/class-blocks-integration.php:141
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -587,8 +575,8 @@ msgstr "Nepavyko surasti miestų pagal Jūsų paieškos frazę"
 msgid "No results"
 msgstr "Rezultatų nėra"
 
-#: core/class-core.php:307
-#: core/class-core.php:343
+#: core/class-core.php:254
+#: core/class-core.php:290
 #: core/wc-blocks/class-blocks-integration.php:172
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -598,8 +586,8 @@ msgstr "Rezultatų nėra"
 msgid "Enter postcode/address"
 msgstr "Įveskite pašto kodą/adresą"
 
-#: core/class-core.php:308
-#: core/class-core.php:345
+#: core/class-core.php:255
+#: core/class-core.php:292
 #: core/wc-blocks/class-blocks-integration.php:174
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -609,7 +597,7 @@ msgstr "Įveskite pašto kodą/adresą"
 msgid "Show more"
 msgstr "Rodyti daugiau"
 
-#: core/class-core.php:309
+#: core/class-core.php:256
 #: core/wc-blocks/class-blocks-integration.php:136
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -619,7 +607,7 @@ msgstr "Rodyti daugiau"
 msgid "Use my location"
 msgstr "Naudoti mano lokaciją"
 
-#: core/class-core.php:310
+#: core/class-core.php:257
 #: core/wc-blocks/class-blocks-integration.php:137
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -629,7 +617,7 @@ msgstr "Naudoti mano lokaciją"
 msgid "Locating..."
 msgstr "Nustatoma vieta..."
 
-#: core/class-core.php:311
+#: core/class-core.php:258
 #: core/wc-blocks/class-blocks-integration.php:138
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -639,7 +627,7 @@ msgstr "Nustatoma vieta..."
 msgid "Distance calculated from this point"
 msgstr "Apskaičiuota distancija nuo šio taško"
 
-#: core/class-core.php:312
+#: core/class-core.php:259
 #: core/wc-blocks/class-blocks-integration.php:142
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -649,17 +637,17 @@ msgstr "Apskaičiuota distancija nuo šio taško"
 msgid "Geolocation is not supported"
 msgstr "Geolokacija nepalaikoma"
 
-#: core/class-core.php:313
+#: core/class-core.php:260
 #: core/wc-blocks/class-blocks-integration.php:143
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
 #: assets/blocks/terminal-selection-block/checkout/frontend.js:1
 #: assets/blocks/terminal-selection-block/checkout/index.js:1
 #: assets/blocks/terminal-selection-block/index.js:1
-msgid "Delivery location"
+msgid "Delivery point"
 msgstr "Pristatymo vieta"
 
-#: core/class-core.php:314
+#: core/class-core.php:261
 #: core/wc-blocks/class-blocks-integration.php:144
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -669,17 +657,17 @@ msgstr "Pristatymo vieta"
 msgid "Close map"
 msgstr "Uždaryti žemėlapį"
 
-#: core/class-core.php:315
+#: core/class-core.php:262
 #: core/wc-blocks/class-blocks-integration.php:145
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
 #: assets/blocks/terminal-selection-block/checkout/frontend.js:1
 #: assets/blocks/terminal-selection-block/checkout/index.js:1
 #: assets/blocks/terminal-selection-block/index.js:1
-msgid "Search delivery locations"
+msgid "Search delivery points"
 msgstr "Ieškoti pristatymo vietų"
 
-#: core/class-core.php:316
+#: core/class-core.php:263
 #: core/wc-blocks/class-blocks-integration.php:146
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -689,27 +677,27 @@ msgstr "Ieškoti pristatymo vietų"
 msgid "Clear search"
 msgstr "Išvalyti paiešką"
 
-#: core/class-core.php:317
+#: core/class-core.php:264
 #: core/wc-blocks/class-blocks-integration.php:147
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
 #: assets/blocks/terminal-selection-block/checkout/frontend.js:1
 #: assets/blocks/terminal-selection-block/checkout/index.js:1
 #: assets/blocks/terminal-selection-block/index.js:1
-msgid "Clear selected delivery location"
+msgid "Clear selected delivery point"
 msgstr "Išvalyti pasirinktą pristatymo vietą"
 
-#: core/class-core.php:318
+#: core/class-core.php:265
 #: core/wc-blocks/class-blocks-integration.php:148
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
 #: assets/blocks/terminal-selection-block/checkout/frontend.js:1
 #: assets/blocks/terminal-selection-block/checkout/index.js:1
 #: assets/blocks/terminal-selection-block/index.js:1
-msgid "Delivery location search results"
+msgid "Delivery point search results"
 msgstr "Pristatymo vietų paieškos rezultatai"
 
-#: core/class-core.php:319
+#: core/class-core.php:266
 #: core/wc-blocks/class-blocks-integration.php:149
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -719,7 +707,7 @@ msgstr "Pristatymo vietų paieškos rezultatai"
 msgid "Show on map"
 msgstr "Rodyti žemėlapyje"
 
-#: core/class-core.php:320
+#: core/class-core.php:267
 #: core/wc-blocks/class-blocks-integration.php:150
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -729,7 +717,7 @@ msgstr "Rodyti žemėlapyje"
 msgid "Sorted by distance from your postcode:"
 msgstr "Surikiuota pagal atstumą nuo jūsų pašto kodo:"
 
-#: core/class-core.php:321
+#: core/class-core.php:268
 #: core/wc-blocks/class-blocks-integration.php:151
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -739,7 +727,7 @@ msgstr "Surikiuota pagal atstumą nuo jūsų pašto kodo:"
 msgid "Sort by distance from your postcode"
 msgstr "Rikiuoti pagal atstumą nuo jūsų pašto kodo"
 
-#: core/class-core.php:322
+#: core/class-core.php:269
 #: core/wc-blocks/class-blocks-integration.php:152
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -749,7 +737,7 @@ msgstr "Rikiuoti pagal atstumą nuo jūsų pašto kodo"
 msgid "Sorted by distance from your location:"
 msgstr "Surikiuota pagal atstumą nuo jūsų vietos:"
 
-#: core/class-core.php:323
+#: core/class-core.php:270
 #: core/wc-blocks/class-blocks-integration.php:153
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -759,7 +747,7 @@ msgstr "Surikiuota pagal atstumą nuo jūsų vietos:"
 msgid "Postcode"
 msgstr "Pašto kodas"
 
-#: core/class-core.php:325
+#: core/class-core.php:272
 #: core/wc-blocks/class-blocks-integration.php:155
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -769,7 +757,7 @@ msgstr "Pašto kodas"
 msgid "Location unavailable"
 msgstr "Vietos duomenys nepasiekiami"
 
-#: core/class-core.php:326
+#: core/class-core.php:273
 #: core/wc-blocks/class-blocks-integration.php:156
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -779,7 +767,7 @@ msgstr "Vietos duomenys nepasiekiami"
 msgid "Unable to find a location"
 msgstr "Nepavyko nustatyti vietos"
 
-#: core/class-core.php:327
+#: core/class-core.php:274
 #: core/wc-blocks/class-blocks-integration.php:157
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -789,7 +777,7 @@ msgstr "Nepavyko nustatyti vietos"
 msgid "Use postcode"
 msgstr "Naudoti pašto kodą"
 
-#: core/class-core.php:329
+#: core/class-core.php:276
 #: core/wc-blocks/class-blocks-integration.php:159
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -799,9 +787,9 @@ msgstr "Naudoti pašto kodą"
 msgid "Close popup"
 msgstr "Uždaryti iššokantįjį langą"
 
-#: core/class-core.php:330
+#: core/class-core.php:277
 #: core/wc-blocks/class-blocks-integration.php:160
-#: templates/admin/manifest-page.php:149
+#: templates/admin/manifest-page.php:151
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
 #: assets/blocks/terminal-selection-block/checkout/frontend.js:1
@@ -810,7 +798,7 @@ msgstr "Uždaryti iššokantįjį langą"
 msgid "Selected"
 msgstr "Pasirinkta"
 
-#: core/class-core.php:331
+#: core/class-core.php:278
 #: core/wc-blocks/class-blocks-integration.php:135
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -820,7 +808,7 @@ msgstr "Pasirinkta"
 msgid "Change"
 msgstr "Keisti"
 
-#: core/class-core.php:332
+#: core/class-core.php:279
 #: core/wc-blocks/class-blocks-integration.php:161
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -830,8 +818,8 @@ msgstr "Keisti"
 msgid "Clear"
 msgstr "Išvalyti"
 
-#: core/class-core.php:344
-#: core/class-terminals.php:134
+#: core/class-core.php:291
+#: core/class-terminals.php:163
 #: core/wc-blocks/class-blocks-integration.php:173
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -841,13 +829,13 @@ msgstr "Išvalyti"
 msgid "Show in map"
 msgstr "Žiūrėti žemėlapyje"
 
-#: core/class-core.php:346
-#: core/class-terminals.php:364
+#: core/class-core.php:293
+#: core/class-terminals.php:393
 msgid "Omniva parcel machines"
 msgstr "Omniva paštomatai"
 
-#: core/class-core.php:347
-#: core/class-terminals.php:369
+#: core/class-core.php:294
+#: core/class-terminals.php:398
 #: core/wc-blocks/class-blocks-integration.php:168
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -857,11 +845,11 @@ msgstr "Omniva paštomatai"
 msgid "Parcel machines addresses"
 msgstr "Paštomatų adresai"
 
-#: core/class-core.php:348
+#: core/class-core.php:295
 msgid "Omniva post offices"
 msgstr "Omniva pašto skyriai"
 
-#: core/class-core.php:349
+#: core/class-core.php:296
 #: core/wc-blocks/class-blocks-integration.php:171
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
@@ -871,97 +859,97 @@ msgstr "Omniva pašto skyriai"
 msgid "Post offices addresses"
 msgstr "Pašto skyrių adresai"
 
-#: core/class-core.php:405
+#: core/class-core.php:352
 msgid "Lithuania"
 msgstr "Lietuva"
 
-#: core/class-core.php:406
+#: core/class-core.php:353
 msgid "Latvia"
 msgstr "Latvija"
 
-#: core/class-core.php:407
+#: core/class-core.php:354
 msgid "Estonia"
 msgstr "Estija"
 
-#: core/class-core.php:408
+#: core/class-core.php:355
 msgid "Finland"
 msgstr "Suomija"
 
-#: core/class-core.php:410
+#: core/class-core.php:357
 msgid "Enter phone number"
 msgstr "Įveskite telefono numerį"
 
-#: core/class-core.php:411
+#: core/class-core.php:358
 msgid "Enter a valid phone number for the selected country."
 msgstr "Įveskite pasirinktai šaliai tinkamą telefono numerį."
 
-#: core/class-core.php:415
+#: core/class-core.php:362
 msgid "The plugin is disabled"
 msgstr "Įskiepis išjungtas"
 
-#: core/class-core.php:416
+#: core/class-core.php:363
 msgid "End time must be later than start time."
 msgstr "Pabaigos laikas turi būti vėlesnis už pradžios laiką."
 
-#: core/class-core.php:417
+#: core/class-core.php:364
 msgid "Country calling code"
 msgstr "Šalies telefono kodas"
 
-#: core/class-core.php:418
+#: core/class-core.php:365
 msgid "Clear all"
 msgstr "Išvalyti viską"
 
-#: core/class-core.php:419
+#: core/class-core.php:366
 msgid "Search categories..."
 msgstr "Ieškoti kategorijų..."
 
-#: core/class-core.php:420
+#: core/class-core.php:367
 msgid "Search shipping classes..."
 msgstr "Ieškoti pristatymo klasių..."
 
-#: core/class-core.php:421
+#: core/class-core.php:368
 msgid "Search..."
 msgstr "Ieškoti..."
 
 #. translators: %d: Number of selected items.
-#: core/class-core.php:423
+#: core/class-core.php:370
 #, php-format
 msgid "%d selected"
 msgstr "Pasirinkta: %d"
 
-#: core/class-core.php:424
+#: core/class-core.php:371
 msgid "Remove selected item"
 msgstr "Pašalinti pasirinktą elementą"
 
-#: core/class-core.php:425
+#: core/class-core.php:372
 msgid "No matches found."
 msgstr "Atitikmenų nerasta."
 
-#: core/class-core.php:426
+#: core/class-core.php:373
 msgid "You have unsaved changes. Are you sure you want to leave this page?"
 msgstr "Turite neišsaugotų pakeitimų. Ar tikrai norite išeiti iš šio puslapio?"
 
-#: core/class-core.php:473
+#: core/class-core.php:420
 msgctxt "error"
 msgid "The service is not available to the sender country"
 msgstr "Paslauga negalima siuntėjo šalyje"
 
-#: core/class-core.php:474
+#: core/class-core.php:421
 msgctxt "error"
 msgid "The service is not available to the receiver country"
 msgstr "Paslauga negalima gavėjo šalyje"
 
-#: core/class-core.php:475
+#: core/class-core.php:422
 msgctxt "error"
 msgid "This shipping set does not exist"
 msgstr "Pristatymo rinkinys neegzistuoja"
 
-#: core/class-core.php:476
+#: core/class-core.php:423
 msgctxt "error"
 msgid "The service does not exist for the specified method"
 msgstr "Paslauga neegzistuoja nurodytam pristatymo būdui"
 
-#: core/class-core.php:480
+#: core/class-core.php:427
 msgctxt "error"
 msgid "Unknown error"
 msgstr "Nežinoma klaida"
@@ -996,7 +984,7 @@ msgstr "Įmonės pavadinimas"
 
 #: core/class-helper.php:78
 #: core/class-shipping-method.php:159
-#: templates/admin/manifest-page.php:437
+#: templates/admin/manifest-page.php:489
 msgid "Shop name"
 msgstr "Parduotuvės pavadinimas"
 
@@ -1007,13 +995,13 @@ msgstr "Parduotuvės miestas"
 
 #: core/class-helper.php:80
 #: core/class-shipping-method.php:167
-#: templates/admin/manifest-page.php:440
+#: templates/admin/manifest-page.php:492
 msgid "Shop address"
 msgstr "Parduotuvės adresas"
 
 #: core/class-helper.php:81
 #: core/class-shipping-method.php:171
-#: templates/admin/manifest-page.php:439
+#: templates/admin/manifest-page.php:491
 msgid "Shop postcode"
 msgstr "Parduotuvės pašto kodas"
 
@@ -1037,53 +1025,74 @@ msgstr "Parduotuvės el.paštas"
 msgid "Shipping method is not Omniva"
 msgstr "Ne Omniva siuntimo būdas"
 
-#: core/class-labels.php:66
-#: templates/admin/manifest-page.php:14
-msgid "Please fill in the sender information on the settings page."
-msgstr "Užpildykite siuntėjo informaciją nustatymų puslapyje."
+#: core/class-labels.php:202
+msgid "Registered address cards"
+msgstr "Užregistruotos adresų kortelės"
 
-#: core/class-labels.php:198
-msgid "Registered labels"
-msgstr "Užregistruoti lipdukai"
-
-#: core/class-labels.php:237
+#: core/class-labels.php:241
 msgid "Failed to get manifest"
 msgstr "Nepavyko gauti manifesto"
 
-#: core/class-labels.php:237
-#: templates/admin/manifest-page.php:337
+#: core/class-labels.php:241
+#: templates/admin/manifest-page.php:355
 msgid "Error"
 msgstr "Klaida"
 
-#: core/class-labels.php:242
+#: core/class-labels.php:246
 msgid "No compatible orders for manifest"
 msgstr "Nėra su manifestu suderinamų užsakymų"
 
-#: core/class-labels.php:280
+#: core/class-labels.php:286
 msgid "Omniva tracking number"
 msgstr "Omniva siuntos sekimas"
 
-#: core/class-labels.php:283
+#: core/class-labels.php:289
 msgid "You can track your parcels with this numbers"
 msgstr "Užsakymo siuntų kelią galite stebėti su šiais numeriais"
 
-#: core/class-labels.php:354
+#: core/class-labels.php:327
+msgid "You are not allowed to call an Omniva courier."
+msgstr "Neturite teisės iškviesti Omniva kurjerio."
+
+#: core/class-labels.php:332
+#: core/class-labels.php:405
+#: core/class-labels.php:446
+#: core/class-order.php:414
+#: core/class-order.php:422
+#: core/class-order.php:449
+#: core/class-order.php:457
+msgid "This action requires a POST request."
+msgstr "Šiam veiksmui reikalinga POST užklausa."
+
+#: core/class-labels.php:348
+msgid "Please enter a valid number of parcels."
+msgstr "Įveskite tinkamą siuntų skaičių."
+
+#: core/class-labels.php:389
 #, php-format
 msgid "Omniva courier called. Arrival time between %s."
 msgstr "Iškviestas Omniva kurjeris. Atvykimo laikas tarp %s."
 
-#: core/class-labels.php:356
+#: core/class-labels.php:391
 msgid "There was an error calling Omniva courier. Error: "
 msgstr "Nepavyko iškviesti Omniva kurjerio. Klaida: "
 
-#: core/class-labels.php:364
-msgid "Request security check failed"
-msgstr "Nepraėjo užklausos saugos patikra"
+#: core/class-labels.php:400
+msgid "You are not allowed to cancel an Omniva courier call."
+msgstr "Neturite teisės atšaukti Omniva kurjerio iškvietimo."
 
-#: core/class-labels.php:370
-#: core/class-labels.php:398
+#: core/class-labels.php:412
+#: core/class-labels.php:457
 msgid "Failed to get courier invitation number"
 msgstr "Nepavyko gauti kurjerio kvietimo numerio"
+
+#: core/class-labels.php:440
+msgid "You are not allowed to remove courier calls."
+msgstr "Neturite teisės šalinti kurjerio iškvietimų."
+
+#: core/class-labels.php:451
+msgid "Request security check failed"
+msgstr "Nepraėjo užklausos saugos patikra"
 
 #: core/class-manifest.php:182
 msgid "All orders"
@@ -1106,13 +1115,13 @@ msgid "Completed orders"
 msgstr "Įvykdyti užsakymai"
 
 #: core/class-method.php:81
-#: core/class-order.php:533
+#: core/class-order.php:591
 msgid "Unknown"
 msgstr "Nežinoma"
 
 #: core/class-order.php:228
 #: core/class-order.php:279
-#: core/wc/class-wc-blocks.php:179
+#: core/wc/class-wc-blocks.php:200
 msgid "Customer choose parcel machine"
 msgstr "Kliento pasirinktas paštomatas"
 
@@ -1130,79 +1139,94 @@ msgid "Omniva tracking numbers"
 msgstr "Omniva siuntų sekimo numeriai"
 
 #: core/class-order.php:364
-msgid "Print labels"
-msgstr "Spausdinti lipdukus"
+msgid "Print address cards"
+msgstr "Spausdinti adresų korteles"
 
 #: core/class-order.php:365
 msgid "Print manifest"
 msgstr "Spausdinti manifestą"
 
-#: core/class-order.php:568
+#: core/class-order.php:385
+#: core/class-order.php:409
+msgid "You are not allowed to print Omniva address cards."
+msgstr "Neturite teisės spausdinti Omniva adresų kortelių."
+
+#: core/class-order.php:395
+#: core/class-order.php:444
+msgid "You are not allowed to generate an Omniva manifest."
+msgstr "Neturite teisės generuoti Omniva manifesto."
+
+#: core/class-order.php:431
+#: core/class-order.php:466
+msgid "No valid orders were selected."
+msgstr "Nepasirinkta tinkamų užsakymų."
+
+#: core/class-order.php:626
 msgid "Services"
 msgstr "Paslaugos"
 
-#: core/class-order.php:592
+#: core/class-order.php:650
 #, php-format
 msgid "Change %s"
 msgstr "Keisti %s"
 
-#: core/class-order.php:616
+#: core/class-order.php:674
 msgid "The delivery address is changed in the fields above"
 msgstr "Pristatymo adresas yra keičiamas laukeliuose viršuje."
 
-#: core/class-order.php:670
+#: core/class-order.php:728
 #: core/shipping-method/class-shipping-method-core.php:153
-#: templates/admin/manifest-page.php:316
+#: templates/admin/manifest-page.php:334
 msgid "Size"
 msgstr "Dydis"
 
-#: core/class-order.php:685
+#: core/class-order.php:743
 #: core/class-shipping-method.php:928
 msgid "Length"
 msgstr "Ilgis"
 
-#: core/class-order.php:686
+#: core/class-order.php:744
 #: core/class-shipping-method.php:933
 msgid "Width"
 msgstr "Plotis"
 
-#: core/class-order.php:687
+#: core/class-order.php:745
 #: core/class-shipping-method.php:938
 msgid "Height"
 msgstr "Aukštis"
 
-#: core/class-order.php:693
+#: core/class-order.php:751
 msgid "Shipment size"
 msgstr "Siuntos dydis"
 
-#: core/class-order.php:717
-#: core/class-order.php:733
-#: templates/admin/manifest-page.php:319
+#: core/class-order.php:775
+#: core/class-order.php:791
+#: templates/admin/manifest-page.php:337
 msgid "Total shipments"
 msgstr "Iš viso siuntų"
 
-#: core/class-order.php:788
+#: core/class-order.php:846
 msgid "Omniva delivery method"
 msgstr "Omniva pristatymo būdas"
 
-#: core/class-order.php:790
+#: core/class-order.php:848
 msgid "Not Omniva"
 msgstr "Ne Omniva"
 
-#: core/class-order.php:791
+#: core/class-order.php:849
 msgid "Baltic countries and Finland"
 msgstr "Baltijos šalys ir Suomija"
 
-#: core/class-order.php:821
-#: core/class-order.php:885
+#: core/class-order.php:879
+#: core/class-order.php:943
 msgid "Admin changed parcel machine"
 msgstr "Administratorius pakeitė paštomatą."
 
-#: core/class-order.php:918
+#: core/class-order.php:976
 msgid "Please select parcel machine."
 msgstr "Pasirinkite paštomatą."
 
-#: core/class-order.php:919
+#: core/class-order.php:977
 msgid "Please select post office."
 msgstr "Prašome pasirinkti pašto skyrių."
 
@@ -1215,8 +1239,8 @@ msgid "Number of parcels (MPS)"
 msgstr "Siuntų kiekis (MPS)"
 
 #: core/class-product.php:79
-msgid "Specify how many separate shipments will be required for 1 quantity of this product. If a value of 1 or more is specified, when generating labels for the Order, as many labels as specified here will be additionally generated. If specify a value of 0, no additional shipping labels will be generated."
-msgstr "Nurodykite, kiek atskirų siuntų reikės vienam šios prekės vienetui. Jei nurodoma 1 ar didesnė reikšmė, generuojant užsakymo lipdukus, bus papildomai sugeneruota tiek lipdukų, kiek čia bus nurodyta. Jei nurodysite reikšmę 0, papildomi siuntimo lipdukai nebus generuojami."
+msgid "Specify how many separate shipments will be required for 1 quantity of this product. If a value of 1 or more is specified, when generating address cards for the Order, as many address cards as specified here will be additionally generated. If specify a value of 0, no additional shipping address cards will be generated."
+msgstr "Nurodykite, kiek atskirų siuntų reikės vienam šios prekės vienetui. Jei nurodoma 1 ar didesnė reikšmė, generuojant užsakymo adresų korteles, bus papildomai sugeneruota tiek adresų kortelių, kiek čia nurodyta. Jei nurodysite reikšmę 0, papildomos siuntimo adresų kortelės nebus generuojamos."
 
 #: core/class-shipping-method.php:22
 msgid "Shipping methods for Omniva"
@@ -1269,8 +1293,8 @@ msgid "API account country"
 msgstr "API paskyros šalis"
 
 #: core/class-shipping-method.php:148
-msgid "Choose the country of Omniva support from which you received API logins."
-msgstr "Pasirinkite Omniva padalinio šalį, iš kurios gavote API prisijungimus."
+msgid "Choose the country of Omniva business customer support from which you received API logins."
+msgstr "Pasirinkite Omniva verslo klientų aptarnavimo šalį, iš kurios gavote API prisijungimus."
 
 #: core/class-shipping-method.php:152
 msgid "Sender information"
@@ -1278,7 +1302,7 @@ msgstr "Siuntėjo informacija"
 
 #: core/class-shipping-method.php:182
 #: core/class-shipping-method.php:648
-#: templates/admin/manifest-page.php:438
+#: templates/admin/manifest-page.php:490
 msgid "Shop phone number"
 msgstr "Parduotuvės telefonas"
 
@@ -1300,8 +1324,8 @@ msgid "Required if want to use the \"Cash On Delivery\" (COD) payment method."
 msgstr "Reikalinga, jei norite naudoti mokėjimo būdą \"Mokėjimas pristatymo metu\" (COD)."
 
 #: core/class-shipping-method.php:202
-msgid "Pickup window"
-msgstr "Siuntos paėmimo laikas"
+msgid "Courier collection window"
+msgstr "Kurjerio paėmimo laikotarpis"
 
 #: core/class-shipping-method.php:212
 msgid "Send off type"
@@ -1465,12 +1489,12 @@ msgid "Show map of parcel machines."
 msgstr "Rodyti paštomatų žemėlapį."
 
 #: core/class-shipping-method.php:357
-msgid "Label design"
-msgstr "Pavadinimo dizainas"
+msgid "Address card design"
+msgstr "Adresų kortelės dizainas"
 
 #: core/class-shipping-method.php:359
-msgid "Choose what the shipping method label will be displayed on the Cart and Checkout pages."
-msgstr "Pasirinkite koks Omniva pristatymo būdų pavadinimas bus atvaizduojamas krepšelio ir apmokėjimo puslapiuose."
+msgid "Choose what the shipping method address card will be displayed on the Cart and Checkout pages."
+msgstr "Pasirinkite, kaip pristatymo būdas bus rodomas krepšelio ir atsiskaitymo puslapiuose."
 
 #: core/class-shipping-method.php:368
 msgid "Positions"
@@ -1503,73 +1527,73 @@ msgid "Show tracking information in WooCommerce Order emails."
 msgstr "Rodyti siuntos sekimo informaciją WooCommerce užsakymų el.laiškuose."
 
 #: core/class-shipping-method.php:383
-msgid "Automatic label generation"
-msgstr "Automatinis etikečių generavimas"
+msgid "Automatic address card generation"
+msgstr "Automatinis adresų kortelių generavimas"
 
 #: core/class-shipping-method.php:385
-msgid "Automatically generate Omniva labels when the order changes to the selected status."
-msgstr "Automatiškai generuokite Omniva etiketes, kai užsakymo būsena pasikeičia į pasirinktą būseną."
+msgid "Automatically generate Omniva address cards when the order changes to the selected status."
+msgstr "Automatiškai generuoti Omniva adresų korteles, kai užsakymo būsena pasikeičia į pasirinktą."
 
 #: core/class-shipping-method.php:389
-msgid "Generate label when order changes to"
-msgstr "Generuoti etiketę, kai užsakymo būsena pasikeičia į"
+msgid "Generate address card when order changes to"
+msgstr "Generuoti adresų kortelę, kai užsakymo būsena pasikeičia į"
 
 #: core/class-shipping-method.php:393
-msgid "Select the order status that triggers automatic label generation."
-msgstr "Pasirinkite užsakymo būseną, kuri suaktyvina automatinį etikečių generavimą."
+msgid "Select the order status that triggers automatic address card generation."
+msgstr "Pasirinkite užsakymo būseną, kuri įjungia automatinį adresų kortelių generavimą."
 
 #: core/class-shipping-method.php:397
-msgid "Generate labels only on automatic status change"
-msgstr "Generuoti etiketes tik automatiškai pakeitus būseną"
+msgid "Generate address cards only on automatic status change"
+msgstr "Generuoti adresų korteles tik automatiškai pakeitus būseną"
 
 #: core/class-shipping-method.php:399
-msgid "Generate labels only when the status changes automatically (e.g. after payment is received), not when an administrator changes it manually."
-msgstr "Generuokite etiketes tik tada, kai būsena pasikeičia automatiškai (pvz., gavus mokėjimą), o ne administratoriui ją pakeitus rankiniu būdu."
+msgid "Generate address cards only when the status changes automatically (e.g. after payment is received), not when an administrator changes it manually."
+msgstr "Generuokite adresų korteles tik tada, kai būsena pasikeičia automatiškai (pvz., gavus mokėjimą), o ne administratoriui ją pakeitus rankiniu būdu."
 
 #: core/class-shipping-method.php:404
-msgid "Email labels to admin"
-msgstr "Siųsti etiketes administratoriui el. paštu"
+msgid "Email address cards to admin"
+msgstr "Siųsti adresų korteles administratoriui el. paštu"
 
 #: core/class-shipping-method.php:406
-msgid "Attach the generated label PDF to the WooCommerce new order admin email."
-msgstr "Pridėkite sugeneruotos etiketės PDF prie WooCommerce naujo užsakymo administratoriaus el. laiško."
+msgid "Attach the generated address card PDF to the WooCommerce new order admin email."
+msgstr "Pridėti sugeneruotos adresų kortelės PDF prie WooCommerce naujo užsakymo administratoriaus el. laiško."
 
 #: core/class-shipping-method.php:412
-msgid "Labels"
-msgstr "Lipdukai"
+msgid "Address cards"
+msgstr "Adresų kortelės"
 
 #: core/class-shipping-method.php:415
-msgid "Labels print type"
-msgstr "Lipdukų spausdinimo tipas"
+msgid "Address cards print type"
+msgstr "Adresų kortelių spausdinimo tipas"
 
 #: core/class-shipping-method.php:418
-msgid "Original (single label)"
-msgstr "Originalus (vienas lipdukas)"
+msgid "Original (single address card)"
+msgstr "Originalus (viena adresų kortelė)"
 
 #: core/class-shipping-method.php:419
-msgid "A4 (4 labels)"
-msgstr "A4 (4 lipdukai)"
+msgid "A4 (4 address cards)"
+msgstr "A4 (4 adresų kortelės)"
 
 #: core/class-shipping-method.php:422
-msgid "How many labels to print per page."
-msgstr "Kiek lipdukų spausdinti viename lape."
+msgid "How many address cards to print per page."
+msgstr "Kiek adresų kortelių spausdinti viename lape."
 
 #: core/class-shipping-method.php:429
-msgid "Note on label"
-msgstr "Pastaba lipduke"
+msgid "Note on address card"
+msgstr "Pastaba adresų kortelėje"
 
 #: core/class-shipping-method.php:431
 #, php-format
-msgid "Show note or other comment on label. You can use this variables: %s"
-msgstr "Rodyti pastabą arba kitą komentarą lipduke. Galite naudoti šiuos kintamuosius: %s"
+msgid "Show note or other comment on address card. You can use this variables: %s"
+msgstr "Rodyti pastabą arba kitą komentarą adresų kortelėje. Galite naudoti šiuos kintamuosius: %s"
 
 #: core/class-shipping-method.php:437
-msgid "Send email when a label is created"
-msgstr "Išsiųsti el.laišką kai sugeneruojamas lipdukas"
+msgid "Send email when a address card is created"
+msgstr "Išsiųsti el. laišką, kai sugeneruojama adresų kortelė"
 
 #: core/class-shipping-method.php:439
-msgid "Send an email to customer with tracking code, when the label is generated."
-msgstr "Išsiųsti klientui el.laišką su siuntos sekimo kodu, kai sugeneruojamas lipdukas."
+msgid "Send an email to customer with tracking code, when the address card is generated."
+msgstr "Išsiųsti klientui el. laišką su siuntos sekimo kodu, kai sugeneruojama adresų kortelė."
 
 #: core/class-shipping-method.php:439
 #, php-format
@@ -1581,16 +1605,16 @@ msgid "Custom email subject (this field value not translating into other languag
 msgstr "Pasirinktinis el.laiško pavadinimas (šio laikelio reikšmė nėra verčiama į kitas kalbas)."
 
 #: core/class-shipping-method.php:449
-msgid "Change Order status when a label is created"
-msgstr "Pakeisti užsakymo būseną, kai sukuriama etiketė"
+msgid "Change Order status when a address card is created"
+msgstr "Pakeisti užsakymo būseną, kai sukuriama adresų kortelė"
 
 #: core/class-shipping-method.php:451
 msgid "Do not change"
 msgstr "Nekeisti"
 
 #: core/class-shipping-method.php:453
-msgid "The order status will be changed to selected when the shipment label is generated."
-msgstr "Sukūrus siuntos etiketę, užsakymo būsena bus pakeista į pasirinktą."
+msgid "The order status will be changed to selected when the shipment address card is generated."
+msgstr "Sugeneravus siuntos adresų kortelę, užsakymo būsena bus pakeista į pasirinktą."
 
 #: core/class-shipping-method.php:456
 msgid "Send email on shipment arrive"
@@ -1629,8 +1653,8 @@ msgid "Show barcode image in manifest."
 msgstr "Rodyti barkodo paveikslėlį manifeste."
 
 #: core/class-shipping-method.php:486
-msgid "Shipment pickup"
-msgstr "Siuntos paėmimas"
+msgid "Shipment collect"
+msgstr "Siuntų paėmimas"
 
 #: core/class-shipping-method.php:493
 msgid "Comment to the courier"
@@ -1706,12 +1730,12 @@ msgid "Logged communications with API"
 msgstr "Užregistruoti ryšiai su API"
 
 #: core/class-shipping-method.php:664
-msgid "Use the 24-hour HH:MM format for the pickup window."
-msgstr "Siuntos paėmimo laiką nurodykite 24 valandų HH:MM formatu."
+msgid "Use the 24-hour HH:MM format for the courier collection window."
+msgstr "Kurjerio paėmimo laiką nurodykite 24 valandų HH:MM formatu."
 
 #: core/class-shipping-method.php:666
-msgid "Pickup end time must be later than the start time."
-msgstr "Siuntos paėmimo pabaigos laikas turi būti vėlesnis už pradžios laiką."
+msgid "Courier collection end time must be later than the start time."
+msgstr "Kurjerio paėmimo pabaigos laikas turi būti vėlesnis už pradžios laiką."
 
 #: core/class-shipping-method.php:690
 msgid "Settings saved, but some required fields are empty"
@@ -1742,7 +1766,7 @@ msgstr "Įjungti %s"
 #: core/class-shipping-method.php:976
 #: core/class-shipping-method.php:977
 #: core/class-shipping-method.php:979
-#: templates/admin/manifest-page.php:213
+#: templates/admin/manifest-page.php:220
 msgid "Reset"
 msgstr "Valyti"
 
@@ -1770,23 +1794,60 @@ msgstr "Atsakymas"
 msgid "Carrier"
 msgstr "Vežėjas"
 
-#: core/class-terminals.php:75
-#: core/class-terminals.php:149
+#: core/class-terminals.php:104
+#: core/class-terminals.php:178
 msgid "Show parcel machines map"
 msgstr "Rodyti paštomatų žemėlapį"
 
-#: core/class-terminals.php:81
-#: core/class-terminals.php:155
+#: core/class-terminals.php:110
+#: core/class-terminals.php:184
 msgid "Show post offices map"
 msgstr "Rodyti pašto skyrių žemėlapį"
 
-#: core/class-terminals.php:351
+#: core/class-terminals.php:380
 msgid "Location not found!!!"
 msgstr "Lokacija nerasta!!!"
 
-#: core/class-terminals.php:377
+#: core/class-terminals.php:406
 msgid "Back"
 msgstr "Grįžti į sąrašą"
+
+#: core/class-updater.php:302
+msgid "WC requires at least:"
+msgstr "WC reikalauja bent:"
+
+#: core/class-updater.php:305
+msgid "WC tested up to:"
+msgstr "WC išbandyta iki:"
+
+#: core/class-updater.php:310
+msgid "Warning:"
+msgstr "Įspėjimas:"
+
+#: core/class-updater.php:310
+msgid "This plugin has not been tested with your current version of WooCommerce."
+msgstr "Šis įskiepis nebuvo išbandytas su jūsų dabartine WooCommerce versija."
+
+#: core/class-updater.php:315
+msgid "Official Omniva shipping plugin for WooCommerce"
+msgstr "Oficialus Omniva siuntimo įskiepis, skirtas WooCommerce."
+
+#: core/class-updater.php:316
+msgid "See the release notes on GitHub."
+msgstr "Peržiūrėkite pakeitimų sąrašą GitHub."
+
+#: core/class-updater.php:351
+#, php-format
+msgid "Or you can manually download the plugin %s."
+msgstr "Arba galite įskiepį atsisiųsti rankiniu būdu %s."
+
+#: core/class-updater.php:352
+msgid "here"
+msgstr "čia"
+
+#: core/class-updater.php:358
+msgid "We do not recommend update the plugin, because your plugin have changes that is not included in the update"
+msgstr "Mes nerekomenduojame atnaujinti įskiepį, kadangi Jūsų įskiepis turi pakeitimų, kurie nėra įtraukti į atnaujinimą."
 
 #: core/methods/class-method-courier.php:8
 msgid "Courier Baltic"
@@ -1878,7 +1939,7 @@ msgstr "Kas yra Picapac?"
 
 #: core/shipping-method/class-shipping-method-core.php:145
 #: core/shipping-method/class-shipping-method-core.php:249
-#: templates/admin/manifest-page.php:313
+#: templates/admin/manifest-page.php:331
 msgid "Weight"
 msgstr "Svoris"
 
@@ -1905,8 +1966,8 @@ msgid "Free with coupon"
 msgstr "Nemokama su kuponu"
 
 #: core/shipping-method/class-shipping-method-core.php:261
-msgid "Custom label"
-msgstr "Pasirinktinis pavadinimas"
+msgid "Custom address card"
+msgstr "Pasirinktinė adresų kortelė"
 
 #: core/shipping-method/class-shipping-method-core.php:262
 msgid "Description"
@@ -1964,6 +2025,7 @@ msgid "Block options"
 msgstr "Bloko parametrai"
 
 #: core/wc-blocks/class-blocks-integration.php:108
+#: core/wc/class-wc-blocks.php:179
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
 #: assets/blocks/terminal-selection-block/checkout/frontend.js:1
@@ -1991,6 +2053,7 @@ msgid "Loading select field..."
 msgstr "Įkeliamas pasirinkimo laukas..."
 
 #: core/wc-blocks/class-blocks-integration.php:113
+#: core/wc/class-wc-blocks.php:179
 #: assets/blocks/terminal-selection-block/cart/frontend.js:1
 #: assets/blocks/terminal-selection-block/cart/index.js:1
 #: assets/blocks/terminal-selection-block/checkout/frontend.js:1
@@ -2044,273 +2107,273 @@ msgstr "Pristatymo adrese nurodytas telefono numerio formatas netinka šiam pris
 msgid "Value is too short"
 msgstr "Reikšmė per trumpa"
 
-#: core/wc/class-wc-blocks.php:190
+#: core/wc/class-wc-blocks.php:211
 msgid "Omniva Blocks"
 msgstr "Omniva blokai"
 
-#: core/wc/class-wc-blocks.php:226
+#: core/wc/class-wc-blocks.php:246
 msgid "Selected terminal"
 msgstr "Pasirinktas terminalas"
 
-#: core/wc/class-wc-blocks.php:231
+#: core/wc/class-wc-blocks.php:251
 msgid "Selected rate ID"
 msgstr "Pasirinkto tarifo ID"
 
-#: omniva-woocommerce.php:154
-#: templates/admin/manifest-page.php:182
-#: templates/admin/manifest-page.php:183
+#: omniva-woocommerce.php:157
+#: templates/admin/manifest-page.php:189
+#: templates/admin/manifest-page.php:190
 msgid "Order ID"
 msgstr "Užsakymo ID"
 
-#: omniva-woocommerce.php:155
+#: omniva-woocommerce.php:158
 msgid "Order number"
 msgstr "Užsakymo numeris"
 
 #: templates/admin/manifest-page.php:15
-msgid "Generate and print labels"
-msgstr "Generuoti ir spausdinti lipdukus"
+msgid "Generate and print address cards"
+msgstr "Generuoti ir spausdinti adresų korteles"
 
-#: templates/admin/manifest-page.php:53
+#: templates/admin/manifest-page.php:54
 #: templates/admin/settings-page.php:26
 msgid "WooCommerce"
 msgstr "WooCommerce"
 
-#: templates/admin/manifest-page.php:58
-msgid "Manage Omniva shipments, labels and courier collection in one place."
-msgstr "Vienoje vietoje tvarkykite Omniva siuntas, siuntų lipdukus ir kurjerio iškvietimus."
+#: templates/admin/manifest-page.php:59
+msgid "Manage Omniva shipments, address cards and courier collection in one place."
+msgstr "Vienoje vietoje tvarkykite Omniva siuntas, adresų korteles ir kurjerio iškvietimus."
 
-#: templates/admin/manifest-page.php:63
-#: templates/admin/manifest-page.php:425
-#: templates/admin/manifest-page.php:484
+#: templates/admin/manifest-page.php:64
+#: templates/admin/manifest-page.php:477
+#: templates/admin/manifest-page.php:536
 msgid "Call Omniva courier"
 msgstr "Kurjerio iškvietimas"
 
-#: templates/admin/manifest-page.php:68
+#: templates/admin/manifest-page.php:69
 #, php-format
 msgid "Please configure the plugin on %s."
 msgstr "Sukonfigūruokite įskiepį puslapyje %s."
 
-#: templates/admin/manifest-page.php:75
+#: templates/admin/manifest-page.php:76
 msgid "Scheduled courier arrivals"
 msgstr "Suplanuoti kurjerio atvykimai"
 
-#: templates/admin/manifest-page.php:77
+#: templates/admin/manifest-page.php:78
 msgid "After arrival time expires, the record is automatically removed"
 msgstr "Pasibaigus atvykimo laikui, įrašas automatiškai pašalinamas"
 
-#: templates/admin/manifest-page.php:84
-#: templates/admin/manifest-page.php:477
+#: templates/admin/manifest-page.php:85
+#: templates/admin/manifest-page.php:529
 msgid "The timezone is different!"
 msgstr "Skiriasi laiko juosta!"
 
-#: templates/admin/manifest-page.php:84
+#: templates/admin/manifest-page.php:85
 msgid "This table shows the real courier call time converted to the timezone of your website"
 msgstr "Šioje lentelėje rodomas kurjerio iškvietimo laikas konvertuotas į Jūsų tinklapio laiko zoną"
 
-#: templates/admin/manifest-page.php:104
+#: templates/admin/manifest-page.php:105
 msgid "Cancel this call"
 msgstr "Atšaukti šį kvietimą"
 
-#: templates/admin/manifest-page.php:105
+#: templates/admin/manifest-page.php:106
 msgid "Courier arrived and this can be removed"
 msgstr "Kurjeris atvyko ir šis įrašas gali būti panaikintas"
 
-#: templates/admin/manifest-page.php:114
-#: templates/admin/manifest-page.php:120
+#: templates/admin/manifest-page.php:115
+#: templates/admin/manifest-page.php:121
 msgid "Shipment order groups"
 msgstr "Užsakymų grupės"
 
-#: templates/admin/manifest-page.php:126
-#: templates/admin/manifest-page.php:212
+#: templates/admin/manifest-page.php:127
+#: templates/admin/manifest-page.php:219
 msgid "Filter"
 msgstr "Ieškoti"
 
-#: templates/admin/manifest-page.php:128
+#: templates/admin/manifest-page.php:129
 #, php-format
 msgid "Active filters: %d"
 msgstr "Aktyvūs filtrai: %d"
 
-#: templates/admin/manifest-page.php:157
-#: templates/admin/manifest-page.php:158
-#: templates/admin/manifest-page.php:402
-#: templates/admin/manifest-page.php:403
+#: templates/admin/manifest-page.php:160
+#: templates/admin/manifest-page.php:164
+#: templates/admin/manifest-page.php:451
+#: templates/admin/manifest-page.php:455
 msgid "Generate manifest"
 msgstr "Generuoti manifestą"
 
-#: templates/admin/manifest-page.php:177
+#: templates/admin/manifest-page.php:184
 msgid "Filters"
 msgstr "Filtrai"
 
-#: templates/admin/manifest-page.php:178
+#: templates/admin/manifest-page.php:185
 msgid "Close filters"
 msgstr "Uždaryti filtrus"
 
-#: templates/admin/manifest-page.php:186
-#: templates/admin/manifest-page.php:187
-#: templates/admin/manifest-page.php:224
+#: templates/admin/manifest-page.php:193
+#: templates/admin/manifest-page.php:194
+#: templates/admin/manifest-page.php:231
 msgid "Customer"
 msgstr "Pirkėjas"
 
-#: templates/admin/manifest-page.php:190
-#: templates/admin/manifest-page.php:191
-#: templates/admin/manifest-page.php:228
-#: templates/admin/manifest-page.php:327
+#: templates/admin/manifest-page.php:197
+#: templates/admin/manifest-page.php:198
+#: templates/admin/manifest-page.php:235
+#: templates/admin/manifest-page.php:345
 msgid "Barcode"
 msgstr "Barkodas"
 
-#: templates/admin/manifest-page.php:194
+#: templates/admin/manifest-page.php:201
 msgid "Order status"
 msgstr "Užsakymo būsena"
 
-#: templates/admin/manifest-page.php:196
+#: templates/admin/manifest-page.php:203
 msgctxt "All status"
 msgid "All"
 msgstr "Visi"
 
-#: templates/admin/manifest-page.php:204
-#: templates/admin/manifest-page.php:230
-#: templates/admin/manifest-page.php:342
+#: templates/admin/manifest-page.php:211
+#: templates/admin/manifest-page.php:237
+#: templates/admin/manifest-page.php:360
 msgid "Manifest date"
 msgstr "Manifesto data"
 
-#: templates/admin/manifest-page.php:206
+#: templates/admin/manifest-page.php:213
 msgid "From"
 msgstr "Nuo"
 
-#: templates/admin/manifest-page.php:207
+#: templates/admin/manifest-page.php:214
 msgid "To"
 msgstr "Iki"
 
-#: templates/admin/manifest-page.php:220
-#: templates/admin/manifest-page.php:221
+#: templates/admin/manifest-page.php:227
+#: templates/admin/manifest-page.php:228
 msgid "Select all orders on this page"
 msgstr "Pasirinkti visus šiame puslapyje esančius užsakymus"
 
-#: templates/admin/manifest-page.php:223
+#: templates/admin/manifest-page.php:230
 msgid "ID"
 msgstr "ID"
 
-#: templates/admin/manifest-page.php:225
+#: templates/admin/manifest-page.php:232
 msgid "Order Status"
 msgstr "Būsena"
 
-#: templates/admin/manifest-page.php:226
-#: templates/admin/manifest-page.php:303
+#: templates/admin/manifest-page.php:233
+#: templates/admin/manifest-page.php:321
 msgid "Order information"
 msgstr "Užsakymo informacija"
 
-#: templates/admin/manifest-page.php:227
-#: templates/admin/manifest-page.php:322
+#: templates/admin/manifest-page.php:234
+#: templates/admin/manifest-page.php:340
 msgid "Service"
 msgstr "Paslauga"
 
-#: templates/admin/manifest-page.php:232
-#: templates/admin/manifest-page.php:349
+#: templates/admin/manifest-page.php:239
+#: templates/admin/manifest-page.php:367
 msgid "Actions"
 msgstr "Veiksmai"
 
-#: templates/admin/manifest-page.php:281
-#: templates/admin/manifest-page.php:284
+#: templates/admin/manifest-page.php:299
+#: templates/admin/manifest-page.php:302
 msgid "Show details"
 msgstr "Rodyti išsamią informaciją"
 
-#: templates/admin/manifest-page.php:282
+#: templates/admin/manifest-page.php:300
 msgid "Hide details"
 msgstr "Slėpti išsamią informaciją"
 
-#: templates/admin/manifest-page.php:289
-#: templates/admin/manifest-page.php:309
+#: templates/admin/manifest-page.php:307
+#: templates/admin/manifest-page.php:327
 msgid "Amount"
 msgstr "Suma"
 
-#: templates/admin/manifest-page.php:305
+#: templates/admin/manifest-page.php:323
 msgid "Date"
 msgstr "Data"
 
-#: templates/admin/manifest-page.php:350
-msgid "Print label"
-msgstr "Spausdinti lipduką"
+#: templates/admin/manifest-page.php:368
+msgid "Print address card"
+msgstr "Spausdinti adresų kortelę"
 
-#: templates/admin/manifest-page.php:350
-msgid "Generate label"
-msgstr "Generuoti lipduką"
+#: templates/admin/manifest-page.php:368
+msgid "Generate address card"
+msgstr "Generuoti adresų kortelę"
 
-#: templates/admin/manifest-page.php:362
-msgid "Regenerate label"
-msgstr "Generuoti lipduką iš naujo"
+#: templates/admin/manifest-page.php:385
+msgid "Regenerate address card"
+msgstr "Generuoti adresų kortelę iš naujo"
 
-#: templates/admin/manifest-page.php:426
+#: templates/admin/manifest-page.php:478
 msgid "Arrange a courier collection for your selected shipments."
 msgstr "Užsakykite kurjerį paimti pasirinktas siuntas."
 
-#: templates/admin/manifest-page.php:430
+#: templates/admin/manifest-page.php:482
 msgid "Important!"
 msgstr "Svarbu!"
 
-#: templates/admin/manifest-page.php:430
-msgid "Latest call for same day pickup is until 3 pm."
-msgstr "Vėliausias galimas kurjerio iškvietimas yra iki 15val. Vėliau iškvietus kurjerį negarantuojame, jog siunta bus paimta."
+#: templates/admin/manifest-page.php:482
+msgid "Latest call for same day collect is until 3 pm."
+msgstr "Vėliausias galimas kurjerio iškvietimas yra iki 15 val. Vėliau iškvietus kurjerį negarantuojame, jog siunta bus paimta."
 
-#: templates/admin/manifest-page.php:431
+#: templates/admin/manifest-page.php:483
 msgid "Address and contact information can be changed in Omniva settings."
 msgstr "Adresą ir kontaktinius duomenis galima keisti Omniva modulio nustatymuose."
 
-#: templates/admin/manifest-page.php:441
+#: templates/admin/manifest-page.php:493
 msgid "Comment"
 msgstr "Komentaras"
 
-#: templates/admin/manifest-page.php:446
+#: templates/admin/manifest-page.php:498
 msgid "Number of parcels"
 msgstr "Siuntų skaičius"
 
-#: templates/admin/manifest-page.php:452
-#: templates/admin/manifest-page.php:463
+#: templates/admin/manifest-page.php:504
+#: templates/admin/manifest-page.php:515
 msgid "This feature is not available"
 msgstr "Ši funkcija negalima"
 
-#: templates/admin/manifest-page.php:454
+#: templates/admin/manifest-page.php:506
 msgid "Shipments is heavy"
 msgstr "Siuntos yra sunkios"
 
-#: templates/admin/manifest-page.php:459
+#: templates/admin/manifest-page.php:511
 msgid "Shipments weight exceeds 30 kg"
 msgstr "Siuntų svoris viršyja 30 kg"
 
-#: templates/admin/manifest-page.php:465
+#: templates/admin/manifest-page.php:517
 msgid "Need two man"
 msgstr "Reikia dviejų žmonių"
 
-#: templates/admin/manifest-page.php:470
+#: templates/admin/manifest-page.php:522
 msgid "2 people are needed to pick up the shipments"
 msgstr "Reikalingi 2 žmonės siuntų paėmimui "
 
-#: templates/admin/manifest-page.php:483
+#: templates/admin/manifest-page.php:535
 msgid "Cancel"
 msgstr "Atšaukti"
 
-#: templates/admin/manifest-page.php:493
+#: templates/admin/manifest-page.php:545
 msgid "Cancel courier arrival"
 msgstr "Atšaukti kurjerio atvykimą"
 
-#: templates/admin/manifest-page.php:494
+#: templates/admin/manifest-page.php:546
 msgid "This removes the selected courier collection request."
 msgstr "Bus pašalintas pasirinktas kurjerio iškvietimas."
 
-#: templates/admin/manifest-page.php:501
+#: templates/admin/manifest-page.php:553
 msgid "Are you sure you want to cancel the courier arrival?"
 msgstr "Ar tikrai norite atšaukti kurjerio atvykimą?"
 
-#: templates/admin/manifest-page.php:503
+#: templates/admin/manifest-page.php:555
 msgid "No"
 msgstr "Ne"
 
-#: templates/admin/manifest-page.php:504
+#: templates/admin/manifest-page.php:556
 msgid "Cancel Omniva courier"
 msgstr "Atšaukti Omniva kurjerį"
 
 #: templates/admin/settings-page.php:31
-msgid "Configure Omniva delivery methods, delivery services and labels."
-msgstr "Konfigūruokite Omniva pristatymo būdus, pristatymo paslaugas ir siuntų lipdukus."
+msgid "Configure Omniva shipping methods, delivery services and address cards."
+msgstr "Konfigūruokite Omniva pristatymo būdus, pristatymo paslaugas ir adresų korteles."
 
 #: templates/admin/settings-page.php:38
 msgid "Omniva settings sections"
@@ -2334,8 +2397,8 @@ msgid "Need API access?"
 msgstr "Reikia API prieigos?"
 
 #: templates/admin/settings-page.php:178
-msgid "API credentials are issued by Omniva. Contact support team to get access."
-msgstr "API prisijungimo duomenis suteikia Omniva. Norėdami gauti prieigą, susisiekite su pagalbos komanda."
+msgid "API credentials are issued by Omniva. Contact Omniva business customer support to get access."
+msgstr "API prisijungimus išduoda Omniva. Norėdami gauti prieigą, susisiekite su Omniva verslo klientų aptarnavimu."
 
 #: templates/admin/settings-page.php:181
 msgid "Contact Omniva"
@@ -2381,8 +2444,8 @@ msgid "Help and updates"
 msgstr "Pagalba ir atnaujinimai"
 
 #: templates/admin/settings-page.php:260
-msgid "Omniva support"
-msgstr "Omniva pagalba"
+msgid "Omniva business customer support"
+msgstr "Omniva verslo klientų aptarnavimas"
 
 #: templates/admin/settings-page.php:265
 msgid "Have any suggestions or problems?"

@@ -1587,7 +1587,8 @@ jQuery(function($) {
         }
       });
 
-      $form.find(':input').trigger('change');
+      // Child region changes recompute the group toggle; firing the group change would overwrite restored region values.
+      $form.find(':input').not('[data-omniva-destination-toggle]').trigger('change');
       // Restoring dependent fields can select the first available country. Keep the country tab the administrator had open.
       $activeCountryTabs.each(function() {
         $(this).trigger('click');

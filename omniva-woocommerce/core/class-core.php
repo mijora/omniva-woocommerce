@@ -257,12 +257,12 @@ class OmnivaLt_Core
           'geolocation_loading' => __('Locating...', 'omnivalt'),
           'my_position' => __('Distance calculated from this point', 'omnivalt'),
           'geo_not_supported' => __('Geolocation is not supported', 'omnivalt'),
-          'delivery_location' => __('Delivery location', 'omnivalt'),
+          'delivery_location' => __('Delivery point', 'omnivalt'),
           'close_button' => __('Close map', 'omnivalt'),
-          'search_label' => __('Search delivery locations', 'omnivalt'),
+          'search_label' => __('Search delivery points', 'omnivalt'),
           'clear_search' => __('Clear search', 'omnivalt'),
-          'clear_selection' => __('Clear selected delivery location', 'omnivalt'),
-          'search_results_label' => __('Delivery location search results', 'omnivalt'),
+          'clear_selection' => __('Clear selected delivery point', 'omnivalt'),
+          'search_results_label' => __('Delivery point search results', 'omnivalt'),
           'show_on_map' => __('Show on map', 'omnivalt'),
           'sorted_by_zip' => __('Sorted by distance from your postcode:', 'omnivalt'),
           'sort_by_zip' => __('Sort by distance from your postcode', 'omnivalt'),
@@ -587,7 +587,6 @@ class OmnivaLt_Core
     add_action('save_post', array('OmnivaLt_Order', 'admin_order_save'));
     add_action('woocommerce_update_order', array('OmnivaLt_Order', 'admin_order_save_hpos'));
     add_action('woocommerce_checkout_process', array('OmnivaLt_Order', 'checkout_validate_terminal'));
-    add_action('wp_ajax_nopriv_remove_courier_call', array('OmnivaLt_Labels', 'ajax_remove_courier_call'));
     add_action('wp_ajax_remove_courier_call', array('OmnivaLt_Labels', 'ajax_remove_courier_call'));
     add_action('woocommerce_after_save_address_validation', array('OmnivaLt_Frontend', 'validate_phone_number'), 1, 2);
     add_action('woocommerce_checkout_process', array('OmnivaLt_Frontend', 'validate_phone_number'));

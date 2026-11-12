@@ -127,10 +127,11 @@
     $.ajax({
       type: "post",
       dataType: "json",
-      url: "/wp-admin/admin-ajax.php",
+      url: omnivaglobals.ajax_url,
       data: {
         action: 'remove_courier_call',
-        call_id: call_id
+        call_id: call_id,
+        nonce: omnivaglobals.remove_courier_call_nonce
       },
       success: function(response) {
         //console.log(response);
@@ -163,6 +164,11 @@
 
   $(document).on('click', '#submit_manifest_items_1, #submit_manifest_items_2', function() {
     omniva_submit_bulk_action('#manifest-print-form');
+  });
+
+  // Row label forms open the PDF in a new tab, so this page cannot learn the result of the registration.
+  $(document).on('submit', 'form[id^="omnivalt-label-"], form[id^="omnivalt-regenerate-label-"]', function() {
+    omniva_mark_orders_as_labeled([$(this).find('input[name="post"]').val()]);
   });
 
   /* Row action tooltips */
@@ -239,24 +245,31 @@
 
   function omniva_remove_from_checked_list(value) {
     var cookie_value = [];
-    if (omniva_getCookie(omnivaglobals.cookie_checked_list) != null) {
-      var current_cookie = omniva_getCookie(omnivaglobals.cookie_checked_list);
+    var current_cookie = omniva_getCookie(omnivaglobals.cookie_checked_list);
+    if (current_cookie != null) {
       cookie_value = JSON.parse(current_cookie);
-      for (var i=0;i<cookie_value.length;i++) {
-        if (cookie_value[i] == value) {
-          cookie_value.splice(i, 1);
-        }
-      }
-      if (cookie_value.length == 0) {
-        omniva_eraseCookie(omnivaglobals.cookie_checked_list);
-        $('#selected-orders').hide();
-        omniva_set_selected_actions_visible(false);
-      } else {
-        omniva_setCookie(omnivaglobals.cookie_checked_list, JSON.stringify(cookie_value), 12*60);
-      }
-
-      omniva_remove_selected_item($('#selected-orders .item[data-id="' + value + '"]'));
     }
+    if ( ! Array.isArray(cookie_value) ) {
+      cookie_value = [];
+    }
+
+    cookie_value = cookie_value.filter(function(order_id) {
+      return String(order_id) !== String(value);
+    });
+    if (cookie_value.length == 0) {
+      omniva_eraseCookie(omnivaglobals.cookie_checked_list);
+    } else {
+      omniva_setCookie(omnivaglobals.cookie_checked_list, JSON.stringify(cookie_value), 12*60);
+    }
+
+    var selected_item = $('#selected-orders .item').filter(function() {
+      return String($(this).attr('data-id')) === String(value);
+    });
+    selected_item.remove();
+
+    var has_selected_orders = $('#selected-orders .item').length > 0;
+    $('#selected-orders').toggle(has_selected_orders);
+    omniva_set_selected_actions_visible(has_selected_orders);
   }
 
   function omniva_add_selected_item(value) {
@@ -284,6 +297,7 @@
 
     selected_orders.find('.selected-count').text(selected_count);
     selected_orders.closest('.omnivalt-manifest-page__bulk-actions').toggleClass('has-many-selected', has_many_selected);
+    omniva_update_manifest_action_state();
     omniva_update_label_action_state();
   }
 
@@ -317,6 +331,43 @@
     });
   }
 
+  function omniva_update_manifest_action_state() {
+    var has_selected_barcodes = $('#selected-orders .item').filter(function() {
+      var selected_item = $(this);
+      var order_id = String(selected_item.attr('data-id'));
+      var checkbox = $('.manifest-item').filter(function() {
+        return String($(this).val()) === order_id;
+      }).first();
+
+      if (!checkbox.length) {
+        return selected_item.attr('data-has-barcodes') === '1';
+      }
+
+      var has_barcodes = checkbox.attr('data-has-barcodes') === '1';
+      selected_item.attr('data-has-barcodes', has_barcodes ? '1' : '0');
+      return checkbox.is(':checked') && has_barcodes;
+    }).length > 0;
+    var buttons = $('#submit_manifest_items_1, #submit_manifest_items_2');
+
+    buttons.prop('disabled', !has_selected_barcodes);
+    if ( !has_selected_barcodes ) {
+      buttons.attr('aria-disabled', 'true');
+    } else {
+      buttons.removeAttr('aria-disabled');
+    }
+  }
+
+  // Optimistic: the server stays authoritative and reports orders without barcodes when a manifest is requested.
+  function omniva_mark_orders_as_labeled(order_ids) {
+    var labeled_ids = $.map(order_ids, function(order_id) {
+      return String(order_id);
+    });
+
+    $('.manifest-item').filter(function() {
+      return $.inArray(String($(this).val()), labeled_ids) !== -1;
+    }).attr('data-has-barcodes', '1');
+  }
+
   function omniva_submit_bulk_action(form_selector) {
     var ids = [];
     $(form_selector + ' .post_id').remove();
@@ -336,6 +387,19 @@
     if (!ids.length) {
       alert(omnivatext.alert_select_orders);
     } else {
+      // PDF viewers can reload the response URL with GET and cannot replay its POST body.
+      var form = $(form_selector)[0];
+      var print_url = new URL(form.getAttribute('action'), window.location.href);
+      var print_params = new URLSearchParams(new FormData(form));
+      print_params.delete('_wp_http_referer');
+      print_params.set('process', 'print');
+      print_url.search = print_params.toString();
+      form.setAttribute('action', print_url.toString());
+
+      if (form_selector === '#labels-print-form') {
+        omniva_mark_orders_as_labeled(ids);
+      }
+
       omniva_eraseCookie(omnivaglobals.cookie_checked_list);
       $('#selected-orders .item').remove();
       $('#selected-orders').hide();
