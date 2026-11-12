@@ -22,6 +22,7 @@
 - fixed label printing when sender information is incomplete: existing labels can be printed, while generating or regenerating labels still requires complete sender information
 - fixed sender phone and pickup-window validation so invalid values do not overwrite previously saved settings
 - fixed selected-parcel machine synchronization between the browser cookie, WooCommerce session and the Blocks Store API
+- fixed an infinite shipping method update loop on the Cart page with themes that reload the cart after a shipping method change
 
 ### Updated
 - updated terminal-mapping library to v2.0.0
