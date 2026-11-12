@@ -5,16 +5,16 @@ class OmnivaLt_Method_Terminal extends OmnivaLt_Method_Core
     {
         $this->setId('pickup');
         $this->setKey('pt');
-        $this->setTitle(__('Parcel terminal', 'omnivalt'));
+        $this->setTitle(__('Parcel machine', 'omnivalt'));
         $this->setDisplayByCountry(array(
             'FI' => array(
-                'title' => 'Matkahuolto ' . strtolower(__('Parcel terminal', 'omnivalt')),
+                'title' => 'Matkahuolto ' . strtolower(__('Parcel machine', 'omnivalt')),
                 'prefix' => 'Matkahuolto',
                 'title_logo' => 'matkahuolto_logo.svg',
                 'map_marker' => 'matkahuolto_icon.svg',
             ),
         ));
-        $this->setDescription(__('Activate this service, when you want to send parcels to parcel terminals.', 'omnivalt'));
+        $this->setDescription(__('Activate this service, when you want to send parcels to parcel machines.', 'omnivalt'));
         $this->setIsShippingMethod(true);
         $this->setTerminalsType('terminal');
         $this->setMaxWeight(30);

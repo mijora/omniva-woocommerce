@@ -22,17 +22,19 @@ class OmnivaLt_Labels
     $this->send_methods_international = OmnivaLt_Method::get_all_wc_methods_international_keys();
   }
 
-  public function print_labels( $orderIds = false, $download = true, $regenerate = false )
+  public function print_labels( $orderIds = false, $download = true, $regenerate = false, $inline = false, $allow_generation = true )
   {
-    if (empty($orderIds) || !$orderIds) {
+    if ( empty($orderIds) ) {
       return;
     }
 
     if ( ! is_array($orderIds) )
       $orderIds = array($orderIds);
 
+    $orderIds = array_unique($orderIds);
+
     $all_barcodes = array();
-    foreach ( array_unique($orderIds) as $orderId ) {
+    foreach ( $orderIds as $orderId ) {
       $this->is_international = false;
       $order = OmnivaLt_Wc_Order::get_data($orderId, array('shipment', 'shipping', 'billing'));
       if ( ! $order ) {
@@ -57,11 +59,22 @@ class OmnivaLt_Labels
         $this->omnivalt_api->change_api_type($this->omnivalt_configs['api']['type']);
       }
       
-      if ( $regenerate ) {
-        OmnivaLt_Omniva_Order::set_barcodes($order->id, '');
+      $barcodes = OmnivaLt_Omniva_Order::get_barcodes($order->id);
+
+      $needs_generation = $regenerate || empty($barcodes);
+      // A PDF viewer may reload the print URL with GET; that request must never register a shipment.
+      if ( $needs_generation && ! $allow_generation ) {
+        continue;
+      }
+      if ( $needs_generation && ! OmnivaLt_Helper::has_required_sender_information() ) {
+        OmnivaLt_Helper::add_msg($order->number . ' - ' . __('Please fill in the sender information on the settings page.', 'omnivalt'), 'error');
+        continue;
       }
 
-      $barcodes = OmnivaLt_Omniva_Order::get_barcodes($order->id);
+      if ( $regenerate ) {
+        OmnivaLt_Omniva_Order::set_barcodes($order->id, '');
+        $barcodes = array();
+      }
 
       if ( empty($barcodes) ) {
         $barcodes = $this->register_label($order);
@@ -76,7 +89,12 @@ class OmnivaLt_Labels
       }
     }
 
-    $labels_status = $this->omnivalt_api->download_shipment_labels($all_barcodes);
+    if ( empty($all_barcodes) ) {
+      wp_safe_redirect(wp_get_referer() ? wp_get_referer() : admin_url('edit.php?post_type=shop_order'));
+      exit;
+    }
+
+    $labels_status = $this->omnivalt_api->download_shipment_labels($all_barcodes, $inline);
     if ( ! $labels_status['status'] ) {
       OmnivaLt_Helper::add_msg($labels_status['msg'], 'error');
       wp_safe_redirect(wp_get_referer());
@@ -181,7 +199,7 @@ class OmnivaLt_Labels
     if ( isset($status['status']) && $status['status'] === true ) {
       $barcodes = $status['barcodes'];
       OmnivaLt_Omniva_Order::set_barcodes($order->id, $barcodes);
-      OmnivaLt_Wc_Order::add_note($order->id, '<b>Omniva:</b> ' . __('Registered labels', 'omnivalt') . ":\n" . implode(', ', $barcodes));
+      OmnivaLt_Wc_Order::add_note($order->id, '<b>Omniva:</b> ' . __('Registered address cards', 'omnivalt') . ":\n" . implode(', ', $barcodes));
 
       $change_order_status = (isset($this->omnivalt_settings['status_created_label'])) ? $this->omnivalt_settings['status_created_label'] : '';
       if ( ! empty($change_order_status) ) {
@@ -215,7 +233,7 @@ class OmnivaLt_Labels
     return array();
   }
 
-  public function print_manifest( $orders_ids )
+  public function print_manifest( $orders_ids, $save_manifest_date = true )
   {
     $result = $this->omnivalt_api->get_manifest($orders_ids);
 
@@ -230,8 +248,10 @@ class OmnivaLt_Labels
       exit;
     }
 
-    foreach ( $result['success'] as $order_id ) {
-      OmnivaLt_Omniva_Order::set_manifest_date($order_id, current_time('Y-m-d H:i:s'));
+    if ( $save_manifest_date ) {
+      foreach ( $result['success'] as $order_id ) {
+        OmnivaLt_Omniva_Order::set_manifest_date($order_id, current_time('Y-m-d H:i:s'));
+      }
     }
 
     exit;
@@ -303,13 +323,42 @@ class OmnivaLt_Labels
 
   public static function post_call_courier_actions()
   {
+    if ( ! current_user_can('manage_woocommerce') ) {
+      wp_die(esc_html__('You are not allowed to call an Omniva courier.', 'omnivalt'), '', array('response' => 403));
+    }
+
+    $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+    if ( 'POST' !== $request_method ) {
+      wp_die(esc_html__('This action requires a POST request.', 'omnivalt'), '', array('response' => 405));
+    }
+
+    check_admin_referer('omnivalt_call_courier', 'omnivalt_call_courier_nonce');
+
+    $call_quantity = 0;
+    if ( isset($_POST['call_quantity']) && is_scalar($_POST['call_quantity']) ) {
+      $quantity_value = sanitize_text_field(wp_unslash($_POST['call_quantity']));
+      if ( ctype_digit($quantity_value) ) {
+        $normalized_quantity = ltrim($quantity_value, '0');
+        if ( strlen($normalized_quantity) <= 2 ) {
+          $call_quantity = (int) $normalized_quantity;
+        }
+      }
+    }
+    if ( $call_quantity < 1 || $call_quantity > 29 ) {
+      OmnivaLt_Helper::add_msg(__('Please enter a valid number of parcels.', 'omnivalt'), 'error');
+      wp_safe_redirect(wp_get_referer());
+      exit;
+    }
+
+    $call_options = isset($_POST['call_checkboxes']) && is_array($_POST['call_checkboxes']) ? map_deep(wp_unslash($_POST['call_checkboxes']), 'sanitize_key') : array();
+
     $shipping_settings = OmnivaLt_Core::get_settings();
     $omnivalt_api = new OmnivaLt_Api();
 
     $call_params = array();
-    $call_params['quantity'] = intval($_GET['call_quantity']);
-    $call_params['heavy'] = (isset($_GET['call_checkboxes']) && in_array('heavy', $_GET['call_checkboxes']));
-    $call_params['twoman'] = (isset($_GET['call_checkboxes']) && in_array('twoman', $_GET['call_checkboxes']));
+    $call_params['quantity'] = $call_quantity;
+    $call_params['heavy'] = in_array('heavy', $call_options, true);
+    $call_params['twoman'] = in_array('twoman', $call_options, true);
 
     $call_result = $omnivalt_api->call_courier($call_params);
 
@@ -342,35 +391,42 @@ class OmnivaLt_Labels
       OmnivaLt_Helper::add_msg(__("There was an error calling Omniva courier. Error: " . $call_result['msg'], 'omnivalt'), 'error');
     }
     wp_safe_redirect(wp_get_referer());
+    exit;
   }
 
   public static function post_cancel_courier_actions()
   {
-    if ( ! isset($_GET['omnivalt_cancel_courier_nonce']) || ! wp_verify_nonce($_GET['omnivalt_cancel_courier_nonce'], 'omnivalt_cancel_courier') ) {
-      OmnivaLt_Helper::add_msg(__('Request security check failed', 'omnivalt'), 'error');
-      wp_safe_redirect(wp_get_referer());
-      return;
+    if ( ! current_user_can('manage_woocommerce') ) {
+      wp_die(esc_html__('You are not allowed to cancel an Omniva courier call.', 'omnivalt'), '', array('response' => 403));
     }
 
-    if ( empty(esc_attr($_GET['call_id'])) ) {
+    $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+    if ( 'POST' !== $request_method ) {
+      wp_die(esc_html__('This action requires a POST request.', 'omnivalt'), '', array('response' => 405));
+    }
+
+    check_admin_referer('omnivalt_cancel_courier', 'omnivalt_cancel_courier_nonce');
+
+    $call_id = isset($_POST['call_id']) && is_scalar($_POST['call_id']) ? sanitize_text_field(wp_unslash($_POST['call_id'])) : '';
+    if ( '' === $call_id ) {
       OmnivaLt_Helper::add_msg(__('Failed to get courier invitation number', 'omnivalt'), 'error');
       wp_safe_redirect(wp_get_referer());
-      return;
+      exit;
     }
-    $call_id = esc_attr($_GET['call_id']);
 
     $omnivalt_api = new OmnivaLt_Api();
     $result = $omnivalt_api->cancel_courier_call($call_id);
     if ( ! $result['status'] ) {
       OmnivaLt_Helper::add_msg($result['msg'], 'error');
       wp_safe_redirect(wp_get_referer());
-      return;
+      exit;
     }
 
     OmnivaLt_Helper::remove_courier_calls($call_id);
 
     OmnivaLt_Helper::add_msg('Courier call canceled successfully', 'success');
     wp_safe_redirect(wp_get_referer());
+    exit;
   }
 
   public static function ajax_remove_courier_call()
@@ -379,18 +435,32 @@ class OmnivaLt_Labels
       'status' => 'error',
       'msg' => '',
     );
-    
-    if ( empty(esc_attr($_POST['call_id'])) ) {
-      $result['msg'] = __('Failed to get courier invitation number', 'omnivalt');
-      echo json_encode($result);
-      wp_die();
+
+    if ( ! current_user_can('manage_woocommerce') ) {
+      $result['msg'] = __('You are not allowed to remove courier calls.', 'omnivalt');
+      wp_send_json($result, 403);
     }
 
-    $call_id = esc_attr($_POST['call_id']);
+    $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+    if ( 'POST' !== $request_method ) {
+      $result['msg'] = __('This action requires a POST request.', 'omnivalt');
+      wp_send_json($result, 405);
+    }
+
+    if ( ! check_ajax_referer('omnivalt_remove_courier_call', 'nonce', false) ) {
+      $result['msg'] = __('Request security check failed', 'omnivalt');
+      wp_send_json($result, 403);
+    }
+
+    $call_id = isset($_POST['call_id']) && is_scalar($_POST['call_id']) ? sanitize_text_field(wp_unslash($_POST['call_id'])) : '';
+    if ( '' === $call_id ) {
+      $result['msg'] = __('Failed to get courier invitation number', 'omnivalt');
+      wp_send_json($result, 400);
+    }
+
     OmnivaLt_Helper::remove_courier_calls($call_id);
     $result['status'] = 'OK';
 
-    echo json_encode($result);
-    wp_die();
+    wp_send_json($result);
   }
 }

@@ -5,10 +5,60 @@ class OmnivaLt_Terminals
 
   public static function add_terminal_to_session()
   {
-    if (isset($_POST['terminal_id']) && is_numeric($_POST['terminal_id'])) {
-      WC()->session->set('omnivalt_terminal_id', $_POST['terminal_id']);
+    check_ajax_referer('omnivalt_add_terminal', 'nonce');
+
+    $terminal_id = '';
+    if ( isset($_POST['terminal_id']) && is_scalar($_POST['terminal_id']) ) {
+      $terminal_id = sanitize_text_field(wp_unslash((string) $_POST['terminal_id']));
+    }
+
+    if ( '' !== $terminal_id && ctype_digit($terminal_id) ) {
+      OmnivaLt_Wc::set_session('omnivalt_terminal_id', $terminal_id);
     }
     wp_die();
+  }
+
+  public static function clear_terminal_from_session()
+  {
+    check_ajax_referer('omnivalt_clear_terminal', 'nonce');
+
+    OmnivaLt_Wc::set_session('omnivalt_terminal_id', '');
+
+    wp_send_json_success();
+  }
+
+  public static function has_terminals_data()
+  {
+    return ! empty(self::read_terminals_file());
+  }
+
+  public static function is_valid_terminal( $terminal_id, $country, $type = 'terminal' )
+  {
+    if ( ! is_scalar($terminal_id) || ! is_string($country) || '' === $country || ! in_array($type, array('terminal', 'post'), true) ) {
+      return false;
+    }
+
+    $terminal_id = (string) $terminal_id;
+    if ( '' === $terminal_id ) {
+      return false;
+    }
+    $country = strtoupper($country);
+    $terminal_type = ('post' === $type) ? '1' : '0';
+
+    foreach ( self::read_terminals_file() as $terminal ) {
+      if ( ! is_array($terminal) || ! isset($terminal['ZIP'], $terminal['A0_NAME'], $terminal['TYPE'])
+        || ! is_scalar($terminal['ZIP']) || ! is_string($terminal['A0_NAME']) || ! is_scalar($terminal['TYPE']) ) {
+        continue;
+      }
+
+      if ( $terminal_id === (string) $terminal['ZIP']
+        && $country === $terminal['A0_NAME']
+        && $terminal_type === (string) $terminal['TYPE'] ) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public static function get_terminals_list( $country = "ALL", $get_list = 'terminal' ) {
@@ -55,8 +105,8 @@ class OmnivaLt_Terminals
     $list_options = array(
       'list' => 'terminal',
       'type' => 0,
-      'txt_select' => __('Select parcel terminal', 'omnivalt'),
-      'txt_show_map' => __('Show parcel terminals map', 'omnivalt'),
+      'txt_select' => __('Select parcel machine', 'omnivalt'),
+      'txt_show_map' => __('Show parcel machines map', 'omnivalt'),
     );
     if ( $get_list === 'post' ) {
       $list_options['list'] = 'post';
@@ -129,8 +179,8 @@ class OmnivaLt_Terminals
     $list_options = array(
       'list' => 'terminal',
       'type' => 0,
-      'txt_select' => __('Select parcel terminal', 'omnivalt'),
-      'txt_show_map' => __('Show parcel terminals map', 'omnivalt'),
+      'txt_select' => __('Select parcel machine', 'omnivalt'),
+      'txt_show_map' => __('Show parcel machines map', 'omnivalt'),
     );
     if ( $get_list === 'post' ) {
       $list_options['list'] = 'post';
@@ -345,12 +395,12 @@ class OmnivaLt_Terminals
         <div class="omniva-modal-content">
             <div class="omniva-modal-header">
             <span class="close" id="terminalsModal">&times;</span>
-            <h5 id="omnivaLt_modal_title" style="display: inline">' . __('Omniva parcel terminals', 'omnivalt') . '</h5>
+            <h5 id="omnivaLt_modal_title" style="display: inline">' . __('Omniva parcel machines', 'omnivalt') . '</h5>
             </div>
             <div class="omniva-modal-body" style="/*overflow: hidden;*/">
                 <div id = "omnivaMapContainer"></div>
                 <div class="omniva-search-bar" >
-                    <h4 id="omnivaLt_modal_search" style="margin-top: 0px;">' . __('Parcel terminals addresses', 'omnivalt') . '</h4>
+                    <h4 id="omnivaLt_modal_search" style="margin-top: 0px;">' . __('Parcel machines addresses', 'omnivalt') . '</h4>
                     <div id="omniva-search">
                     <form>
                     <input type = "text" placeholder = "' . __('Enter postcode', 'omnivalt') . '"/>

@@ -66,9 +66,9 @@ class OmnivaLt_Api
         return $this->api->get_labels($barcodes);
     }
 
-    public function download_shipment_labels( $barcodes )
+    public function download_shipment_labels( $barcodes, $inline = false )
     {
-        return $this->api->download_labels($barcodes);
+        return $this->api->download_labels($barcodes, $inline);
     }
 
     public function get_manifest( $orders_ids )

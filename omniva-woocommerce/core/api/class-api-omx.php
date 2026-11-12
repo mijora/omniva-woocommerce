@@ -429,6 +429,14 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
   public function call_courier( $params )
   {
     $shop = $this->get_shop_data();
+    $sender_phone = trim((string) $shop->mobile);
+    if ( '' === $sender_phone ) {
+      $sender_phone = trim((string) $shop->phone);
+    }
+    if ( '' === $sender_phone ) {
+      return array('status' => false, 'msg' => __('Please fill in the sender information on the settings page.', 'omnivalt'));
+    }
+
     $pickStart = OmnivaLt_Helper::get_formated_time($shop->pick_from, '8:00');
     $pickFinish = OmnivaLt_Helper::get_formated_time($shop->pick_until, '17:00');
     $parcels_number = ($params['quantity'] > 0) ? $params['quantity'] : 1;
@@ -443,7 +451,7 @@ class OmnivaLt_Api_Omx extends OmnivaLt_Api_Core
       $api_sender = new Contact();
       $api_sender
         ->setAddress($api_address)
-        ->setMobile($shop->phone)
+        ->setMobile($sender_phone)
         ->setPersonName($shop->name);
       $api_call = new CallCourier();
       $this->set_auth($api_call);

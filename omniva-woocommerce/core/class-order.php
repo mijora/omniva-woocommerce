@@ -71,7 +71,7 @@ class OmnivaLt_Order
   }
 
   /**
-   * Restrict Omniva Shipping methods if cart products has restricted categories
+   * Restrict Omniva Delivery methods if cart products has restricted categories
    */
   public static function restrict_shipping_methods_by_cats($rates)
   {
@@ -116,7 +116,7 @@ class OmnivaLt_Order
   }
 
   /**
-   * Restrict Omniva Shipping methods if cart products has restricted shipping classes
+   * Restrict Omniva Delivery methods if cart products has restricted shipping classes
    */
   public static function restrict_shipping_methods_by_shipclass($rates)
   {
@@ -154,7 +154,7 @@ class OmnivaLt_Order
   }
 
   /**
-   * Keep the Picapac rate aligned with the parcel terminal rate after other
+   * Keep the Picapac rate aligned with the parcel machine rate after other
    * package-rate restrictions have been applied.
    */
   public static function remove_picapac_without_terminal( $rates )
@@ -225,14 +225,14 @@ class OmnivaLt_Order
     if ( isset($_POST['omnivalt_terminal']) ) {
       $terminal_id = wc_clean($_POST['omnivalt_terminal']);
       OmnivaLt_Omniva_Order::set_terminal_id($order_id, $terminal_id);
-      OmnivaLt_Wc_Order::add_note($order_id, '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+      OmnivaLt_Wc_Order::add_note($order_id, '<b>Omniva:</b> ' . __('Customer choose parcel machine', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
     }
   }
 
   public static function validate_order($posted)
   {
     $packages = WC()->shipping->get_packages();
-    $chosen_methods = WC()->session->get('chosen_shipping_methods');
+    $chosen_methods = OmnivaLt_Wc::get_session('chosen_shipping_methods');
     if ( is_array($chosen_methods) && in_array('omnivalt', $chosen_methods) ) {
       foreach ( $packages as $i => $package ) {
         if ( $chosen_methods[$i] != 'omnivalt' ) {
@@ -249,7 +249,7 @@ class OmnivaLt_Order
 
         $weight = wc_get_weight($weight, 'kg');
         if ( $weight > $weightLimit ) {
-          $message = sprintf(__('Sorry, %1$d kg exceeds the maximum weight of %2$d kg for %3$s', 'omnivalt'), $weight, $weightLimit, __('Omniva shipping', 'omnivalt'));
+          $message = sprintf(__('Sorry, %1$d kg exceeds the maximum weight of %2$d kg for %3$s', 'omnivalt'), $weight, $weightLimit, __('Omniva delivery', 'omnivalt'));
           $messageType = "error";
           if ( ! wc_has_notice($message, $messageType) ) {
             wc_add_notice($message, $messageType);
@@ -268,7 +268,7 @@ class OmnivaLt_Order
       if ( ! empty($posted_shipping_methods) ) {
         $success = OmnivaLt_Omniva_Order::set_method($wc_order->get_id(), $posted_shipping_methods);
         if ( $success && ! OmnivaLt_Omniva_Order::get_method($wc_order->get_id()) ) {
-          OmnivaLt_Debug::log_error('Failed to save Omniva shipping method. ' . print_r($_POST,true));
+          OmnivaLt_Debug::log_error('Failed to save Omniva delivery method. ' . print_r($_POST,true));
         }
       }
 
@@ -276,7 +276,7 @@ class OmnivaLt_Order
         $terminal_id = OmnivaLt_Picapac::get_terminal_id();
         if ( $check_terminal_id !== $terminal_id ) {
           OmnivaLt_Omniva_Order::set_terminal_id($wc_order->get_id(), $terminal_id);
-          OmnivaLt_Wc_Order::add_note($wc_order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+          OmnivaLt_Wc_Order::add_note($wc_order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel machine', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
         }
         return;
       }
@@ -284,7 +284,7 @@ class OmnivaLt_Order
       if ( ! empty($_POST['omnivalt_terminal']) && empty($check_terminal_id) ) {
         $terminal_id = wc_clean($_POST['omnivalt_terminal']);
         OmnivaLt_Omniva_Order::set_terminal_id($wc_order->get_id(), $_POST['omnivalt_terminal']);
-        OmnivaLt_Wc_Order::add_note($wc_order->get_id(), '<b>Omniva:</b> ' . __('Parcel terminal save repeated', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+        OmnivaLt_Wc_Order::add_note($wc_order->get_id(), '<b>Omniva:</b> ' . __('Parcel machine save repeated', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
       }
     } catch(\Exception $e) {
       OmnivaLt_Debug::log_error('Got error when trying add Omniva data to the Order: ' . $e->getMessage());
@@ -361,7 +361,7 @@ class OmnivaLt_Order
     $plugin_info = OmnivaLt_Core::get_configs('plugin');
     $grouped = (version_compare($wp_version, '5.6.0', '>=')) ? true : false; 
     $actions = array(
-      'labels' => __('Print labels', 'omnivalt'),
+      'labels' => __('Print address cards', 'omnivalt'),
       'manifest' => __('Print manifest', 'omnivalt'),
     );
 
@@ -381,12 +381,20 @@ class OmnivaLt_Order
     $plugin_info = OmnivaLt_Core::get_configs('plugin');
 
     if ( $action == $plugin_info['id'] . '_labels' ) {
+      if ( ! current_user_can('manage_woocommerce') ) {
+        wp_die(esc_html__('You are not allowed to print Omniva address cards.', 'omnivalt'), '', array('response' => 403));
+      }
+
       $omnivalt_labels = new OmnivaLt_Labels();
       $omnivalt_labels->print_labels($ids);
       die();
     }
 
     if ( $action == $plugin_info['id'] . '_manifest' ) {
+      if ( ! current_user_can('manage_woocommerce') ) {
+        wp_die(esc_html__('You are not allowed to generate an Omniva manifest.', 'omnivalt'), '', array('response' => 403));
+      }
+
       $omnivalt_labels = new OmnivaLt_Labels();
       $omnivalt_labels->print_manifest($ids);
       die();
@@ -397,19 +405,69 @@ class OmnivaLt_Order
 
   public static function post_label_actions()
   {
-    $regenerate = false;
-    if ( isset($_REQUEST['process']) && $_REQUEST['process'] === 'regenerate' ) {
-      $regenerate = true;
+    if ( ! current_user_can('manage_woocommerce') ) {
+      wp_die(esc_html__('You are not allowed to print Omniva address cards.', 'omnivalt'), '', array('response' => 403));
     }
 
+    $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+    if ( ! in_array($request_method, array('GET', 'POST'), true) ) {
+      wp_die(esc_html__('This action requires a POST request.', 'omnivalt'), '', array('response' => 405));
+    }
+
+    check_admin_referer('omnivalt_labels', 'omnivalt_labels_nonce');
+
+    $request_data = 'POST' === $request_method ? $_POST : $_GET;
+    $process = isset($request_data['process']) && is_scalar($request_data['process']) ? sanitize_key(wp_unslash($request_data['process'])) : '';
+    if ( 'GET' === $request_method && 'print' !== $process ) {
+      wp_die(esc_html__('This action requires a POST request.', 'omnivalt'), '', array('response' => 405));
+    }
+
+    $submitted_ids = isset($request_data['post']) ? wp_unslash($request_data['post']) : array();
+    if ( ! is_array($submitted_ids) ) {
+      $submitted_ids = array($submitted_ids);
+    }
+    $order_ids = array_values(array_filter(array_map('absint', array_filter($submitted_ids, 'is_scalar'))));
+    if ( empty($order_ids) ) {
+      wp_die(esc_html__('No valid orders were selected.', 'omnivalt'), '', array('response' => 400));
+    }
+
+    $inline = isset($request_data['inline']) && is_scalar($request_data['inline']) && '1' === (string) wp_unslash($request_data['inline']);
+    $regenerate = 'regenerate' === $process;
+
     $omnivalt_labels = new OmnivaLt_Labels();
-    $omnivalt_labels->print_labels($_REQUEST['post'], true, $regenerate);
+    $omnivalt_labels->print_labels($order_ids, true, $regenerate, $inline, 'POST' === $request_method);
   }
 
   public static function post_manifest_actions()
   {
+    if ( ! current_user_can('manage_woocommerce') ) {
+      wp_die(esc_html__('You are not allowed to generate an Omniva manifest.', 'omnivalt'), '', array('response' => 403));
+    }
+
+    $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+    if ( ! in_array($request_method, array('GET', 'POST'), true) ) {
+      wp_die(esc_html__('This action requires a POST request.', 'omnivalt'), '', array('response' => 405));
+    }
+
+    check_admin_referer('omnivalt_manifest', 'omnivalt_manifest_nonce');
+
+    $request_data = 'POST' === $request_method ? $_POST : $_GET;
+    $process = isset($request_data['process']) && is_scalar($request_data['process']) ? sanitize_key(wp_unslash($request_data['process'])) : '';
+    if ( 'GET' === $request_method && 'print' !== $process ) {
+      wp_die(esc_html__('This action requires a POST request.', 'omnivalt'), '', array('response' => 405));
+    }
+
+    $submitted_ids = isset($request_data['post']) ? wp_unslash($request_data['post']) : array();
+    if ( ! is_array($submitted_ids) ) {
+      $submitted_ids = array($submitted_ids);
+    }
+    $order_ids = array_values(array_filter(array_map('absint', array_filter($submitted_ids, 'is_scalar'))));
+    if ( empty($order_ids) ) {
+      wp_die(esc_html__('No valid orders were selected.', 'omnivalt'), '', array('response' => 400));
+    }
+
     $omnivalt_labels = new OmnivaLt_Labels();
-    $omnivalt_labels->print_manifest($_REQUEST['post']);
+    $omnivalt_labels->print_manifest($order_ids, 'POST' === $request_method);
   }
 
   /*public static function order_actions($order) //Disabled because disabled hook and this function use old structure
@@ -526,7 +584,7 @@ class OmnivaLt_Order
     if ( self::is_admin_order_edit_page($order->id) ) {
       echo '<br class="clear"/>';
       echo '<hr style="margin-top:20px;">';
-      echo '<h4>' . __('Omniva shipping', 'omnivalt') . '</h4>';
+      echo '<h4>' . __('Omniva delivery', 'omnivalt') . '</h4>';
     }
     
     echo '<div class="address">';
@@ -785,7 +843,7 @@ class OmnivaLt_Order
     echo '<div class="edit_address">';
     $field_id = 'omnivalt_add_manual';
     echo '<p class="form-field-wide">';
-    echo '<label for="' . $field_id . '">' . __('Omniva shipping method', 'omnivalt') . ':</label>';
+    echo '<label for="' . $field_id . '">' . __('Omniva delivery method', 'omnivalt') . ':</label>';
     echo '<select id="' . $field_id . '" class="select short" name="' . $field_id . '">';
     echo '<option>' . __('Not Omniva', 'omnivalt') . '</option>';
     echo '<optgroup label="' . __('Baltic countries and Finland', 'omnivalt') . '">';
@@ -818,7 +876,7 @@ class OmnivaLt_Order
       $terminal_id = wc_clean($_POST['omnivalt_terminal_id']);
       if ( $terminal_id != OmnivaLt_Omniva_Order::get_terminal_id($post_id) ) {
         OmnivaLt_Omniva_Order::set_terminal_id($post_id, $terminal_id);
-        OmnivaLt_Wc_Order::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+        OmnivaLt_Wc_Order::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel machine', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
       }
     }
 
@@ -882,7 +940,7 @@ class OmnivaLt_Order
       $old_terminal_id = OmnivaLt_Omniva_Order::get_terminal_id($post_id);
       if ( $terminal_id != $old_terminal_id ) {
         OmnivaLt_Omniva_Order::set_terminal_id($post_id, $terminal_id);
-        OmnivaLt_Wc_Order::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
+        OmnivaLt_Wc_Order::add_note($post_id, '<b>Omniva:</b> ' . __('Admin changed parcel machine', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($terminal_id,true) . ' <i>(ID: ' . $terminal_id . ')</i>');
       }
     }
 
@@ -915,7 +973,7 @@ class OmnivaLt_Order
   public static function checkout_validate_terminal()
   {
     $messages = array(
-      'pt' => __('Please select parcel terminal.', 'omnivalt'),
+      'pt' => __('Please select parcel machine.', 'omnivalt'),
       'ps' => __('Please select post office.', 'omnivalt'),
     );
 

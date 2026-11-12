@@ -60,7 +60,7 @@ class OmnivaLt_Wc_Blocks
         $omniva_method_key = ($terminals_type == 'post') ? 'post_specific' : 'pickup';
 
         if ( empty($omniva_methods[$omniva_method_key]) || ! is_array($omniva_methods[$omniva_method_key]) ) {
-            wp_send_json_error('Invalid Omniva shipping method', 400);
+            wp_send_json_error('Invalid Omniva delivery method', 400);
         }
 
         $omniva_method = $omniva_methods[$omniva_method_key];
@@ -108,6 +108,13 @@ class OmnivaLt_Wc_Blocks
                 'schema_callback' => 'OmnivaLt_Wc_Blocks::cb_schema_callback',
                 'schema_type' => ARRAY_A,
             ));
+            woocommerce_store_api_register_endpoint_data(array(
+                'endpoint' => \Automattic\WooCommerce\StoreApi\Schemas\V1\CartSchema::IDENTIFIER,
+                'namespace' => 'omnivalt',
+                'data_callback' => 'OmnivaLt_Wc_Blocks::cb_data_callback',
+                'schema_callback' => 'OmnivaLt_Wc_Blocks::cb_schema_callback',
+                'schema_type' => ARRAY_A,
+            ));
         }
         add_action('woocommerce_store_api_checkout_update_order_from_request', array('OmnivaLt_Wc_Blocks', 'update_block_order_meta'), 10, 2);
 
@@ -125,46 +132,76 @@ class OmnivaLt_Wc_Blocks
     public static function update_block_order_meta($order, $request)
     {
         $data = $request['extensions']['omnivalt'] ?? array();
+        $data = is_array($data) ? $data : array();
+        $selected_method = isset($data['selected_rate_id']) && is_string($data['selected_rate_id']) ? wc_clean($data['selected_rate_id']) : '';
+        $selected_terminal_id = isset($data['selected_terminal']) && is_scalar($data['selected_terminal']) ? wc_clean((string) $data['selected_terminal']) : '';
 
-        $selected_method = wc_clean($data['selected_rate_id'] ?? '');
-        $selected_terminal_id = wc_clean($data['selected_terminal'] ?? '');
-
-        // Fallback: if extension data has no method (e.g. order created via an alternative
-        // payment gateway flow that does not forward Store API extension data), try to
-        // recover the chosen Omniva sub-method from the WC session, because the shipping
-        // line item only stores the base method ID ("omnivalt") and not the rate ID
-        // ("omnivalt_pt", "omnivalt_c", etc.).
-        if ( empty($selected_method) ) {
-            $chosen_methods = OmnivaLt_Wc::get_session('chosen_shipping_methods');
-            if ( is_array($chosen_methods) ) {
-                foreach ( $chosen_methods as $chosen_method ) {
-                    if ( is_string($chosen_method) && strpos($chosen_method, 'omnivalt_') === 0 ) {
-                        $selected_method = $chosen_method;
-                        break;
-                    }
+        // The session owns the current rate. Extension data can still contain the
+        // previous rate during a switch; it is only a fallback without session data.
+        $chosen_methods = OmnivaLt_Wc::get_session('chosen_shipping_methods');
+        if ( is_array($chosen_methods) && ! empty($chosen_methods) ) {
+            $selected_method = '';
+            foreach ( $chosen_methods as $chosen_method ) {
+                if ( is_string($chosen_method) && strpos($chosen_method, 'omnivalt_') === 0 ) {
+                    $selected_method = $chosen_method;
+                    break;
                 }
             }
         }
 
-        if ( empty($selected_method) ) {
+        $meta_keys = OmnivaLt_Core::get_configs('meta_keys');
+        if ( strpos($selected_method, 'omnivalt_') !== 0 ) {
+            $order->delete_meta_data($meta_keys['terminal_id']);
             return;
+        }
+
+        $is_picapac = OmnivaLt_Picapac::is_rate($selected_method);
+        $is_terminal_method = OmnivaLt_Method::is_omniva_domestic_terminal($selected_method);
+        if ( $is_terminal_method ) {
+            $country = $order->get_shipping_country();
+            if ( '' === $country ) {
+                $country = $order->get_billing_country();
+            }
+
+            $method_key = OmnivaLt_Omniva_Order::get_method_key_from_id($selected_method);
+            $terminal_type = OmnivaLt_Method::get_terminal_type($method_key);
+            if ( $is_picapac ) {
+                $selected_terminal_id = OmnivaLt_Picapac::get_terminal_id();
+                $valid_terminal = OmnivaLt_Picapac::is_supported_country($country);
+            } else {
+                if ( '' === $selected_terminal_id && isset($_COOKIE['omniva_terminal']) && is_scalar($_COOKIE['omniva_terminal']) ) {
+                    $selected_terminal_id = sanitize_text_field(wp_unslash((string) $_COOKIE['omniva_terminal']));
+                }
+                $valid_terminal = OmnivaLt_Terminals::is_valid_terminal($selected_terminal_id, $country, $terminal_type);
+                // A missing or unreadable terminals file cannot prove the selection wrong; do not block every order because of it.
+                if ( ! $valid_terminal && ! OmnivaLt_Terminals::has_terminals_data() ) {
+                    $valid_terminal = true;
+                }
+            }
+
+            if ( ! $valid_terminal ) {
+                $message = ('post' === $terminal_type) ? __('Please select post office', 'omnivalt') : __('Please select parcel machine', 'omnivalt');
+                throw new \Automattic\WooCommerce\StoreApi\Exceptions\RouteException('omnivalt_invalid_terminal', esc_html($message), 400);
+            }
+        } else {
+            // A reused Store API draft may already have terminal metadata.
+            $selected_terminal_id = '';
         }
 
         $method_saved = OmnivaLt_Omniva_Order::set_method($order->get_id(), $selected_method);
         if ( ! $method_saved ) {
-            OmnivaLt_Debug::log_error('Failed to save Omniva shipping method from Blocks Checkout. Received method: ' . print_r($selected_method, true));
+            OmnivaLt_Debug::log_error('Failed to save Omniva delivery method from Blocks Checkout. Received method: ' . print_r($selected_method, true));
         }
 
-        if ( OmnivaLt_Picapac::is_rate($selected_method) ) {
-            $selected_terminal_id = OmnivaLt_Picapac::get_terminal_id();
-        } elseif ( empty($selected_terminal_id) && ! empty($_COOKIE['omniva_terminal']) ) {
-            // Fallback: if terminal not in extension data, try cookie
-            $selected_terminal_id = wc_clean($_COOKIE['omniva_terminal']);
+        if ( '' === $selected_terminal_id ) {
+            $order->delete_meta_data($meta_keys['terminal_id']);
+            return;
         }
 
-        if ( ! empty($selected_terminal_id) ) {
-            OmnivaLt_Omniva_Order::set_terminal_id($order->get_id(), $selected_terminal_id);
-            OmnivaLt_Wc_Order::add_note($order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel terminal', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($selected_terminal_id, true) . ' <i>(ID: ' . $selected_terminal_id . ')</i>');
+        if ( (string) $order->get_meta($meta_keys['terminal_id'], true) !== $selected_terminal_id ) {
+            // Store API saves this same CRUD object after the hook completes.
+            $order->update_meta_data($meta_keys['terminal_id'], $selected_terminal_id);
+            OmnivaLt_Wc_Order::add_note($order->get_id(), '<b>Omniva:</b> ' . __('Customer choose parcel machine', 'omnivalt') . ' - ' . OmnivaLt_Terminals::get_terminal_address($selected_terminal_id, true) . ' <i>(ID: ' . $selected_terminal_id . ')</i>');
         }
     }
 
@@ -183,8 +220,25 @@ class OmnivaLt_Wc_Blocks
 
     public static function cb_data_callback()
     {
+        $selected_terminal_id = '';
+        $cookie_terminal_id = '';
+
+        if ( isset($_COOKIE['omniva_terminal']) && is_scalar($_COOKIE['omniva_terminal']) ) {
+            $cookie_terminal_id = sanitize_text_field(wp_unslash((string) $_COOKIE['omniva_terminal']));
+        }
+
+        // A terminal can be changed in the Blocks checkout without a classic
+        // checkout request, so its cookie is newer than the saved session value.
+        if ( ! empty($cookie_terminal_id) ) {
+            $selected_terminal_id = $cookie_terminal_id;
+        }
+
+        if ( empty($selected_terminal_id) ) {
+            $selected_terminal_id = OmnivaLt_Wc::get_session('omnivalt_terminal_id');
+        }
+
         return array(
-            'selected_terminal' => '',
+            'selected_terminal' => $selected_terminal_id,
             'selected_rate_id' => '',
         );
     }

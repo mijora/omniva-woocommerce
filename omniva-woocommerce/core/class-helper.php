@@ -63,18 +63,47 @@ class OmnivaLt_Helper
   {
     $cod_payments = OmnivaLt_Core::get_configs('cod');
     return (in_array($payment_key, $cod_payments));
-
-    if ( in_array($payment_key, $cod_payments) ) {
-      return true;
-    }
-
-    return false;
   }
 
   public static function get_api_plan()
   {
     $settings = OmnivaLt_Core::get_settings();
     return (! empty($settings['api_country'])) ? $settings['api_country'] : 'LT';
+  }
+
+  public static function get_required_sender_fields()
+  {
+    return array(
+      'company' => __('Company name', 'omnivalt'),
+      'shop_name' => __('Shop name', 'omnivalt'),
+      'shop_city' => __('Shop city', 'omnivalt'),
+      'shop_address' => __('Shop address', 'omnivalt'),
+      'shop_postcode' => __('Shop postcode', 'omnivalt'),
+      'shop_countrycode' => __('Shop country code', 'omnivalt'),
+      'shop_mobile' => __('Shop mobile number', 'omnivalt'),
+      'shop_email' => __('Shop email', 'omnivalt')
+    );
+  }
+
+  public static function has_required_sender_information( $settings = false )
+  {
+    if ( false === $settings ) {
+      $settings = OmnivaLt_Core::get_settings();
+    }
+
+    if ( ! is_array($settings) ) {
+      return false;
+    }
+
+    // Only these fields block label registration; the settings form has a separate warning list.
+    $label_required_fields = array('shop_name', 'shop_city', 'shop_postcode', 'shop_mobile');
+    foreach ( $label_required_fields as $field_key ) {
+      if ( ! isset($settings[$field_key]) || ! is_scalar($settings[$field_key]) || '' === trim((string) $settings[$field_key]) ) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   public static function get_shipping_methods_prices()
@@ -430,13 +459,11 @@ class OmnivaLt_Helper
           $current_unit = $woo_units['weight'];
         }
         return OmnivaLt_Wc::get_weight($value, $new_unit, $current_unit);
-        break;
       case 'dimension':
         if ( ! $current_unit ) {
           $current_unit = $woo_units['dimension'];
         }
         return OmnivaLt_Wc::get_dimension($value, $new_unit, $current_unit);
-        break;
     }
 
     return $value;
@@ -489,7 +516,7 @@ class OmnivaLt_Helper
     $offset = get_option('gmt_offset');
     $hours = (int) $offset;
 
-    return timezone_name_from_abbr("", $hours * 3600, true);
+    return timezone_name_from_abbr("", $hours * 3600, 1);
   }
 
   public static function get_timezone_offset( $timezone_string )
