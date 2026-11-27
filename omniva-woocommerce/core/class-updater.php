@@ -459,6 +459,7 @@ class OmnivaLt_Updater
       return '';
     }
 
+    /** @var mixed $plugin_basename A pre-existing global constant may have a different value or type. */
     $plugin_basename = constant('OMNIVALT_BASENAME');
     return is_string($plugin_basename) ? $plugin_basename : '';
   }

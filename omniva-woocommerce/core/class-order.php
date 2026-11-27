@@ -8,6 +8,13 @@ class OmnivaLt_Order
     if ( self::is_admin_order_edit_page() ) {
       wp_enqueue_style('omnivalt_admin_order', plugins_url('/assets/css/omniva_admin_order.css', OmnivaLt_Core::$main_file_path, array(), OMNIVALT_VERSION));
       wp_enqueue_script('omnivalt_admin_order', plugins_url( '/assets/js/omniva_admin_order.js', OmnivaLt_Core::$main_file_path ), array('jquery'), OMNIVALT_VERSION );
+      wp_localize_script('omnivalt_admin_order', 'omnivaltOrderServices', array(
+        'url' => admin_url('admin-ajax.php'),
+        'saving' => __('Saving service…', 'omnivalt'),
+        'saved' => __('Service saved.', 'omnivalt'),
+        'rejected' => __('The service was not saved.', 'omnivalt'),
+        'error' => __('Could not confirm the change. Reload the order to check the saved service.', 'omnivalt'),
+      ));
     }
   }
 
@@ -558,14 +565,14 @@ class OmnivaLt_Order
     $international_methods_keys = OmnivaLt_Method::get_all_international_keys();
     $international_method = array('key' => '', 'zone' => '');
     $is_omniva = false;
-    $is_omniva_interational = false;
+    $is_omniva_international = false;
     $ship_method = false;
 
     if ( OmnivaLt_Method::is_omniva_domestic($send_method) ) {
       $is_omniva = true;
     } else if ( OmnivaLt_Method::is_omniva_international($send_method) ) {
       $is_omniva = true;
-      $is_omniva_interational = true;
+      $is_omniva_international = true;
       $exploded_method = explode('_', $send_method);
       $international_method['key'] = $exploded_method[0];
       $international_method['zone'] = $exploded_method[1];
@@ -576,7 +583,7 @@ class OmnivaLt_Order
     }
     if ( ! $is_omniva ) return;
 
-    if ( ! $is_omniva_interational ) {
+    if ( ! $is_omniva_international ) {
       $ship_method = OmnivaLt_Method::get_by_key($send_method);
       if ( ! $ship_method ) return;
     }
@@ -590,7 +597,7 @@ class OmnivaLt_Order
     echo '<div class="address">';
     $field_title = __('Unknown', 'omnivalt');
     $field_value = $order->shipment->formated_shipping_address;
-    if ( ! $is_omniva_interational ) {
+    if ( ! $is_omniva_international ) {
       $field_title = $ship_method['title'];
       if ( OmnivaLt_Method::is_omniva_domestic_terminal($send_method) ) {
         $with_country = (! self::is_admin_order_edit_page($order->id));
@@ -617,21 +624,16 @@ class OmnivaLt_Order
       echo self::build_shipment_size_text($order->shipment->size);
     }
 
-    $services = array();
-    if ( ! $is_omniva_interational ) {
+    if ( ! $is_omniva_international ) {
       $services = OmnivaLt_Helper::get_order_services($order);
-    }
-
-    if ( ! empty($services) ) {
-      echo '<p><strong class="title">' . __('Services', 'omnivalt') . ':</strong> ';
-      $output = '';
+      $service_titles = array();
       foreach ( $services as $service ) {
-        if ( ! empty($output) ) $output .= ', ';
-        foreach ( $configs['additional_services'] as $service_key => $service_values ) {
-          if ( $service === $service_key ) $output .= $service_values['title'];
+        if ( isset($configs['additional_services'][$service]['title']) ) {
+          $service_titles[$service] = $configs['additional_services'][$service]['title'];
         }
       }
-      echo $output . '</p>';
+      echo '<p class="omnivalt-order-services-summary"' . (empty($service_titles) ? ' hidden' : '') . '><strong class="title">' . esc_html__('Services', 'omnivalt') . ':</strong> ';
+      echo '<span data-services="' . esc_attr(wp_json_encode((object) $service_titles)) . '">' . esc_html(implode(', ', $service_titles)) . '</span></p>';
     }
 
     if ( $print_barcode ) {
@@ -676,8 +678,9 @@ class OmnivaLt_Order
 
     echo self::build_total_shipments_field($order->shipment->total_shipments);
     echo self::build_shipment_size_fields($order->shipment->size);
-    if ( ! $is_omniva_interational ) {
-      echo self::build_additional_services_fields($configs['additional_services'], $services);
+    if ( ! $is_omniva_international ) {
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The builder escapes each dynamic value for its HTML context.
+      echo self::build_additional_services_fields($order->id, $configs['additional_services'], $services);
     }
 
     echo '</div>';
@@ -795,37 +798,35 @@ class OmnivaLt_Order
     return $output;
   }
 
-  private static function build_additional_services_fields( $all_additional_services, $selected_order_services )
+  private static function is_order_service_editable( $service )
+  {
+    return empty($service['add_always']) && ($service['in_order'] ?? '') === 'checkbox';
+  }
+
+  private static function build_additional_services_fields( $order_id, $all_additional_services, $selected_order_services )
   {
     $output = '';
 
     foreach ( $all_additional_services as $service_key => $service_values ) {
-      if ( $service_values['add_always'] ) continue;
-      if ( ! $service_values['in_order'] ) continue;
-      
-      $output .= '<p class="form-field-wide omnivalt-additional_service">';
+      if ( ! self::is_order_service_editable($service_values) ) {
+        continue;
+      }
+
       $field_id = 'omnivalt_' . $service_key;
-      if ($service_values['in_order'] === 'checkbox' || $service_values['in_order'] === 'price') {
-        $checked = (in_array($service_key, $selected_order_services)) ? 'checked' : '';
-        $output .= '<input type="checkbox" id="' . $field_id . '" class="select short" name="' . $field_id . '" value="yes" ' . $checked . '/>';
-      }
-      $output .= '<label for="' . $field_id . '" class="noselect">' . $service_values['title'] . '</label>';
-      if ($service_values['in_order'] === 'select') {
-        //TODO: Need to do
-        /*$output .= '<select id="' . $field_id . '" class="select short" name="' . $field_id . '">';
-        $output .= '<option value="no">' . __('No', 'omnivalt') . '</option>';
-        $selected = (in_array($service_key, $selected_order_services)) ? 'selected' : '';
-        $output .= '<option value="yes" ' . $selected . '>' . __('Yes', 'omnivalt') . '</option>';
-        $output .= '</select>';*/
-      }
-      if ($service_values['in_order'] === 'price') {
-        //TODO: Need to do value get and save
-        //$output .= '<input type="number" id="' . $field_id . '_value" class="short inline-number" name="' . $field_id . '_value" value="" min="0" step="0.01">';
-      }
-      $output .= '</p>';
+      $is_checked = in_array($service_key, $selected_order_services, true);
+      $output .= '<p class="form-field-wide omnivalt-additional_service">';
+      $output .= '<input type="checkbox" id="' . esc_attr($field_id) . '" class="select short" data-service="' . esc_attr($service_key) . '" autocomplete="off" disabled' . checked($is_checked, true, false) . ' />';
+      $output .= '<label for="' . esc_attr($field_id) . '" class="noselect">' . esc_html($service_values['title']) . '</label></p>';
     }
 
-    return $output;
+    if ( $output === '' ) {
+      return '';
+    }
+
+    return '<div class="omnivalt-order-services" data-order-id="' . esc_attr($order_id) . '" data-nonce="' . esc_attr(wp_create_nonce('omnivalt_save_order_service_' . $order_id)) . '">'
+      . $output . '<p class="form-field-wide omnivalt-order-service-status" role="status" data-state="unavailable">'
+      . esc_html__('Services can be changed after the page finishes loading. Reload the order if this message remains.', 'omnivalt')
+      . '</p></div>';
   }
 
   private static function add_Omniva_manually()
@@ -870,8 +871,6 @@ class OmnivaLt_Order
     if (self::$save_in_progress) return $post_id; //Temporary fix to avoid infinity loop
     self::$save_in_progress = true;
 
-    $configs = OmnivaLt_Core::get_configs();
-
     if ( isset($_POST['omnivalt_terminal_id']) ) {
       $terminal_id = wc_clean($_POST['omnivalt_terminal_id']);
       if ( $terminal_id != OmnivaLt_Omniva_Order::get_terminal_id($post_id) ) {
@@ -889,16 +888,6 @@ class OmnivaLt_Order
       if ( $dimmensions != OmnivaLt_Omniva_Order::get_dimmensions($post_id) ) {
         OmnivaLt_Omniva_Order::set_dimmensions($post_id, wc_clean(json_encode($_POST['omnivalt_dimmensions'])));
       }
-    }
-
-    $meta_values = array();
-    foreach ( $configs['additional_services'] as $service_key => $service_values ) {
-      if ( isset($_POST['omnivalt_' . $service_key]) ) {
-        $meta_values['_omnivalt_' . $service_key] = wc_clean($_POST['omnivalt_' . $service_key]);
-      }
-    }
-    if ( ! empty($meta_values) ) {
-      OmnivaLt_Wc_Order::update_multi_meta($post_id, $meta_values);
     }
 
     if ( isset($_POST['omnivalt_add_manual']) ) {
@@ -933,8 +922,6 @@ class OmnivaLt_Order
       return $post_id;
     }
 
-    $configs = OmnivaLt_Core::get_configs();
-
     if ( isset($_POST['omnivalt_terminal_id']) ) {
       $terminal_id = wc_clean($_POST['omnivalt_terminal_id']);
       $old_terminal_id = OmnivaLt_Omniva_Order::get_terminal_id($post_id);
@@ -952,17 +939,85 @@ class OmnivaLt_Order
       OmnivaLt_Omniva_Order::set_dimmensions($post_id, wc_clean(json_encode($_POST['omnivalt_dimmensions'])));
     }
 
-    $meta_values = array();
-    foreach ( $configs['additional_services'] as $service_key => $service_values ) {
-      $meta_values['_omnivalt_' . $service_key] = (isset($_POST['omnivalt_' . $service_key])) ? wc_clean($_POST['omnivalt_' . $service_key]) : 'no';
-    }
-    if ( ! empty($meta_values) ) {
-      OmnivaLt_Wc_Order::update_multi_meta($post_id, $meta_values);
-    }
-
     delete_transient($transient_name);
 
     return $post_id;
+  }
+
+  private static function can_edit_order_service( $order_id )
+  {
+    $can_edit = current_user_can('edit_shop_order', $order_id);
+
+    if ( ! defined('WC_VERSION') || version_compare(WC_VERSION, '11.0.0', '>=') // @phpstan-ignore booleanOr.rightAlwaysFalse (WooCommerce analysis stub fixes WC_VERSION at 0.0.0; preserve the runtime version check.)
+      || ! OmnivaLt_Wc::is_using_hpos()
+      || 'no' !== get_option('woocommerce_custom_orders_table_data_sync_enabled', 'no')
+      || 'shop_order_placehold' !== OmnivaLt_Wc::get_post_type_by_id($order_id) ) {
+      return $can_edit;
+    }
+
+    if ( ! current_user_can('edit_shop_orders') ) {
+      return false;
+    }
+
+    // Older HPOS versions map placeholder permissions to regular posts. Mirror the HPOS editor's manager access.
+    return $can_edit || (current_user_can('manage_woocommerce')
+      && ! in_array('do_not_allow', map_meta_cap('edit_shop_order', get_current_user_id(), $order_id), true));
+  }
+
+  public static function ajax_save_order_service()
+  {
+    $request_method = isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])
+      ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD']))
+      : '';
+
+    if ( $request_method !== 'POST' ) {
+      wp_send_json_error(null, 405);
+    }
+
+    $order_id = isset($_POST['order_id']) && is_string($_POST['order_id']) ? filter_var(wp_unslash($_POST['order_id']), FILTER_VALIDATE_INT, array('options' => array('min_range' => 1))) : false;
+    $service = isset($_POST['service']) && is_string($_POST['service']) ? sanitize_text_field(wp_unslash($_POST['service'])) : '';
+    $value = isset($_POST['value']) && is_string($_POST['value']) ? sanitize_text_field(wp_unslash($_POST['value'])) : '';
+    $nonce = isset($_POST['nonce']) && is_string($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
+
+    if ( ! $order_id || $service === '' || ! in_array($value, array('yes', 'no'), true) ) {
+      wp_send_json_error(null, 400);
+    }
+
+    if ( ! wp_verify_nonce($nonce, 'omnivalt_save_order_service_' . $order_id) || ! self::can_edit_order_service($order_id) ) {
+      wp_send_json_error(null, 403);
+    }
+
+    $order = OmnivaLt_Wc_Order::get_order($order_id);
+    if ( ! ($order instanceof WC_Order) || $order->get_type() !== 'shop_order' ) {
+      wp_send_json_error(null, 404);
+    }
+    if ( $order->get_status() === 'trash' ) {
+      wp_send_json_error(null, 403);
+    }
+
+    $services = OmnivaLt_Core::get_configs('additional_services');
+    $method = OmnivaLt_Omniva_Order::get_method($order);
+    if ( ! is_string($method) || ! OmnivaLt_Method::is_omniva_domestic($method)
+      || ! isset($services[$service]) || ! self::is_order_service_editable($services[$service]) ) {
+      wp_send_json_error(null, 400);
+    }
+
+    $meta_key = '_omnivalt_' . $service;
+    if ( $order->get_meta($meta_key, true, 'edit') !== $value ) {
+      try {
+        $order->update_meta_data($meta_key, $value);
+        $order->save();
+        $order->read_meta_data(true);
+      } catch ( Exception $e ) {
+        wp_send_json_error(null, 500);
+      }
+
+      if ( $order->get_meta($meta_key, true, 'edit') !== $value ) {
+        wp_send_json_error(null, 500);
+      }
+    }
+
+    wp_send_json_success(array('value' => $value));
   }
 
   public static function saved()
