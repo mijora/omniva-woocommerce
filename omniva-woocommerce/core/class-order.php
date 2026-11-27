@@ -12,6 +12,7 @@ class OmnivaLt_Order
         'url' => admin_url('admin-ajax.php'),
         'saving' => __('Saving service…', 'omnivalt'),
         'saved' => __('Service saved.', 'omnivalt'),
+        'rejected' => __('The service was not saved.', 'omnivalt'),
         'error' => __('Could not confirm the change. Reload the order to check the saved service.', 'omnivalt'),
       ));
     }
@@ -564,14 +565,14 @@ class OmnivaLt_Order
     $international_methods_keys = OmnivaLt_Method::get_all_international_keys();
     $international_method = array('key' => '', 'zone' => '');
     $is_omniva = false;
-    $is_omniva_interational = false;
+    $is_omniva_international = false;
     $ship_method = false;
 
     if ( OmnivaLt_Method::is_omniva_domestic($send_method) ) {
       $is_omniva = true;
     } else if ( OmnivaLt_Method::is_omniva_international($send_method) ) {
       $is_omniva = true;
-      $is_omniva_interational = true;
+      $is_omniva_international = true;
       $exploded_method = explode('_', $send_method);
       $international_method['key'] = $exploded_method[0];
       $international_method['zone'] = $exploded_method[1];
@@ -582,7 +583,7 @@ class OmnivaLt_Order
     }
     if ( ! $is_omniva ) return;
 
-    if ( ! $is_omniva_interational ) {
+    if ( ! $is_omniva_international ) {
       $ship_method = OmnivaLt_Method::get_by_key($send_method);
       if ( ! $ship_method ) return;
     }
@@ -596,7 +597,7 @@ class OmnivaLt_Order
     echo '<div class="address">';
     $field_title = __('Unknown', 'omnivalt');
     $field_value = $order->shipment->formated_shipping_address;
-    if ( ! $is_omniva_interational ) {
+    if ( ! $is_omniva_international ) {
       $field_title = $ship_method['title'];
       if ( OmnivaLt_Method::is_omniva_domestic_terminal($send_method) ) {
         $with_country = (! self::is_admin_order_edit_page($order->id));
@@ -623,12 +624,8 @@ class OmnivaLt_Order
       echo self::build_shipment_size_text($order->shipment->size);
     }
 
-    $services = array();
-    if ( ! $is_omniva_interational ) {
+    if ( ! $is_omniva_international ) {
       $services = OmnivaLt_Helper::get_order_services($order);
-    }
-
-    if ( ! $is_omniva_interational ) {
       $service_titles = array();
       foreach ( $services as $service ) {
         if ( isset($configs['additional_services'][$service]['title']) ) {
@@ -681,7 +678,7 @@ class OmnivaLt_Order
 
     echo self::build_total_shipments_field($order->shipment->total_shipments);
     echo self::build_shipment_size_fields($order->shipment->size);
-    if ( ! $is_omniva_interational ) {
+    if ( ! $is_omniva_international ) {
       // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The builder escapes each dynamic value for its HTML context.
       echo self::build_additional_services_fields($order->id, $configs['additional_services'], $services);
     }
@@ -803,7 +800,7 @@ class OmnivaLt_Order
 
   private static function is_order_service_editable( $service )
   {
-    return empty($service['add_always']) && in_array($service['in_order'] ?? '', array('checkbox', 'price'), true);
+    return empty($service['add_always']) && ($service['in_order'] ?? '') === 'checkbox';
   }
 
   private static function build_additional_services_fields( $order_id, $all_additional_services, $selected_order_services )
@@ -827,7 +824,9 @@ class OmnivaLt_Order
     }
 
     return '<div class="omnivalt-order-services" data-order-id="' . esc_attr($order_id) . '" data-nonce="' . esc_attr(wp_create_nonce('omnivalt_save_order_service_' . $order_id)) . '">'
-      . $output . '<p class="form-field-wide omnivalt-order-service-status" role="status"></p></div>';
+      . $output . '<p class="form-field-wide omnivalt-order-service-status" role="status" data-state="unavailable">'
+      . esc_html__('Services can be changed after the page finishes loading. Reload the order if this message remains.', 'omnivalt')
+      . '</p></div>';
   }
 
   private static function add_Omniva_manually()
