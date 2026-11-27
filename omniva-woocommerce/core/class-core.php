@@ -581,6 +581,7 @@ class OmnivaLt_Core
     add_action('woocommerce_email_after_order_table', array('OmnivaLt_Order', 'show_selected_terminal'), 10, 1);
     add_action('woocommerce_admin_order_preview_end', array('OmnivaLt_Order', 'display_order_data_in_admin'));
     add_action('wp_ajax_generate_omnivalt_label', array('OmnivaLt_Order', 'generate_label'));
+    add_action('wp_ajax_omnivalt_save_order_service', array('OmnivaLt_Order', 'ajax_save_order_service'));
     add_action('woocommerce_checkout_update_order_meta', array('OmnivaLt_Order', 'add_cart_weight'));
     add_action('print_omniva_tracking_url', array('OmnivaLt_Order', 'print_tracking_url_action'), 10, 2);
     add_action('woocommerce_admin_order_data_after_shipping_address', array('OmnivaLt_Order', 'admin_order_display'), 10, 2);

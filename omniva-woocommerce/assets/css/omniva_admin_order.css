@@ -1,14 +1,31 @@
 #order_data .order_data_column .form-field-wide.omnivalt-dimmension label {
-    display: block;
+  display: block;
 }
 #order_data .order_data_column .form-field-wide.omnivalt-dimmension input {
-    width: 85px;
-    max-width: 25%;
-    display: inline;
+  width: 85px;
+  max-width: 25%;
+  display: inline;
 }
-#order_data .order_data_column .form-field-wide.omnivalt-additional_service input[type="checkbox"] {
-    width: unset;
+#order_data
+  .order_data_column
+  .form-field-wide.omnivalt-additional_service
+  input[type='checkbox'] {
+  width: unset;
 }
-#order_data .order_data_column .form-field-wide.omnivalt-additional_service input[type="checkbox"] + label {
-    cursor: pointer;
+#order_data
+  .order_data_column
+  .form-field-wide.omnivalt-additional_service
+  input[type='checkbox']
+  + label {
+  cursor: pointer;
+}
+#order_data
+  .order_data_column
+  .omnivalt-order-service-status[data-state='saved'] {
+  color: #007a45;
+}
+#order_data
+  .order_data_column
+  .omnivalt-order-service-status[data-state='error'] {
+  color: #b42318;
 }

@@ -15,11 +15,13 @@
 - improved address card generation: the generate and regenerate actions are now disabled with a hint when the shop name, city, postcode or mobile number is missing, instead of returning an API error, while existing address cards can still be printed
 - improved Blocks Checkout by validating the selected parcel machine against the available parcel machines for the shipping country and method
 - improved the settings and manifest pages to stay usable through server-rendered fallbacks when their enhancement scripts fail to load
+- changed additional Omniva services to save immediately when their checkbox is changed in the WooCommerce order editor. The order Update action and integrations posting legacy `omnivalt_<service>` form fields no longer save these selections.
 - fixed missing authorization, nonce, request-method and input validation on address card, manifest and courier call actions, and added nonce and input validation to courier-call removal and parcel machine selection AJAX requests
 - fixed sender phone and courier collection-window validation so invalid values do not overwrite previously saved settings
 - fixed potential Blocks Checkout failures when the WooCommerce session was not initialized during Store API requests
 - fixed Blocks Checkout orders sometimes saving a stale shipping rate or a parcel machine left over from a previously selected shipping method
 - fixed an infinite shipping method update loop on the Cart page with themes that reload the cart after a shipping method change
+- fixed order updates overwriting cash-on-delivery settings. The payment method determines cash on delivery until an administrator explicitly changes the service on the order.
 - updated terminal-mapping library to v2.0.0
 - updated the plugin name and terminology (Omniva shipping → Omniva Delivery, terminal → parcel machine, labels → address cards, delivery location → delivery point, pickup → courier collection) and refreshed LT, LV and EE translations
 
